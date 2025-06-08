@@ -1,0 +1,160 @@
+/* Seat Layout CSS */
+.seat-container {
+    display: grid;
+    gap: 5px;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    position: relative;
+    min-height: 200px;
+    overflow-x: auto;
+}
+
+.seat {
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+}
+
+.seat.normal {
+    background-color: #b3e0ff;
+    border: 1px solid #77c3f9;
+    color: #0a4b78;
+}
+
+.seat.vip {
+    background-color: #ffd699;
+    border: 1px solid #ffb347;
+    color: #804200;
+}
+
+.seat.disabled {
+    background-color: #e9ecef;
+    border: 1px solid #ced4da;
+    color: #6c757d;
+    opacity: 0.7;
+}
+
+.seat.normal:hover {
+    background-color: #77c3f9;
+}
+
+.seat.vip:hover {
+    background-color: #ffb347;
+}
+
+.seat.disabled:hover {
+    background-color: #dee2e6;
+}
+
+.row-label {
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #495057;
+}
+
+.aisle {
+    background-color: rgba(108, 117, 125, 0.1);
+    border-radius: 2px;
+}
+
+.aisle-row {
+    height: 15px;
+    background-color: rgba(108, 117, 125, 0.1);
+    border-radius: 2px;
+    grid-column: 1 / -1;
+}
+
+.aisle-col {
+    width: 15px;
+    height: 35px;
+}
+
+.seat-row {
+    display: contents;
+}
+
+/* Màn hình */
+.screen {
+    height: 25px;
+    background-color: #e9ecef;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    grid-column: 1 / -1;
+}
+
+/* Chú thích */
+.seat-legend {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    font-size: 0.8rem;
+    margin-right: 10px;
+}
+
+.legend-box {
+    width: 15px;
+    height: 15px;
+    margin-right: 5px;
+    border-radius: 3px;
+}
+
+.legend-normal {
+    background-color: #b3e0ff;
+    border: 1px solid #77c3f9;
+}
+
+.legend-vip {
+    background-color: #ffd699;
+    border: 1px solid #ffb347;
+}
+
+.legend-disabled {
+    background-color: #e9ecef;
+    border: 1px solid #ced4da;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .seat {
+        width: 30px;
+        height: 30px;
+        font-size: 0.7rem;
+    }
+    
+    .aisle-col {
+        width: 12px;
+        height: 30px;
+    }
+    
+    .aisle-row {
+        height: 12px;
+    }
+}
