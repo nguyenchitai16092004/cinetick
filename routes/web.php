@@ -17,7 +17,7 @@ use App\Http\Controllers\Admin\ThongKeController;
 use App\Http\Controllers\Admin\TheLoaiPhimController;
 use App\Http\Controllers\Admin\TinTucController;
 use App\Http\Controllers\Admin\HomeController;
-    
+
 
 use App\Http\Controllers\Apps\PhimController;
 use App\Http\Controllers\Apps\AuthController;
@@ -83,9 +83,6 @@ Route::prefix('thanh-toan')->group(function () {
     Route::get('/status/{orderCode}', [PayOSController::class, 'checkPaymentStatus'])->name('payos.status');
     // Route hiển thị trang trạng thái checkout
     Route::get('/checkout-status', [ThanhToanController::class, 'checkoutStatus'])->name('checkout_status');
-
-
-
 });
 
 
@@ -145,6 +142,7 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
         Route::delete('/{id}', [PhongChieuController::class, 'destroy'])->name('destroy');
     });
 
+    // Phim
     Route::prefix('phim')->name('phim.')->group(function () {
         Route::get('/', [AdminPhimController::class, 'index'])->name('index');
         Route::get('/create', [AdminPhimController::class, 'create'])->name('create');
@@ -155,18 +153,27 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
         Route::get('phim/change-status/{id}', [AdminPhimController::class, 'changeStatus'])->name('change-status');
     });
 
+    // Gom nhóm tất cả route liên quan đến suất chiếu
     Route::prefix('suat-chieu')->name('suat-chieu.')->group(function () {
+        // CRUD routes
         Route::get('/', [SuatChieuController::class, 'index'])->name('index');
         Route::get('/create', [SuatChieuController::class, 'create'])->name('create');
         Route::post('/store', [SuatChieuController::class, 'store'])->name('store');
-        Route::get('/show/{id}', [SuatChieuController::class, 'show'])->name('show');
-        Route::get('/edit/{id}', [SuatChieuController::class, 'edit'])->name('edit');
-        Route::put('/update/{id}', [SuatChieuController::class, 'update'])->name('update');
+        Route::get('/{id}/edit', [SuatChieuController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [SuatChieuController::class, 'update'])->name('update');
         Route::delete('/{id}', [SuatChieuController::class, 'destroy'])->name('destroy');
-        Route::get('/filter-date', [SuatChieuController::class, 'filterByDate'])->name('filter.date');
-        Route::get('/filter-phim', [SuatChieuController::class, 'filterByPhim'])->name('filter.phim');
+
+        // Filter routes
+        Route::get('/filter/date', [SuatChieuController::class, 'filterByDate'])->name('filter.date');
+        Route::get('/filter/phim', [SuatChieuController::class, 'filterByPhim'])->name('filter.phim');
+
+        // AJAX routes
+        Route::post('/loc-phim-theo-ngay', [SuatChieuController::class, 'filterMovieByDate'])->name('loc-phim-theo-ngay');
+        Route::post('/check-conflict', [SuatChieuController::class, 'checkConflict'])->name('check-conflict');
     });
 
+
+    // Thể loại
     Route::prefix('the-loai')->name('the-loai.')->group(function () {
         Route::get('/', [TheLoaiPhimController::class, 'index'])->name('index');
         Route::get('/create', [TheLoaiPhimController::class, 'create'])->name('create');
@@ -176,6 +183,7 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
         Route::get('/delete/{id}', [TheLoaiPhimController::class, 'destroy'])->name('delete');
     });
 
+    // Khuyến mãi
     Route::prefix('khuyen-mai')->name('khuyen-mai.')->group(function () {
         Route::get('/', [KhuyenMaiController::class, 'index'])->name('index');
         Route::get('/create', [KhuyenMaiController::class, 'create'])->name('create');
@@ -185,6 +193,7 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
         Route::get('/delete/{id}', [KhuyenMaiController::class, 'destroy'])->name('delete');
     });
 
+    // Tài khoản
     Route::prefix('tai-khoan')->name('tai-khoan.')->group(function () {
         Route::get('/', [TaiKhoanController::class, 'index'])->name('index');
         Route::get('/create', [TaiKhoanController::class, 'create'])->name('create');
@@ -243,5 +252,4 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
     Route::prefix('thong-ke')->name('thong-ke.')->group(function () {
         Route::get('/', [ThongKeController::class, 'index'])->name('index');
     });
-    
 });
