@@ -116,12 +116,11 @@
                                     <div class="form-group">
                                         <label for="DoTuoi">Độ tuổi <span class="text-danger">*</span></label>
                                         <select name="DoTuoi" id="DoTuoi" class="form-control" required>
-                                            <option value="Loại P">Loại P - Cho mọi lứa tuổi</option>
-                                            <option value="Loại K">Loại K - Dưới 13 tuổi (cần giám hộ)</option>
-                                            <option value="Loại T13 (13+)">Loại T13 (13+)</option>
-                                            <option value="Loại T16 (16+)">Loại T16 (16+)</option>
-                                            <option value="Loại T18 (18+)">Loại T18 (18+)</option>
-                                            <option value="Loại C">Loại C - Không được phổ biến</option>
+                                            <option value="P">Loại P - Cho mọi lứa tuổi</option>
+                                            <option value="K">Loại K - Dưới 13 tuổi (cần giám hộ)</option>
+                                            <option value="T13 (13+)">Loại T13 (13+)</option>
+                                            <option value="T16 (16+)">Loại T16 (16+)</option>
+                                            <option value="T18 (18+)">Loại T18 (18+)</option>
                                         </select>
                                     </div>
 
