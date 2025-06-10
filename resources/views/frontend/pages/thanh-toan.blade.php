@@ -100,7 +100,11 @@
                 <input type="hidden" name="selectedSeats" value="{{ implode(',', $selectedSeats) }}">
                 <input type="hidden" name="ID_SuatChieu" value="{{ $suatChieu->ID_SuatChieu }}">
                 <input type="hidden" name="paymentMethod" value="PAYOS">
+                <input type="hidden" name="seatDetails" id="seatDetailsInput">
             </form>
+            <script>
+                window.seatDetails = @json($seatDetails ?? []);
+            </script>
 
             @if ($errors->any())
                 <div class="alert alert-danger">
@@ -246,33 +250,34 @@
         }
 
         function proceedToPayment() {
-            const form = document.getElementById('paymentForm');
-            const formData = new FormData(form);
+    // Gán seatDetails vào input hidden trước khi gửi
+    document.getElementById('seatDetailsInput').value = JSON.stringify(window.seatDetails || []);
+    const form = document.getElementById('paymentForm');
+    const formData = new FormData(form);
 
-            fetch(form.action, {
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
-                    'Accept': 'application/json'
-                },
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.checkoutUrl) {
-                    window.location.href = data.checkoutUrl;
-                } else if (data.error) {
-                    alert('Lỗi: ' + data.error);
-                } else {
-                    alert('Không thể tạo đơn hàng. Vui lòng thử lại.');
-                }
-            })
-            .catch(err => {
-                alert('Lỗi khi kết nối tới máy chủ.');
-                console.error(err);
-            });
+    fetch(form.action, {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
+            'Accept': 'application/json'
+        },
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.checkoutUrl) {
+            window.location.href = data.checkoutUrl;
+        } else if (data.error) {
+            alert('Lỗi: ' + data.error);
+        } else {
+            alert('Không thể tạo đơn hàng. Vui lòng thử lại.');
         }
-
+    })
+    .catch(err => {
+        alert('Lỗi khi kết nối tới máy chủ.');
+        console.error(err);
+    });
+}
         // Replace the old click handler with the new one
         document.getElementById('payos-submit-btn').addEventListener('click', function(e) {
             e.preventDefault();

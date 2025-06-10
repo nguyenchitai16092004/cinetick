@@ -3,13 +3,13 @@
 
 // Hàm bỏ giữ ghế (release) dùng ID_Ghe
 async function releaseSeat(ma_ghe) {
-    // Lấy suatChieuId từ window.bookingData hoặc window.suatChieuId
     const suat_chieu_id =
         window.bookingData?.suatChieuId || window.suatChieuId || null;
     if (!suat_chieu_id) {
         console.error("releaseSeat: suatChieuId is undefined!");
         return;
     }
+    console.log("Gửi releaseSeat:", { ma_ghe, suat_chieu_id });
     await fetch("/dat-ve/bo-giu-ghe", {
         method: "POST",
         headers: {
@@ -32,7 +32,6 @@ document.addEventListener("DOMContentLoaded", function () {
     let rowAisles = bookingData.rowAisles || [];
     let colAisles = bookingData.colAisles || [];
     let bookedSeats = bookingData.bookedSeats || [];
-    let suatChieuId = bookingData.suatChieuId || null;
     let ticketPrice = bookingData.ticketPrice || 0;
     let vipSurcharge = bookingData.vipSurcharge || 20000;
 
@@ -319,12 +318,67 @@ document.addEventListener("DOMContentLoaded", function () {
         updateBookingSummary();
         setInterval(checkSeatAvailability, 30000);
     }
+    function isValidSeatSelectionAll(seatArray) {
+        if (!seatArray || seatArray.length === 0) return true;
 
+        // Group seats by row
+        const seatsByRow = {};
+        seatArray.forEach((id_ghe) => {
+            // Tìm TenGhe từ ID_Ghe
+            let tenGhe = null;
+            for (let i = 0; i < seats.length; i++) {
+                for (let j = 0; j < seats[i].length; j++) {
+                    if (seats[i][j] && seats[i][j].ID_Ghe == id_ghe) {
+                        tenGhe = seats[i][j].TenGhe;
+                        break;
+                    }
+                }
+                if (tenGhe) break;
+            }
+            if (!tenGhe) return; // skip nếu không tìm thấy
+
+            const row = tenGhe.charAt(0);
+            const col = parseInt(tenGhe.slice(1));
+            if (!seatsByRow[row]) seatsByRow[row] = [];
+            seatsByRow[row].push(col);
+        });
+
+        // Kiểm tra từng hàng
+        for (const row in seatsByRow) {
+            const cols = seatsByRow[row].sort((a, b) => a - b);
+            for (let i = 0; i < cols.length - 1; i++) {
+                if (cols[i + 1] - cols[i] === 2) {
+                    // Nếu có 1 ghế trống giữa 2 ghế chọn, kiểm tra nó có bị bỏ trống không
+                    const middleCol = cols[i] + 1;
+                    // Tìm ID_Ghe của ghế giữa
+                    let middleID = null;
+                    for (let m = 0; m < seats.length; m++) {
+                        for (let n = 0; n < seats[m].length; n++) {
+                            if (
+                                seats[m][n] &&
+                                seats[m][n].TenGhe === row + middleCol
+                            ) {
+                                middleID = seats[m][n].ID_Ghe;
+                                break;
+                            }
+                        }
+                        if (middleID) break;
+                    }
+                    if (middleID && !seatArray.includes(middleID.toString())) {
+                        // Ghế giữa bị bỏ trống
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
     window.bookingApp = {
         selectedSeats,
         renderSeatLayout,
         updateBookingSummary,
         checkSeatAvailability,
+        isValidSeatSelectionAll,
         showNotification,
     };
 

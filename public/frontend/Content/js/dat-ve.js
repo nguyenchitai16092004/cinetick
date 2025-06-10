@@ -1,5 +1,5 @@
-import Echo from "laravel-echo";
-window.Pusher = require("pusher-js");
+const bookingData = window.bookingData || {};
+const suatChieuId = bookingData.suatChieuId || window.suatChieuId || null;
 
 // Echo config
 window.Echo = new Echo({
@@ -10,8 +10,7 @@ window.Echo = new Echo({
 });
 
 // Dữ liệu từ blade
-const bookingData = window.bookingData || {};
-const suatChieuId = bookingData.suatChieuId;
+
 const currentUserId = window.currentUserId ?? null;
 window.csrfToken =
     window.csrfToken ||
@@ -151,27 +150,22 @@ async function holdSeat(ma_ghe) {
 
 // API bỏ giữ ghế
 async function releaseSeat(ma_ghe) {
-    try {
-        await fetch("/dat-ve/bo-giu-ghe", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRF-TOKEN": window.csrfToken,
-            },
-            body: JSON.stringify({
-                ma_ghe,
-                suat_chieu_id: suatChieuId,
-            }),
-        });
-    } catch (err) {
-        window.showBookingNotification(
-            "Lỗi",
-            "Không thể hủy giữ ghế",
-            "warning"
-        );
+    if (!suatChieuId) {
+        console.error("releaseSeat: suatChieuId is undefined!");
+        return;
     }
+    await fetch("/dat-ve/bo-giu-ghe", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": window.csrfToken,
+        },
+        body: JSON.stringify({
+            ma_ghe,
+            suat_chieu_id: suatChieuId,
+        }),
+    });
 }
-
 // Cập nhật trạng thái ghế (realtime)
 function updateSeatStatus(
     seatId,
@@ -271,20 +265,50 @@ window.showBookingNotification =
     };
 
 // Khi bấm "Tiếp tục":
-document.getElementById("btn-continue").addEventListener("click", function () {
-    let mySeats = Array.from(myHeldSeats);
-    if (mySeats.length === 0) {
-        window.showBookingNotification(
+document.getElementById("btn-continue").addEventListener("click", function (e) {
+    let selectedSeats = window.selectedSeats || [];
+    if (selectedSeats.length === 0) {
+        showBookingNotification(
             "Thông báo",
             "Vui lòng chọn ít nhất 1 ghế!",
             "warning"
         );
         return;
     }
-    document.getElementById("selectedSeatsInput").value = mySeats.join(",");
-    document.getElementById("form-chuyen-thanh-toan").submit();
+    if (!window.bookingApp.isValidSeatSelectionAll(selectedSeats)) {
+        showBookingNotification(
+            "Thông báo",
+            "Việc chọn vị trí ghế của bạn không được để trống 1 ghế ở bên trái, giữa hoặc bên phải trên cùng hàng ghế mà bạn vừa chọn.",
+            "warning"
+        );
+        return;
+    }
+    // Modal xác nhận độ tuổi (nếu cần)
+    var age = "{{ $suatChieu->phim->DoTuoi }}";
+    $.sweetModal({
+        title: `<div style=" margin-bottom:8px;display:flex;justify-content:center;"><span style="background:#ff9800;color:#fff;padding:3px 7px;border-radius:6px;font-weight:100;">${age}</span> </div>
+        <span style="color: #333; text-align: center; display: block; font-weight: bold;">Xác nhận mua vé cho người có độ tuổi phù hợp</span>`,
+        content: `<div style="color:#4080FF;font-size:15px;margin-top:8px;font-style:italic;">
+        Tôi xác nhận mua vé phim này cho người có độ tuổi từ <b>${age} tuổi trở lên</b> và đồng ý cung cấp giấy tờ tuỳ thân để xác minh độ tuổi.
+    </div>`,
+        icon: $.sweetModal.ICON_INFO,
+        theme: $.sweetModal.THEME_DARK,
+        buttons: {
+            "Từ chối": {
+                classes: "grayB",
+                action: function () {},
+            },
+            "Xác nhận": {
+                classes: "orangeB",
+                action: function () {
+                    document.getElementById("selectedSeatsInput").value =
+                        selectedSeats.join(",");
+                    document.getElementById("form-chuyen-thanh-toan").submit();
+                },
+            },
+        },
+    });
 });
-
 // INIT
 document.addEventListener("DOMContentLoaded", function () {
     renderSeatLayout();

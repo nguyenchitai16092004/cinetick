@@ -51,15 +51,12 @@ class PayOSController extends Controller
         // chỉ tạo orderCode tạm thời (random hoặc time-based) để gửi cho PayOS
         $orderCodeNum = rand(100000000, 999999999);
 
-        $items = array_map(function ($ghe) use ($orderData) {
-            $seat = collect($orderData['seatDetails'])->firstWhere('TenGhe', $ghe);
+        $items = array_map(function ($tenGhe) use ($orderData) {
+            $seat = collect($orderData['seatDetails'])->firstWhere('TenGhe', $tenGhe);
             $price = isset($seat['GiaVe']) ? (int)$seat['GiaVe'] : 0;
-            if ($price > 10000000000) {
-                $price = 10000000000;
-            }
             $formattedPrice = number_format($price, 0, ',', '.') . ' VNĐ';
             return [
-                'name'     => 'Vé ' . ($orderData['ten_phim'] ?? '') . ' - Ghế ' . $ghe . ' (' . $formattedPrice . ')',
+                'name'     => 'Vé ' . ($orderData['ten_phim'] ?? '') . ' - Ghế ' . $tenGhe . ' (' . $formattedPrice . ')',
                 'quantity' => 1,
                 'price'    => $price,
             ];
