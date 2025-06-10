@@ -451,9 +451,25 @@ span, small{
     border: 1px solid var(--color-text-secondary);
 }
 
+
+
 .legend-disabled {
     background-color: var(--color-disabled);
     border: 1px solid var(--color-text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.legend-disabled::after {
+    content: "✖";
+    color: #ff2222;
+    font-size: 1.2em;
+    position: static; /* bỏ absolute */
+    transform: none;  /* bỏ translate */
+    pointer-events: none;
+    line-height: 1;
 }
 
 #seatLayout {
@@ -508,7 +524,18 @@ span, small{
 }
 
 .seat.disabled {
-    background-color: var(--color-disabled);
+    position: relative;
+    color: transparent !important;
+    pointer-events: none;
+}
+.seat.disabled::after {
+    content: "✖";
+    color: #ff2222;
+    font-size: 1.6em;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     pointer-events: none;
 }
 

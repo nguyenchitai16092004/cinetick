@@ -258,7 +258,7 @@
                 <span class="star-pro star-pro-1"></span>
                 <span class="star-pro star-pro-2"></span>
                 <span class="star-pro star-pro-3"></span>
-                Phim Đang Chiếu
+                Phim đang chiếu
                 <span class="star-pro star-pro-4"></span>
                 <span class="star-pro star-pro-5"></span>
                 <span class="star-pro star-pro-6"></span>
@@ -325,7 +325,7 @@
 
     <div class="container">
         <div class="header">
-            <h1>Phim Sắp Chiếu</h1>
+            <h1>Phim sắp chiếu</h1>
             <p>Trải nghiệm điện ảnh đỉnh cao tại rạp chiếu phim CineTick</p>
         </div>
 
@@ -395,7 +395,7 @@
 
     <div class="container">
         <header class="header">
-            <h1 class="main-title">Góc Điện Ảnh</h1>
+            <h1 class="main-title">Góc điện ảnh</h1>
             <nav class="nav-tabs">
                 {{-- <a href="#" class="nav-tab">Bình luận phim</a> --}}
                 <a href="#" class="nav-tab active">Blog điện ảnh</a>

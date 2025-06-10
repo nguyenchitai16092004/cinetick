@@ -12,12 +12,17 @@ use App\Models\VeXemPhim;
 use App\Models\HeldSeat;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
-use App\Events\SeatHeld;
+use App\Events\GheDuocGiu;
+use Carbon\Carbon;
+use App\Models\GheDangGiu;
+use App\Models\HoaDon;
+
 
 class DatVeController extends Controller
 {
     public function showBySlug($phimSlug, $ngay, $gio)
     {
+
         try {
             // Validate input parameters
             if (empty($phimSlug) || empty($ngay) || empty($gio)) {
@@ -214,13 +219,13 @@ class DatVeController extends Controller
             if ($seat) {
                 $price = $suatChieu->GiaVe;
                 if ($seat->LoaiTrangThaiGhe == 2) {
-                    $price = $price * 1.2; 
+                    $price = $price * 1.2;
                 }
                 $totalPrice += $price;
                 $seatDetails[] = [
                     'TenGhe' => $seatName,
                     'LoaiGhe' => $seat->LoaiTrangThaiGhe == 2 ? 'VIP' : 'Thường',
-                    'Gia' => $price 
+                    'Gia' => $price
                 ];
             }
         }
@@ -311,87 +316,65 @@ class DatVeController extends Controller
         });
         return response()->json($result);
     }
-    /*
-    public function holdSeat(Request $request)
-{
-    try {
-        $request->validate([
-            'showtimeId' => 'required|integer',
-            'seat' => 'required|string',
-        ]);
+    public function giuGhe(Request $request)
+    {
+        Log::info('giuGhe request: ', $request->all());
+        Log::info('session user_id: ' . session('user_id'));
+        $ma_ghe = $request->ma_ghe;
+        $suat_chieu_id = $request->suat_chieu_id;
+        $user_id = session('user_id'); // hoặc ID_TaiKhoan
 
-        $userId = session('user_id');
-        if (!$userId) {
-            return response()->json(['error' => 'Unauthorized'], 401);
-        }
-
-        // Check if seat is already booked
-        $isBooked = VeXemPhim::where('ID_SuatChieu', $request->showtimeId)
-            ->where('TenGhe', $request->seat)
-            ->whereHas('hoaDon', function($query) {
-                $query->where('TrangThaiXacNhanThanhToan', 1);
-            })
-            ->exists();
-
-        if ($isBooked) {
-            return response()->json(['error' => 'Ghế đã được đặt'], 400);
-        }
-
-        // Check if seat is held by someone else
-        $heldSeat = HeldSeat::where('ID_SuatChieu', $request->showtimeId)
-            ->where('TenGhe', $request->seat)
-            ->where('held_until', '>', now())
+        // Kiểm tra ghế đã được giữ/tạm giữ hoặc đã thanh toán
+        $isHeld = GheDangGiu::where('ma_ghe', $ma_ghe)
+            ->where('suat_chieu_id', $suat_chieu_id)
+            ->where('hold_until', '>', now())
             ->first();
-
-        if ($heldSeat && $heldSeat->user_id !== $userId) {
-            return response()->json(['error' => 'Ghế đang được giữ bởi người khác'], 400);
+        $exists = DB::table('ve_xem_phim')
+            ->join('hoa_don', 've_xem_phim.ID_HoaDon', '=', 'hoa_don.ID_HoaDon')
+            ->where('ve_xem_phim.TenGhe', $ma_ghe)
+            ->where('ve_xem_phim.ID_SuatChieu', $suat_chieu_id)
+            ->where('hoa_don.TrangThaiXacNhanThanhToan', 1)
+            ->exists();
+        if ($exists) {
+            return response()->json([
+                'success' => false,
+                'error' => 'Ghế này đã được đặt!'
+            ]);
         }
 
-        // Hold the seat
-        $heldUntil = now()->addMinutes(6);
-        HeldSeat::updateOrCreate(
-            [
-                'ID_SuatChieu' => $request->showtimeId,
-                'TenGhe' => $request->seat,
-            ],
-            [
-                'user_id' => $userId,
-                'held_until' => $heldUntil,
-            ]
+        if ($isHeld || $exists) {
+            return response()->json(['success' => false, 'error' => 'Ghế đã có người giữ hoặc đã thanh toán!']);
+        }
+
+        $hold_until = now()->addMinutes(6);
+        GheDangGiu::updateOrCreate(
+            ['ma_ghe' => $ma_ghe, 'suat_chieu_id' => $suat_chieu_id],
+            ['user_id' => $user_id, 'hold_until' => $hold_until]
         );
 
-        // Broadcast the event
-        event(new SeatHeld($request->showtimeId, $request->seat, $userId, $heldUntil));
+        broadcast(new GheDuocGiu($ma_ghe, $suat_chieu_id, $user_id, $hold_until->timestamp, 'hold'))->toOthers();
 
-        return response()->json(['success' => true, 'held_until' => $heldUntil]);
-    } catch (\Exception $e) {
-        Log::error('Error holding seat: ' . $e->getMessage());
-        return response()->json(['error' => 'Có lỗi xảy ra'], 500);
+        return response()->json(['success' => true, 'hold_until' => $hold_until->timestamp]);
     }
-}
+    public function boGiuGhe(Request $request)
+    {
+        $ma_ghe = $request->input('ma_ghe');
+        $suat_chieu_id = $request->input('suat_chieu_id');
+        $user_id = session('user_id');
 
-public function releaseSeat(Request $request)
-{
-    try {
-        $request->validate([
-            'showtimeId' => 'required|integer',
-            'seat' => 'required|string',
+        Log::info('Bỏ giữ ghế:', [
+            'ma_ghe' => $ma_ghe,
+            'suat_chieu_id' => $suat_chieu_id,
+            'user_id' => $user_id,
         ]);
 
-        $userId = session('user_id');
-        
-        HeldSeat::where('ID_SuatChieu', $request->showtimeId)
-            ->where('TenGhe', $request->seat)
-            ->where('user_id', $userId)
+        $deleted = GheDangGiu::where('ma_ghe', $ma_ghe)
+            ->where('suat_chieu_id', $suat_chieu_id)
+            ->where('user_id', $user_id)
             ->delete();
 
-        event(new SeatReleased($request->showtimeId, $request->seat));
+        Log::info('Số bản ghi đã xóa:', ['deleted' => $deleted]);
 
         return response()->json(['success' => true]);
-    } catch (\Exception $e) {
-        Log::error('Error releasing seat: ' . $e->getMessage());
-        return response()->json(['error' => 'Có lỗi xảy ra'], 500);
     }
-}
-    */
 }

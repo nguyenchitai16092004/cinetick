@@ -240,6 +240,19 @@
 
     {{-- Load the enhanced booking seat JavaScript --}}
     <script src="{{ asset('backend/assets/js/booking-seat.js') }}" defer></script>
+    <script src="{{ asset('frontend/Content/js/dat-ve.js') }}" defer></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pusher/8.2.0/pusher.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/laravel-echo/dist/echo.iife.js"></script>
+    <script>
+        window.Echo = new Echo({
+            broadcaster: 'pusher',
+            key: 'f544d2c03f1c3b9a7b80',
+            cluster: 'ap1',
+            forceTLS: true
+        });
+    </script>
+
 
     {{-- SweetModal for notifications --}}
     <script>
@@ -266,126 +279,18 @@
         window.showBookingNotification = showBookingNotification;
     </script>
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Subscribe to channel
-        const channel = window.Echo.channel(`showtime.{{ $suatChieu->ID_SuatChieu }}`);
+        window.bookingData = window.bookingData || {};
+        window.bookingData.suatChieuId = {{ $suatChieu->ID_SuatChieu }};
+        window.currentUserId = {{ Session::has('user_id') ? Session::get('user_id') : 'null' }};
+        window.csrfToken = "{{ csrf_token() }}";
 
-        // Listen for seat held event
-        channel.listen('SeatHeld', (data) => {
-            const seat = data.seat;
-            const userId = data.userId;
-            const heldUntil = new Date(data.heldUntil);
-            const currentUserId = {{ session('user_id') ?? 'null' }};
-
-            updateSeatStatus(seat, 'held', heldUntil, userId === currentUserId);
-        });
-
-        // Listen for seat released event
-        channel.listen('SeatReleased', (data) => {
-            const seat = data.seat;
-            updateSeatStatus(seat, 'available');
-        });
-
-        // Function to update seat status
-        function updateSeatStatus(seat, status, heldUntil = null, isCurrentUser = false) {
-            const seatElement = document.querySelector(`[data-seat="${seat}"]`);
-            if (!seatElement) return;
-
-            seatElement.classList.remove('available', 'held', 'booked');
-            seatElement.classList.add(status);
-
-            if (status === 'held') {
-                if (isCurrentUser) {
-                    seatElement.setAttribute('title', `Giữ đến ${heldUntil.toLocaleTimeString()}`);
-                    startHoldTimer(seat, heldUntil);
-                } else {
-                    seatElement.setAttribute('title', 'Đang được giữ bởi người khác');
-                    seatElement.disabled = true;
-                }
-            }
-        }
-
-        // Function to start hold timer
-        function startHoldTimer(seat, heldUntil) {
-            const timer = setInterval(() => {
-                const now = new Date();
-                if (now >= heldUntil) {
-                    clearInterval(timer);
-                    releaseSeat(seat);
-                    if (window.location.pathname.includes('thanh-toan')) {
-                        window.location.href = '/';
-                    }
-                }
-            }, 1000);
-        }
-
-        // Function to hold seat
-        async function holdSeat(seat) {
-            try {
-                const response = await fetch('/hold-seat', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    body: JSON.stringify({
-                        showtimeId: {{ $suatChieu->ID_SuatChieu }},
-                        seat: seat
-                    })
-                });
-
-                const data = await response.json();
-                if (!data.success) {
-                    showBookingNotification('Thông báo', data.error, 'warning');
-                    return false;
-                }
-                return true;
-            } catch (error) {
-                console.error('Error holding seat:', error);
-                return false;
-            }
-        }
-
-        // Function to release seat
-        async function releaseSeat(seat) {
-            try {
-                await fetch('/release-seat', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    body: JSON.stringify({
-                        showtimeId: {{ $suatChieu->ID_SuatChieu }},
-                        seat: seat
-                    })
-                });
-            } catch (error) {
-                console.error('Error releasing seat:', error);
-            }
-        }
-
-        // Update seat click handlers
-        document.querySelectorAll('.seat').forEach(seat => {
-            seat.addEventListener('click', async function() {
-                const seatName = this.dataset.seat;
-                if (this.classList.contains('held') || this.classList.contains('booked')) {
-                    return;
-                }
-
-                const success = await holdSeat(seatName);
-                if (success) {
-                    updateSeatStatus(seatName, 'held', new Date(Date.now() + 6 * 60 * 1000), true);
-                }
+        window.addEventListener('beforeunload', function(e) {
+            // Gọi API hủy giữ ghế cho tất cả ghế đang giữ của user
+            selectedSeats.forEach(seatId => {
+                releaseSeat(seatId); // gọi API như bạn đã làm
             });
         });
 
-        // Handle page unload
-        window.addEventListener('beforeunload', function() {
-            document.querySelectorAll('.seat.held').forEach(seat => {
-                releaseSeat(seat.dataset.seat);
-            });
-        });
-    });
+        
     </script>
 @stop
