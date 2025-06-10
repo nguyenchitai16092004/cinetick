@@ -173,12 +173,16 @@
         </div>
     </section>
     @php
-        use Illuminate\Support\Str;
-        $trailerEmbed = $phim->Trailer;
-        if (Str::contains($trailerEmbed, 'watch?v=')) {
-            $trailerEmbed = str_replace('watch?v=', 'embed/', $trailerEmbed);
-        }
-    @endphp
+    use Illuminate\Support\Str;
+    $trailerEmbed = $phim->Trailer;
+    if (Str::contains($trailerEmbed, 'watch?v=')) {
+        $trailerEmbed = str_replace('watch?v=', 'embed/', $trailerEmbed);
+    } elseif (Str::contains($trailerEmbed, 'youtu.be/')) {
+        // Chuyển https://youtu.be/xxxx thành https://www.youtube.com/embed/xxxx
+        $videoId = Str::after($trailerEmbed, 'youtu.be/');
+        $trailerEmbed = 'https://www.youtube.com/embed/' . $videoId;
+    }
+@endphp
     <script src="{{ asset('frontend/Content/js/chi-tiet-phim.js') }}"></script>
     <script>
         const trailerUrl = "{{ $trailerEmbed }}";

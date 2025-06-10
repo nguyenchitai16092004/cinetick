@@ -1,5 +1,25 @@
 // Enhanced Booking Seat Management JavaScript
 // Specifically designed for ticket booking page
+async function releaseSeat(ma_ghe) {
+    // Lấy suatChieuId từ window.bookingData hoặc window.suatChieuId
+    const suat_chieu_id =
+        window.bookingData?.suatChieuId || window.suatChieuId || null;
+    if (!suat_chieu_id) {
+        console.error("releaseSeat: suatChieuId is undefined!");
+        return;
+    }
+    await fetch("/dat-ve/bo-giu-ghe", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": window.csrfToken,
+        },
+        body: JSON.stringify({
+            ma_ghe,
+            suat_chieu_id,
+        }),
+    });
+}
 
 document.addEventListener("DOMContentLoaded", function () {
     console.log("Booking seat script initialized");
@@ -311,8 +331,55 @@ document.addEventListener("DOMContentLoaded", function () {
                     }
 
                     // Add click handler for available seats
-                    seat.addEventListener("click", function () {
-                        handleSeatClick(this);
+                    seat.addEventListener("click", async function () {
+                        // Nếu đang xử lý hoặc không phải ghế available thì return
+                        console.log("Click giữ ghế:", seat.dataset.seatId);
+                        if (
+                            isProcessing ||
+                            seat.classList.contains("held") ||
+                            seat.classList.contains("booked") ||
+                            seat.classList.contains("disabled")
+                        )
+                            return;
+
+                        const seatId = seat.dataset.seatId;
+                        if (seat.classList.contains("selected")) {
+                            seat.classList.remove("selected");
+                            selectedSeats.delete( seatId );
+                            await releaseSeat(seatId);
+                            // Gọi API hủy giữ ghế
+                            releaseSeat(seatId); // Bây giờ không còn lỗi!
+                            updateBookingSummary();
+                            return;
+                        }
+
+                        // Gọi API giữ ghế
+                        const res = await fetch("/dat-ve/giu-ghe", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "X-CSRF-TOKEN": window.csrfToken,
+                            },
+                            body: JSON.stringify({
+                                ma_ghe: seatId,
+                                suat_chieu_id: suatChieuId,
+                            }),
+                        });
+                        const data = await res.json();
+
+                        if (!data.success) {
+                            showNotification(
+                                "Thông báo",
+                                data.error || "Không thể giữ ghế",
+                                "warning"
+                            );
+                            return;
+                        }
+
+                        // Nếu thành công, đánh dấu chọn trên UI (hoặc để event realtime tự update state)
+                        handleSeatClick(seat);
+
+                        // (Bạn có thể muốn disable seat này tạm thời, tuỳ logic)
                     });
                 }
 

@@ -63,12 +63,16 @@ Route::prefix('dat-ve')->group(function () {
     Route::post('/thanh-toan', [DatVeController::class, 'thanhToan'])->name('thanh-toan');
     Route::get('/ajax/ngay-chieu', [DatVeController::class, 'ajaxNgayChieu']);
     Route::get('/ajax/suat-chieu', [DatVeController::class, 'ajaxSuatChieu']);
+    Route::post('/giu-ghe', [DatVeController::class, 'giuGhe']);
+    Route::post('/bo-giu-ghe', [DatVeController::class, 'boGiuGhe']);
 });
 
+use App\Events\GheDuocGiu;
 
-Route::post('/hold-seat', [DatVeController::class, 'holdSeat'])->name('hold-seat');
-Route::post('/release-seat', [DatVeController::class, 'releaseSeat'])->name('release-seat');
-
+Route::get('/test-pusher', function () {
+    broadcast(new GheDuocGiu('A1', 999, 111, now()->addMinutes(5)->timestamp, 'hold'))->toOthers();
+    return 'ok';
+});
 // --- Thanh toán ---
 Route::prefix('thanh-toan')->group(function () {
     // Route thanh toán chính
