@@ -35,14 +35,16 @@ class ThanhToanController extends Controller
                 return response()->json(['error' => 'Vui lòng đăng nhập để đặt vé!'], 401);
             }
 
-            $selectedSeats = array_filter(explode(',', $request->input('selectedSeats')));
-            if (empty($selectedSeats)) {
+            // Chuẩn hóa selectedSeats thành mảng
+            $selectedSeats = array_filter(explode(',', $request->input('selectedSeats', '')));
+            if (!is_array($selectedSeats) || empty($selectedSeats)) {
                 return response()->json(['error' => 'Vui lòng chọn ít nhất một ghế!'], 400);
             }
 
             $suatChieu = SuatChieu::with(['phim', 'rap', 'phongChieu'])
-                ->findOrFail($request->ID_SuatChieu);
+                ->findOrFail($validated['ID_SuatChieu']);
 
+            // Check đã đặt chưa
             $bookedSeats = VeXemPhim::where('ID_SuatChieu', $suatChieu->ID_SuatChieu)
                 ->whereIn('TenGhe', $selectedSeats)
                 ->where('TrangThai', '!=', 2) // chỉ ghế chưa hủy
@@ -54,35 +56,46 @@ class ThanhToanController extends Controller
                 return response()->json(['error' => $message], 409);
             }
 
+            // Lấy danh sách ghế từ DB
             $gheNgoi = GheNgoi::where('ID_PhongChieu', $suatChieu->ID_PhongChieu)
                 ->whereIn('TenGhe', $selectedSeats)
                 ->get();
 
-            $calculatedTotal = 0;
+            // Lấy seatDetails từ request (nếu có), nếu không thì build lại từ DB
             $seatDetails = [];
-            foreach ($selectedSeats as $seatName) {
-                $seat = $gheNgoi->firstWhere('TenGhe', $seatName);
-                if ($seat) {
-                    $giaVe = $suatChieu->GiaVe;
-                    if ($seat->LoaiTrangThaiGhe == 2) {
-                        $giaVe += $giaVe * 0.2;
-                    }
-                    $calculatedTotal += $giaVe;
-                    $seatDetails[] = [
-                        'ID_Ghe' => $seat->ID_Ghe,
-                        'TenGhe' => $seatName,
-                        'LoaiGhe' => $seat->LoaiTrangThaiGhe == 2 ? 'VIP' : 'Thường',
-                        'GiaVe'  => $giaVe,
-                    ];
+            if ($request->filled('seatDetails')) {
+                $decoded = json_decode($request->input('seatDetails'), true);
+                if (is_array($decoded) && count($decoded) === count($selectedSeats)) {
+                    $seatDetails = $decoded;
                 }
             }
+            if (empty($seatDetails)) {
+                foreach ($selectedSeats as $seatName) {
+                    $seat = $gheNgoi->firstWhere('TenGhe', $seatName);
+                    if ($seat) {
+                        $giaVe = (int) $suatChieu->GiaVe;
+                        if ($seat->LoaiTrangThaiGhe == 2) {
+                            $giaVe = (int) round($giaVe * 1.2);
+                        }
+                        $seatDetails[] = [
+                            'ID_Ghe' => $seat->ID_Ghe,
+                            'TenGhe' => $seatName,
+                            'LoaiGhe' => $seat->LoaiTrangThaiGhe == 2 ? 'VIP' : 'Thường',
+                            'GiaVe'  => $giaVe,
+                        ];
+                    }
+                }
+            }
+
+            // Tính tổng tiền lại từ seatDetails
+            $calculatedTotal = array_sum(array_column($seatDetails, 'GiaVe'));
 
             $orderData = [
                 'ten_khach_hang' => $validated['ten_khach_hang'],
                 'email'          => $validated['email'],
                 'ID_SuatChieu'   => $validated['ID_SuatChieu'],
-                'selectedSeats'  => $selectedSeats,
-                'seatDetails'    => $seatDetails,
+                'selectedSeats'  => $selectedSeats, // MẢNG!
+                'seatDetails'    => $seatDetails,   // MẢNG!
                 'tong_tien'      => $calculatedTotal,
                 'ten_phim'       => $suatChieu->phim->TenPhim,
                 'ngay_xem'       => $suatChieu->NgayChieu,
@@ -91,24 +104,23 @@ class ThanhToanController extends Controller
                 'ten_phong'      => $suatChieu->phongChieu->TenPhongChieu,
             ];
 
-            // CHỈ với COD thì tạo hóa đơn/vé ngay
+            // Log orderData để debug
+            Log::info('orderData gửi sang PayOS:', $orderData);
+
             if ($request->paymentMethod === 'COD') {
                 return $this->processCODTicket($orderData);
             }
 
-            // PAYOS: KHÔNG tạo hóa đơn/vé ở đây, chỉ trả về link thanh toán
             if ($request->paymentMethod === 'PAYOS') {
-                // Lưu thông tin order tạm thời vào session/cache để xử lý sau khi thanh toán thành công
-                session([
-                    'pending_payment' => $orderData
-                ]);
+                session(['pending_payment' => $orderData]);
                 $payosController = app()->make(PayOSController::class);
-                $response = $payosController->createPaymentLink($orderData); // sửa lại ở dưới
+                $response = $payosController->createPaymentLink($orderData);
                 return $response;
             }
 
             return response()->json(['error' => 'Phương thức thanh toán không hợp lệ.'], 400);
         } catch (\Exception $e) {
+            Log::error('Lỗi thanh toán: ' . $e->getMessage());
             return response()->json(['error' => 'Có lỗi xảy ra, vui lòng thử lại!'], 500);
         }
     }

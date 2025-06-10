@@ -12,9 +12,9 @@ class GheDangGiu extends Model
     protected $table = 'ghe_dang_giu';
 
     protected $fillable = [
-        'ma_ghe',
-        'suat_chieu_id',
-        'user_id',
+        'ID_Ghe',
+        'ID_SuatChieu',
+        'ID_TaiKhoan',
         'hold_until',
     ];
 
@@ -25,12 +25,12 @@ class GheDangGiu extends Model
     // Quan hệ với User (nếu cần)
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class, 'ID_TaiKhoan');
     }
 
     // Quan hệ với suất chiếu (nếu có model)
     public function suatChieu()
     {
-        return $this->belongsTo(SuatChieu::class, 'suat_chieu_id');
+        return $this->belongsTo(SuatChieu::class, 'ID_SuatChieu');
     }
 }

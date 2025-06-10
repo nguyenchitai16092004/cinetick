@@ -13,13 +13,18 @@ return new class extends Migration
     {
         Schema::create('ghe_dang_giu', function (Blueprint $table) {
             $table->id();
-            $table->string('ma_ghe');
-            $table->unsignedBigInteger('suat_chieu_id');
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('ID_Ghe');
+            $table->unsignedBigInteger('ID_SuatChieu');
+            $table->unsignedBigInteger('ID_TaiKhoan');
             $table->timestamp('hold_until');
             $table->timestamps();
 
-            $table->unique(['ma_ghe', 'suat_chieu_id']); // một ghế/suất chỉ được giữ 1 lần
+            $table->unique(['ID_Ghe', 'ID_SuatChieu']);
+
+            // Khóa ngoại
+            $table->foreign('ID_Ghe')->references('ID_Ghe')->on('ghe_ngoi')->onDelete('cascade');
+            $table->foreign('ID_SuatChieu')->references('ID_SuatChieu')->on('suat_chieu')->onDelete('cascade');
+            $table->foreign('ID_TaiKhoan')->references('ID_TaiKhoan')->on('tai_khoan')->onDelete('cascade');
         });
     }
 

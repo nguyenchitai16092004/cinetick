@@ -134,26 +134,36 @@ class DatVeController extends Controller
     public function thanhToan(Request $request)
     {
         try {
-            // Validate input
             $request->validate([
                 'selectedSeats' => 'required|string',
                 'suatChieuId' => 'required|integer|exists:suatchieus,ID_SuatChieu'
             ]);
-
-            // Get selected seats
-            $selectedSeats = array_filter(explode(',', $request->input('selectedSeats')));
+            $selectedSeats = array_filter(explode(',', $request->input('selectedSeats', '')));
+            $suatChieuId = $request->input('ID_SuatChieu');
+            $userId = session('user_id');
 
             if (empty($selectedSeats)) {
                 return redirect()->back()->with('error', 'Vui lòng chọn ít nhất một ghế');
             }
 
-            // Get showtime information
+            // selectedSeats đang là ID_Ghe, convert sang TenGhe:
+            $gheNgoi = GheNgoi::whereIn('ID_Ghe', $selectedSeats)->get();
+            $selectedSeatNames = $gheNgoi->pluck('TenGhe')->toArray();
+
+            $danhSachGheDangGiu = GheDangGiu::whereIn('ID_Ghe', $selectedSeats)
+                ->where('ID_TaiKhoan', $userId)
+                ->where('ID_SuatChieu', $suatChieuId)
+                ->where('hold_until', '>', now())
+                ->get();
+            if ($danhSachGheDangGiu->count() !== count($selectedSeats)) {
+                return redirect()->back()->with('error', 'Một số ghế bạn chọn đã bị mất quyền giữ, vui lòng chọn lại!');
+            }
             $suatChieu = SuatChieu::with(['phim', 'rap', 'phongChieu'])
                 ->findOrFail($request->input('suatChieuId'));
 
             // Check if seats are still available
             $bookedSeats = VeXemPhim::where('ID_SuatChieu', $suatChieu->ID_SuatChieu)
-                ->whereIn('TenGhe', $selectedSeats)
+                ->whereIn('TenGhe', $selectedSeatNames)
                 ->pluck('TenGhe')
                 ->toArray();
 
@@ -161,83 +171,87 @@ class DatVeController extends Controller
                 return redirect()->back()->with('error', 'Một số ghế đã được đặt: ' . implode(', ', $bookedSeats));
             }
 
-            // Get seat information for pricing
-            $gheNgoi = GheNgoi::where('ID_PhongChieu', $suatChieu->ID_PhongChieu)
-                ->whereIn('TenGhe', $selectedSeats)
+            // Lấy lại danh sách ghế theo tên để build seatDetails
+            $gheNgoiTheoTen = GheNgoi::where('ID_PhongChieu', $suatChieu->ID_PhongChieu)
+                ->whereIn('TenGhe', $selectedSeatNames)
                 ->get();
 
-            // Calculate total price
-            $totalPrice = 0;
             $seatDetails = [];
-
-            foreach ($selectedSeats as $seatName) {
-                $seat = $gheNgoi->firstWhere('TenGhe', $seatName);
+            $totalPrice = 0;
+            foreach ($selectedSeatNames as $seatName) {
+                $seat = $gheNgoiTheoTen->firstWhere('TenGhe', $seatName);
                 if ($seat) {
-                    $price = $suatChieu->GiaVe;
-                    // Add VIP surcharge if applicable
+                    $giaVe = (int) $suatChieu->GiaVe;
                     if ($seat->LoaiTrangThaiGhe == 2) {
-                        $price += 20000; // VIP surcharge
+                        $giaVe = (int) round($giaVe * 1.2);
                     }
-                    $totalPrice += $price;
+                    $totalPrice += $giaVe;
                     $seatDetails[] = [
-                        'TenGhe' => $seatName,
+                        'ID_Ghe' => $seat->ID_Ghe,
+                        'TenGhe' => $seat->TenGhe,
                         'LoaiGhe' => $seat->LoaiTrangThaiGhe == 2 ? 'VIP' : 'Thường',
-                        'Gia' => $price
+                        'GiaVe'  => $giaVe,
                     ];
                 }
             }
 
-            return view('frontend.pages.thanh-toan', compact(
-                'selectedSeats',
-                'suatChieu',
-                'seatDetails',
-                'totalPrice'
-            ));
+            return view('frontend.pages.thanh-toan', [
+                // Truyền xuống view là TenGhe chứ không phải ID_Ghe
+                'selectedSeats' => $selectedSeatNames,
+                'suatChieu' => $suatChieu,
+                'seatDetails' => $seatDetails,
+                'totalPrice' => $totalPrice,
+            ]);
         } catch (\Exception $e) {
             Log::error('Error in thanhToan: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Có lỗi xảy ra, vui lòng thử lại');
         }
     }
-    // ...existing code...
 
     public function showThanhToan(Request $request)
     {
         $suatChieuId = $request->input('ID_SuatChieu');
-        $selectedSeats = explode(',', $request->input('selectedSeats', ''));
+        $selectedSeats = array_filter(explode(',', $request->input('selectedSeats')));
 
         $suatChieu = SuatChieu::with(['phim', 'rap', 'phongChieu'])->findOrFail($suatChieuId);
 
-        // Lấy thông tin ghế cho seatDetails
-        $gheNgoi = GheNgoi::where('ID_PhongChieu', $suatChieu->ID_PhongChieu)
-            ->whereIn('TenGhe', $selectedSeats)
+        // selectedSeats vẫn là ID_Ghe, convert sang TenGhe:
+        $gheNgoi = GheNgoi::whereIn('ID_Ghe', $selectedSeats)->get();
+        $selectedSeatNames = $gheNgoi->pluck('TenGhe')->toArray();
+
+        // Lấy lại danh sách ghế để build seatDetails
+        $gheNgoiTheoTen = GheNgoi::where('ID_PhongChieu', $suatChieu->ID_PhongChieu)
+            ->whereIn('TenGhe', $selectedSeatNames)
             ->get();
 
         $seatDetails = [];
         $totalPrice = 0;
-        foreach ($selectedSeats as $seatName) {
-            $seat = $gheNgoi->firstWhere('TenGhe', $seatName);
+        foreach ($selectedSeatNames as $seatName) {
+            $seat = $gheNgoiTheoTen->firstWhere('TenGhe', $seatName);
             if ($seat) {
-                $price = $suatChieu->GiaVe;
+                $giaVe = (int) $suatChieu->GiaVe;
                 if ($seat->LoaiTrangThaiGhe == 2) {
-                    $price = $price * 1.2;
+                    $giaVe = (int) round($giaVe * 1.2);
                 }
-                $totalPrice += $price;
+                $totalPrice += $giaVe;
                 $seatDetails[] = [
-                    'TenGhe' => $seatName,
+                    'ID_Ghe' => $seat->ID_Ghe,
+                    'TenGhe' => $seat->TenGhe,
                     'LoaiGhe' => $seat->LoaiTrangThaiGhe == 2 ? 'VIP' : 'Thường',
-                    'Gia' => $price
+                    'GiaVe'  => $giaVe,
                 ];
             }
         }
-
         return view('frontend.pages.thanh-toan', [
             'suatChieu' => $suatChieu,
-            'selectedSeats' => $selectedSeats,
+            // Truyền xuống là TenGhe
+            'selectedSeats' => $selectedSeatNames,
             'seatDetails' => $seatDetails,
             'totalPrice' => $totalPrice,
         ]);
     }
-    // ...existing code...
+
+
     public function checkSeatAvailability(Request $request)
     {
         try {
@@ -325,8 +339,8 @@ class DatVeController extends Controller
         $user_id = session('user_id'); // hoặc ID_TaiKhoan
 
         // Kiểm tra ghế đã được giữ/tạm giữ hoặc đã thanh toán
-        $isHeld = GheDangGiu::where('ma_ghe', $ma_ghe)
-            ->where('suat_chieu_id', $suat_chieu_id)
+        $isHeld = GheDangGiu::where('ID_Ghe', $ma_ghe)
+            ->where('ID_SuatChieu', $suat_chieu_id)
             ->where('hold_until', '>', now())
             ->first();
         $exists = DB::table('ve_xem_phim')
@@ -348,8 +362,8 @@ class DatVeController extends Controller
 
         $hold_until = now()->addMinutes(6);
         GheDangGiu::updateOrCreate(
-            ['ma_ghe' => $ma_ghe, 'suat_chieu_id' => $suat_chieu_id],
-            ['user_id' => $user_id, 'hold_until' => $hold_until]
+            ['ID_Ghe' => $ma_ghe, 'ID_SuatChieu' => $suat_chieu_id],
+            ['ID_TaiKhoan' => $user_id, 'hold_until' => $hold_until]
         );
 
         broadcast(new GheDuocGiu($ma_ghe, $suat_chieu_id, $user_id, $hold_until->timestamp, 'hold'))->toOthers();
@@ -358,19 +372,20 @@ class DatVeController extends Controller
     }
     public function boGiuGhe(Request $request)
     {
+        Log::info('boGiuGhe called!');
         $ma_ghe = $request->input('ma_ghe');
         $suat_chieu_id = $request->input('suat_chieu_id');
         $user_id = session('user_id');
 
         Log::info('Bỏ giữ ghế:', [
-            'ma_ghe' => $ma_ghe,
-            'suat_chieu_id' => $suat_chieu_id,
-            'user_id' => $user_id,
+            'ma_ghe'         => $ma_ghe,
+            'suat_chieu_id'  => $suat_chieu_id,
+            'user_id'        => $user_id,
         ]);
 
-        $deleted = GheDangGiu::where('ma_ghe', $ma_ghe)
-            ->where('suat_chieu_id', $suat_chieu_id)
-            ->where('user_id', $user_id)
+        $deleted = GheDangGiu::where('ID_Ghe', $ma_ghe)
+            ->where('ID_SuatChieu', $suat_chieu_id)
+            ->where('ID_TaiKhoan', $user_id)
             ->delete();
 
         Log::info('Số bản ghi đã xóa:', ['deleted' => $deleted]);
