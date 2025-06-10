@@ -18,8 +18,9 @@ window.csrfToken =
     document.querySelector('meta[name="csrf-token"]')?.content;
 
 let holdTimers = {};
+let myHeldSeats = new Set();
 
-// RENDER GHẾ
+// RENDER GHẾ (dùng ID_Ghe cho data-seat-id)
 function renderSeatLayout() {
     const seats = bookingData.seatLayout || [];
     const rowAisles = bookingData.rowAisles || [];
@@ -57,17 +58,19 @@ function renderSeatLayout() {
                 continue;
             }
 
-            const seatId = seatData.TenGhe;
             const seat = document.createElement("div");
             seat.className = "seat";
-            seat.textContent = seatId;
+            seat.textContent = seatData.TenGhe;
             seat.dataset.row = i;
             seat.dataset.col = j;
-            seat.dataset.seatId = seatId;
+            seat.dataset.seatId = seatData.ID_Ghe; // <-- Quan trọng: luôn là ID_Ghe
 
             if (seatData.TrangThaiGhe === 0) {
                 seat.classList.add("disabled");
-            } else if (seatData.IsBooked || bookedSeats.includes(seatId)) {
+            } else if (
+                seatData.IsBooked ||
+                bookedSeats.includes(seatData.TenGhe)
+            ) {
                 seat.classList.add("booked");
             } else {
                 seat.classList.add("available");
@@ -88,51 +91,35 @@ function renderSeatLayout() {
         }
     }
 }
-let myHeldSeats = new Set();
 
-// Gán sự kiện click duy nhất
+// Gán sự kiện click duy nhất cho mỗi seat
 function bindSeatClickEvents() {
     document.querySelectorAll(".seat").forEach((seatEl) => {
         seatEl.onclick = null;
         seatEl.addEventListener("click", async function () {
             const ma_ghe = this.dataset.seatId;
+            // Nếu ghế đang do mình giữ
             if (this.classList.contains("held") && isMyHeldSeat(ma_ghe)) {
                 await releaseSeat(ma_ghe);
                 return;
             }
+            // Nếu là ghế trống, giữ ghế
             if (this.classList.contains("available")) {
                 await holdSeat(ma_ghe);
                 return;
             }
+            // Nếu ghế đã đặt hoặc người khác giữ thì không làm gì
         });
     });
 }
-document.querySelectorAll(".seat.available, .seat.held").forEach((seatEl) => {
-    seatEl.addEventListener("click", async function () {
-        const ma_ghe = this.dataset.seatId;
-        // Nếu ghế đang do chính user này giữ (tức là "held" bởi mình)
-        if (this.classList.contains("held") && isMyHeldSeat(ma_ghe)) {
-            // Bỏ giữ ghế
-            await releaseSeat(ma_ghe);
-            // Cập nhật UI nếu cần (hoặc chờ realtime)
-            return;
-        }
-        // Nếu là ghế mới, thực hiện giữ ghế
-        if (this.classList.contains("available")) {
-            await holdSeat(ma_ghe);
-            return;
-        }
-        // Nếu ghế đã đặt hoặc người khác đang giữ thì không làm gì
-    });
-});
 
-// Hàm kiểm tra ghế này có phải do user hiện tại giữ không
+// Kiểm tra ghế này có phải mình giữ không
 function isMyHeldSeat(ma_ghe) {
     return myHeldSeats.has(ma_ghe);
 }
-// API GIỮ/BỎ GHẾ
+
+// API giữ ghế
 async function holdSeat(ma_ghe) {
-    console.log("Click giữ ghế:", ma_ghe);
     try {
         const res = await fetch("/dat-ve/giu-ghe", {
             method: "POST",
@@ -161,9 +148,9 @@ async function holdSeat(ma_ghe) {
         return false;
     }
 }
-// Khi bỏ chọn ghế (unselect)
+
+// API bỏ giữ ghế
 async function releaseSeat(ma_ghe) {
-    console.log("Ghế đã hết được giữ:", ma_ghe);
     try {
         await fetch("/dat-ve/bo-giu-ghe", {
             method: "POST",
@@ -177,85 +164,100 @@ async function releaseSeat(ma_ghe) {
             }),
         });
     } catch (err) {
-        showNotification("Lỗi", "Không thể hủy giữ ghế", "warning");
+        window.showBookingNotification(
+            "Lỗi",
+            "Không thể hủy giữ ghế",
+            "warning"
+        );
     }
-} // REALTIME UPDATE UI (ONLY HERE)
+}
+
+// Cập nhật trạng thái ghế (realtime)
 function updateSeatStatus(
-    seat,
+    seatId,
     status,
     heldUntil = null,
     byCurrentUser = false
 ) {
-    const seatEl = document.querySelector(`[data-seat-id="${seat}"]`);
+    const seatEl = document.querySelector(`[data-seat-id="${seatId}"]`);
     if (!seatEl) return;
     seatEl.classList.remove("available", "held", "booked");
-
     if (status === "held") {
         seatEl.classList.add("held");
         seatEl.setAttribute(
             "title",
             byCurrentUser ? "Bạn đang giữ ghế này" : "Ghế đang được giữ"
         );
-        if (byCurrentUser) myHeldSeats.add(seat);
-        else myHeldSeats.delete(seat);
-        if (heldUntil && byCurrentUser) startHoldTimer(seat, heldUntil);
+        if (byCurrentUser) myHeldSeats.add(seatId);
+        else myHeldSeats.delete(seatId);
+        if (heldUntil && byCurrentUser) startHoldTimer(seatId, heldUntil);
     } else if (status === "booked") {
         seatEl.classList.add("booked");
         seatEl.setAttribute("title", "Ghế đã đặt");
-        myHeldSeats.delete(seat);
-        clearHoldTimer(seat);
+        myHeldSeats.delete(seatId);
+        clearHoldTimer(seatId);
     } else {
         seatEl.classList.add("available");
         seatEl.setAttribute("title", "Ghế trống");
-        myHeldSeats.delete(seat);
-        clearHoldTimer(seat);
+        myHeldSeats.delete(seatId);
+        clearHoldTimer(seatId);
     }
 }
-function startHoldTimer(seat, heldUntil) {
-    clearHoldTimer(seat);
-    holdTimers[seat] = setInterval(() => {
+
+// Bắt đầu timer giữ ghế
+function startHoldTimer(seatId, heldUntil) {
+    clearHoldTimer(seatId);
+    holdTimers[seatId] = setInterval(() => {
         const now = Math.floor(Date.now() / 1000);
         if (now >= heldUntil) {
-            clearHoldTimer(seat);
-            releaseSeat(seat);
+            clearHoldTimer(seatId);
+            releaseSeat(seatId);
             if (window.location.pathname.includes("thanh-toan")) {
                 window.location.href = "/";
             }
         }
     }, 1000);
 }
-function clearHoldTimer(seat) {
-    if (holdTimers[seat]) {
-        clearInterval(holdTimers[seat]);
-        delete holdTimers[seat];
+function clearHoldTimer(seatId) {
+    if (holdTimers[seatId]) {
+        clearInterval(holdTimers[seatId]);
+        delete holdTimers[seatId];
     }
 }
 
-// REALTIME LẮNG NGHE
-window.Echo.join(`ghe.${suatChieuId}`).listen("GheDuocGiu", (e) => {
-    updateSeatStatus(
-        e.ma_ghe,
-        e.type === "hold"
-            ? "held"
-            : e.type === "booked"
-            ? "booked"
-            : "available",
-        e.hold_until,
-        e.user_id === currentUserId
-    );
-});
+// Lắng nghe realtime
+if (suatChieuId) {
+    window.Echo.join(`ghe.${suatChieuId}`).listen("GheDuocGiu", (e) => {
+        updateSeatStatus(
+            e.ma_ghe,
+            e.type === "hold"
+                ? "held"
+                : e.type === "booked"
+                ? "booked"
+                : "available",
+            e.hold_until,
+            e.user_id === currentUserId
+        );
+    });
+}
 
-// Khi chuyển trang hoặc reload
+// Thoát trang: gửi release bằng sendBeacon
 window.addEventListener("beforeunload", function () {
-    if (window.myHeldSeats && window.myHeldSeats.size > 0) {
-        for (const seatId of window.myHeldSeats) {
-            const suat_chieu_id = window.bookingData?.suatChieuId;
+    if (myHeldSeats.size > 0) {
+        for (const seatId of myHeldSeats) {
+            const suat_chieu_id = suatChieuId;
+            // sendBeacon chỉ support content-type là text/plain, backend nên chấp nhận luôn dạng này!
             navigator.sendBeacon(
                 "/dat-ve/bo-giu-ghe",
-                JSON.stringify({
-                    ma_ghe: seatId,
-                    suat_chieu_id,
-                })
+                new Blob(
+                    [
+                        JSON.stringify({
+                            ma_ghe: seatId,
+                            suat_chieu_id,
+                        }),
+                    ],
+                    { type: "application/json" }
+                )
             );
         }
     }
@@ -268,22 +270,11 @@ window.showBookingNotification =
         alert(`${title}: ${message}`);
     };
 
-// INIT
-document.addEventListener("DOMContentLoaded", function () {
-    renderSeatLayout();
-    bindSeatClickEvents();
-});
-function getMyHeldSeats() {
-    // Lấy những seat.held mà mình đang giữ (nếu backend trả về byCurrentUser)
-    return Array.from(document.querySelectorAll(".seat.held")).map(
-        (e) => e.dataset.seatId
-    );
-}
 // Khi bấm "Tiếp tục":
 document.getElementById("btn-continue").addEventListener("click", function () {
     let mySeats = Array.from(myHeldSeats);
     if (mySeats.length === 0) {
-        showBookingNotification(
+        window.showBookingNotification(
             "Thông báo",
             "Vui lòng chọn ít nhất 1 ghế!",
             "warning"
@@ -293,6 +284,8 @@ document.getElementById("btn-continue").addEventListener("click", function () {
     document.getElementById("selectedSeatsInput").value = mySeats.join(",");
     document.getElementById("form-chuyen-thanh-toan").submit();
 });
+
+// INIT
 document.addEventListener("DOMContentLoaded", function () {
     renderSeatLayout();
     bindSeatClickEvents();

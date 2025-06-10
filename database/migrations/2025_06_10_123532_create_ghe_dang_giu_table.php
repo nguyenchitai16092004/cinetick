@@ -19,7 +19,7 @@ return new class extends Migration
             $table->timestamp('hold_until');
             $table->timestamps();
 
-            $table->unique(['ma_ghe', 'suat_chieu_id']); // một ghế/suất chỉ được giữ 1 lần
+            $table->unique(['ma_ghe', 'suat_chieu_id']); 
         });
     }
 
