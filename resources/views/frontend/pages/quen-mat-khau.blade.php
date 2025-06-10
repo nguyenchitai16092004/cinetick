@@ -65,7 +65,7 @@
                 _token: $('meta[name="csrf-token"]').attr('content')
             });
             $.ajax({
-                url: "{{ asset('/quen-mat-khau') }}",
+                url: "{{ route('quen-mat-khau.post') }}",
                 type: "POST",
                 data: data,
                 traditional: true,

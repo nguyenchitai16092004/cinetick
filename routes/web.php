@@ -24,6 +24,7 @@ use App\Http\Controllers\Apps\AuthController;
 use App\Http\Controllers\Apps\DatVeController;
 use App\Http\Controllers\Apps\PayOSController;
 use App\Http\Controllers\Apps\ThanhToanController;
+use App\Events\GheDuocGiu;
 //==============================Frontend=====================================//
 Route::get('/', [PhimController::class, 'Index'])->name('home');
 
@@ -67,7 +68,6 @@ Route::prefix('dat-ve')->group(function () {
     Route::post('/bo-giu-ghe', [DatVeController::class, 'boGiuGhe']);
 });
 
-use App\Events\GheDuocGiu;
 
 Route::get('/test-pusher', function () {
     broadcast(new GheDuocGiu('A1', 999, 111, now()->addMinutes(5)->timestamp, 'hold'))->toOthers();
