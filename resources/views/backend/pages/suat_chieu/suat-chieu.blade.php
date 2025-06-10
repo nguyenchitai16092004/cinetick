@@ -35,7 +35,7 @@
                                     <div class="input-group">
                                         <select name="phim_id" class="form-control">
                                             <option value="">-- Chọn phim --</option>
-                                            @foreach (\App\Models\Phim::where('TrangThai', 1)->get() as $phim)
+                                            @foreach ($phims as $phim)
                                                 <option value="{{ $phim->ID_Phim }}">{{ $phim->TenPhim }}</option>
                                             @endforeach
                                         </select>
