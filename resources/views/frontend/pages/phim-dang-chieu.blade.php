@@ -18,7 +18,11 @@
                                         <h4 class="entry-title">{{ $phim->TenPhim }} (T{{ $phim->DoTuoi }})</h4>
                                     </a>
                                     <div class="entry-genre">
-                                        <p>{{ $phim->theLoai->TenTheLoai ?? '' }}</p>
+                                        <p>
+                                            @foreach ($phim->theLoai as $index => $theLoai)
+                                                {{ $theLoai->TenTheLoai }}{{ $index < count($phim->theLoai) - 1 ? ', ' : '' }}
+                                            @endforeach
+                                        </p>
                                     </div>
                                 </div>
                                 <div class="back">

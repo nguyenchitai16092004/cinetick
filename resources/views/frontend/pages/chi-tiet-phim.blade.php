@@ -37,7 +37,16 @@
                     <div class="movie-meta fade-in-up stagger-4">
                         <div class="meta-item">
                             <div class="meta-label">
-                                <i class="fas fa-user-tie"></i>
+                                <i class="fa-solid fa-earth-asia"></i>
+                                Quốc gia
+                            </div>
+                            <div class="meta-value">
+                                {{ $phim->QuocGia }}
+                            </div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">
+                                <i class="fa-solid fa-user-tie"></i>
                                 Đạo diễn
                             </div>
                             <div class="meta-value">
@@ -82,6 +91,7 @@
                                 @endforeach
                             </div>
                         </div>
+                        
                     </div>
 
                     <div class="movie-description fade-in-up stagger-4">
@@ -178,7 +188,6 @@
     if (Str::contains($trailerEmbed, 'watch?v=')) {
         $trailerEmbed = str_replace('watch?v=', 'embed/', $trailerEmbed);
     } elseif (Str::contains($trailerEmbed, 'youtu.be/')) {
-        // Chuyển https://youtu.be/xxxx thành https://www.youtube.com/embed/xxxx
         $videoId = Str::after($trailerEmbed, 'youtu.be/');
         $trailerEmbed = 'https://www.youtube.com/embed/' . $videoId;
     }

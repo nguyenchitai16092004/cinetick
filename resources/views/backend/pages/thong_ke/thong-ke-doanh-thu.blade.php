@@ -79,7 +79,7 @@
             data: {
                 labels: revenueLabels,
                 datasets: [{
-                    label: 'Doanh thu (VNĐ)',
+                    label: 'Doanh thu (đ)',
                     data: revenueData,
                     fill: true,
                     backgroundColor: 'rgba(75, 192, 192, 0.2)',

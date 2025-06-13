@@ -626,24 +626,24 @@
                         <div class="pricing-row">
                             <span class="pricing-label @if (session('status') !== 'success') failure @endif">Tạm tính</span>
                             <span class="pricing-value @if (session('status') !== 'success') failure @endif">
-                                {{ isset($hoaDon->TongTien) ? number_format($hoaDon->TongTien, 0, ',', '.') . 'VNĐ' : $totalPrice ?? '---' }}
+                                {{ isset($hoaDon->TongTien) ? number_format($hoaDon->TongTien, 0, ',', '.') . 'đ' : $totalPrice ?? '---' }}
                             </span>
                         </div>
                         <div class="pricing-row">
                             <span class="pricing-label @if (session('status') !== 'success') failure @endif">Giảm giá</span>
-                            <span class="pricing-value @if (session('status') !== 'success') failure @endif">0 VNĐ</span>
+                            <span class="pricing-value @if (session('status') !== 'success') failure @endif">0 đ</span>
                         </div>
                         <div class="pricing-row">
                             <span class="pricing-label @if (session('status') !== 'success') failure @endif">Thành tiền</span>
                             <span class="pricing-value @if (session('status') !== 'success') failure @endif">
-                                {{ isset($hoaDon->TongTien) ? number_format($hoaDon->TongTien, 0, ',', '.') . 'VNĐ' : $totalPrice ?? '---' }}
+                                {{ isset($hoaDon->TongTien) ? number_format($hoaDon->TongTien, 0, ',', '.') . 'đ' : $totalPrice ?? '---' }}
                             </span>
                         </div>
                         <div class="pricing-row @if (session('status') !== 'success') failure @endif">
                             <span class="pricing-label total  @if (session('status') !== 'success') failure @endif">Tổng
                                 cộng</span>
                             <span class="pricing-value @if (session('status') !== 'success') failure @endif">
-                                {{ isset($hoaDon->TongTien) ? number_format($hoaDon->TongTien, 0, ',', '.') . 'VNĐ' : $totalPrice ?? '---' }}
+                                {{ isset($hoaDon->TongTien) ? number_format($hoaDon->TongTien, 0, ',', '.') . 'đ' : $totalPrice ?? '---' }}
                             </span>
                         </div>
                     </div>

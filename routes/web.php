@@ -60,14 +60,19 @@ Route::prefix('phim')->group(function () {
 // --- Đặt vé ---
 Route::prefix('dat-ve')->group(function () {
     Route::get('/{phimSlug}/{ngay}/{gio}', [DatVeController::class, 'showBySlug'])->name('dat-ve.show.slug');
-    Route::get('/dat-ve/thanh-toan', [DatVeController::class, 'showThanhToan'])->name('dat-ve.thanh-toan');
+    Route::get('/thanh-toan', [DatVeController::class, 'showThanhToan'])->name('dat-ve.thanh-toan');
     Route::post('/thanh-toan', [DatVeController::class, 'thanhToan'])->name('thanh-toan');
-    Route::get('/ajax/ngay-chieu', [DatVeController::class, 'ajaxNgayChieu']);
-    Route::get('/ajax/suat-chieu', [DatVeController::class, 'ajaxSuatChieu']);
     Route::post('/giu-ghe', [DatVeController::class, 'giuGhe']);
     Route::post('/bo-giu-ghe', [DatVeController::class, 'boGiuGhe']);
+    Route::post('/bo-giu-ghe-nhieu', [DatVeController::class, 'boGiuGheNhieu']);
+    
 });
-
+// -- ajax ---
+Route::prefix('ajax')->group(function () {
+    Route::get('/phim-theo-rap', [PhimController::class, 'ajaxPhimTheoRap']);
+    Route::get('/ngay-chieu-theo-rap-phim', [PhimController::class, 'ajaxNgayChieuTheoRapPhim']);
+    Route::get('/suat-chieu-theo-rap-phim-ngay', [PhimController::class, 'ajaxSuatChieuTheoRapPhimNgay']);
+});
 
 Route::get('/test-pusher', function () {
     broadcast(new GheDuocGiu('A1', 999, 111, now()->addMinutes(5)->timestamp, 'hold'))->toOthers();

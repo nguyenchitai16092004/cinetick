@@ -35,7 +35,7 @@
                         </tr>
                         <tr>
                             <th>Tổng tiền:</th>
-                            <td>{{ number_format($hoaDon->TongTien, 0, ',', '.') }} VNĐ</td>
+                            <td>{{ number_format($hoaDon->TongTien, 0, ',', '.') }} đ</td>
                         </tr>
                     </table>
                 </div>
@@ -89,8 +89,8 @@
                             <td>{{ $ve->TenPhim }}</td>
                             <td>{{ date('d/m/Y', strtotime($ve->NgayXem)) }}</td>
                             <td>{{ $ve->SoLuong }}</td>
-                            <td>{{ number_format($ve->GiaVe, 0, ',', '.') }} VNĐ</td>
-                            <td>{{ number_format($ve->GiaVe * $ve->SoLuong, 0, ',', '.') }} VNĐ</td>
+                            <td>{{ number_format($ve->GiaVe, 0, ',', '.') }} đ</td>
+                            <td>{{ number_format($ve->GiaVe * $ve->SoLuong, 0, ',', '.') }} đ</td>
                             <td>
                                 <span class="badge bg-{{ $ve->TrangThai ? 'success' : 'danger' }}">
                                     {{ $ve->TrangThai ? 'Còn hiệu lực' : 'Đã hủy' }}
@@ -149,7 +149,7 @@
                     <tfoot>
                         <tr>
                             <th colspan="5" class="text-end">Tổng tiền:</th>
-                            <th>{{ number_format($hoaDon->TongTien, 0, ',', '.') }} VNĐ</th>
+                            <th>{{ number_format($hoaDon->TongTien, 0, ',', '.') }} đ</th>
                             <th colspan="2"></th>
                         </tr>
                     </tfoot>

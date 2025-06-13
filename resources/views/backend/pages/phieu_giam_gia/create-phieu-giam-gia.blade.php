@@ -19,7 +19,7 @@
                     <input type="number" name="PhanTramGiam" class="form-control" required min="1" max="100">
                 </div>
                 <div class="form-group mb-3">
-                    <label for="GiaTriToiDa">Giá trị tối đa (VNĐ)</label>
+                    <label for="GiaTriToiDa">Giá trị tối đa (đ)</label>
                     <input type="number" name="GiaTriToiDa" class="form-control" required step="1000">
                 </div>
                 <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Lưu</button>

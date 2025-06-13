@@ -149,6 +149,7 @@ dfn {
 b,
 strong {
     font-weight: bolder;
+    color: #000;
 }
 
 small {
@@ -19916,7 +19917,7 @@ ul.company-desc-list li i {
 }
 
 .reviews-date strong {
-    color: #333;
+    color: #000;
 }
 
 .reviews-rating {

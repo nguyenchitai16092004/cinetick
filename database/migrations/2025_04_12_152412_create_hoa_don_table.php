@@ -22,7 +22,6 @@ return new class extends Migration
             $table->foreign('ID_TaiKhoan')->references('ID_TaiKhoan')->on('tai_khoan');
             $table->tinyInteger('TrangThaiXacNhanHoaDon')->nullable()->comment('0: Chưa xác nhận 1: Đã xác nhận 2: Đã hủy');
             $table->tinyInteger('TrangThaiXacNhanThanhToan')->nullable()->comment('0: Chưa thanh toán 1: Đã thanh toán');
-            $table->text('payment_link')->nullable()->charset('utf8mb4')->collation('utf8mb4_unicode_ci');
             $table->string('order_code', 20)->nullable()->charset('utf8mb4')->collation('utf8mb4_unicode_ci');
             $table->timestamps();
         });

@@ -1,28 +1,6 @@
 // Enhanced Booking Seat Management JavaScript
 // Specifically designed for ticket booking page
 
-// Hàm bỏ giữ ghế (release) dùng ID_Ghe
-async function releaseSeat(ma_ghe) {
-    const suat_chieu_id =
-        window.bookingData?.suatChieuId || window.suatChieuId || null;
-    if (!suat_chieu_id) {
-        console.error("releaseSeat: suatChieuId is undefined!");
-        return;
-    }
-    console.log("Gửi releaseSeat:", { ma_ghe, suat_chieu_id });
-    await fetch("/dat-ve/bo-giu-ghe", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "X-CSRF-TOKEN": window.csrfToken,
-        },
-        body: JSON.stringify({
-            ma_ghe,
-            suat_chieu_id,
-        }),
-    });
-}
-
 document.addEventListener("DOMContentLoaded", function () {
     console.log("Booking seat script initialized");
 
@@ -32,6 +10,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let rowAisles = bookingData.rowAisles || [];
     let colAisles = bookingData.colAisles || [];
     let bookedSeats = bookingData.bookedSeats || [];
+    let suatChieuId = bookingData.suatChieuId || null;
     let ticketPrice = bookingData.ticketPrice || 0;
     let vipSurcharge = bookingData.vipSurcharge || 20000;
 
@@ -50,25 +29,186 @@ document.addEventListener("DOMContentLoaded", function () {
     const maxSeats = 8;
     let isProcessing = false;
 
-    // --- Helper: lấy TenGhe từ ID_Ghe (nếu cần)
-    function getTenGheById(id_ghe) {
-        for (let i = 0; i < seats.length; i++) {
-            for (let j = 0; j < seats[i].length; j++) {
-                const seat = seats[i][j];
-                if (seat && seat.ID_Ghe == id_ghe) return seat.TenGhe;
-            }
-        }
-        return id_ghe;
-    }
+    console.log("Initialized with data:", {
+        seats: seats.length,
+        rowAisles,
+        colAisles,
+        bookedSeats,
+        suatChieuId,
+        ticketPrice,
+    });
 
-    // Seat availability check function (dummy)
+    // Seat availability check function
     function checkSeatAvailability() {
-        // Bạn nên bổ sung AJAX check trạng thái ghế ở đây nếu muốn realtime hơn
+        // Implementation for periodic seat availability check
+        // This would typically make an AJAX call to check seat status
         console.log("Checking seat availability...");
     }
 
-    // Render seat layout (dùng ID_Ghe cho data-seat-id)
+    // Seat validation functions
+    function getSeatRowAndCol(seatId) {
+        const match = seatId.match(/([A-Z])(\d+)/);
+        if (!match) return null;
+        return {
+            row: match[1],
+            col: parseInt(match[2]),
+        };
+    }
+
+    function getSeatsByRow(row) {
+        const rowSeats = [];
+        document.querySelectorAll(".seat").forEach((seat) => {
+            const seatId = seat.textContent.trim();
+            if (
+                seatId.startsWith(row) &&
+                seat.classList.contains("available")
+            ) {
+                rowSeats.push({
+                    id: seatId,
+                    col: parseInt(seatId.slice(1)),
+                    element: seat,
+                });
+            }
+        });
+        return rowSeats.sort((a, b) => a.col - b.col);
+    }
+
+    function isValidSeatSelection(newSeatId) {
+        const seatInfo = getSeatRowAndCol(newSeatId);
+        if (!seatInfo) return false;
+
+        // Create temporary selection including the new seat
+        const tempSelected = new Set([...selectedSeats, newSeatId]);
+        const rowSeats = getSeatsByRow(seatInfo.row);
+
+        if (rowSeats.length === 0) return false;
+
+        // Get selected seats in this row
+        const selectedInRow = rowSeats
+            .filter((seat) => tempSelected.has(seat.id))
+            .map((seat) => seat.col)
+            .sort((a, b) => a - b);
+
+        if (selectedInRow.length <= 1) return true;
+
+        // Check for gaps between selected seats
+        for (let i = 0; i < selectedInRow.length - 1; i++) {
+            const current = selectedInRow[i];
+            const next = selectedInRow[i + 1];
+
+            if (next - current === 2) {
+                // There's exactly one seat between current and next
+                const middleSeatId = `${seatInfo.row}${current + 1}`;
+                const middleSeat = rowSeats.find((s) => s.id === middleSeatId);
+
+                if (middleSeat && !tempSelected.has(middleSeatId)) {
+                    return false; // Gap found
+                }
+            }
+        }
+
+        // Check isolated seats at edges
+        const allCols = rowSeats.map((seat) => seat.col).sort((a, b) => a - b);
+        const minCol = Math.min(...allCols);
+        const maxCol = Math.max(...allCols);
+
+        // Check left edge isolation
+        const leftmostSelected = Math.min(...selectedInRow);
+        if (leftmostSelected > minCol && leftmostSelected - 1 === minCol) {
+            const leftEdgeId = `${seatInfo.row}${minCol}`;
+            if (!tempSelected.has(leftEdgeId)) {
+                return false;
+            }
+        }
+
+        // Check right edge isolation
+        const rightmostSelected = Math.max(...selectedInRow);
+        if (rightmostSelected < maxCol && rightmostSelected + 1 === maxCol) {
+            const rightEdgeId = `${seatInfo.row}${maxCol}`;
+            if (!tempSelected.has(rightEdgeId)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    // Validate all selected seats (for final check before continue)
+    function isValidSeatSelectionAll(seatArray) {
+        if (!seatArray || seatArray.length === 0) return true;
+
+        // Group seats by row
+        const seatsByRow = {};
+        seatArray.forEach((seatId) => {
+            const row = seatId.charAt(0);
+            if (!seatsByRow[row]) seatsByRow[row] = [];
+            seatsByRow[row].push(parseInt(seatId.slice(1)));
+        });
+
+        // Validate each row
+        for (const row in seatsByRow) {
+            const cols = seatsByRow[row].sort((a, b) => a - b);
+
+            // Check for gaps between consecutive seats
+            for (let i = 0; i < cols.length - 1; i++) {
+                if ( cols[ i + 1 ] - cols[ i ] === 2 ) {
+                    // Có ghế bị bỏ giữa
+                    return false;
+                    // // There's exactly one seat gap between current and next
+                    // const middleSeat = `${row}${cols[i] + 1}`;
+                    // if (!seatArray.includes(middleSeat)) {
+                    //     console.log(`Gap found at ${middleSeat}`);
+                    //     return false;
+                    // }
+                }
+            }
+
+           // Không được bỏ ghế rìa nếu bên kia chỉ còn 1 ghế (A2, A3 mà bỏ A1)
+        // Tìm min/max thực tế của hàng
+            const allSeatsInRow = [];
+            document.querySelectorAll(".seat").forEach((seat) => {
+                const seatId = seat.textContent.trim();
+                if (
+                    seatId.startsWith(row) &&
+                    (seat.classList.contains("available") ||
+                        seat.classList.contains("selected"))
+                ) {
+                    allSeatsInRow.push(parseInt(seatId.slice(1)));
+                }
+            });
+
+            if (allSeatsInRow.length === 0) continue;
+
+            allSeatsInRow.sort((a, b) => a - b);
+            const minCol = Math.min(...allSeatsInRow);
+            const maxCol = Math.max(...allSeatsInRow);
+
+             // Nếu chọn ghế sát rìa phải hoặc trái mà chỉ còn 1 ghế chưa chọn thì lỗi
+            const leftmostSelected = Math.min(...cols);
+            if (leftmostSelected > minCol && leftmostSelected - minCol === 1) {
+                // Kiểm tra nếu số ghế rìa còn lại < 2 thì không hợp lệ
+                if (cols.length < 2) return false;
+            }
+
+            // Check right edge isolation
+            const rightmostSelected = Math.max(...cols);
+            if (
+                rightmostSelected < maxCol &&
+                maxCol - rightmostSelected === 1
+            ) {
+                if (cols.length < 2) return false;
+            }
+        }
+
+        return true;
+    }
+
+    // Render seat layout
     function renderSeatLayout() {
+        console.log("Starting renderSeatLayout with seats:", seats);
+        console.log("Column aisles:", colAisles);
+        console.log("Row aisles:", rowAisles);
+
         if (!seats || seats.length === 0) {
             seatContainer.innerHTML =
                 '<div class="placeholder-text text-muted text-center py-5">Không có thông tin về sơ đồ ghế</div>';
@@ -80,18 +220,29 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const rowCount = seats.length;
         const colCount = seats[0] ? seats[0].length : 0;
-        let totalCols = 1;
-        let gridTemplateColumns = "auto";
+
+        console.log("Grid dimensions:", { rowCount, colCount });
+
+        // Calculate grid template columns
+        let gridTemplateColumns = "auto"; // Row label column
+        let totalCols = 1; // Start with 1 for row label
+
         for (let j = 0; j < colCount; j++) {
+            // Check if we need an aisle BEFORE this column
             if (colAisles.includes(j)) {
-                gridTemplateColumns += " 15px";
+                gridTemplateColumns += " 15px"; // Aisle width
                 totalCols++;
+                console.log(`Adding column aisle before column ${j}`);
             }
-            gridTemplateColumns += " 35px";
+            gridTemplateColumns += " 35px"; // Seat width
             totalCols++;
         }
+
+        console.log("Grid template columns:", gridTemplateColumns);
+        console.log("Total columns:", totalCols);
         seatContainer.style.gridTemplateColumns = gridTemplateColumns;
 
+        // Create seat rows
         for (let i = 0; i < rowCount; i++) {
             // Row label
             const rowLabel = document.createElement("div");
@@ -101,103 +252,96 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // Seats in row
             for (let j = 0; j < colCount; j++) {
+                // Add column aisle if needed (BEFORE this seat)
                 if (colAisles.includes(j)) {
                     const aisle = document.createElement("div");
                     aisle.className = "aisle aisle-col";
                     aisle.style.width = "15px";
                     aisle.style.height = "35px";
+                    console.log(
+                        `Creating column aisle before seat [${i}][${j}]`
+                    );
                     seatContainer.appendChild(aisle);
                 }
+
+                // Create seat
                 const seatData = seats[i][j];
                 if (!seatData) {
+                    console.warn(`Missing seat data at position [${i}][${j}]`);
+                    // Create empty placeholder
                     const emptySeat = document.createElement("div");
                     emptySeat.className = "seat empty";
                     seatContainer.appendChild(emptySeat);
                     continue;
                 }
+
+                const seatId = seatData.TenGhe;
                 const seat = document.createElement("div");
+
                 seat.className = "seat";
-                seat.textContent = seatData.TenGhe;
+                seat.textContent = seatId;
                 seat.dataset.row = i;
                 seat.dataset.col = j;
-                seat.dataset.seatId = seatData.ID_Ghe; // Sử dụng ID_Ghe!
+                seat.dataset.seatId = seatId;
 
+                console.log(
+                    `Creating seat ${seatId} with status:`,
+                    seatData.TrangThaiGhe
+                );
+
+                // Set seat status
                 if (seatData.TrangThaiGhe === 0) {
+                    // Disabled seat
                     seat.classList.add("disabled");
-                } else if (
-                    seatData.IsBooked ||
-                    bookedSeats.includes(seatData.TenGhe)
-                ) {
+                } else if (seatData.IsBooked || bookedSeats.includes(seatId)) {
+                    // Booked seat
                     seat.classList.add("booked");
                 } else {
+                    // Available seat
                     seat.classList.add("available");
-                    if (seatData.TrangThaiGhe === 2) seat.classList.add("vip");
-                    else seat.classList.add("normal");
-                }
-                // Gán sự kiện click
-                seat.onclick = async function () {
-                    if (
-                        isProcessing ||
-                        seat.classList.contains("held") ||
-                        seat.classList.contains("booked") ||
-                        seat.classList.contains("disabled")
-                    )
-                        return;
 
-                    const seatId = this.dataset.seatId;
-                    if (seat.classList.contains("selected")) {
-                        seat.classList.remove("selected");
-                        selectedSeats.delete(seatId);
-                        await releaseSeat(seatId);
-                        updateBookingSummary();
-                        return;
+                    if (seatData.TrangThaiGhe === 2) {
+                        seat.classList.add("vip");
+                    } else {
+                        seat.classList.add("normal");
                     }
 
-                    // Giữ ghế
-                    const res = await fetch("/dat-ve/giu-ghe", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "X-CSRF-TOKEN": window.csrfToken,
-                        },
-                        body: JSON.stringify({
-                            ma_ghe: seatId,
-                            suat_chieu_id: suatChieuId,
-                        }),
+                    // Add click handler for available seats
+                    seat.addEventListener("click", function () {
+                        handleSeatClick(this);
                     });
-                    const data = await res.json();
-                    if (!data.success) {
-                        showNotification(
-                            "Thông báo",
-                            data.error || "Không thể giữ ghế",
-                            "warning"
-                        );
-                        return;
-                    }
-                    handleSeatClick(seat);
-                };
+                }
+
                 seatContainer.appendChild(seat);
             }
-            // Row aisle after row
+
+            // Add row aisle if needed (AFTER this row)
             if (rowAisles.includes(i + 1)) {
                 const aisleRow = document.createElement("div");
                 aisleRow.className = "aisle aisle-row";
                 aisleRow.style.gridColumn = `1 / span ${totalCols}`;
                 aisleRow.style.height = "15px";
                 aisleRow.style.backgroundColor = "transparent";
+                console.log(`Creating row aisle after row ${i + 1}`);
                 seatContainer.appendChild(aisleRow);
             }
         }
+
+        console.log("Seat layout rendered successfully");
     }
 
-    // Handle seat click (UI)
+    // Handle seat click
     function handleSeatClick(seatElement) {
         if (isProcessing) return;
+
         const seatId = seatElement.dataset.seatId;
+
         if (seatElement.classList.contains("selected")) {
+            // Deselect seat
             seatElement.classList.remove("selected");
             selectedSeats.delete(seatId);
         } else {
+            // Select seat
             if (selectedSeats.size >= maxSeats) {
                 showNotification(
                     "Cảnh báo",
@@ -206,24 +350,57 @@ document.addEventListener("DOMContentLoaded", function () {
                 );
                 return;
             }
+
+            // Kiểm tra hợp lệ trước khi cho chọn
+            const tempSelected = new Set([...selectedSeats, seatId]);
+            if (!isValidSeatSelectionAll(Array.from(tempSelected))) {
+                showNotification(
+                    "Thông báo",
+                    "Việc chọn vị trí ghế của bạn không được để trống 1 ghế ở bên trái, giữa hoặc bên phải trên cùng hàng ghế mà bạn vừa chọn.",
+                    "warning"
+                );
+                return;
+            }
+
             seatElement.classList.add("selected");
             selectedSeats.add(seatId);
         }
+
         updateBookingSummary();
     }
 
     // Update booking summary
     function updateBookingSummary() {
         const seatArray = Array.from(selectedSeats).sort();
+
+        // Update seat numbers display
         if (seatNumbersElement) {
+            // Lấy danh sách tên ghế từ danh sách ID đã chọn
+            let seatNames = seatArray.map((idGhe) => {
+                // Tìm ghế trong seatLayout
+                for (let row of bookingData.seatLayout || []) {
+                    for (let seat of row) {
+                        if (
+                            seat &&
+                            (String(seat.ID_Ghe) == String(idGhe) ||
+                                seat.TenGhe == idGhe)
+                        ) {
+                            return seat.TenGhe;
+                        }
+                    }
+                }
+                // Nếu không tìm thấy thì trả về idGhe
+                return idGhe;
+            });
             seatNumbersElement.textContent =
-                seatArray.length > 0
-                    ? seatArray.map(getTenGheById).join(", ")
-                    : "";
+                seatNames.length > 0 ? seatNames.join(", ") : "";
         }
-        let totalPrice = 0,
-            normalCount = 0,
-            vipCount = 0;
+
+        // Calculate total price
+        let totalPrice = 0;
+        let normalCount = 0;
+        let vipCount = 0;
+
         seatArray.forEach((seatId) => {
             const seatElement = document.querySelector(
                 `[data-seat-id="${seatId}"]`
@@ -238,6 +415,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             }
         });
+
+        // Update summary display
         if (seatSummaryElement) {
             let summaryText = "";
             if (normalCount > 0) summaryText += `x${normalCount} Ghế thường`;
@@ -248,14 +427,20 @@ document.addEventListener("DOMContentLoaded", function () {
             seatSummaryElement.textContent = summaryText;
             seatSummaryElement.style.display = summaryText ? "block" : "none";
         }
+
         if (totalPriceElement) {
             totalPriceElement.textContent =
                 totalPrice.toLocaleString("vi-VN") + " VNĐ";
         }
+
+        // Update continue button state
         if (btnContinue) {
             btnContinue.disabled = selectedSeats.size === 0;
         }
+
+        // Cập nhật biến toàn cục để form gửi đúng ghế đã chọn
         window.selectedSeats = seatArray;
+
         console.log("Updated selectedSeats:", window.selectedSeats);
     }
 
@@ -264,22 +449,33 @@ document.addEventListener("DOMContentLoaded", function () {
         timeButtons.forEach((button) => {
             button.addEventListener("click", function () {
                 if (isProcessing) return;
+
+                // Update active state
                 timeButtons.forEach((btn) => btn.classList.remove("active"));
                 button.classList.add("active");
+
+                // Get new showtime info
                 const gioChieu = button.getAttribute("data-gio");
                 const suatChieuIdNew = button.getAttribute("data-id");
+
+                // Update display
                 if (showtimeInfo) {
                     const ngayChieu = showtimeInfo.textContent.split(" - ")[1];
                     showtimeInfo.innerHTML = `<span>Suất: ${gioChieu}</span> - ${ngayChieu}`;
                 }
+
+                // Redirect to new showtime
                 if (suatChieuIdNew && suatChieuIdNew !== suatChieuId) {
                     isProcessing = true;
                     const currentUrl = new URL(window.location.href);
                     const pathParts = currentUrl.pathname.split("/");
+
+                    // Update time in URL
                     pathParts[pathParts.length - 1] = gioChieu.replace(
                         ":",
                         "-"
                     );
+
                     window.location.href = pathParts.join("/");
                 }
             });
@@ -289,6 +485,8 @@ document.addEventListener("DOMContentLoaded", function () {
     // Notification function
     function showNotification(title, message, type = "info") {
         console.log("Showing notification:", { title, message, type });
+
+        // Try to use SweetModal if available
         if (typeof $ !== "undefined" && $.sweetModal) {
             $.sweetModal({
                 content: message,
@@ -305,82 +503,38 @@ document.addEventListener("DOMContentLoaded", function () {
                 },
             });
         } else if (typeof showBookingNotification === "function") {
+            // Use the global notification function if available
             showBookingNotification(title, message, type);
         } else {
+            // Fallback to alert
             alert(title + ": " + message);
         }
     }
 
     // Initialize everything
     function init() {
+        console.log("Initializing booking app...");
         renderSeatLayout();
         handleShowtimeChange();
         updateBookingSummary();
-        setInterval(checkSeatAvailability, 30000);
+
+        // Set up periodic seat availability check
+        setInterval(checkSeatAvailability, 30000); // Check every 30 seconds
     }
-    function isValidSeatSelectionAll(seatArray) {
-        if (!seatArray || seatArray.length === 0) return true;
 
-        // Group seats by row
-        const seatsByRow = {};
-        seatArray.forEach((id_ghe) => {
-            // Tìm TenGhe từ ID_Ghe
-            let tenGhe = null;
-            for (let i = 0; i < seats.length; i++) {
-                for (let j = 0; j < seats[i].length; j++) {
-                    if (seats[i][j] && seats[i][j].ID_Ghe == id_ghe) {
-                        tenGhe = seats[i][j].TenGhe;
-                        break;
-                    }
-                }
-                if (tenGhe) break;
-            }
-            if (!tenGhe) return; // skip nếu không tìm thấy
-
-            const row = tenGhe.charAt(0);
-            const col = parseInt(tenGhe.slice(1));
-            if (!seatsByRow[row]) seatsByRow[row] = [];
-            seatsByRow[row].push(col);
-        });
-
-        // Kiểm tra từng hàng
-        for (const row in seatsByRow) {
-            const cols = seatsByRow[row].sort((a, b) => a - b);
-            for (let i = 0; i < cols.length - 1; i++) {
-                if (cols[i + 1] - cols[i] === 2) {
-                    // Nếu có 1 ghế trống giữa 2 ghế chọn, kiểm tra nó có bị bỏ trống không
-                    const middleCol = cols[i] + 1;
-                    // Tìm ID_Ghe của ghế giữa
-                    let middleID = null;
-                    for (let m = 0; m < seats.length; m++) {
-                        for (let n = 0; n < seats[m].length; n++) {
-                            if (
-                                seats[m][n] &&
-                                seats[m][n].TenGhe === row + middleCol
-                            ) {
-                                middleID = seats[m][n].ID_Ghe;
-                                break;
-                            }
-                        }
-                        if (middleID) break;
-                    }
-                    if (middleID && !seatArray.includes(middleID.toString())) {
-                        // Ghế giữa bị bỏ trống
-                        return false;
-                    }
-                }
-            }
-        }
-        return true;
-    }
+    // Initialize window.bookingApp object first
     window.bookingApp = {
         selectedSeats,
         renderSeatLayout,
         updateBookingSummary,
         checkSeatAvailability,
+        isValidSeatSelection,
         isValidSeatSelectionAll,
         showNotification,
     };
 
+    // Start the application
     init();
+
+    console.log("Booking app initialized successfully");
 });

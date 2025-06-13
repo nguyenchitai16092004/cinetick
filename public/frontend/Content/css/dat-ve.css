@@ -518,7 +518,7 @@ span, small{
     border: 1px solid var(--color-text-secondary);
 }
 
-.seat.selected {
+.seat.selected, .seat.held {
     background-color: var(--color-primary);
     color: #000;
 }
@@ -696,14 +696,9 @@ span, small{
     animation-delay: 4s;
 }
 
-.seat.held {
-    background-color: #ffd700;
-    cursor: not-allowed;
-}
-
-.seat.held.current-user {
-    background-color: #ffa500;
-    cursor: pointer;
+#seat-hold-timer-text{
+    color: #000 !important;
+    font-size: 30px;
 }
 
 .seat.booked {

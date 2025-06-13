@@ -54,7 +54,7 @@ class PayOSController extends Controller
         $items = array_map(function ($tenGhe) use ($orderData) {
             $seat = collect($orderData['seatDetails'])->firstWhere('TenGhe', $tenGhe);
             $price = isset($seat['GiaVe']) ? (int)$seat['GiaVe'] : 0;
-            $formattedPrice = number_format($price, 0, ',', '.') . ' VNĐ';
+            $formattedPrice = number_format($price, 0, ',', '.') . ' đ';
             return [
                 'name'     => 'Vé ' . ($orderData['ten_phim'] ?? '') . ' - Ghế ' . $tenGhe . ' (' . $formattedPrice . ')',
                 'quantity' => 1,

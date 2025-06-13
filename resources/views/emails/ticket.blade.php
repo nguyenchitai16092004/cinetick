@@ -98,7 +98,7 @@
                     @endforeach
                 @endif
             </div>
-            <div><strong>Giá vé:</strong> {{ number_format($data['gia_ve'] ?? 0, 0, ',', '.') }} VNĐ</div>
+            <div><strong>Giá vé:</strong> {{ number_format($data['gia_ve'] ?? 0, 0, ',', '.') }} đ</div>
             <div><strong>Thanh toán:</strong> {{ $data['hinh_thuc_thanh_toan'] ?? '' }}</div>
             <div><strong>Thời gian đặt:</strong> {{ $data['thoi_gian_dat'] ?? '' }}</div>
             <div><strong>Trạng thái:</strong> {{ $data['trang_thai'] ?? '' }}</div>
