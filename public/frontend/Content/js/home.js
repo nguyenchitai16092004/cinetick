@@ -176,8 +176,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-
-
     // Update booking summary
     function updateSummary() {
         if (selectedTheater) {
@@ -419,44 +417,36 @@ window.addEventListener("load", () => {
 
 // --- Carousel phim đang chiếu, sắp chiếu ---
 class CinemaCarousel {
-    constructor(gridId, prevBtnId, nextBtnId, dotsId) {
+    constructor(gridId, prevBtnId, nextBtnId, dotsId, autoPlayInterval = 4000) {
         this.moviesGrid = document.getElementById(gridId);
         this.prevBtn = document.getElementById(prevBtnId);
         this.nextBtn = document.getElementById(nextBtnId);
         this.dotsIndicator = document.getElementById(dotsId);
         this.currentIndex = 0;
-        this.itemsPerView = 4; // Luôn 4 (desktop), bạn có thể responsive nếu muốn
-        this.totalItems =
-            this.moviesGrid.querySelectorAll(".movie-card").length;
+        this.cards = this.moviesGrid.querySelectorAll(".movie-card");
+        this.itemsPerView = this.getItemsPerView();
+        this.totalItems = this.cards.length;
         this.maxIndex = Math.max(
             0,
             Math.ceil(this.totalItems / this.itemsPerView) - 1
         );
+        this.autoPlayIntervalTime = autoPlayInterval;
+        this.autoPlayTimer = null;
+
+        window.addEventListener("resize", () => {
+            this.itemsPerView = this.getItemsPerView();
+            this.totalItems =
+                this.moviesGrid.querySelectorAll(".movie-card").length;
+            this.maxIndex = Math.max(
+                0,
+                Math.ceil(this.totalItems / this.itemsPerView) - 1
+            );
+            this.currentIndex = Math.min(this.currentIndex, this.maxIndex);
+            this.renderDots();
+            this.updateCarousel();
+        });
 
         this.renderDots();
-        this.init();
-    }
-    getItemsPerView() {
-        // Responsive: mobile 1, tablet 2, desktop 4
-        if (window.innerWidth <= 600) return 1;
-        if (window.innerWidth <= 1024) return 2;
-        return 4;
-    }
-    renderDots() {
-        if (!this.dotsIndicator) return;
-        this.dotsIndicator.innerHTML = "";
-        const dotCount = Math.max(
-            1,
-            Math.ceil(this.totalItems / this.itemsPerView)
-        );
-        for (let i = 0; i < dotCount; i++) {
-            const dot = document.createElement("div");
-            dot.className = "dot-film";
-            if (i === this.currentIndex) dot.classList.add("active");
-            this.dotsIndicator.appendChild(dot);
-        }
-    }
-    init() {
         this.updateCarousel();
         this.prevBtn.addEventListener("click", () => this.prevSlide());
         this.nextBtn.addEventListener("click", () => this.nextSlide());
@@ -471,71 +461,24 @@ class CinemaCarousel {
             }
         });
 
-        // Touch/swipe support
-        let startX = 0;
-        let currentX = 0;
-        let isDragging = false;
-
-        this.moviesGrid.addEventListener("touchstart", (e) => {
-            startX = e.touches[0].clientX;
-            isDragging = true;
-        });
-
-        this.moviesGrid.addEventListener("touchmove", (e) => {
-            if (!isDragging) return;
-            currentX = e.touches[0].clientX;
-        });
-
-        this.moviesGrid.addEventListener("touchend", () => {
-            if (!isDragging) return;
-            const diffX = startX - currentX;
-
-            if (Math.abs(diffX) > 50) {
-                if (diffX > 0) {
-                    this.nextSlide();
-                } else {
-                    this.prevSlide();
-                }
-            }
-            isDragging = false;
-        });
-
-        // Auto-play
+        // Auto play setup
         this.startAutoPlay();
 
-        // Resize handler
-        window.addEventListener("resize", () => {
-            // Khi resize phải cập nhật lại itemsPerView, dot, vị trí!
-            this.updateCarousel();
-        });
-
-        // Movie card click handlers
-        document.querySelectorAll(".movie-card").forEach((card) => {
-            card.addEventListener("click", () => {
-                const title = card.querySelector(".movie-title").textContent;
-                this.showMovieModal(title);
-            });
-        });
-    }
-    updateCarousel() {
-        // Cập nhật lại itemsPerView khi resize
-        this.itemsPerView = this.getItemsPerView();
-        this.maxIndex = Math.max(
-            0,
-            Math.ceil(this.totalItems / this.itemsPerView) - 1
+        // Pause on hover, resume on mouse leave
+        this.moviesGrid.parentElement.addEventListener("mouseenter", () =>
+            this.stopAutoPlay()
         );
-        this.currentIndex = Math.min(this.currentIndex, this.maxIndex);
-        this.renderDots();
-
-        // Di chuyển grid
-        const slideWidth =
-            this.moviesGrid.querySelector(".movie-card")?.offsetWidth || 300; // fallback 300px
-        const gap = parseInt(getComputedStyle(this.moviesGrid).gap) || 30;
-        const offset =
-            (slideWidth + gap) * this.itemsPerView * this.currentIndex;
-        this.moviesGrid.style.transform = `translateX(-${offset}px)`;
-        this.updateDots();
+        this.moviesGrid.parentElement.addEventListener("mouseleave", () =>
+            this.startAutoPlay()
+        );
     }
+
+    getItemsPerView() {
+        if (window.innerWidth <= 600) return 1;
+        if (window.innerWidth <= 1024) return 2;
+        return 4;
+    }
+
     renderDots() {
         if (!this.dotsIndicator) return;
         this.dotsIndicator.innerHTML = "";
@@ -550,23 +493,40 @@ class CinemaCarousel {
             this.dotsIndicator.appendChild(dot);
         }
     }
+
     updateDots() {
         const dots = this.dotsIndicator.querySelectorAll(".dot-film");
-        dots.forEach((dot, index) => {
-            dot.classList.toggle("active", index === this.currentIndex);
+        dots.forEach((dot, idx) => {
+            dot.classList.toggle("active", idx === this.currentIndex);
         });
     }
 
+    updateCarousel() {
+        const card = this.moviesGrid.querySelector(".movie-card");
+        const slideWidth = card ? card.offsetWidth : 300;
+        const gap = parseInt(getComputedStyle(this.moviesGrid).gap) || 30;
+        const offset =
+            (slideWidth + gap) * (this.currentIndex * this.itemsPerView);
+        this.moviesGrid.style.transform = `translateX(-${offset}px)`;
+        this.updateDots();
+    }
+
     prevSlide() {
-        this.currentIndex =
-            this.currentIndex > 0 ? this.currentIndex - 1 : this.maxIndex;
+        if (this.currentIndex > 0) {
+            this.currentIndex--;
+        } else {
+            this.currentIndex = this.maxIndex;
+        }
         this.updateCarousel();
         this.resetAutoPlay();
     }
 
     nextSlide() {
-        this.currentIndex =
-            this.currentIndex < this.maxIndex ? this.currentIndex + 1 : 0;
+        if (this.currentIndex < this.maxIndex) {
+            this.currentIndex++;
+        } else {
+            this.currentIndex = 0;
+        }
         this.updateCarousel();
         this.resetAutoPlay();
     }
@@ -578,16 +538,32 @@ class CinemaCarousel {
     }
 
     startAutoPlay() {
-        this.autoPlayInterval = setInterval(() => {
-            this.nextSlide();
-        }, 5000);
+        this.stopAutoPlay();
+        this.autoPlayTimer = setInterval(
+            () => this.nextSlide(),
+            this.autoPlayIntervalTime
+        );
+    }
+
+    stopAutoPlay() {
+        if (this.autoPlayTimer) clearInterval(this.autoPlayTimer);
+        this.autoPlayTimer = null;
     }
 
     resetAutoPlay() {
-        clearInterval(this.autoPlayInterval);
         this.startAutoPlay();
     }
 }
+
+// Khởi tạo:
+document.addEventListener("DOMContentLoaded", function () {
+    new CinemaCarousel("moviesGrid", "prevBtn", "nextBtn", "dotsIndicator");
+});
+
+// Khởi tạo:
+document.addEventListener("DOMContentLoaded", function () {
+    new CinemaCarousel("moviesGrid", "prevBtn", "nextBtn", "dotsIndicator");
+});
 
 document.addEventListener("DOMContentLoaded", function () {
     // Get all necessary elements
@@ -738,6 +714,23 @@ document.addEventListener("DOMContentLoaded", function () {
         // AJAX load dates
         const idRap = theaterContent.querySelector(".dropdown-item.selected")
             .dataset.value;
+
+        function formatVietnameseDate(dateStr) {
+            const days = [
+                "Chủ Nhật",
+                "Thứ Hai",
+                "Thứ Ba",
+                "Thứ Tư",
+                "Thứ Năm",
+                "Thứ Sáu",
+                "Thứ Bảy",
+            ];
+            const [year, month, day] = dateStr.split("-");
+            const jsDate = new Date(dateStr);
+            const thu = days[jsDate.getDay()];
+            return `${thu}, ${day}-${month}-${year}`;
+        }
+
         const idPhim = item.dataset.id;
         $.get(
             "/ajax/ngay-chieu-theo-rap-phim",
@@ -750,7 +743,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 } else {
                     dateContent.innerHTML = "";
                     data.forEach(function (ngay) {
-                        dateContent.innerHTML += `<div class="dropdown-item" data-value="${ngay}"><span class="marquee-text">${ngay}</span></div>`;
+                        const ngayHienThi = formatVietnameseDate(ngay);
+                        $("#date-content").append(
+                            `<div class="dropdown-item" data-value="${ngay}"><span class="marquee-text">${ngayHienThi}</span></div>`
+                        );
                     });
                     dateBtn.classList.remove("disabled");
                 }

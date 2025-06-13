@@ -973,9 +973,15 @@
     cursor: pointer;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
     flex: 0 0 260px;
-    min-width: 300px; /* tăng từ 280px lên 340px */
-    max-width: 300px;
+    min-width: 23.5%;
+    max-width: 23.5%;
     flex: 0 0 300px;
+}
+@media (max-width: 1024px) {
+    .movie-card { min-width: 48%; max-width: 48%; flex: 0 0 48%; }
+}
+@media (max-width: 600px) {
+    .movie-card { min-width: 98%; max-width: 98%; flex: 0 0 98%; }
 }
 .movie-card:hover {
     transform: translateY(-15px) scale(1.05);
@@ -1226,7 +1232,7 @@
 }
 
 .main-title {
-    font-size: 2.2rem;
+    font-size: 2.5rem;
     font-weight: 700;
     background: linear-gradient(45deg, #ff6b35, #f7931e, #ffd700);
     -webkit-background-clip: text;
@@ -1580,6 +1586,7 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    text-transform: uppercase;
     letter-spacing: 1px;
 }
 

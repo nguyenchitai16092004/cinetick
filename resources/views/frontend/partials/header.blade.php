@@ -92,9 +92,6 @@
                             <ul id="responsive_navigation">
                                 <!-- Mobile Search Start -->
                                 <!-- Mobile Search End -->
-                                <a href="#"><img width="120px;"
-                                        src="{{ asset('frontend/Content/img/btn-ticket.webp') }}" alt="">
-                                </a>
 
                                 <li><a href="{{ asset('/') }}">Trang chủ</a></li>
 
