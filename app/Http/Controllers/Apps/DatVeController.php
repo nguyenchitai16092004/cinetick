@@ -16,13 +16,14 @@ use App\Events\GheDuocGiu;
 use Carbon\Carbon;
 use App\Models\GheDangGiu;
 use App\Models\HoaDon;
+use App\Models\Phim;
 
 
 class DatVeController extends Controller
 {
     public function showBySlug($phimSlug, $ngay, $gio)
     {
-
+        Log::info('ShowBySlug', ['session_user' => session('user_id')]);
         try {
             // Validate input parameters
             if (empty($phimSlug) || empty($ngay) || empty($gio)) {
@@ -34,7 +35,7 @@ class DatVeController extends Controller
                 return redirect()->route('login.form')->with('error', 'Vui lòng đăng nhập để đặt vé!');
             }
             // Get movie by slug
-            $phim = \App\Models\Phim::where('Slug', $phimSlug)->firstOrFail();
+            $phim = Phim::where('Slug', $phimSlug)->firstOrFail();
 
             // Get showtime with related data
             $suatChieu = SuatChieu::with(['phim', 'rap', 'phongChieu'])
@@ -70,7 +71,7 @@ class DatVeController extends Controller
                     $colCount = max($colCount, $col);
                 }
             }
-
+            GheDangGiu::where('hold_until', '<', now())->delete();
             // Generate seat layout array with booking status
             $seatLayout = [];
             for ($i = 0; $i < $rowCount; $i++) {
@@ -88,7 +89,6 @@ class DatVeController extends Controller
                             $trangThaiGhe = $ghe->LoaiTrangThaiGhe ?? 1; // Use seat type or default normal
                         }
                     }
-
                     $row[] = [
                         'TenGhe' => $tenGhe,
                         'TrangThaiGhe' => $trangThaiGhe,
@@ -102,8 +102,17 @@ class DatVeController extends Controller
             // Parse aisle information
             $rowAisles = array_map('intval', json_decode($phongChieu->HangLoiDi ?? '[]', true) ?: []);
             $colAisles = array_map('intval', json_decode($phongChieu->CotLoiDi ?? '[]', true) ?: []);
-
-
+            $myHeldSeats = GheDangGiu::where('ID_TaiKhoan', session('user_id'))
+                ->where('ID_SuatChieu', $suatChieu->ID_SuatChieu)
+                ->where('hold_until', '>', now())
+                ->pluck('ID_Ghe')
+                ->toArray();
+                
+            Log::info('ShowBySlug', [
+                'session_user' => session('user_id'),
+                'myHeldSeats' => $myHeldSeats
+            ]);
+            
             // Get same-day showtimes
             $suatChieuCungNgay = SuatChieu::where('NgayChieu', $suatChieu->NgayChieu)
                 ->where('ID_Rap', $suatChieu->ID_Rap)
@@ -122,7 +131,8 @@ class DatVeController extends Controller
                 'seatLayout',
                 'rowAisles',
                 'colAisles',
-                'bookedSeats'
+                'bookedSeats',
+                'myHeldSeats'
             ));
         } catch (\Exception $e) {
             // Log the error for debugging
@@ -142,10 +152,15 @@ class DatVeController extends Controller
             $suatChieuId = $request->input('ID_SuatChieu');
             $userId = session('user_id');
 
-            if (empty($selectedSeats)) {
-                return redirect()->back()->with('error', 'Vui lòng chọn ít nhất một ghế');
+            if (!empty($selectedSeats) && !is_numeric($selectedSeats[0])) {
+                // Nếu là TenGhe, convert sang ID_Ghe
+                $selectedSeats = GheNgoi::whereIn('TenGhe', $selectedSeats)->pluck('ID_Ghe')->toArray();
             }
-
+            $myHeldSeats = GheDangGiu::where('ID_TaiKhoan', $userId)
+                ->where('ID_SuatChieu', $suatChieuId)
+                ->where('hold_until', '>', now())
+                ->pluck('ID_Ghe')
+                ->toArray();
             // selectedSeats đang là ID_Ghe, convert sang TenGhe:
             $gheNgoi = GheNgoi::whereIn('ID_Ghe', $selectedSeats)->get();
             $selectedSeatNames = $gheNgoi->pluck('TenGhe')->toArray();
@@ -201,6 +216,7 @@ class DatVeController extends Controller
                 'suatChieu' => $suatChieu,
                 'seatDetails' => $seatDetails,
                 'totalPrice' => $totalPrice,
+                'myHeldSeats' => $myHeldSeats,
             ]);
         } catch (\Exception $e) {
             Log::error('Error in thanhToan: ' . $e->getMessage());
@@ -218,11 +234,17 @@ class DatVeController extends Controller
         // selectedSeats vẫn là ID_Ghe, convert sang TenGhe:
         $gheNgoi = GheNgoi::whereIn('ID_Ghe', $selectedSeats)->get();
         $selectedSeatNames = $gheNgoi->pluck('TenGhe')->toArray();
-
+        GheDangGiu::where('hold_until', '<', now())->delete();
         // Lấy lại danh sách ghế để build seatDetails
         $gheNgoiTheoTen = GheNgoi::where('ID_PhongChieu', $suatChieu->ID_PhongChieu)
             ->whereIn('TenGhe', $selectedSeatNames)
             ->get();
+
+        $myHeldSeats = GheDangGiu::where('ID_TaiKhoan', session('user_id'))
+            ->where('ID_SuatChieu', $suatChieu->ID_SuatChieu)
+            ->where('hold_until', '>', now())
+            ->pluck('ID_Ghe')
+            ->toArray();
 
         $seatDetails = [];
         $totalPrice = 0;
@@ -244,10 +266,10 @@ class DatVeController extends Controller
         }
         return view('frontend.pages.thanh-toan', [
             'suatChieu' => $suatChieu,
-            // Truyền xuống là TenGhe
             'selectedSeats' => $selectedSeatNames,
             'seatDetails' => $seatDetails,
             'totalPrice' => $totalPrice,
+            'myHeldSeats' => $myHeldSeats, // THÊM DÒNG NÀY
         ]);
     }
 
@@ -280,7 +302,7 @@ class DatVeController extends Controller
             return response()->json(['success' => false, 'message' => 'Server error']);
         }
     }
-
+/*
     public function changeShowtime(Request $request)
     {
         try {
@@ -330,6 +352,7 @@ class DatVeController extends Controller
         });
         return response()->json($result);
     }
+        */
     public function giuGhe(Request $request)
     {
         Log::info('giuGhe request: ', $request->all());
@@ -391,5 +414,74 @@ class DatVeController extends Controller
         Log::info('Số bản ghi đã xóa:', ['deleted' => $deleted]);
 
         return response()->json(['success' => true]);
+    }
+    public function releaseMultipleSeats(Request $request)
+    {
+        $userId = session('user_id'); // hoặc Session::get('user_id');
+        $seatIds = $request->input('danh_sach_ghe', []);
+        $suatChieuId = $request->input('suat_chieu_id');
+
+        // Xóa chỉ những ghế mà user hiện tại giữ
+        DB::table('ghe_dang_giu')
+            ->where('ID_TaiKhoan', $userId)
+            ->where('ID_SuatChieu', $suatChieuId)
+            ->whereIn('ID_Ghe', $seatIds)
+            ->delete();
+
+        return response()->json(['success' => true]);
+    }
+    public function boGiuGheNhieu(Request $request)
+    {
+        try {
+            // Lấy dữ liệu từ request
+            $data = $request->json()->all() ?: $request->all();
+            $danhSachGhe = $data['danh_sach_ghe'] ?? [];
+            $suatChieuId = $data['suat_chieu_id'] ?? null;
+            $userId = $data['user_id'] ?? session('user_id');
+
+            // Validate dữ liệu
+            if (!$danhSachGhe || !$suatChieuId || !$userId) {
+                Log::warning('Invalid params for boGiuGheNhieu', [
+                    'danh_sach_ghe' => $danhSachGhe,
+                    'suat_chieu_id' => $suatChieuId,
+                    'user_id' => $userId
+                ]);
+                return response()->json(['success' => false, 'message' => 'Invalid params'], 400);
+            }
+
+            // Log thông tin để debug
+            Log::info('HUY_GHE', [
+                'danh_sach_ghe' => $danhSachGhe,
+                'suat_chieu_id' => $suatChieuId,
+                'user_id' => $userId,
+                'request_data' => $data
+            ]);
+
+            // Xóa các ghế được giữ bởi user hiện tại
+            $deleted = DB::table('ghe_dang_giu')
+                ->where('ID_TaiKhoan', $userId)
+                ->where('ID_SuatChieu', $suatChieuId)
+                ->whereIn('ID_Ghe', $danhSachGhe)
+                ->delete();
+
+            // Broadcast sự kiện hủy ghế
+            foreach ($danhSachGhe as $maGhe) {
+                broadcast(new GheDuocGiu($maGhe, $suatChieuId, $userId, null, 'release'))->toOthers();
+            }
+
+            Log::info('Đã hủy giữ ghế thành công', [
+                'deleted_count' => $deleted,
+                'user_id' => $userId,
+                'suat_chieu_id' => $suatChieuId
+            ]);
+
+            return response()->json(['success' => true, 'deleted_count' => $deleted]);
+        } catch (\Exception $e) {
+            Log::error('Lỗi khi hủy giữ ghế: ' . $e->getMessage(), [
+                'exception' => $e,
+                'request_data' => $request->all()
+            ]);
+            return response()->json(['success' => false, 'message' => 'Error releasing seats'], 500);
+        }
     }
 }

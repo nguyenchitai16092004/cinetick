@@ -36,8 +36,6 @@ document.addEventListener("DOMContentLoaded", function () {
     let selectedDate = "";
     let selectedTime = "";
 
-
-
     // Close all dropdowns
     function closeAllDropdowns() {
         const dropdowns = document.querySelectorAll(".dropdown-content");
@@ -178,14 +176,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    // Booking button functionality
-    bookBtn.addEventListener("click", function () {
-        if (!this.classList.contains("disabled")) {
-            alert(
-                `Đặt vé thành công!\n\nRạp: ${selectedTheater}\nPhim: ${selectedMovie}\nNgày: ${selectedDate}\nSuất: ${selectedTime}`
-            );
-        }
-    });
+
 
     // Update booking summary
     function updateSummary() {
@@ -434,7 +425,7 @@ class CinemaCarousel {
         this.nextBtn = document.getElementById(nextBtnId);
         this.dotsIndicator = document.getElementById(dotsId);
         this.currentIndex = 0;
-        this.itemsPerView = this.getItemsPerView();
+        this.itemsPerView = 4; // Luôn 4 (desktop), bạn có thể responsive nếu muốn
         this.totalItems =
             this.moviesGrid.querySelectorAll(".movie-card").length;
         this.maxIndex = Math.max(
@@ -446,10 +437,10 @@ class CinemaCarousel {
         this.init();
     }
     getItemsPerView() {
-        if (window.innerWidth <= 768) return 1;
+        // Responsive: mobile 1, tablet 2, desktop 4
+        if (window.innerWidth <= 600) return 1;
         if (window.innerWidth <= 1024) return 2;
-        if (window.innerWidth <= 1200) return 3;
-        return 5;
+        return 4;
     }
     renderDots() {
         if (!this.dotsIndicator) return;
@@ -466,7 +457,7 @@ class CinemaCarousel {
         }
     }
     init() {
-        this.updateDots();
+        this.updateCarousel();
         this.prevBtn.addEventListener("click", () => this.prevSlide());
         this.nextBtn.addEventListener("click", () => this.nextSlide());
 
@@ -514,12 +505,7 @@ class CinemaCarousel {
 
         // Resize handler
         window.addEventListener("resize", () => {
-            this.itemsPerView = this.getItemsPerView();
-            this.maxIndex = Math.max(
-                0,
-                Math.ceil(this.totalItems / this.itemsPerView) - 1
-            );
-            this.currentIndex = Math.min(this.currentIndex, this.maxIndex);
+            // Khi resize phải cập nhật lại itemsPerView, dot, vị trí!
             this.updateCarousel();
         });
 
@@ -531,23 +517,22 @@ class CinemaCarousel {
             });
         });
     }
-
     updateCarousel() {
-        const cardWidth = 280;
-        const gap = 30;
-        const visibleCards = this.itemsPerView;
-        const slideWidth = cardWidth + gap;
-        const totalPages = Math.ceil(this.totalItems / visibleCards);
+        // Cập nhật lại itemsPerView khi resize
+        this.itemsPerView = this.getItemsPerView();
+        this.maxIndex = Math.max(
+            0,
+            Math.ceil(this.totalItems / this.itemsPerView) - 1
+        );
+        this.currentIndex = Math.min(this.currentIndex, this.maxIndex);
+        this.renderDots();
 
-        let offset;
-        if (this.currentIndex === totalPages - 1) {
-            // Trang cuối, chỉ còn lại số phim chưa đủ 5
-            offset = (this.totalItems - visibleCards) * slideWidth;
-            if (this.totalItems <= visibleCards) offset = 0;
-        } else {
-            offset = this.currentIndex * slideWidth * visibleCards;
-        }
-
+        // Di chuyển grid
+        const slideWidth =
+            this.moviesGrid.querySelector(".movie-card")?.offsetWidth || 300; // fallback 300px
+        const gap = parseInt(getComputedStyle(this.moviesGrid).gap) || 30;
+        const offset =
+            (slideWidth + gap) * this.itemsPerView * this.currentIndex;
         this.moviesGrid.style.transform = `translateX(-${offset}px)`;
         this.updateDots();
     }
@@ -604,17 +589,295 @@ class CinemaCarousel {
     }
 }
 
-// Initialize carousel when DOM is loaded
-document.addEventListener("DOMContentLoaded", () => {
-    new CinemaCarousel("moviesGrid", "prevBtn", "nextBtn", "dotsIndicator"); // Phim Đang Chiếu
-    new CinemaCarousel(
-        "moviesGridUpcoming",
-        "prevBtnUpcoming",
-        "nextBtnUpcoming",
-        "dotsIndicatorUpcoming"
-    ); // Phim Sắp Chiếu
-});
+document.addEventListener("DOMContentLoaded", function () {
+    // Get all necessary elements
+    const theaterBtn = document.getElementById("theater-btn");
+    const theaterContent = document.getElementById("theater-content");
+    const movieBtn = document.getElementById("movie-btn");
+    const movieContent = document.getElementById("movie-content");
+    const dateBtn = document.getElementById("date-btn");
+    const dateContent = document.getElementById("date-content");
+    const timeBtn = document.getElementById("time-btn");
+    const timeContent = document.getElementById("time-content");
+    const bookBtn = document.getElementById("book-btn");
+    const theaterInfo = document.getElementById("theater-info");
+    const bookingSummary = document.getElementById("booking-summary");
 
+    // Step indicators
+    const step1 = document.getElementById("step-1");
+    const step2 = document.getElementById("step-2");
+    const step3 = document.getElementById("step-3");
+    const step4 = document.getElementById("step-4");
+    const separator1 = document.getElementById("separator-1");
+    const separator2 = document.getElementById("separator-2");
+    const separator3 = document.getElementById("separator-3");
+
+    // Selections
+    let selectedTheater = "";
+    let selectedMovie = "";
+    let selectedDate = "";
+    let selectedTime = "";
+
+    // --- Dropdown click handlers ---
+    // Theater
+    theaterBtn.addEventListener("click", function () {
+        closeAllDropdowns();
+        theaterContent.classList.toggle("show");
+    });
+
+    theaterContent.addEventListener("click", function (e) {
+        const item = e.target.closest(".dropdown-item:not(.disabled)");
+        if (!item) return;
+        selectedTheater = item.textContent.trim();
+        // Mark selected
+        for (const el of theaterContent.querySelectorAll(".dropdown-item"))
+            el.classList.remove("selected");
+        item.classList.add("selected");
+
+        theaterBtn.innerHTML = `<span>${selectedTheater}</span><span><i class="fas fa-chevron-down"></i></span>`;
+        theaterBtn.classList.add("active");
+        theaterContent.classList.remove("show");
+
+        // Step Indicator
+        step2.classList.add("active");
+        separator1.classList.add("active");
+        step3.classList.remove("active");
+        separator2.classList.remove("active");
+        step4.classList.remove("active");
+        separator3.classList.remove("active");
+
+        // Reset & Disable next steps
+        selectedMovie = "";
+        movieBtn.innerHTML =
+            '<span>2. Chọn Phim</span><span><i class="fas fa-chevron-down"></i></span>';
+        movieBtn.classList.remove("active");
+        movieBtn.classList.add("disabled");
+        selectedDate = "";
+        dateBtn.innerHTML =
+            '<span>3. Chọn Ngày</span><span><i class="fas fa-chevron-down"></i></span>';
+        dateBtn.classList.remove("active");
+        dateBtn.classList.add("disabled");
+        selectedTime = "";
+        timeBtn.innerHTML =
+            '<span>4. Chọn Suất</span><span><i class="fas fa-chevron-down"></i></span>';
+        timeBtn.classList.remove("active");
+        timeBtn.classList.add("disabled");
+        bookBtn.classList.add("disabled");
+
+        // Reset contents
+        movieContent.innerHTML =
+            '<div class="dropdown-item disabled">Vui lòng chọn rạp trước</div>';
+        dateContent.innerHTML =
+            '<div class="dropdown-item disabled">Vui lòng chọn phim trước</div>';
+        timeContent.innerHTML =
+            '<div class="dropdown-item disabled">Vui lòng chọn ngày trước</div>';
+
+        // AJAX load movies
+        const idRap = item.dataset.value;
+        $.get("/ajax/phim-theo-rap", { id_rap: idRap }, function (data) {
+            if (data.error || data.length === 0) {
+                movieContent.innerHTML = `<div class="dropdown-item disabled">${
+                    data.error ||
+                    "Hiện tại các thông tin rạp chiếu đang được cập nhật!"
+                }</div>`;
+            } else {
+                movieContent.innerHTML = "";
+                data.forEach(function (phim) {
+                    movieContent.innerHTML += `<div class="dropdown-item" data-value="${phim.Slug}" data-id="${phim.ID_Phim}"><span class="marquee-text">${phim.TenPhim}</span></div>`;
+                });
+                movieBtn.classList.remove("disabled");
+            }
+        });
+    });
+
+    // Movie
+    movieBtn.addEventListener("click", function () {
+        if (!this.classList.contains("disabled")) {
+            closeAllDropdowns();
+            movieContent.classList.toggle("show");
+        }
+    });
+    movieContent.addEventListener("click", function (e) {
+        const item = e.target.closest(".dropdown-item:not(.disabled)");
+        if (!item) return;
+        selectedMovie = item.textContent.trim();
+        // Mark selected
+        for (const el of movieContent.querySelectorAll(".dropdown-item"))
+            el.classList.remove("selected");
+        item.classList.add("selected");
+
+        movieBtn.innerHTML = `<span>${selectedMovie}</span><span><i class="fas fa-chevron-down"></i></span>`;
+        movieBtn.classList.add("active");
+        movieContent.classList.remove("show");
+
+        // Step Indicator
+        step3.classList.add("active");
+        separator2.classList.add("active");
+        step4.classList.remove("active");
+        separator3.classList.remove("active");
+
+        // Reset next steps
+        selectedDate = "";
+        dateBtn.innerHTML =
+            '<span>3. Chọn Ngày</span><span><i class="fas fa-chevron-down"></i></span>';
+        dateBtn.classList.remove("active");
+        dateBtn.classList.add("disabled");
+        selectedTime = "";
+        timeBtn.innerHTML =
+            '<span>4. Chọn Suất</span><span><i class="fas fa-chevron-down"></i></span>';
+        timeBtn.classList.remove("active");
+        timeBtn.classList.add("disabled");
+        bookBtn.classList.add("disabled");
+
+        // Reset contents
+        dateContent.innerHTML =
+            '<div class="dropdown-item disabled">Đang tải ngày chiếu...</div>';
+        timeContent.innerHTML =
+            '<div class="dropdown-item disabled">Vui lòng chọn ngày trước</div>';
+
+        // AJAX load dates
+        const idRap = theaterContent.querySelector(".dropdown-item.selected")
+            .dataset.value;
+        const idPhim = item.dataset.id;
+        $.get(
+            "/ajax/ngay-chieu-theo-rap-phim",
+            { id_rap: idRap, id_phim: idPhim },
+            function (data) {
+                if (data.error || data.length === 0) {
+                    dateContent.innerHTML = `<div class="dropdown-item disabled">${
+                        data.error || "Phim đang được cập nhật!"
+                    }</div>`;
+                } else {
+                    dateContent.innerHTML = "";
+                    data.forEach(function (ngay) {
+                        dateContent.innerHTML += `<div class="dropdown-item" data-value="${ngay}"><span class="marquee-text">${ngay}</span></div>`;
+                    });
+                    dateBtn.classList.remove("disabled");
+                }
+            }
+        );
+    });
+
+    // Date
+    dateBtn.addEventListener("click", function () {
+        if (!this.classList.contains("disabled")) {
+            closeAllDropdowns();
+            dateContent.classList.toggle("show");
+        }
+    });
+    dateContent.addEventListener("click", function (e) {
+        const item = e.target.closest(".dropdown-item:not(.disabled)");
+        if (!item) return;
+        selectedDate = item.textContent.trim();
+        // Mark selected
+        for (const el of dateContent.querySelectorAll(".dropdown-item"))
+            el.classList.remove("selected");
+        item.classList.add("selected");
+
+        dateBtn.innerHTML = `<span>${selectedDate}</span><span><i class="fas fa-chevron-down"></i></span>`;
+        dateBtn.classList.add("active");
+        dateContent.classList.remove("show");
+
+        // Step Indicator
+        step4.classList.remove("active");
+        separator3.classList.remove("active");
+
+        // Reset next steps
+        selectedTime = "";
+        timeBtn.innerHTML =
+            '<span>4. Chọn Suất</span><span><i class="fas fa-chevron-down"></i></span>';
+        timeBtn.classList.remove("active");
+        timeBtn.classList.add("disabled");
+        bookBtn.classList.add("disabled");
+
+        timeContent.innerHTML =
+            '<div class="dropdown-item disabled">Đang tải suất chiếu...</div>';
+
+        // AJAX load times
+        const idRap = theaterContent.querySelector(".dropdown-item.selected")
+            .dataset.value;
+        const idPhim = movieContent.querySelector(".dropdown-item.selected")
+            .dataset.id;
+        const ngay = item.dataset.value;
+        $.get(
+            "/ajax/suat-chieu-theo-rap-phim-ngay",
+            { id_rap: idRap, id_phim: idPhim, ngay: ngay },
+            function (data) {
+                if (data.error || data.length === 0) {
+                    timeContent.innerHTML = `<div class="dropdown-item disabled">${
+                        data.error || "Suất chiếu đang được cập nhật!"
+                    }</div>`;
+                } else {
+                    timeContent.innerHTML = "";
+                    data.forEach(function (suat) {
+                        // Lấy giờ ở dạng 20:00 thay vì 20:00:00
+                        const gio = suat.GioChieu
+                            ? suat.GioChieu.substring(0, 5)
+                            : "";
+                        $("#time-content").append(
+                            `<div class="dropdown-item" data-value="${
+                                suat.GioChieu
+                            }" data-id="${suat.ID_SuatChieu}">
+                                <span class="marquee-text">${gio}${
+                                suat.DinhDang ? " - " + suat.DinhDang : ""
+                            }</span>
+                            </div>`
+                        );
+                    });
+                    timeBtn.classList.remove("disabled");
+                }
+            }
+        );
+    });
+
+    // Time
+    timeBtn.addEventListener("click", function () {
+        if (!this.classList.contains("disabled")) {
+            closeAllDropdowns();
+            timeContent.classList.toggle("show");
+        }
+    });
+    timeContent.addEventListener("click", function (e) {
+        const item = e.target.closest(".dropdown-item:not(.disabled)");
+        if (!item) return;
+        selectedTime = item.textContent.trim();
+        // Mark selected
+        for (const el of timeContent.querySelectorAll(".dropdown-item"))
+            el.classList.remove("selected");
+        item.classList.add("selected");
+
+        timeBtn.innerHTML = `<span>${selectedTime}</span><span><i class="fas fa-chevron-down"></i></span>`;
+        timeBtn.classList.add("active");
+        timeContent.classList.remove("show");
+
+        // Step Indicator
+        step4.classList.add("active");
+        separator3.classList.add("active");
+
+        // Enable Book button
+        bookBtn.classList.remove("disabled");
+    });
+
+    // Book button
+    bookBtn.addEventListener("click", function () {
+        if (bookBtn.classList.contains("disabled")) return;
+        // Chuyển hướng đến trang đặt vé
+        const phimSlug = movieContent.querySelector(".dropdown-item.selected")
+            .dataset.value;
+        const ngay = dateContent.querySelector(".dropdown-item.selected")
+            .dataset.value;
+        const gio = timeContent.querySelector(".dropdown-item.selected").dataset
+            .value;
+        window.location.href = `/dat-ve/${phimSlug}/${ngay}/${gio}`;
+    });
+
+    // Helper: Close dropdowns
+    function closeAllDropdowns() {
+        document.querySelectorAll(".dropdown-content").forEach((dropdown) => {
+            dropdown.classList.remove("show");
+        });
+    }
+});
 // Add some interactive effects
 document.querySelectorAll(".movie-card").forEach((card) => {
     card.addEventListener("mouseenter", () => {
@@ -879,8 +1142,6 @@ document.addEventListener("DOMContentLoaded", function () {
             }, 600);
         });
     });
-
-
 
     // Parallax effect
     document.addEventListener("mousemove", function (e) {

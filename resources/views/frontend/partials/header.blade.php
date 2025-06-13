@@ -78,7 +78,7 @@
                 <div class="col-lg-3">
                     <div class="site-logo">
                         <a href="{{ asset('/') }}">
-                            <img width="150px" src="Content/img/logoCineTick.png" alt="filmoja" />
+                            <img width="150px" src="Content/img/logoCineTick.png"  alt="filmoja" />
                         </a>
                     </div>
                     <!-- Responsive Menu Start -->

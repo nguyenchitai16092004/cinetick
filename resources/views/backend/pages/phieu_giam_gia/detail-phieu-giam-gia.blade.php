@@ -19,7 +19,7 @@
                     <input type="number" name="PhanTramGiam" class="form-control" value="{{ $km->PhanTramGiam }}" required min="1" max="100">
                 </div>
                 <div class="form-group mb-3">
-                    <label for="GiaTriToiDa">Giá trị tối đa (VNĐ)</label>
+                    <label for="GiaTriToiDa">Giá trị tối đa (đ)</label>
                     <input type="number" name="GiaTriToiDa" class="form-control" value="{{ $km->GiaTriToiDa }}" required step="1000">
                 </div>
                 <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Cập nhật</button>

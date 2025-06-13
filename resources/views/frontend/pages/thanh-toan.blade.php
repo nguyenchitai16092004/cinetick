@@ -12,7 +12,8 @@
 
             <div class="movie-details">
                 <div class="movie-poster">
-                    <img src="{{ $suatChieu->phim->HinhAnh ? asset('storage/' . $suatChieu->phim->HinhAnh) : asset('images/no-image.jpg') }}" alt="{{ $suatChieu->phim->TenPhim }}">
+                    <img src="{{ $suatChieu->phim->HinhAnh ? asset('storage/' . $suatChieu->phim->HinhAnh) : asset('images/no-image.jpg') }}"
+                        alt="{{ $suatChieu->phim->TenPhim }}">
                 </div>
                 <div class="movie-info">
                     <h3>{{ $suatChieu->phim->TenPhim }}</h3>
@@ -38,18 +39,18 @@
             <div class="ticket-details">
                 <div class="ticket-row" style="display: flex; justify-content: space-between;">
                     <div><strong><span>{{ count($selectedSeats) }}x Vé {{ $suatChieu->phim->DoHoa }}</span></strong></div>
-                    <div><strong> {{ number_format($totalPrice, 0, ',', '.') }} VNĐ</strong>
+                    <div><strong> {{ number_format($totalPrice, 0, ',', '.') }} đ</strong>
                     </div>
                 </div>
                 <div style="margin-top: 2px;">
-                  
+
                     <br>
                     Ghế:
                     <strong>
                         {{-- Show từng ghế, phân biệt VIP/Thường và giá --}}
-                        @foreach($seatDetails as $detail)
-                        {{ $detail['TenGhe'] }} ({{ $detail['LoaiGhe'] }}){{ !$loop->last ? ', ' : '' }}
-                    @endforeach
+                        @foreach ($seatDetails as $detail)
+                            {{ $detail['TenGhe'] }} ({{ $detail['LoaiGhe'] }}){{ !$loop->last ? ', ' : '' }}
+                        @endforeach
                     </strong>
                 </div>
             </div>
@@ -57,7 +58,7 @@
             <div class="total-row">
                 <div>Tổng cộng</div>
                 <div class="total-price">
-                    {{ number_format($totalPrice, 0, ',', '.') }} VNĐ
+                    {{ number_format($totalPrice, 0, ',', '.') }} đ
                 </div>
             </div>
         </div>
@@ -143,7 +144,6 @@
             }
         }
         updateTimer();
-
     </script>
 
     <div id="paymentConfirmPopup" class="payment-confirm-popup">
@@ -152,11 +152,11 @@
                 <h2>Xác nhận thanh toán</h2>
                 <button class="close-popup" onclick="closePaymentPopup()">&times;</button>
             </div>
-            
+
             <div class="movie-info-with-poster">
                 <div class="movie-poster-popup">
-                    <img src="{{ $suatChieu->phim->HinhAnh ? asset('storage/' . $suatChieu->phim->HinhAnh) : asset('images/no-image.jpg') }}" 
-                         alt="{{ $suatChieu->phim->TenPhim }}">
+                    <img src="{{ $suatChieu->phim->HinhAnh ? asset('storage/' . $suatChieu->phim->HinhAnh) : asset('images/no-image.jpg') }}"
+                        alt="{{ $suatChieu->phim->TenPhim }}">
                 </div>
                 <div class="movie-info-popup">
                     <h3>{{ $suatChieu->phim->TenPhim }}</h3>
@@ -205,7 +205,7 @@
                     <div class="payment-info-row">
                         <span class="label">Ghế đã chọn:</span>
                         <span class="value">
-                            @foreach($seatDetails as $detail)
+                            @foreach ($seatDetails as $detail)
                                 {{ $detail['TenGhe'] }} ({{ $detail['LoaiGhe'] }}){{ !$loop->last ? ', ' : '' }}
                             @endforeach
                         </span>
@@ -224,7 +224,9 @@
                     </div>
                     <div class="payment-info-row">
                         <span class="label">Tổng tiền:</span>
-                        <span class="value" style="color: #f7941d; font-weight: bold;">{{ number_format($totalPrice, 0, ',', '.') }} VNĐ</span>
+                        <span class="value"
+                            style="color: #f7941d; font-weight: bold;">{{ number_format($totalPrice, 0, ',', '.') }}
+                            đ</span>
                     </div>
                 </div>
             </div>
@@ -250,34 +252,34 @@
         }
 
         function proceedToPayment() {
-    // Gán seatDetails vào input hidden trước khi gửi
-    document.getElementById('seatDetailsInput').value = JSON.stringify(window.seatDetails || []);
-    const form = document.getElementById('paymentForm');
-    const formData = new FormData(form);
+            // Gán seatDetails vào input hidden trước khi gửi
+            document.getElementById('seatDetailsInput').value = JSON.stringify(window.seatDetails || []);
+            const form = document.getElementById('paymentForm');
+            const formData = new FormData(form);
 
-    fetch(form.action, {
-        method: 'POST',
-        headers: {
-            'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
-            'Accept': 'application/json'
-        },
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.checkoutUrl) {
-            window.location.href = data.checkoutUrl;
-        } else if (data.error) {
-            alert('Lỗi: ' + data.error);
-        } else {
-            alert('Không thể tạo đơn hàng. Vui lòng thử lại.');
+            fetch(form.action, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
+                        'Accept': 'application/json'
+                    },
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.checkoutUrl) {
+                        window.location.href = data.checkoutUrl;
+                    } else if (data.error) {
+                        alert('Lỗi: ' + data.error);
+                    } else {
+                        alert('Không thể tạo đơn hàng. Vui lòng thử lại.');
+                    }
+                })
+                .catch(err => {
+                    alert('Lỗi khi kết nối tới máy chủ.');
+                    console.error(err);
+                });
         }
-    })
-    .catch(err => {
-        alert('Lỗi khi kết nối tới máy chủ.');
-        console.error(err);
-    });
-}
         // Replace the old click handler with the new one
         document.getElementById('payos-submit-btn').addEventListener('click', function(e) {
             e.preventDefault();
@@ -289,6 +291,98 @@
             if (e.target === this) {
                 closePaymentPopup();
             }
+        });
+    </script>
+    <!-- Truyền biến sang JS -->
+    <script>
+        window.userId = @json(session('user_id'));
+        window.selectedSeats = @json(explode(',', request('selectedSeats') ?? ''));
+        window.myHeldSeats = @json($myHeldSeats ?? []);
+        window.bookingData = window.bookingData || {};
+        window.bookingData.suatChieuId = {{ $suatChieu->ID_SuatChieu }};
+
+        function getAllHeldSeats() {
+            // Ưu tiên window.myHeldSeats, fallback sang window.selectedSeats
+            return (window.myHeldSeats && window.myHeldSeats.length) ?
+                window.myHeldSeats :
+                (window.selectedSeats || []);
+        }
+
+        function releaseAllHeldSeats() {
+            var heldSeats = getAllHeldSeats();
+            console.log('releaseAllHeldSeats:', {
+                heldSeats,
+                userId: window.userId,
+                suatChieuId: window.bookingData.suatChieuId
+            });
+            if (!heldSeats || heldSeats.length === 0) return;
+            if (!window.bookingData || !window.bookingData.suatChieuId) return;
+            if (!window.userId) return;
+            fetch("/dat-ve/bo-giu-ghe-nhieu", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    danh_sach_ghe: heldSeats,
+                    suat_chieu_id: window.bookingData.suatChieuId,
+                    user_id: window.userId
+                }),
+                keepalive: true, // QUAN TRỌNG!
+                credentials: "same-origin"
+            });
+        }
+        window.addEventListener("beforeunload", releaseAllHeldSeats);
+        window.addEventListener("visibilitychange", function() {
+            if (document.visibilityState === "hidden") releaseAllHeldSeats();
+        });
+    </script>
+    <!-- Nạp JS release -->
+    <script>
+        document.querySelectorAll('a, .back-button').forEach(function(el) {
+            el.addEventListener('click', function(e) {
+                const href = el.getAttribute('href') || '';
+                if (
+                    href === '/' ||
+                    el.classList.contains('back-button') ||
+                    href === "{{ route('home') }}"
+                ) {
+                    e.preventDefault();
+
+                    var heldSeats = (window.myHeldSeats && window.myHeldSeats.length) ? window.myHeldSeats :
+                        (window.selectedSeats || []);
+                    if (heldSeats && heldSeats.length && window.bookingData && window.bookingData
+                        .suatChieuId) {
+                        fetch("/dat-ve/bo-giu-ghe-nhieu", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "X-CSRF-TOKEN": document.querySelector('input[name="_token"]')
+                                    .value // THÊM DÒNG NÀY
+                            },
+                            body: JSON.stringify({
+                                danh_sach_ghe: heldSeats,
+                                suat_chieu_id: window.bookingData.suatChieuId,
+                                user_id: window.userId
+                            }),
+                            keepalive: true,
+                            credentials: "same-origin"
+                        }).finally(() => {
+                            if (href) {
+                                window.location.href = href;
+                            } else {
+                                window.history.back();
+                            }
+                        });
+                    } else {
+                        if (href) {
+                            window.location.href = href;
+                        } else {
+                            window.history.back();
+                        }
+                    }
+                }
+            });
         });
     </script>
 @stop

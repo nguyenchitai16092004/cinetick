@@ -30745,9 +30745,11 @@ $(document).ready(function () {
                     return u;
             return i;
         };
-    });
+    } );
+    
 setTimeout(function () {
     if (document.readyState !== "complete") {
         window.stop();
     }
 }, 5000);
+

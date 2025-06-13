@@ -71,7 +71,7 @@
                                             </td>
                                             <td>{{ date('d/m/Y', strtotime($suatChieu->NgayChieu)) }}</td>
                                             <td>{{ date('H:i', strtotime($suatChieu->GioChieu)) }}</td>
-                                            <td>{{ number_format($suatChieu->GiaVe, 0, ',', '.') }} VNĐ</td>
+                                            <td>{{ number_format($suatChieu->GiaVe, 0, ',', '.') }} đ</td>
                                             <td>
                                                 <div class="btn-group" role="group">
                                                     <a href="{{ route('suat-chieu.edit', $suatChieu->ID_SuatChieu) }}"

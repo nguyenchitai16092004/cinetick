@@ -97,7 +97,7 @@
                             </div>
 
                             <div class="form-group mb-3">
-                                <label for="GiaVe">Giá vé (VNĐ) <span class="text-danger">*</span></label>
+                                <label for="GiaVe">Giá vé (đ) <span class="text-danger">*</span></label>
                                 <input type="number" class="form-control @error('GiaVe') is-invalid @enderror"
                                     id="GiaVe" name="GiaVe" value="{{ old('GiaVe', 45000) }}" min="0"
                                     step="1000" required>
