@@ -52,8 +52,7 @@ class PhimController extends Controller
     public function phimSapChieu()
     {
         $today = now()->toDateString();
-        $dsPhimSapChieu = Phim::whereDate('NgayKhoiChieu', '>', $today)
-            ->where('TrangThai', 0)
+        $dsPhimSapChieu = Phim::whereDate('NgayKhoiChieu', '>=', $today)
             ->get();
 
         return view('frontend.pages.phim-sap-chieu', compact('dsPhimSapChieu'));

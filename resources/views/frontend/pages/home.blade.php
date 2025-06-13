@@ -195,14 +195,6 @@
                     <span><i class="fas fa-chevron-down"></i></span>
                 </button>
                 <div class="dropdown-content" id="date-content">
-                    <div class="dropdown-item" data-value="2025-05-22"><span class="marquee-text">Thứ Năm, 22/05</span>
-                    </div>
-                    <div class="dropdown-item" data-value="2025-05-23"><span class="marquee-text">Thứ Sáu, 23/05</span>
-                    </div>
-                    <div class="dropdown-item" data-value="2025-05-24"><span class="marquee-text">Thứ Bảy, 24/05</span>
-                    </div>
-                    <div class="dropdown-item" data-value="2025-05-25"><span class="marquee-text">Chủ Nhật, 25/05</span>
-                    </div>
                 </div>
             </div>
 
@@ -212,16 +204,6 @@
                     <span><i class="fas fa-chevron-down"></i></span>
                 </button>
                 <div class="dropdown-content" id="time-content">
-                    <div class="dropdown-item" data-value="10:15"><span class="marquee-text">10:15 - 2D Deluxe</span>
-                    </div>
-                    <div class="dropdown-item" data-value="13:30"><span class="marquee-text">13:30 - 2D Standard</span>
-                    </div>
-                    <div class="dropdown-item" data-value="16:20"><span class="marquee-text">16:20 - 3D Deluxe</span>
-                    </div>
-                    <div class="dropdown-item" data-value="19:45"><span class="marquee-text">19:45 - 2D Deluxe</span>
-                    </div>
-                    <div class="dropdown-item" data-value="22:10"><span class="marquee-text">22:10 - 2D Standard</span>
-                    </div>
                 </div>
             </div>
 

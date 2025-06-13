@@ -159,7 +159,7 @@
                                     </div>
                                     <div class="cinema-date">
                                         <i class="fas fa-calendar-day"></i>
-                                        {{ ucfirst(\Carbon\Carbon::parse($ngayChieu)->translatedFormat('l, d/m/Y')) }}
+                                        {{ ucwords(\Carbon\Carbon::parse($ngayChieu)->translatedFormat('l, d/m/Y')) }}
                                     </div>
                                 </div>
                             </div>

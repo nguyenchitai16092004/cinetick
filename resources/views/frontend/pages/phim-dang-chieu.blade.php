@@ -12,7 +12,8 @@
                             <article class="entry-item">
                                 <div class="front">
                                     <div class="entry-thumb">
-                                        <img src="{{ $phim->HinhAnh }}">
+                                        <img
+                                        src="{{ $phim->HinhAnh ? asset('storage/' . $phim->HinhAnh) : asset('images/no-image.jpg') }}">
                                     </div>
                                     <a href="{{ route('phim.chiTiet', ['slug' => $phim->Slug]) }}">
                                         <h4 class="entry-title">{{ $phim->TenPhim }} (T{{ $phim->DoTuoi }})</h4>
@@ -33,7 +34,9 @@
                                     <span class="pg">P</span>
                                     <div class="movie-char-info-left">
                                         <p style="font-style:italic">
-                                        <p>{{ $phim->theLoai->TenTheLoai ?? '' }}</p>
+                                            @foreach ($phim->theLoai as $index => $theLoai)
+                                                <p>{{ $theLoai->TenTheLoai }}{{ $index < count($phim->theLoai) - 1 ? ', ' : '' }}</p>
+                                            @endforeach
                                         </p>
                                     </div>
                                     <div class="entry-time">
