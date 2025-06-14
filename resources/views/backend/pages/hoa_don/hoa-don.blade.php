@@ -1,161 +1,116 @@
-@extends('layouts.admin')
+@extends('backend.layouts.master')
+@section('title', 'Quản lý Hóa Đơn')
 
-@section('title', 'Chi tiết hóa đơn')
+@section('main')
+<style>
+    .table thead th {
+        background-color: #6a1b9a;
+        color: #fff;
+        text-align: center;
+    }
 
-@section('content')
+    .table td {
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .btn-purple {
+        background-color: #8e24aa;
+        color: white;
+    }
+
+    .btn-purple:hover {
+        background-color: #6a1b9a;
+    }
+
+    .filter-box {
+        background: #f3e5f5;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+
+    .title-header {
+        font-weight: bold;
+        color: #6a1b9a;
+    }
+</style>
+
 <div class="container-fluid">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3">Chi tiết hóa đơn #{{ $hoaDon->ID_HoaDon }}</h1>
-        <div>
-            <a href="{{ route('admin.hoadon.index') }}" class="btn btn-secondary">
-                <i class="fas fa-arrow-left"></i> Quay lại
-            </a>
-            <a href="{{ route('admin.hoadon.edit', $hoaDon->ID_HoaDon) }}" class="btn btn-warning">
-                <i class="fas fa-edit"></i> Chỉnh sửa
-            </a>
+    <h4 class="title-header mb-3">Quản lý Hóa Đơn</h4>
+
+    {{-- Bộ lọc --}}
+    <form method="GET" action="{{ route('hoa-don.index') }}" class="filter-box row">
+        <div class="col-md-2 mb-2">
+            <label>Từ ngày:</label>
+            <input type="date" name="start_date" class="form-control" value="{{ request('start_date') }}">
         </div>
+        <div class="col-md-2 mb-2">
+            <label>Đến ngày:</label>
+            <input type="date" name="end_date" class="form-control" value="{{ request('end_date') }}">
+        </div>
+        <div class="col-md-2 mb-2">
+            <label>ID Tài khoản:</label>
+            <input type="number" name="id_tai_khoan" class="form-control" placeholder="VD: 12" value="{{ request('id_tai_khoan') }}">
+        </div>
+        <div class="col-md-2 mb-2">
+            <label>PT Thanh toán:</label>
+            <input type="text" name="pttt" class="form-control" placeholder="Tiền mặt, VNPay..." value="{{ request('pttt') }}">
+        </div>
+        <div class="col-md-2 mb-2">
+            <label>Min Tổng tiền:</label>
+            <input type="number" name="min_amount" class="form-control" value="{{ request('min_amount') }}">
+        </div>
+        <div class="col-md-2 mb-2">
+            <label>Max Tổng tiền:</label>
+            <input type="number" name="max_amount" class="form-control" value="{{ request('max_amount') }}">
+        </div>
+        <div class="col-md-12 mt-3 text-end">
+            <button class="btn btn-purple">Lọc</button>
+            <a href="{{ route('hoa-don.index') }}" class="btn btn-secondary">Xóa bộ lọc</a>
+        </div>
+    </form>
+
+    {{-- Danh sách hóa đơn --}}
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Khách hàng</th>
+                    <th>Ngày tạo</th>
+                    <th>PT Thanh toán</th>
+                    <th>Tổng tiền</th>
+                    <th>Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($hoaDons as $index => $hoaDon)
+                <tr>
+                    <td>{{ $hoaDons->firstItem() + $index }}</td>
+                    <td>{{ $hoaDon->taiKhoan->HoTen ?? 'Không có thông tin' }}</td>
+                    <td>{{ \Carbon\Carbon::parse($hoaDon->NgayTao)->format('d/m/Y') }}</td>
+                    <td>{{ $hoaDon->PTTT }}</td>
+                    <td>{{ number_format($hoaDon->TongTien, 0, ',', '.') }} VNĐ</td>
+                    <td>
+                        <a href="{{ route('hoa-don.show', $hoaDon->id) }}" class="btn btn-sm btn-info">Xem</a>
+                        <a href="{{ route('hoa-don.edit', $hoaDon->id) }}" class="btn btn-sm btn-primary">Sửa</a>
+                        <form action="{{ route('hoa-don.destroy', $hoaDon->id) }}" method="POST" class="d-inline">
+                            @csrf @method('DELETE')
+                            <button onclick="return confirm('Bạn có chắc muốn xóa?')" class="btn btn-sm btn-danger">Xóa</button>
+                        </form>
+                    </td>
+                </tr>
+                @empty
+                <tr><td colspan="6">Không tìm thấy hóa đơn nào.</td></tr>
+                @endforelse
+            </tbody>
+        </table>
     </div>
 
-    <!-- Thông tin hóa đơn -->
-    <div class="card mb-4">
-        <div class="card-header">
-            <h5 class="card-title">Thông tin hóa đơn</h5>
-        </div>
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-6">
-                    <table class="table table-borderless">
-                        <tr>
-                            <th class="w-25">ID hóa đơn:</th>
-                            <td>{{ $hoaDon->ID_HoaDon }}</td>
-                        </tr>
-                        <tr>
-                            <th>Ngày tạo:</th>
-                            <td>{{ date('d/m/Y', strtotime($hoaDon->NgayTao)) }}</td>
-                        </tr>
-                        <tr>
-                            <th>Tổng tiền:</th>
-                            <td>{{ number_format($hoaDon->TongTien, 0, ',', '.') }} đ</td>
-                        </tr>
-                    </table>
-                </div>
-                <div class="col-md-6">
-                    <table class="table table-borderless">
-                        <tr>
-                            <th class="w-25">PTTT:</th>
-                            <td>{{ $hoaDon->PTTT }}</td>
-                        </tr>
-                        <tr>
-                            <th>ID tài khoản:</th>
-                            <td>{{ $hoaDon->ID_TaiKhoan }}</td>
-                        </tr>
-                        <tr>
-                            <th>Tên người dùng:</th>
-                            <td>{{ $hoaDon->taiKhoan->TenTaiKhoan ?? 'N/A' }}</td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Danh sách vé xem phim -->
-    <div class="card">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="card-title mb-0">Danh sách vé xem phim</h5>
-            <a href="{{ route('admin.vexemphim.create', $hoaDon->ID_HoaDon) }}" class="btn btn-primary btn-sm">
-                <i class="fas fa-plus"></i> Thêm vé mới
-            </a>
-        </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-striped table-hover">
-                    <thead>
-                        <tr>
-                            <th>ID Vé</th>
-                            <th>Tên phim</th>
-                            <th>Ngày xem</th>
-                            <th>Số lượng</th>
-                            <th>Giá vé</th>
-                            <th>Thành tiền</th>
-                            <th>Trạng thái</th>
-                            <th>Thao tác</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($hoaDon->veXemPhim as $ve)
-                        <tr>
-                            <td>{{ $ve->ID_Ve }}</td>
-                            <td>{{ $ve->TenPhim }}</td>
-                            <td>{{ date('d/m/Y', strtotime($ve->NgayXem)) }}</td>
-                            <td>{{ $ve->SoLuong }}</td>
-                            <td>{{ number_format($ve->GiaVe, 0, ',', '.') }} đ</td>
-                            <td>{{ number_format($ve->GiaVe * $ve->SoLuong, 0, ',', '.') }} đ</td>
-                            <td>
-                                <span class="badge bg-{{ $ve->TrangThai ? 'success' : 'danger' }}">
-                                    {{ $ve->TrangThai ? 'Còn hiệu lực' : 'Đã hủy' }}
-                                </span>
-                            </td>
-                            <td>
-                                <div class="btn-group" role="group">
-                                    <a href="{{ route('admin.vexemphim.show', [$hoaDon->ID_HoaDon, $ve->ID_Ve]) }}" class="btn btn-sm btn-info" title="Xem chi tiết">
-                                        <i class="fas fa-eye"></i>
-                                    </a>
-                                    <a href="{{ route('admin.vexemphim.edit', [$hoaDon->ID_HoaDon, $ve->ID_Ve]) }}" class="btn btn-sm btn-warning" title="Chỉnh sửa">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                    <form action="{{ route('admin.vexemphim.status', [$hoaDon->ID_HoaDon, $ve->ID_Ve]) }}" method="POST" class="d-inline">
-                                        @csrf
-                                        @method('PATCH')
-                                        <button type="submit" class="btn btn-sm btn-{{ $ve->TrangThai ? 'secondary' : 'success' }}" title="{{ $ve->TrangThai ? 'Hủy vé' : 'Kích hoạt vé' }}">
-                                            <i class="fas fa-{{ $ve->TrangThai ? 'ban' : 'check' }}"></i>
-                                        </button>
-                                    </form>
-                                    <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteVeModal{{ $ve->ID_Ve }}" title="Xóa">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-
-                                <!-- Modal xóa vé -->
-                                <div class="modal fade" id="deleteVeModal{{ $ve->ID_Ve }}" tabindex="-1" aria-labelledby="deleteVeModalLabel{{ $ve->ID_Ve }}" aria-hidden="true">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="deleteVeModalLabel{{ $ve->ID_Ve }}">Xác nhận xóa</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                Bạn có chắc chắn muốn xóa vé xem phim #{{ $ve->ID_Ve }} không?
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                                                <form action="{{ route('admin.vexemphim.destroy', [$hoaDon->ID_HoaDon, $ve->ID_Ve]) }}" method="POST">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger">Xóa</button>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="8" class="text-center">Không có vé xem phim nào</td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <th colspan="5" class="text-end">Tổng tiền:</th>
-                            <th>{{ number_format($hoaDon->TongTien, 0, ',', '.') }} đ</th>
-                            <th colspan="2"></th>
-                        </tr>
-                    </tfoot>
-                </table>
-            </div>
-        </div>
+    {{-- Phân trang --}}
+    <div class="d-flex justify-content-center">
+        {{ $hoaDons->appends(request()->all())->links() }}
     </div>
 </div>
 @endsection

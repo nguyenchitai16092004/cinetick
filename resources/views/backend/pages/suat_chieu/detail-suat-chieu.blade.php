@@ -154,7 +154,7 @@
                 } else {
                     rapIdInput.value = '';
                 }
-                checkScheduleConflict();
+                checkLichTrinhXungDot();
             });
 
             // AJAX lấy danh sách phim khi chọn ngày chiếu
@@ -165,8 +165,8 @@
             });
 
             // Kiểm tra xung đột khi thay đổi giờ chiếu hoặc phim
-            gioChieu.addEventListener('change', checkScheduleConflict);
-            phimSelect.addEventListener('change', checkScheduleConflict);
+            gioChieu.addEventListener('change', checkLichTrinhXungDot);
+            phimSelect.addEventListener('change', checkLichTrinhXungDot);
         });
 
         function getMovie() {
@@ -197,7 +197,7 @@
                     
                     // Trigger conflict check after loading movies
                     if (currentPhimId) {
-                        checkScheduleConflict();
+                        checkLichTrinhXungDot();
                     }
                 },
                 error: function(xhr) {
@@ -207,7 +207,7 @@
             });
         }
 
-        function checkScheduleConflict() {
+        function checkLichTrinhXungDot() {
             const phongChieuId = document.getElementById('ID_PhongChieu').value;
             const ngayChieu = document.getElementById('NgayChieu').value;
             const gioChieu = document.getElementById('GioChieu').value;
@@ -278,7 +278,7 @@
 
         function selectTime(time) {
             document.getElementById('GioChieu').value = time;
-            checkScheduleConflict();
+            checkLichTrinhXungDot();
         }
 
         function resetForm() {

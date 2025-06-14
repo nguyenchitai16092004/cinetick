@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('the_loai_phim', function (Blueprint $table) {
             $table->id('ID_TheLoaiPhim');
             $table->string('TenTheLoai', 100);
+            $table->string('Slug', 100) ;
             $table->timestamps();
         });
     }

@@ -17,7 +17,6 @@ class AutController extends Controller
         return view('backend.login');
     }
 
-    // Xử lý đăng nhập
     public function dang_nhap(Request $request)
     {
         $validator = Validator::make(
@@ -38,14 +37,6 @@ class AutController extends Controller
                 ->withInput();
         }
 
-        // Hạn chế số lần đăng nhập sai
-        if (session('login_attempts', 0) >= 5) {
-            if (time() - session('last_attempt', 0) < 1800) { // 30 phút
-                return redirect()->back()->with('error', 'Quá nhiều lần đăng nhập sai. Vui lòng thử lại sau 30 phút.');
-            }
-            session(['login_attempts' => 0]);
-        }
-
         // Sử dụng tên cột phù hợp với bảng tai_khoan
         $credentials = [
             'TenDN' => $request->TenDN,
@@ -62,7 +53,7 @@ class AutController extends Controller
                 // Reset số lần đăng nhập sai
                 session(['login_attempts' => 0]);
 
-                // Lưu thông tin người đăng nhập vào session
+                // Lưu thông tin người đăng nhập vào session nhờ vậy ta có thể đăng nhập vào trang chủ user mà không cần nhập lại ^^
                 $user = Auth::user();
                 session([
                     'user_id' => $user->ID_TaiKhoan,
@@ -94,7 +85,7 @@ class AutController extends Controller
     // Đăng xuất
     public function dang_xuat()
     {
-        // Xóa thông tin người dùng khỏi session
+        // Xóa thông tin người dùng khỏi session khi đăng xuất
         session()->forget([
             'user_id',
             'user_name',
@@ -105,15 +96,12 @@ class AutController extends Controller
             'is_logged_in'
         ]);
 
-        // Hoặc có thể xóa toàn bộ session
-        // session()->flush();
-
         Auth::logout();
         return redirect('/admin')->with('success', 'Đăng xuất thành công!');
     }
 
     // Kiểm tra người dùng có đăng nhập không
-    public function isLoggedIn()
+    public function KiemTraDangNhap()
     {
         return session('is_logged_in', false) && Auth::check();
     }

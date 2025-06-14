@@ -1,15 +1,19 @@
 @extends('backend.layouts.master')
-@section('title', 'Tạo suất chiếu')
+@section('title', 'Tạo suất chiếu hàng loạt')
+
+@section('css')
+    <link rel="stylesheet" href="{{ asset('backend/assets/css/suat-chieu.css') }}">
+@endsection
 
 @section('main')
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-md-8">
+            <div class="col-md-10">
                 <div class="card">
                     <div class="card-header">
                         <div class="d-flex justify-content-between align-items-center">
-                            <h5 class="m-0">Thêm suất chiếu mới</h5>
+                            <h5 class="m-0">Tạo suất chiếu hàng loạt</h5>
                             <a href="{{ route('suat-chieu.index') }}" class="btn btn-secondary">Quay lại</a>
                         </div>
                     </div>
@@ -25,95 +29,112 @@
                             </div>
                         @endif
 
-                        <!-- Alert for schedule conflicts -->
-                        <div id="conflict-alert" class="alert alert-warning d-none">
-                            <strong>Cảnh báo xung đột lịch chiếu!</strong>
-                            <div id="conflict-message"></div>
-                        </div>
-
-                        <form action="{{ route('suat-chieu.store') }}" method="POST" id="suatChieuForm">
+                        <form action="{{ route('suat-chieu.store') }}" method="POST" id="bulkSuatChieuForm">
                             @csrf
 
-                            <div class="form-group mb-3">
-                                <label for="NgayChieu">Ngày chiếu <span class="text-danger">*</span></label>
-                                <input type="date" class="form-control @error('NgayChieu') is-invalid @enderror"
-                                    id="NgayChieu" name="NgayChieu" value="{{ old('NgayChieu') }}" min="{{ date('Y-m-d') }}"
-                                    max="{{ date('Y-m-d', strtotime('+3 months')) }}" required>
-                                @error('NgayChieu')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                                <small class="form-text text-muted">Chỉ có thể tạo suất chiếu trong vòng 3 tháng tới</small>
+                            <!-- Thông tin chung -->
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="ID_Phim">Phim <span class="text-danger">*</span></label>
+                                        <select name="ID_Phim" id="ID_Phim" class="form-control" required>
+                                            <option value="">-- Chọn phim --</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="ID_PhongChieu">Phòng chiếu <span class="text-danger">*</span></label>
+                                        <select name="ID_PhongChieu" id="ID_PhongChieu" class="form-control" required>
+                                            <option value="">-- Chọn phòng chiếu --</option>
+                                            @foreach ($phongChieus as $phongChieu)
+                                                <option value="{{ $phongChieu->ID_PhongChieu }}"
+                                                    data-rap-id="{{ $phongChieu->ID_Rap }}">
+                                                    {{ $phongChieu->TenPhongChieu }} ({{ $phongChieu->TenRap }} :
+                                                    {{ $phongChieu->DiaChi }})
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
 
-                            <div class="form-group mb-3">
-                                <label for="ID_Phim">Phim <span class="text-danger">*</span></label>
-                                <select name="ID_Phim" id="ID_Phim"
-                                    class="form-control @error('ID_Phim') is-invalid @enderror" required>
-                                    <option value="">-- Chọn phim --</option>
-                                </select>
-                                @error('ID_Phim')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                                <small class="form-text text-muted">Chỉ hiển thị phim còn trong thời gian chiếu</small>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="GiaVe">Giá vé (VNĐ) <span class="text-danger">*</span></label>
+                                        <input type="number" class="form-control" id="GiaVe" name="GiaVe"
+                                            value="45000" min="0" step="1000" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label>Khoảng thời gian</label>
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <input type="date" class="form-control" id="start_date"
+                                                    min="{{ date('Y-m-d') }}"
+                                                    max="{{ date('Y-m-d', strtotime('+3 months')) }}"
+                                                    placeholder="Từ ngày">
+                                            </div>
+                                            <div class="col-6">
+                                                <input type="date" class="form-control" id="end_date"
+                                                    min="{{ date('Y-m-d') }}"
+                                                    max="{{ date('Y-m-d', strtotime('+3 months')) }}"
+                                                    placeholder="Đến ngày">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
-                            <div class="form-group mb-3">
-                                <label for="ID_PhongChieu">Phòng chiếu <span class="text-danger">*</span></label>
-                                <select name="ID_PhongChieu" id="ID_PhongChieu"
-                                    class="form-control @error('ID_PhongChieu') is-invalid @enderror" required>
-                                    <option value="">-- Chọn phòng chiếu --</option>
-                                    @foreach ($phongChieus as $phongChieu)
-                                        <option value="{{ $phongChieu->ID_PhongChieu }}"
-                                            data-rap-id="{{ $phongChieu->ID_Rap }}"
-                                            {{ old('ID_PhongChieu') == $phongChieu->ID_PhongChieu ? 'selected' : '' }}>
-                                            {{ $phongChieu->TenPhongChieu }} ({{ $phongChieu->TenRap }} :
-                                            {{ $phongChieu->DiaChi }} )
-                                        </option>
-                                    @endforeach
-                                </select>
-                                @error('ID_PhongChieu')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
+                            <input type="hidden" name="ID_Rap" id="ID_Rap">
+
+                            <!-- Chọn ngày và giờ chiếu -->
+                            <div class="card">
+                                <div class="card-header">
+                                    <h6 class="mb-0">Lịch chiếu chi tiết</h6>
+                                    <small class="text-muted">Chọn ngày và giờ chiếu cho từng ngày</small>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row mb-3">
+                                        <div class="col-md-4">
+                                            <button type="button" class="btn btn-outline-primary btn-sm"
+                                                onclick="tinhSoLuongNgay()">
+                                                Tạo từ khoảng thời gian
+                                            </button>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <button type="button" class="btn btn-outline-warning btn-sm"
+                                                onclick="clearToanBoNgay()">
+                                                Xóa tất cả
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div id="schedule-container">
+                                        <!-- Các ngày và giờ chiếu sẽ được thêm vào đây -->
+                                    </div>
+
+                                    <div class="text-center mt-3" id="empty-schedule" style="display: none;">
+                                        <p class="text-muted">Chưa có lịch chiếu nào. Vui lòng thêm ngày chiếu.</p>
+                                    </div>
+                                </div>
                             </div>
 
-                            <input type="hidden" name="ID_Rap" id="ID_Rap" value="{{ old('ID_Rap') }}">
-
-                            <div class="form-group mb-3">
-                                <label for="GioChieu">Giờ chiếu <span class="text-danger">*</span></label>
-                                <input type="time" class="form-control @error('GioChieu') is-invalid @enderror"
-                                    id="GioChieu" name="GioChieu" value="{{ old('GioChieu') }}" required>
-                                @error('GioChieu')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                                <div id="time-suggestions" class="mt-2"></div>
+                            <!-- Xung đột và tổng kết -->
+                            <div id="conflict-summary" class="alert alert-warning d-none">
+                                <strong>Cảnh báo xung đột lịch chiếu!</strong>
+                                <div id="conflict-list"></div>
+                            </div>
+                            <div id="schedule-summary" class="alert alert-info d-none">
+                                <strong>Tổng kết:</strong>
+                                <div id="summary-content"></div>
                             </div>
 
-                            <div class="form-group mb-3">
-                                <label for="GiaVe">Giá vé (đ) <span class="text-danger">*</span></label>
-                                <input type="number" class="form-control @error('GiaVe') is-invalid @enderror"
-                                    id="GiaVe" name="GiaVe" value="{{ old('GiaVe', 45000) }}" min="0"
-                                    step="1000" required>
-                                @error('GiaVe')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-
-                            <div class="form-group">
-                                <button type="submit" class="btn btn-primary" id="submitBtn">
-                                    <i class="fas fa-save"></i> Lưu suất chiếu
-                                </button>
-                                <button type="button" class="btn btn-secondary" onclick="resetForm()">
-                                    <i class="fas fa-redo"></i> Làm mới
+                            <div class="form-group text-center">
+                                <button type="submit" class="btn btn-primary btn-lg" id="submitBtn" disabled>
+                                    <i class="fas fa-save"></i> Tạo tất cả suất chiếu (<span id="total-count">0</span>)
                                 </button>
                             </div>
                         </form>
@@ -122,63 +143,15 @@
             </div>
         </div>
     </div>
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+@endsection
+@section('js')
+    <script src="{{ asset('backend/assets/js/suat-chieu.js') }}" defer></script>
     <script>
-        let conflictCheckTimeout;
-
-        document.addEventListener('DOMContentLoaded', function() {
-            // Khóa dropdown phim khi chưa chọn ngày chiếu
-            document.getElementById('ID_Phim').disabled = true;
-
-            // Lấy các phần tử
-            var phongChieuSelect = document.getElementById('ID_PhongChieu');
-            var rapIdInput = document.getElementById('ID_Rap');
-            var ngayChieu = document.getElementById("NgayChieu");
-            var gioChieu = document.getElementById("GioChieu");
-            var phimSelect = document.getElementById("ID_Phim");
-
-            if (ngayChieu.value) {
-                document.getElementById("ID_Phim").disabled = false;
-                getMovie();
-            }
-
-
-
-            // Gán lại ID_Rap khi đã chọn phòng
-            if (phongChieuSelect.value) {
-                var selectedOption = phongChieuSelect.options[phongChieuSelect.selectedIndex];
-                var rapId = selectedOption.getAttribute('data-rap-id');
-                rapIdInput.value = rapId;
-            }
-
-            // Khi chọn phòng chiếu thì cập nhật ID_Rap
-            phongChieuSelect.addEventListener('change', function() {
-                if (this.value) {
-                    var selectedOption = this.options[this.selectedIndex];
-                    var rapId = selectedOption.getAttribute('data-rap-id');
-                    rapIdInput.value = rapId;
-                } else {
-                    rapIdInput.value = '';
-                }
-                checkScheduleConflict();
-            });
-
-            // AJAX lấy danh sách phim khi chọn ngày chiếu
-            ngayChieu.addEventListener('change', function() {
-                const selectedDate = this.value;
-                if (!selectedDate) return;
-                getMovie()
-            });
-
-            // Kiểm tra xung đột khi thay đổi giờ chiếu hoặc phim
-            gioChieu.addEventListener('change', checkScheduleConflict);
-            phimSelect.addEventListener('change', checkScheduleConflict);
-        });
-
         function getMovie() {
-            const selectedDate = document.getElementById("NgayChieu").value; // thêm dòng này
+            const selectedDate = document.getElementById("start_date").value;
             if (!selectedDate) return;
+
+            console.log("Gửi request lọc phim cho ngày:", selectedDate);
 
             $.ajaxSetup({
                 headers: {
@@ -206,96 +179,5 @@
                 }
             });
         }
-
-
-        function checkScheduleConflict() {
-            const phongChieuId = document.getElementById('ID_PhongChieu').value;
-            const ngayChieu = document.getElementById('NgayChieu').value;
-            const gioChieu = document.getElementById('GioChieu').value;
-            const phimId = document.getElementById('ID_Phim').value;
-
-            // Clear previous timeout
-            if (conflictCheckTimeout) {
-                clearTimeout(conflictCheckTimeout);
-            }
-
-            // Debounce the check
-            conflictCheckTimeout = setTimeout(() => {
-                if (phongChieuId && ngayChieu && gioChieu && phimId) {
-                    $.ajax({
-                        url: "{{ route('suat-chieu.check-conflict') }}",
-                        method: 'POST',
-                        data: {
-                            phong_chieu_id: phongChieuId,
-                            ngay_chieu: ngayChieu,
-                            gio_chieu: gioChieu,
-                            phim_id: phimId,
-                            _token: $('meta[name="csrf-token"]').attr('content')
-                        },
-                        success: function(response) {
-                            const alertDiv = document.getElementById('conflict-alert');
-                            const messageDiv = document.getElementById('conflict-message');
-                            const submitBtn = document.getElementById('submitBtn');
-
-                            if (response.has_conflict) {
-                                alertDiv.classList.remove('d-none');
-                                messageDiv.innerHTML = `
-                                    <p>Phòng chiếu đã có suất chiếu "<strong>${response.conflict_show.phim.TenPhim}</strong>" 
-                                    từ <strong>${response.conflict_time}</strong></p>
-                                    <p>Suất chiếu mới sẽ từ <strong>${response.new_time}</strong></p>
-                                    <p>Vui lòng chọn giờ chiếu khác!</p>
-                                `;
-                                submitBtn.disabled = true;
-                                submitBtn.classList.add('btn-secondary');
-                                submitBtn.classList.remove('btn-primary');
-                            } else {
-                                alertDiv.classList.add('d-none');
-                                submitBtn.disabled = false;
-                                submitBtn.classList.remove('btn-secondary');
-                                submitBtn.classList.add('btn-primary');
-
-                                // Show suggested times
-                                showTimeSuggestions();
-                            }
-                        },
-                        error: function(xhr) {
-                            console.error('Error checking conflict:', xhr.responseText);
-                        }
-                    });
-                } else {
-                    // Hide conflict alert if not all fields are filled
-                    document.getElementById('conflict-alert').classList.add('d-none');
-                    document.getElementById('submitBtn').disabled = false;
-                }
-            }, 500);
-        }
-
-        function selectTime(time) {
-            document.getElementById('GioChieu').value = time;
-            checkScheduleConflict();
-        }
-
-        function resetForm() {
-            document.getElementById('suatChieuForm').reset();
-            document.getElementById('ID_Phim').disabled = true;
-            document.getElementById('conflict-alert').classList.add('d-none');
-            document.getElementById('submitBtn').disabled = false;
-        }
     </script>
-
-    <style>
-        .time-suggestion:hover {
-            background-color: #007bff !important;
-            color: white !important;
-        }
-
-        .form-control:focus {
-            border-color: #007bff;
-            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-        }
-
-        .text-danger {
-            color: #dc3545 !important;
-        }
-    </style>
 @endsection

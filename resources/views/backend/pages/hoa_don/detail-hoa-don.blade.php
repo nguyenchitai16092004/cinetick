@@ -1,7 +1,8 @@
-@extends('backend.layouts.master')
-@section('title', 'Quản lý hóa đơn')
+@extends('layouts.admin')
 
-@section('main')
+@section('title', 'Chi tiết hóa đơn')
+
+@section('content')
     <div class="container-fluid">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h1 class="h3">Chi tiết hóa đơn #{{ $hoaDon->ID_HoaDon }}</h1>
@@ -34,7 +35,7 @@
                             </tr>
                             <tr>
                                 <th>Tổng tiền:</th>
-                                <td>{{ number_format($hoaDon->TongTien, 0, ',', '.') }} đ</td>
+                                <td>{{ number_format($hoaDon->TongTien, 0, ',', '.') }} VNĐ</td>
                             </tr>
                         </table>
                     </div>
@@ -52,6 +53,7 @@
                                 <th>Tên người dùng:</th>
                                 <td>{{ $hoaDon->taiKhoan->TenTaiKhoan ?? 'N/A' }}</td>
                             </tr>
+                            >>>>>>> Stashed changes
                         </table>
                     </div>
                 </div>
@@ -88,8 +90,8 @@
                                     <td>{{ $ve->TenPhim }}</td>
                                     <td>{{ date('d/m/Y', strtotime($ve->NgayXem)) }}</td>
                                     <td>{{ $ve->SoLuong }}</td>
-                                    <td>{{ number_format($ve->GiaVe, 0, ',', '.') }} đ</td>
-                                    <td>{{ number_format($ve->GiaVe * $ve->SoLuong, 0, ',', '.') }} đ</td>
+                                    <td>{{ number_format($ve->GiaVe, 0, ',', '.') }} VNĐ</td>
+                                    <td>{{ number_format($ve->GiaVe * $ve->SoLuong, 0, ',', '.') }} VNĐ</td>
                                     <td>
                                         <span class="badge bg-{{ $ve->TrangThai ? 'success' : 'danger' }}">
                                             {{ $ve->TrangThai ? 'Còn hiệu lực' : 'Đã hủy' }}
@@ -161,7 +163,7 @@
                         <tfoot>
                             <tr>
                                 <th colspan="5" class="text-end">Tổng tiền:</th>
-                                <th>{{ number_format($hoaDon->TongTien, 0, ',', '.') }} đ</th>
+                                <th>{{ number_format($hoaDon->TongTien, 0, ',', '.') }} VNĐ</th>
                                 <th colspan="2"></th>
                             </tr>
                         </tfoot>

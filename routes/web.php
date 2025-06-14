@@ -178,7 +178,7 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
 
         // AJAX routes
         Route::post('/loc-phim-theo-ngay', [SuatChieuController::class, 'filterMovieByDate'])->name('loc-phim-theo-ngay');
-        Route::post('/check-conflict', [SuatChieuController::class, 'checkConflict'])->name('check-conflict');
+        Route::post('/check-conflict', [SuatChieuController::class, 'checkLoi'])->name('check-conflict');
     });
 
 
@@ -208,7 +208,7 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
         Route::get('/create', [TaiKhoanController::class, 'create'])->name('create');
         Route::post('/store', [TaiKhoanController::class, 'store'])->name('store');
         Route::get('/edit/{id}', [TaiKhoanController::class, 'edit'])->name('edit');
-        Route::post('/update/{id}', [TaiKhoanController::class, 'update'])->name('update');
+        Route::put('/update/{id}', [TaiKhoanController::class, 'update'])->name('update');
         Route::get('/delete/{id}', [TaiKhoanController::class, 'destroy'])->name('delete');
         Route::get('/change-status/{id}', [TaiKhoanController::class, 'changeStatus'])->name('status');
         Route::get('/export', [TaiKhoanController::class, 'export'])->name('export');
@@ -252,7 +252,7 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
     Route::prefix('binh-luan')->name('binh-luan.')->group(function () {
         Route::get('/', [BinhLuanController::class, 'index'])->name('index');
         Route::get('/show/{id}', [BinhLuanController::class, 'show'])->name('show');
-        Route::get('/update-status/{id}', [BinhLuanController::class, 'updateStatus'])->name('update-status');
+        Route::get('/update-status/{id}', [BinhLuanController::class, 'KiemTraTrangThai'])->name('update-status');
         Route::delete('/destroy/{id}', [BinhLuanController::class, 'destroy'])->name('destroy');
         Route::delete('/destroy-multiple', [BinhLuanController::class, 'destroyMultiple'])->name('destroy-multiple');
         Route::get('/export', [BinhLuanController::class, 'export'])->name('export');

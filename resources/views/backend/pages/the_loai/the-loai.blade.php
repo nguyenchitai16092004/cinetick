@@ -6,11 +6,6 @@
         <h2>Danh sách thể loại phim</h2>
 
         <a href="{{ route('the-loai.create') }}" class="btn btn-primary mb-3">Thêm thể loại</a>
-
-        @if (session('success'))
-            <div class="alert alert-success">{{ session('success') }}</div>
-        @endif
-
         <table class="table table-bordered">
             <thead>
                 <tr>

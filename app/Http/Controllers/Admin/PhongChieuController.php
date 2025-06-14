@@ -11,31 +11,28 @@ use App\Models\Rap;
 
 class PhongChieuController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         $phongChieus = PhongChieu::all();
         return view('backend.pages.phong_chieu.phong-chieu', compact('phongChieus'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        $raps = Rap::all(); // Lấy danh sách rạp
+        $raps = Rap::all();
         return view('backend.pages.phong_chieu.create_phong_chieu', compact('raps'));
     }
 
     public function store(Request $request)
     {
-        // Xác thực dữ liệu đầu vào
+        $soPhongChieu = PhongChieu::where('ID_Rap', $request->ID_Rap)->count();
+        if ($soPhongChieu >= 5) {
+            return redirect()->back()->with('error', 'Rạp này đã đạt tối đa 5 phòng chiếu.')->withInput();
+        }
         $request->validate([
             'roomName' => 'required|string|max:100',
             'ID_Rap' => 'required|exists:rap,ID_Rap',
-            'LoaiPhong' => 'required|integer|in:0,1', // 0: phòng thường, 1: phòng VIP
+            'LoaiPhong' => 'required|integer|in:0,1',
             'rowCount' => 'required|integer|min:5|max:10',
             'colCount' => 'required|integer|min:6|max:12',
             'seatLayout' => 'required|json',
@@ -47,18 +44,9 @@ class PhongChieuController extends Controller
 
         try {
             DB::beginTransaction();
-
-            $soPhongChieu = PhongChieu::where('ID_Rap', $request->ID_Rap)->count();
-            if ($soPhongChieu >= 5) {
-                DB::rollBack();
-                return redirect()->back()->with('error', 'Rạp này đã đạt tối đa 5 phòng chiếu.')->withInput();
-            }
-
-            // Chuyển đổi seatLayout từ JSON sang mảng
             $seatLayout = json_decode($request->seatLayout, true);
             $soLuongGhe = 0;
 
-            // Đếm số ghế hoạt động (TrangThaiGhe = 1 hoặc 2)
             foreach ($seatLayout as $row) {
                 foreach ($row as $seat) {
                     if (isset($seat['TrangThaiGhe']) && $seat['TrangThaiGhe'] > 0) {
@@ -67,7 +55,6 @@ class PhongChieuController extends Controller
                 }
             }
 
-            // Tạo phòng chiếu
             $phongChieu = PhongChieu::create([
                 'TenPhongChieu' => $request->roomName,
                 'LoaiPhong' => $request->LoaiPhong,
@@ -78,15 +65,13 @@ class PhongChieuController extends Controller
                 'CotLoiDi' => json_encode($request->colAisles ?? []),
             ]);
 
-            // Tạo ghế ngồi
             foreach ($seatLayout as $rowIndex => $row) {
                 foreach ($row as $colIndex => $seat) {
-                    $trangThaiGhe = 0; // Mặc định không hoạt động
+                    $trangThaiGhe = 0;
 
                     if (isset($seat['TrangThaiGhe'])) {
                         $trangThaiGhe = $seat['TrangThaiGhe'];
                     } else if (isset($seat['TrangThai']) && $seat['TrangThai'] == 1) {
-                        // Hỗ trợ định dạng cũ
                         $trangThaiGhe = isset($seat['LoaiGhe']) && $seat['LoaiGhe'] == 1 ? 2 : 1;
                     }
 
@@ -108,27 +93,23 @@ class PhongChieuController extends Controller
 
     public function show($id)
     {
-        // Lấy thông tin phòng chiếu và rạp
         $phongChieu = PhongChieu::with('rap')->findOrFail($id);
         $raps = Rap::all();
 
-        // Lấy thông tin ghế
         $ghengoi = GheNgoi::where('ID_PhongChieu', $id)->get();
 
-        // Tính số hàng và cột từ tên ghế
         $rowCount = 0;
         $colCount = 0;
 
         foreach ($ghengoi as $ghe) {
             if (preg_match('/([A-Z])(\d+)/', $ghe->TenGhe, $matches)) {
-                $row = ord($matches[1]) - 64; // Chuyển A->1, B->2, ...
+                $row = ord($matches[1]) - 64;
                 $col = (int)$matches[2];
                 $rowCount = max($rowCount, $row);
                 $colCount = max($colCount, $col);
             }
         }
 
-        // Tạo mảng seatLayout với cấu trúc chuẩn cho frontend
         $seatLayout = [];
         for ($i = 0; $i < $rowCount; $i++) {
             $row = [];
@@ -137,12 +118,10 @@ class PhongChieuController extends Controller
                 $ghe = $ghengoi->firstWhere('TenGhe', $tenGhe);
 
                 if ($ghe) {
-                    // Tạo đối tượng ghế với trạng thái từ database
                     $row[] = [
                         'TrangThaiGhe' => $ghe->LoaiTrangThaiGhe ?? 0
                     ];
                 } else {
-                    // Ghế không tồn tại
                     $row[] = [
                         'TrangThaiGhe' => 0
                     ];
@@ -151,7 +130,6 @@ class PhongChieuController extends Controller
             $seatLayout[] = $row;
         }
 
-        // Định dạng lại dữ liệu lối đi
         $rowAisles = json_decode($phongChieu->HangLoiDi ?: '[]');
         $colAisles = json_decode($phongChieu->CotLoiDi ?: '[]');
 
@@ -165,15 +143,12 @@ class PhongChieuController extends Controller
         ));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, $id)
     {
         $validated = $request->validate([
             'roomName' => 'required|string|max:100',
             'ID_Rap' => 'required|exists:rap,ID_Rap',
-            'LoaiPhong' => 'required|integer|in:0,1', // 0: phòng thường, 1: phòng VIP
+            'LoaiPhong' => 'required|integer|in:0,1',
             'rowCount' => 'required|integer|min:5|max:10',
             'colCount' => 'required|integer|in:6,7,8,9,10,12',
             'rowAisles' => 'array|nullable',
@@ -188,15 +163,12 @@ class PhongChieuController extends Controller
             $phongChieu = PhongChieu::findOrFail($id);
             $seatLayout = json_decode($validated['seatLayout'], true);
 
-            // Đếm số ghế hoạt động
             $soLuongGhe = 0;
             foreach ($seatLayout as $row) {
                 foreach ($row as $seat) {
-                    // Đếm ghế đang hoạt động (TrangThaiGhe > 0)
                     if (isset($seat['TrangThaiGhe']) && $seat['TrangThaiGhe'] > 0) {
                         $soLuongGhe++;
                     } else if (isset($seat['TrangThai']) && $seat['TrangThai'] == 1) {
-                        // Hỗ trợ định dạng cũ
                         $soLuongGhe++;
                     }
                 }
@@ -212,47 +184,37 @@ class PhongChieuController extends Controller
                 'CotLoiDi' => json_encode($validated['colAisles'] ?? [])
             ]);
 
-            // Lấy tất cả các ghế hiện có của phòng chiếu
             $existingSeats = GheNgoi::where('ID_PhongChieu', $id)
                 ->pluck('TenGhe')
                 ->toArray();
 
-            // Danh sách ghế đã xử lý
             $processedSeats = [];
 
-            // Cập nhật hoặc tạo mới ghế ngồi
             foreach ($seatLayout as $i => $row) {
                 foreach ($row as $j => $seat) {
                     $tenGhe = chr(65 + $i) . ($j + 1);
                     $processedSeats[] = $tenGhe;
 
-                    // Xác định trạng thái ghế từ dữ liệu gửi lên
-                    $trangThaiGhe = 0; // Mặc định không hoạt động
+                    $trangThaiGhe = 0;
 
                     if (isset($seat['TrangThaiGhe'])) {
-                        // Dùng trực tiếp giá trị TrangThaiGhe nếu có
                         $trangThaiGhe = $seat['TrangThaiGhe'];
                     } else if (isset($seat['TrangThai'])) {
-                        // Hỗ trợ định dạng cũ
                         if ($seat['TrangThai'] == 1) {
-                            // Ghế hoạt động
-                            $trangThaiGhe = isset($seat['LoaiGhe']) && $seat['LoaiGhe'] == 1 ? 2 : 1; // 2 = VIP, 1 = thường
+                            $trangThaiGhe = isset($seat['LoaiGhe']) && $seat['LoaiGhe'] == 1 ? 2 : 1;
                         } else {
-                            $trangThaiGhe = 0; // Không hoạt động
+                            $trangThaiGhe = 0;
                         }
                     }
 
-                    // Tìm ghế hiện có
                     $gheNgoi = GheNgoi::where('ID_PhongChieu', $id)
                         ->where('TenGhe', $tenGhe)
                         ->first();
 
                     if ($gheNgoi) {
-                        // Cập nhật ghế hiện có
                         $gheNgoi->LoaiTrangThaiGhe = $trangThaiGhe;
                         $gheNgoi->save();
                     } else {
-                        // Tạo ghế mới nếu chưa tồn tại
                         GheNgoi::create([
                             'TenGhe' => $tenGhe,
                             'ID_PhongChieu' => $id,
@@ -262,7 +224,6 @@ class PhongChieuController extends Controller
                 }
             }
 
-            // Xóa các ghế không còn trong sơ đồ mới
             $obsoleteSeats = array_diff($existingSeats, $processedSeats);
             if (!empty($obsoleteSeats)) {
                 GheNgoi::where('ID_PhongChieu', $id)
@@ -278,9 +239,6 @@ class PhongChieuController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy($id)
     {
         try {
