@@ -14,6 +14,7 @@ class TheLoaiPhim extends Model
 
     protected $fillable = [
         'TenTheLoai',
+        'Slug'
     ];
 
     // Quan hệ với bảng phim

@@ -13,7 +13,7 @@ class PhimController extends Controller
 {
     public function index()
     {
-        $today = now()->toDateString(); // Khai báo ngày hôm nay
+        $today = now()->toDateString();
         $currentMonth = now()->month;
         $currentYear = now()->year;
 
@@ -22,13 +22,12 @@ class PhimController extends Controller
             ->orderBy('updated_at', 'desc')
             ->paginate(10);
 
-
-        // PHIM ĐANG CHIẾU: Ngày khởi chiếu <= hôm nay và ngày kết thúc >= hôm nay
-        $dsPhimDangChieu = Phim::whereDate('NgayKhoiChieu', '<=', $today)
+        $dsPhimDangChieu = Phim::join('suat_chieu' , 'suat_chieu.ID_Phim' , '=' , 'phim.ID_Phim')
+            ->whereDate('suat_chieu.NgayChieu' , $today)
+            ->whereDate('NgayKhoiChieu', '<=', $today)
             ->whereDate('NgayKetThuc', '>=', $today)
             ->get();
 
-        // PHIM SẮP CHIẾU: Ngày khởi chiếu > hôm nay và TrangThai = 0
         $dsPhimSapChieu = Phim::whereDate('NgayKhoiChieu', '>=', $today)
             ->get();
 

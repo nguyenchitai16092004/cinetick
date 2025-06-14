@@ -27,10 +27,9 @@ class HomeController extends Controller
             'DiaChi' => 'nullable|string|max:255',
         ]);
 
-        // Lấy bản ghi đầu tiên, nếu chưa có thì tạo bản ghi rỗng
         $thongTin = ThongTinTrangWeb::first();
         if (!$thongTin) {
-            $thongTin = ThongTinTrangWeb::create([]); // tạo dòng rỗng
+            $thongTin = ThongTinTrangWeb::create([]);
         }
 
         $data = $request->only(['Zalo','Hotline', 'Facebook', 'Instagram', 'Email', 'DiaChi']);

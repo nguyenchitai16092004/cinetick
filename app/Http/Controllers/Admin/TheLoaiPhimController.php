@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\TheLoaiPhim;
+use Illuminate\Support\Str;
 
 class TheLoaiPhimController extends Controller
 {
@@ -22,11 +23,18 @@ class TheLoaiPhimController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'TenTheLoai' => 'required|string|max:255',
+            'TenTheLoai' => 'required|string|max:100',
         ]);
+
+        $slug =  Str::slug($request->TenTheLoai);
+
+        if (TheLoaiPhim::where('Slug', $slug)->exists()) {
+            return back()->with('error', 'Thể loại này đã có rồi làm lại đi ');
+        }
 
         TheLoaiPhim::create([
             'TenTheLoai' => $request->TenTheLoai,
+            'Slug' => $slug
         ]);
 
         return redirect()->route('the-loai.index')->with('success', 'Thêm thể loại thành công!');
@@ -41,12 +49,19 @@ class TheLoaiPhimController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'TenTheLoai' => 'required|string|max:255',
+            'TenTheLoai' => 'required|string|max:100',
         ]);
+
+        $slug =  Str::slug($request->TenTheLoai);
+
+        if (TheLoaiPhim::where('Slug', $slug)->exists()) {
+            return back()->with('error', 'Thể loại này đã có rồi làm lại đi ');
+        }
 
         $theloai = TheLoaiPhim::findOrFail($id);
         $theloai->update([
             'TenTheLoai' => $request->TenTheLoai,
+            'Slug' => $slug,
         ]);
 
         return redirect()->route('the-loai.index')->with('success', 'Cập nhật thành công!');

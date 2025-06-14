@@ -10,14 +10,10 @@ use App\Models\Rap;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class SuatChieuController extends Controller
 {
-    // ... các method khác giữ nguyên
-
-    /**
-     * Kiểm tra xung đột lịch chiếu với thời gian phim
-     */
     public function index()
     {
         $suatChieus = SuatChieu::with(['phim', 'phongChieu.rap'])->latest()->paginate(10);
@@ -25,32 +21,19 @@ class SuatChieuController extends Controller
         return view('backend.pages.suat_chieu.suat-chieu', compact('suatChieus', 'phims'));
     }
 
-    /**
-     * Hiển thị form tạo mới suất chiếu
-     */
     public function create()
     {
-        $phims = Phim::where(function ($query) {
-            $query->whereDate('NgayKetThuc', '>=', now())->orWhereNull('NgayKetThuc');
-        })->get();
-
         $phongChieus = PhongChieu::join('rap', 'phong_chieu.ID_Rap', '=', 'rap.ID_Rap')->select('phong_chieu.TenPhongChieu', 'phong_chieu.ID_PhongChieu', 'rap.DiaChi', 'rap.TenRap', 'phong_chieu.ID_Rap')->get();
-        return view('backend.pages.suat_chieu.create-suat-chieu', compact('phims', 'phongChieus'));
+        return view('backend.pages.suat_chieu.create-suat-chieu', compact('phongChieus'));
     }
 
 
-    /**
-     * Hiển thị thông tin chi tiết suất chiếu
-     */
     public function show($id)
     {
         $suatChieu = SuatChieu::with(['phim', 'phongChieu'])->findOrFail($id);
         return view('suat-chieu.show', compact('suatChieu'));
     }
 
-    /**
-     * Hiển thị form chỉnh sửa suất chiếu
-     */
     public function edit($id)
     {
         $suatChieu = SuatChieu::findOrFail($id);
@@ -68,13 +51,6 @@ class SuatChieuController extends Controller
         return view('backend.pages.suat_chieu.detail-suat-chieu', compact('suatChieu', 'phims', 'phongChieus'));
     }
 
-    /**
-     * Cập nhật thông tin suất chiếu
-     */
-
-    /**
-     * Xóa suất chiếu
-     */
     public function destroy($id)
     {
         $suatChieu = SuatChieu::findOrFail($id);
@@ -84,57 +60,54 @@ class SuatChieuController extends Controller
             ->with('success', 'Xóa suất chiếu thành công');
     }
 
-    /**
-     * Lọc suất chiếu theo ngày
-     */
+
     public function filterByDate(Request $request)
     {
         $date = $request->date;
+        if (!$date) {
+            return redirect()->route('suat-chieu.index');
+        }
         $suatChieus = SuatChieu::with(['phim', 'phongChieu'])
             ->whereDate('NgayChieu', $date)
             ->latest()
             ->paginate(10);
-
-        return view('backend.pages.suat_chieu.suat-chieu', compact('suatChieus', 'date'));
+        $phims = Phim::all();
+        return view('backend.pages.suat_chieu.suat-chieu', compact('suatChieus', 'date', 'phims'));
     }
 
-    /**
-     * Lọc suất chiếu theo phim
-     */
+
     public function filterByPhim(Request $request)
     {
         $phimId = $request->phim_id;
+        if (!$phimId) {
+            return redirect()->route('suat-chieu.index');
+        }
         $suatChieus = SuatChieu::with(['phim', 'phongChieu'])
             ->where('ID_Phim', $phimId)
             ->latest()
             ->paginate(10);
 
         $selectedPhim = Phim::find($phimId);
-
-        return view('backend.pages.suat_chieu.suat-chieu', compact('suatChieus', 'selectedPhim'));
+        $phims = Phim::all();
+        return view('backend.pages.suat_chieu.suat-chieu', compact('suatChieus', 'selectedPhim', 'phims'));
     }
 
-    // Lọc xuất chiếu phim ngày chọn
     public function filterMovieByDate(Request $request)
     {
         $date = $request->date;
-        $Phim = Phim::where('NgayKetThuc', '>=', $date)->orWhereNull('NgayKetThuc')->get();
+        $Phim = Phim::where('NgayKhoiChieu', '<=', $date)->orWhereNull('NgayKhoiChieu')->get();
 
         return response()->json($Phim);
     }
-    private function checkScheduleConflict($phongChieuId, $ngayChieu, $gioChieu, $phimId, $excludeId = null)
+    private function checkLichTrinhXungDot($phongChieuId, $ngayChieu, $gioChieu, $phimId, $excludeId = null)
     {
-        // Lấy thông tin phim để biết thời lượng
         $phim = Phim::find($phimId);
         if (!$phim || !$phim->ThoiLuong) {
             return ['has_conflict' => false];
         }
 
-        // Chuyển đổi thời gian bắt đầu và kết thúc
         $startTime = Carbon::parse($ngayChieu . ' ' . $gioChieu);
-        $endTime = $startTime->copy()->addMinutes($phim->ThoiLuong + 30); // +30 phút để dọn dẹp phòng
-
-        // Tìm các suất chiếu khác trong cùng phòng và cùng ngày
+        $endTime = $startTime->copy()->addMinutes($phim->ThoiLuong + 30);
         $conflictQuery = SuatChieu::with('phim')
             ->where('ID_PhongChieu', $phongChieuId)
             ->where('NgayChieu', $ngayChieu);
@@ -169,25 +142,24 @@ class SuatChieuController extends Controller
         return ['has_conflict' => false];
     }
 
-    /**
-     * Lưu thông tin suất chiếu mới
-     */
+
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'GioChieu' => 'required',
-            'NgayChieu' => 'required|date|after_or_equal:today',
-            'GiaVe' => 'required|numeric|min:0',
-            'ID_PhongChieu' => 'required|exists:phong_chieu,ID_PhongChieu',
             'ID_Phim' => 'required|exists:phim,ID_Phim',
+            'ID_PhongChieu' => 'required|exists:phong_chieu,ID_PhongChieu',
             'ID_Rap' => 'required|exists:rap,ID_Rap',
+            'GiaVe' => 'required|numeric|min:0',
+            'schedule' => 'required|array|min:1',
+            'schedule.*' => 'required|string'
         ], [
-            'NgayChieu.after_or_equal' => 'Ngày chiếu không được trong quá khứ',
-            'GioChieu.required' => 'Vui lòng chọn giờ chiếu',
-            'NgayChieu.required' => 'Vui lòng chọn ngày chiếu',
+            'ID_Phim.required' => 'Vui lòng chọn phim',
+            'ID_PhongChieu.required' => 'Vui lòng chọn phòng chiếu',
             'GiaVe.required' => 'Vui lòng nhập giá vé',
             'GiaVe.numeric' => 'Giá vé phải là số',
             'GiaVe.min' => 'Giá vé không được âm',
+            'schedule.required' => 'Vui lòng thêm ít nhất một lịch chiếu',
+            'schedule.min' => 'Vui lòng thêm ít nhất một lịch chiếu'
         ]);
 
         if ($validator->fails()) {
@@ -196,60 +168,95 @@ class SuatChieuController extends Controller
                 ->withInput();
         }
 
-        // Kiểm tra ngày chiếu không được trong quá khứ và không quá xa
-        $ngayChieu = Carbon::parse($request->NgayChieu);
-        $today = Carbon::today();
+        $errors = [];
+        $successCount = 0;
+        $conflictCount = 0;
+        $invalidCount = 0;
 
-        if ($ngayChieu->lt($today)) {
+        DB::beginTransaction();
+
+        try {
+            $phim = Phim::find($request->ID_Phim);
+
+            foreach ($request->schedule as $date => $timesString) {
+                $times = array_filter(explode(',', $timesString));
+
+                foreach ($times as $time) {
+                    if (!preg_match('/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/', $time)) {
+                        $errors[] = "Giờ chiếu không hợp lệ: {$date} - {$time}";
+                        $invalidCount++;
+                        continue;
+                    }
+
+                    // Kiểm tra ngày chiếu
+                    $ngayChieu = Carbon::parse($date);
+                    $today = Carbon::today();
+
+                    if ($ngayChieu->lt($today)) {
+                        $errors[] = "Không thể tạo suất chiếu trong quá khứ: " . $ngayChieu->format('d/m/Y');
+                        $invalidCount++;
+                        continue;
+                    }
+
+                    if ($ngayChieu->gt($today->copy()->addMonths(3))) {
+                        $errors[] = "Không thể tạo suất chiếu quá 3 tháng: " . $ngayChieu->format('d/m/Y');
+                        $invalidCount++;
+                        continue;
+                    }
+                    if ($phim->NgayKetThuc && Carbon::parse($phim->NgayKetThuc)->lt($ngayChieu)) {
+                        $errors[] = "Phim đã kết thúc chiếu vào ngày " . $ngayChieu->format('d/m/Y');
+                        $invalidCount++;
+                        continue;
+                    }
+                    $conflictCheck = $this->checkLichTrinhXungDot(
+                        $request->ID_PhongChieu,
+                        $date,
+                        $time,
+                        $request->ID_Phim
+                    );
+
+                    if ($conflictCheck['has_conflict']) {
+                        $errors[] = "Xung đột lịch chiếu {$ngayChieu->format('d/m/Y')} - {$time}: " .
+                            "Phòng đã có suất chiếu \"{$conflictCheck['conflict_show']->phim->TenPhim}\" từ {$conflictCheck['conflict_time']}";
+                        $conflictCount++;
+                        continue;
+                    }
+                    SuatChieu::create([
+                        'NgayChieu' => $date,
+                        'GioChieu' => $time,
+                        'GiaVe' => $request->GiaVe,
+                        'ID_PhongChieu' => $request->ID_PhongChieu,
+                        'ID_Phim' => $request->ID_Phim,
+                        'ID_Rap' => $request->ID_Rap
+                    ]);
+
+                    $successCount++;
+                }
+            }
+
+            DB::commit();
+            $messages = "";
+            $messages .= "✅ Tạo thành công {$successCount} suất chiếu \n";
+            $messages .= "⚠️ {$conflictCount} suất chiếu bị xung đột lịch \n";
+            $messages .= "❌ {$invalidCount} suất chiếu không hợp lệ \n";
+
+            if ($successCount > 0) {
+                return redirect()->route('suat-chieu.index')->with('success', $messages);
+            } else {
+                return redirect()->back()
+                    ->withErrors($errors)
+                    ->withInput()
+                    ->with('error', 'Không có suất chiếu nào được tạo',  $messages);
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
             return redirect()->back()
-                ->withErrors(['NgayChieu' => 'Không thể tạo suất chiếu trong quá khứ'])
+                ->withErrors(['error' => 'Có lỗi xảy ra: ' . $e->getMessage()])
                 ->withInput();
         }
-
-        if ($ngayChieu->gt($today->copy()->addMonths(3))) {
-            return redirect()->back()
-                ->withErrors(['NgayChieu' => 'Không thể tạo suất chiếu quá 3 tháng'])
-                ->withInput();
-        }
-
-        // Kiểm tra xung đột lịch chiếu với thời lượng phim
-        $conflictCheck = $this->checkScheduleConflict(
-            $request->ID_PhongChieu,
-            $request->NgayChieu,
-            $request->GioChieu,
-            $request->ID_Phim
-        );
-
-        if ($conflictCheck['has_conflict']) {
-            $errorMessage = sprintf(
-                'Xung đột lịch chiếu! Phòng đã có suất chiếu "%s" từ %s. Suất chiếu mới sẽ từ %s.',
-                $conflictCheck['conflict_show']->phim->TenPhim,
-                $conflictCheck['conflict_time'],
-                $conflictCheck['new_time']
-            );
-
-            return redirect()->back()
-                ->withErrors(['schedule_conflict' => $errorMessage])
-                ->withInput();
-        }
-
-        // Kiểm tra phim có đang trong thời gian chiếu không
-        $phim = Phim::find($request->ID_Phim);
-        if ($phim->NgayKetThuc && Carbon::parse($phim->NgayKetThuc)->lt($ngayChieu)) {
-            return redirect()->back()
-                ->withErrors(['ID_Phim' => 'Phim đã kết thúc chiếu vào ngày được chọn'])
-                ->withInput();
-        }
-
-        SuatChieu::create($request->all());
-
-        return redirect()->route('suat-chieu.index')
-            ->with('success', 'Thêm suất chiếu thành công');
     }
 
-    /**
-     * Cập nhật thông tin suất chiếu
-     */
+
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
@@ -289,7 +296,7 @@ class SuatChieuController extends Controller
         }
 
         // Kiểm tra xung đột lịch chiếu
-        $conflictCheck = $this->checkScheduleConflict(
+        $conflictCheck = $this->checkLichTrinhXungDot(
             $request->ID_PhongChieu,
             $request->NgayChieu,
             $request->GioChieu,
@@ -324,13 +331,9 @@ class SuatChieuController extends Controller
         return redirect()->route('suat-chieu.index')->with('success', 'Cập nhật suất chiếu thành công');
     }
 
-
-    /**
-     * API kiểm tra xung đột lịch chiếu (để sử dụng với AJAX)
-     */
-    public function checkConflict(Request $request)
+    public function checkLoi(Request $request)
     {
-        $conflictCheck = $this->checkScheduleConflict(
+        $conflictCheck = $this->checkLichTrinhXungDot(
             $request->phong_chieu_id,
             $request->ngay_chieu,
             $request->gio_chieu,

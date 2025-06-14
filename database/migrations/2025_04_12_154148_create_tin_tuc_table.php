@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id('ID_TinTuc');
             $table->string('TieuDe', 100);
             $table->text('NoiDung');
+            $table->integer('LoaiBaiViet');
             $table->string('HinhAnh', 255)->nullable();
             $table->unsignedBigInteger('ID_TaiKhoan');
             $table->foreign('ID_TaiKhoan')->references('ID_TaiKhoan')->on('tai_khoan')->onDelete('cascade');

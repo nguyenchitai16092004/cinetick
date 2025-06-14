@@ -46,7 +46,7 @@ class HoaDonController extends Controller
         
         $hoaDons = $query->orderBy('NgayTao', 'desc')->paginate(10);
         
-        return view('backend.pages.', compact('hoaDons'));
+        return view('backend.pages.hoa_don.hoa-don', compact('hoaDons'));
     }
     
     /**
