@@ -78,7 +78,7 @@
                 <div class="col-lg-3">
                     <div class="site-logo">
                         <a href="{{ asset('/') }}">
-                            <img width="150px" src="Content/img/logoCineTick.png"  alt="filmoja" />
+                            <img width="150px" src="Content/img/logoCineTick.png" alt="filmoja" />
                         </a>
                     </div>
                     <!-- Responsive Menu Start -->
@@ -103,10 +103,14 @@
                                     </ul>
                                 </li>
                                 <li>
-                                    <a href="{{ asset('#') }}">Rạp/Giá vé</a>
-                                    <ul style=" background: -webkit-linear-gradient(left, #171e38, #5841a7);">
-                                        <li><a href="#">CineTick 1</a></li>
-                                        <li><a href="#">CineTick 2</a></li>
+                                    <a href="#">Rạp/Giá vé</a>
+                                    <ul style="background: -webkit-linear-gradient(left, #171e38, #5841a7);">
+                                        @foreach ($raps as $rap)
+                                            <li>
+                                                <a
+                                                    href="{{ route('rap.chiTiet', ['id' => $rap->ID_Rap]) }}">{{ $rap->TenRap }}</a>
+                                            </li>
+                                        @endforeach
                                     </ul>
                                 </li>
                                 <li><a href="{{ asset('/uu-dai') }}">Khuyến Mãi</a></li>

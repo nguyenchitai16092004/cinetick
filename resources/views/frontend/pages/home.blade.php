@@ -3,30 +3,8 @@
 @section('main')
     <link rel="stylesheet" href="{{ asset('frontend/Content/css/home.css') }}">
 
-    <!-- Slider Area Start -->
-    {{-- <section class="filmoja-slider-area fix">
-        <div class="filmoja-slide owl-carousel">
+    {{-- <div class="bg-gradient"></div> --}}
 
-            <a href="film/nha-gia-tien-t18/b046f0d2-c828-408e-9c89-a4cdb8db0daa.html">
-                <div class="filmoja-main-slide">
-                    <img style="height: 560px;" src="Areas/Admin/Content/Fileuploads/images/Slide2024/nha-gia-tien.jpg"
-                        style="max-height:400px" />
-
-                </div>
-            </a>
-            <a href="film/nu-tu-bong-toi-t16/b3cab74d-6def-49c9-ae08-3ade07b0ef19.html">
-                <div class="filmoja-main-slide">
-                    <img style="height: 560px;" src="Areas/Admin/Content/Fileuploads/images/Slide2024/nu-tu-bong-toi.jpg"
-                        style="max-height:400px" />
-
-                </div>
-            </a>
-            <div class="filmoja-main-slide">
-                <img style="height: 560px;" src="Areas/Admin/Content/Fileuploads/images/Slide2024/tham-tu-kien.jpg"
-                    style="max-height:400px" />
-            </div>
-        </div>
-    </section> --}}
     <div class="filmoja-slider-area fix">
         <div class="floating-particles" id="particles"></div>
         <div class="progress-bar" id="progressBar"></div>
@@ -259,7 +237,6 @@
                                 <div class="play-button" data-trailer="{{ $phim->Trailer }}">
                                     <div class="play-icon"></div>
                                 </div>
-                                <div class="age-rating">{{ $phim->DoTuoi }}</div>
                             </div>
                             <div class="movie-info">
                                 <a href="{{ route('phim.chiTiet', ['slug' => $phim->Slug]) }}">
@@ -270,16 +247,8 @@
                                         {{ $theLoai->TenTheLoai }}{{ $index < count($phim->theLoai) - 1 ? ', ' : '' }}
                                     @endforeach
                                 </p>
-                                <div class="movie-rating">
-                                    <div class="stars">
-                                        <span class="star">★</span>
-                                        <span class="star">★</span>
-                                        <span class="star">★</span>
-                                        <span class="star">★</span>
-                                        <span class="star">★</span>
-                                    </div>
-                                    <span class="rating-number">8.2</span>
-                                </div>
+                                <div class="film-rating-crou"><span>9.5</span><span class="star">★</span></div>
+                                <div class="age-rating">{{ $phim->DoTuoi }}</div>
                             </div>
                         </div>
                     @endforeach
@@ -334,16 +303,6 @@
                                         {{ $theLoai->TenTheLoai }}{{ $index < count($phim->theLoai) - 1 ? ', ' : '' }}
                                     @endforeach
                                 </p>
-                                <div class="movie-rating">
-                                    <div class="stars">
-                                        <span class="star">★</span>
-                                        <span class="star">★</span>
-                                        <span class="star">★</span>
-                                        <span class="star">★</span>
-                                        <span class="star">★</span>
-                                    </div>
-                                    <span class="rating-number">8.2</span>
-                                </div>
                             </div>
                         </div>
                     @endforeach

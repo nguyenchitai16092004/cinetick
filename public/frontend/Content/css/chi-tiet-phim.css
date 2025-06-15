@@ -41,14 +41,7 @@ body {
     animation: gradientShift 8s ease-in-out infinite alternate;
 }
 
-@keyframes gradientShift {
-    0% {
-        opacity: 0.3;
-    }
-    100% {
-        opacity: 0.8;
-    }
-}
+
 
 /* Hero Section */
 .movie-hero {
@@ -87,22 +80,7 @@ body {
     animation: float 15s infinite linear;
 }
 
-@keyframes float {
-    0% {
-        transform: translateY(100vh) rotate(0deg);
-        opacity: 0;
-    }
-    10% {
-        opacity: 1;
-    }
-    90% {
-        opacity: 1;
-    }
-    100% {
-        transform: translateY(-100px) rotate(360deg);
-        opacity: 0;
-    }
-}
+
 
 .container {
     max-width: 1400px;
@@ -222,14 +200,7 @@ body {
     animation: titleGlow 3s ease-in-out infinite alternate;
 }
 
-@keyframes titleGlow {
-    0% {
-        filter: brightness(1);
-    }
-    100% {
-        filter: brightness(1.2);
-    }
-}
+
 
 .movie-badges {
     display: flex;
@@ -442,21 +413,7 @@ body {
     animation: bounce 2s infinite;
 }
 
-@keyframes bounce {
-    0%,
-    20%,
-    50%,
-    80%,
-    100% {
-        transform: translateY(0);
-    }
-    40% {
-        transform: translateY(-20px);
-    }
-    60% {
-        transform: translateY(-10px);
-    }
-}
+
 
 .empty-title {
     font-size: 1.8rem;
@@ -532,14 +489,7 @@ body {
     transition: filter 0.4s ease;
 }
 
-@keyframes modalFadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
-}
+
 
 .trailer-container {
     position: relative;
@@ -556,16 +506,7 @@ body {
     animation: trailerSlideIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-@keyframes trailerSlideIn {
-    from {
-        opacity: 0;
-        transform: scale(0.8) translateY(50px);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1) translateY(0);
-    }
-}
+
 
 .trailer-video {
     width: 100%;
@@ -583,17 +524,6 @@ body {
     font-size: 14px;
 }
 
-/* Loading animation */
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(50px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
 
 .fade-in-up {
     animation: fadeInUp 0.8s ease-out forwards;
@@ -676,4 +606,20 @@ body {
     bottom: 20%;
     left: 20%;
     animation-delay: 4s;
+}
+@keyframes float {
+    0% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-100px) rotate(360deg);
+        opacity: 0;
+    }
 }

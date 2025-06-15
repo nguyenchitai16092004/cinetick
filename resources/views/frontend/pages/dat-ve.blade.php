@@ -4,6 +4,12 @@
     <link rel="stylesheet" href="{{ asset('frontend/Content/css/dat-ve.css') }}">
 
     <div class="bg-gradient"></div>
+    <div class="floating-elements">
+        <div class="floating-circle"></div>
+        <div class="floating-circle"></div>
+        <div class="floating-circle"></div>
+        <div class="floating-circle"></div>
+    </div>
     <div class="boking-container">
         <!-- Booking Steps -->
         <div class="booking-steps">
@@ -57,12 +63,7 @@
                     </div>
                 </div>
             </div>
-            <div class="floating-elements">
-                <div class="floating-circle"></div>
-                <div class="floating-circle"></div>
-                <div class="floating-circle"></div>
-                <div class="floating-circle"></div>
-            </div>
+  
             <!-- Right Panel - Movie Info & Summary -->
             <div class="right-panel">
                 <div class="movie-info">

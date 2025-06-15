@@ -9,7 +9,6 @@ use App\Models\PhongChieu;
 use App\Models\Rap;
 use App\Models\GheNgoi;
 use App\Models\VeXemPhim;
-use App\Models\HeldSeat;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use App\Events\GheDuocGiu;

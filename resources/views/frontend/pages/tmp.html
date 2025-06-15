@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Galaxy Nguyễn Du</title>
+  <meta name="viewport" content="width=1200">
+  <!-- <link rel="stylesheet" href="style.css"> -->
+   <style>
+    body {
+  background: #f5f5f5;
+  font-family: 'Segoe UI', Arial, Helvetica, sans-serif;
+  margin: 0;
+  color: #222;
+}
+.main-header {
+  background: #fff;
+  padding: 40px 0 30px 0;
+  border-bottom: 1px solid #eee;
+}
+.header-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.header-content h2 {
+  margin-top: 0;
+  margin-bottom: 14px;
+  font-size: 2rem;
+  font-weight: 600;
+}
+.cinema-address {
+  font-size: 1.1rem;
+  color: #777;
+}
+.hotline {
+  color: #0166d6;
+  font-weight: 500;
+  text-decoration: none;
+}
+.dropdowns {
+  display: flex;
+  gap: 16px;
+}
+.dropdowns select {
+  font-size: 1rem;
+  padding: 9px 18px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background: #fff;
+  margin-left: 0;
+}
+
+main {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 0 70px 0;
+}
+
+.film-section {
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+.film-box {
+  background: #fff;
+  border-radius: 6px;
+  padding: 35px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.02);
+  width: 90%;
+  margin: 0 auto;
+}
+.section-title {
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: #003a70;
+  border-left: 4px solid #003a70;
+  padding-left: 8px;
+  margin-right: 7px;
+}
+.date-tabs {
+  display: flex;
+  gap: 10px;
+  margin: 26px 0 10px 0;
+  justify-content: flex-end;
+}
+.tab {
+  background: #fff;
+  color: #003a70;
+  border-radius: 6px 6px 0 0;
+  padding: 7px 24px 7px 24px;
+  font-size: 1rem;
+  border: none;
+  border-bottom: 3px solid #fff;
+  cursor: pointer;
+  text-align: center;
+  min-width: 94px;
+  transition: background .18s;
+}
+.tab span {
+  font-size: 0.93em;
+  color: #888;
+}
+.tab.active {
+  background: #0056b8;
+  color: #fff;
+  font-weight: 600;
+  border-bottom: 3px solid #0056b8;
+}
+.films-list {
+  display: flex;
+  gap: 18px;
+  margin-top: 18px;
+  border-top: 3px solid #1567c2;
+  padding-top: 18px;
+}
+.film-card {
+  background: #111;
+  border-radius: 10px;
+  padding: 9px;
+  width: 180px;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  margin-bottom: 10px;
+}
+.film-poster {
+  position: relative;
+  width: 158px;
+  height: 220px;
+  border-radius: 9px;
+  overflow: hidden;
+  margin-bottom: 9px;
+  background: #222;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.film-poster img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.film-rating {
+  position: absolute;
+  bottom: 8px;
+  left: 10px;
+  font-size: 1.12rem;
+  background: rgba(0, 0, 0, 0.80);
+  padding: 2px 9px 2px 7px;
+  border-radius: 5px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+}
+.film-rating .star {
+  color: #ffc107;
+  margin-left: 4px;
+  font-size: 1.1em;
+}
+.film-age {
+  position: absolute;
+  bottom: 8px;
+  right: 11px;
+  font-size: 1rem;
+  background: #FFA500;
+  color: #fff;
+  padding: 1px 10px;
+  border-radius: 5px;
+  font-weight: 600;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+}
+.film-title {
+  margin-top: 6px;
+  color: #222;
+  font-size: 1rem;
+  font-weight: 500;
+  text-align: center;
+  min-height: 40px;
+  background: #fff;
+  border-radius: 0 0 9px 9px;
+  width: 100%;
+  padding: 6px 0 3px 0;
+}
+
+.info-section {
+  margin-top: 55px;
+}
+.info-container {
+  display: flex;
+  gap: 32px;
+  width: 90%;
+  margin: 0 auto;
+  align-items: flex-start;
+}
+.ticket-price,
+.cinema-detail {
+  background: #fff;
+  border-radius: 7px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.02);
+  padding: 28px 23px 35px 23px;
+  width: 48%;
+}
+.ticket-price {
+  min-width: 420px;
+  max-width: 480px;
+}
+.ticket-table-box {
+  position: relative;
+  margin-top: 20px;
+}
+.galaxy-logo {
+  position: absolute;
+  left: -18px;
+  top: -48px;
+  width: 120px;
+  background: #fff;
+  border-radius: 12px;
+  z-index: 2;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+.ticket-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 1.04rem;
+  margin-top: 30px;
+  margin-bottom: 10px;
+  color: #fff;
+  background: #1872c6;
+  border-radius: 9px;
+  overflow: hidden;
+  font-weight: 500;
+}
+.ticket-table th, .ticket-table td {
+  border: 1px solid #fff;
+  padding: 12px 11px;
+  text-align: center;
+}
+.ticket-table th {
+  background: #003a70;
+  font-size: 1.02em;
+}
+.ticket-table td {
+  background: #1872c6;
+}
+.ticket-table tr.highlight td {
+  background: #ffb600;
+  color: #fff;
+  font-weight: bold;
+  font-size: 1.14em;
+}
+.ticket-table tr.note-row td {
+  background: #003a70;
+  color: #ffb600;
+  font-size: 1.1em;
+  font-weight: bold;
+}
+.ticket-notes {
+  font-size: 0.98em;
+  color: #444;
+  margin-top: 12px;
+}
+.ticket-notes ul {
+  margin: 7px 0 0 0;
+  padding-left: 20px;
+}
+
+.cinema-detail {
+  min-width: 380px;
+}
+.detail-address {
+  margin-bottom: 1.1em;
+  font-size: 1.06em;
+}
+.detail-map {
+  margin-bottom: 22px;
+}
+.detail-map iframe {
+  width: 325px;
+  height: 170px;
+  border-radius: 8px;
+  border: 1px solid #eee;
+}
+.detail-desc {
+  font-size: 1.05em;
+  color: #333;
+  line-height: 1.6;
+}
+.detail-desc a {
+  color: #0069d9;
+  text-decoration: none;
+}
+@media (max-width: 1100px) {
+  .header-content, .info-container { flex-direction: column; align-items: stretch; }
+  .info-container > div { width: 100%; margin-bottom: 28px; }
+  .film-box { width: 98%; }
+}
+
+@media (max-width: 800px) {
+  .film-box, .info-container { width: 100%; }
+  .ticket-table th, .ticket-table td { padding: 7px 2px; font-size: 0.92em;}
+  .galaxy-logo { width: 70px; top: -30px; }
+  .detail-map iframe { width: 100%; min-width: 180px; }
+}
+
+::-webkit-scrollbar { width: 9px; background: #ededed;}
+::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px;}
+   </style>
+</head>
+<body>
+  <header class="main-header">
+    <div class="header-content">
+      <div>
+        <h2>Galaxy Nguyễn Du</h2>
+        <div class="cinema-address">
+          Địa chỉ: 116 Nguyễn Du, Quận 1, Tp.HCM<br>
+          Hotline: <a href="tel:19002224" class="hotline">1900 2224</a>
+        </div>
+      </div>
+      <div class="dropdowns">
+        <select>
+          <option>TP Hồ Chí Minh</option>
+        </select>
+        <select>
+          <option>Galaxy Nguyễn Du</option>
+        </select>
+      </div>
+    </div>
+  </header>
+  <main>
+    <section class="film-section">
+      <div class="film-box">
+        <h3><span class="section-title">PHIM</span></h3>
+        <div class="date-tabs">
+          <div class="tab">Hôm Nay<br><span>14/06</span></div>
+          <div class="tab">Chủ Nhật<br><span>15/06</span></div>
+          <div class="tab active">Thứ Hai<br><span>16/06</span></div>
+          <div class="tab">Thứ Ba<br><span>17/06</span></div>
+        </div>
+        <div class="films-list">
+          <div class="film-card">
+            <div class="film-poster">
+              <img src="https://www.galaxycine.vn/media/2023/6/13/bi-kip-luyen-rong-imax-2023_1686641720882.jpg" alt="Bí Kíp Luyện Rồng">
+              <div class="film-rating"><span>9.4</span><span class="star">★</span></div>
+              <div class="film-age">K</div>
+            </div>
+            <div class="film-title">Bí Kíp Luyện Rồng</div>
+          </div>
+          <div class="film-card">
+            <div class="film-poster">
+              <img src="https://www.galaxycine.vn/media/2023/5/30/cuon-bang-quy-am_1685435096073.jpg" alt="Cuộn Băng Quỷ Ám">
+              <div class="film-rating"><span>7.1</span><span class="star">★</span></div>
+              <div class="film-age">T13</div>
+            </div>
+            <div class="film-title">Cuộn Băng Quỷ Ám</div>
+          </div>
+          <div class="film-card">
+            <div class="film-poster">
+              <img src="https://www.galaxycine.vn/media/2023/5/16/duoi-day-ho_1684228219108.jpg" alt="Dưới Đáy Hồ">
+              <div class="film-rating"><span>8</span><span class="star">★</span></div>
+              <div class="film-age">T18</div>
+            </div>
+            <div class="film-title">Dưới Đáy Hồ</div>
+          </div>
+          <div class="film-card">
+            <div class="film-poster">
+              <img src="https://www.galaxycine.vn/media/2023/6/7/dan-da-dan-ta-nhan_1686110924006.jpg" alt="Dan Da Dan: Tà Nhẫn">
+              <div class="film-rating"><span>9.5</span><span class="star">★</span></div>
+              <div class="film-age">T16</div>
+            </div>
+            <div class="film-title">Dan Da Dan: Tà Nhẫn</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="info-section">
+      <div class="info-container">
+        <div class="ticket-price">
+          <h3><span class="section-title">GIÁ VÉ</span></h3>
+          <div class="ticket-table-box">
+            <img src="https://www.galaxycine.vn/media/2019/6/12/logo-galaxy-cinema_1560314273880.png" alt="Galaxy Cinema" class="galaxy-logo">
+            <table class="ticket-table">
+              <tr>
+                <th>SUẤT CHIẾU</th>
+                <th>★ THÀNH VIÊN / NGƯỜI LỚN</th>
+                <th>U22</th>
+                <th>TRẺ EM<br>NGƯỜI CAO TUỔI</th>
+              </tr>
+              <tr>
+                <td>THỨ 2, 4, 5<br>TRƯỚC 17:00</td>
+                <td>70.000</td>
+                <td>55.000</td>
+                <td>55.000</td>
+              </tr>
+              <tr>
+                <td>THỨ 2, 4, 5<br>SAU 17:00</td>
+                <td>80.000</td>
+                <td>55.000</td>
+                <td>55.000</td>
+              </tr>
+              <tr class="highlight">
+                <td>THỨ 3<br>HAPPY DAY</td>
+                <td colspan="3">55.000</td>
+              </tr>
+              <tr>
+                <td>THỨ 6, 7, CN<br>TRƯỚC 17:00</td>
+                <td>85.000</td>
+                <td>65.000</td>
+                <td>65.000</td>
+              </tr>
+              <tr>
+                <td>THỨ 6, 7, CN<br>SAU 17:00</td>
+                <td>95.000</td>
+                <td>95.000</td>
+                <td>65.000</td>
+              </tr>
+              <tr class="note-row">
+                <td>★ NGÀY LỄ</td>
+                <td>50.000</td>
+                <td colspan="2"></td>
+              </tr>
+              <tr class="note-row">
+                <td>★ NGÀY TRI ÂN</td>
+                <td>55.000</td>
+                <td colspan="2"></td>
+              </tr>
+              <tr class="note-row">
+                <td>★ SAU 22H (THÀNH VIÊN)</td>
+                <td>55.000</td>
+                <td colspan="2"></td>
+              </tr>
+            </table>
+            <div class="ticket-notes">
+              Giá vé ngày lễ bao gồm các ngày Tết dương lịch và Âm lịch, Giỗ tổ Hùng Vương, 30/4, 1/5, 1/2-2/9 & Tết âm lịch (theo lịch nhà nước/ lịch hoạt).<br>
+              <ul>
+                <li>Thành viên được sử dụng điểm thưởng theo các cấp độ. Điểm thưởng chỉ thể dùng cho việc đặt vé/đặt bắp nước online và tại quầy giao dịch khi khách hàng là thành viên hệ thống Galaxy Cinema.</li>
+                <li>Vé U22 áp dụng cho khách hàng dưới 22 tuổi (cần xuất trình CMND).</li>
+                <li>Vé trẻ em áp dụng cho khách hàng dưới 1m3.</li>
+                <li>Giá vé có thể thay đổi theo chính sách kinh doanh của rạp chiếu phim.</li>
+                <li>Phụ thu dịch vụ ngày lễ 10.000đ.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="cinema-detail">
+          <h3><span class="section-title">THÔNG TIN CHI TIẾT</span></h3>
+          <div class="detail-address">
+            <strong>Địa chỉ:</strong> 116 Nguyễn Du, Quận 1, Tp.HCM<br>
+            <strong>Số điện thoại:</strong> 1900 2224
+          </div>
+          <div class="detail-map">
+            <iframe src="https://www.google.com/maps?q=Galaxy+Nguyễn+Du,116+Nguyễn+Du,Quận+1,Tp.HCM&output=embed" width="325" height="170" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+          </div>
+          <div class="detail-desc">
+            Là rạp chiếu đầu tiên và đông khách nhất trong hệ thống, Galaxy Nguyễn Du chính thức đi vào hoạt động từ ngày 20/5/2005 và được xem là một trong những cụm rạp mang tiêu chuẩn quốc tế hiện đại bậc nhất đầu tiên xuất hiện tại Việt Nam. Galaxy Nguyễn Du là một trong những <a href="#">rạp chiếu phim</a> tiên phong mang đến cho khán giả những trải nghiệm <a href="#">phim chiếu rạp</a> tốt nhất.<br><br>
+            Galaxy Nguyễn Du gồm 5 phòng chiếu với hơn 1000 chỗ ngồi, trong đó có 1 phòng chiếu phim 3D và 4 phòng chiếu phim 2D, với hơn 1000 chỗ ngồi được thiết kế tinh tế giúp khách hàng có thể xem những bộ <a href="#">phim hay</a> một cách thoải mái và thuận tiện nhất. Chất lượng hình ảnh rõ nét, hệ thống âm thanh Dolby 7.1 cùng màn hình chiếu kỹ thuật 3D và Digital vô cùng sắc mịn, mang đến một không gian giải trí vô cùng sống động.<br><br>
+            Bên cạnh đó, với lợi thế gần khu vực sầm uất bậc nhất ở trung tâm thành phố, bãi để xe rộng rãi, có tiệm cafe ngoài trời – đây là nơi cực thu hút bạn trẻ đến xem phim và check-in.
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <!-- <script src="script.js"></script> -->
+   <script>
+    // Tab switching for movie dates
+document.querySelectorAll('.date-tabs .tab').forEach((tab, idx, arr) => {
+  tab.addEventListener('click', () => {
+    arr.forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    // You can implement AJAX or dynamic movie loading here if needed
+  });
+});
+   </script>
+</body>
+</html>

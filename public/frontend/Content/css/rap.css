@@ -1,0 +1,377 @@
+.header-content {
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 20px 30px;
+}
+
+.cinema-info h2 {
+    color: #fff;
+}
+
+.header-content h2 {
+    margin-top: 0;
+    margin-bottom: 14px;
+    font-size: 2rem;
+    font-weight: 600;
+}
+
+.cinema-address {
+    font-size: 1.1rem;
+    color: #fff;
+}
+
+.hotline {
+    color: #0166d6;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.dropdowns {
+    display: flex;
+    gap: 16px;
+}
+
+.dropdowns select {
+    font-size: 1rem;
+    padding: 9px 18px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background: #fff;
+    margin-left: 0;
+}
+
+.film-box {
+    padding: 35px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.02);
+    width: 100%;
+    margin: 0 auto;
+}
+
+.date-tabs {
+    display: flex;
+    gap: 10px;
+    margin: 26px 0 10px 0;
+    justify-content: flex-end;
+}
+
+.tab {
+    color: #ffc107;
+    border-radius: 6px 6px 0 0;
+    padding: 7px 24px 7px 24px;
+    font-size: 1rem;
+    border: none;
+    border-bottom: 3px solid #fff;
+    cursor: pointer;
+    text-align: center;
+    min-width: 94px;
+    transition: background 0.18s;
+}
+
+.tab span {
+    font-size: 0.93em;
+    color: #fff;
+}
+
+.tab.active {
+    background: #0056b8;
+    color: #fff;
+    font-weight: 600;
+    border-bottom: 3px solid #0056b8;
+}
+
+.films-list {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    width: 90%;
+    gap: 8px;
+    margin: 0 auto;
+}
+
+.film-card {
+    background: #111;
+    border-radius: 10px;
+    padding: 9px;
+    width: 100%;
+    max-width: 350px;
+    height: 550px;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    margin-bottom: 10px;
+}
+.film-card-link {
+    max-width: 350px;
+    margin: 0;
+    display: block;
+}
+
+.film-poster {
+    position: relative;
+    width: 100%;
+    max-width: 320px;
+    height: 450px;
+    border-radius: 9px;
+    overflow: hidden;
+    margin-bottom: 9px;
+    margin-top: 3px;
+    background: #222;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.film-poster img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    border-radius: 9px;
+    background: #222;
+    transition: all 0.3s ease-in-out;
+}
+
+.film-poster img:hover {
+    transform: scale(1.05);
+}
+
+.film-rating {
+    position: absolute;
+    bottom: 8px;
+    left: 10px;
+    font-size: 1.12rem;
+    background: rgba(0, 0, 0, 0.8);
+    padding: 2px 9px 2px 7px;
+    border-radius: 5px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    color: #fff;
+}
+.update-showtime {
+    position: absolute;
+    top: 62%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    text-align: center;
+    font-size: 1.2em;
+}
+
+.film-rating .star {
+    color: #ffc107;
+    margin-left: 4px;
+    font-size: 1.1em;
+}
+
+.film-age {
+    position: absolute;
+    bottom: 8px;
+    right: 11px;
+    font-size: 1rem;
+    background: #ffa500;
+    color: #fff;
+    padding: 1px 10px;
+    border-radius: 5px;
+    font-weight: 600;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+}
+
+.film-title {
+    margin-top: 6px;
+    color: #fff;
+    font-size: 1.3rem;
+    font-weight: 700;
+    text-align: left;
+    min-height: 40px;
+    border-radius: 0 0 9px 9px;
+    width: 100%;
+    padding: 6px 0 3px 10px;
+}
+.film-genre {
+    font-size: 0.95rem;
+    color: #b0b0b0;
+    margin-bottom: 15px;
+    font-weight: 400;
+    text-align: left;
+    padding-left: 10px;
+    width: 100%;
+}
+.info-section {
+    margin-top: 55px;
+}
+
+.info-container {
+    display: flex;
+    width: 100%;
+    align-items: stretch;
+}
+
+.cinema-detail {
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.02);
+    padding: 28px 23px 35px 23px;
+}
+
+.ticket-notes {
+    font-size: 0.98em;
+    color: #fff;
+    margin-top: 12px;
+}
+
+.ticket-notes ul {
+    margin: 7px 0 0 0;
+    padding-left: 20px;
+}
+
+.detail-address {
+    margin-bottom: 1.1em;
+    font-size: 1.06em;
+    color: #fff;
+    margin-left: 2rem;
+}
+.detail-address strong {
+    color: #ffc107;
+}
+
+.movies-grid {
+    width: 400vw;
+}
+
+.detail-desc {
+    font-size: 1.05em;
+    color: #fff;
+    line-height: 1.6;
+    margin-left: 2rem;
+}
+
+.detail-desc a {
+    color: #0069d9;
+    text-decoration: none;
+}
+
+@media (max-width: 1100px) {
+    .header-content,
+    .info-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .info-container > div {
+        width: 100%;
+        margin-bottom: 28px;
+    }
+
+    .film-box {
+        width: 98%;
+    }
+    .films-list {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+@media (max-width: 800px) {
+    .film-box,
+    .info-container {
+        width: 100%;
+    }
+
+    .galaxy-logo {
+        width: 70px;
+        top: -30px;
+    }
+}
+
+::-webkit-scrollbar {
+    width: 9px;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+}
+.bg-gradient {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+    z-index: -2;
+}
+
+.bg-gradient::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(
+            circle at 20% 80%,
+            rgba(120, 119, 198, 0.3) 0%,
+            transparent 50%
+        ),
+        radial-gradient(
+            circle at 80% 20%,
+            rgba(255, 119, 198, 0.3) 0%,
+            transparent 50%
+        );
+    animation: gradientShift 8s ease-in-out infinite alternate;
+}
+
+.floating-elements {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.floating-circle {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 107, 53, 0.1), transparent);
+    animation: float 6s ease-in-out infinite;
+}
+
+.floating-circle:nth-child(1) {
+    width: 100px;
+    height: 100px;
+    top: 10%;
+    left: 10%;
+    animation-delay: 0s;
+}
+
+.floating-circle:nth-child(2) {
+    width: 150px;
+    height: 150px;
+    top: 60%;
+    right: 10%;
+    animation-delay: 2s;
+}
+
+.floating-circle:nth-child(3) {
+    width: 80px;
+    height: 80px;
+    bottom: 20%;
+    left: 20%;
+    animation-delay: 4s;
+}
+@keyframes float {
+    0% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-100px) rotate(360deg);
+        opacity: 0;
+    }
+}
