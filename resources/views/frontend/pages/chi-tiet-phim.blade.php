@@ -5,6 +5,11 @@
     <link rel="stylesheet" href="{{ asset('frontend/Content/css/chi-tiet-phim.css') }}">
 
     <div class="bg-gradient"></div>
+    <div class="floating-elements">
+        <div class="floating-circle"></div>
+        <div class="floating-circle"></div>
+        <div class="floating-circle"></div>
+    </div>
 
     <section id="mainContent" class="movie-hero">
         <div class="hero-bg"
@@ -107,12 +112,7 @@
             </div>
         </div>
     </section>
-    <div class="floating-elements">
-        <div class="floating-circle"></div>
-        <div class="floating-circle"></div>
-        <div class="floating-circle"></div>
 
-    </div>
 
     <div class="trailer-modal" id="trailerModal">
         <div class="trailer-container">

@@ -24,7 +24,10 @@ use App\Http\Controllers\Apps\AuthController;
 use App\Http\Controllers\Apps\DatVeController;
 use App\Http\Controllers\Apps\PayOSController;
 use App\Http\Controllers\Apps\ThanhToanController;
+use App\Http\Controllers\Apps\RapChiTietController;
+
 use App\Events\GheDuocGiu;
+
 //==============================Frontend=====================================//
 Route::get('/', [PhimController::class, 'Index'])->name('home');
 
@@ -67,30 +70,27 @@ Route::prefix('dat-ve')->group(function () {
     Route::post('/bo-giu-ghe-nhieu', [DatVeController::class, 'boGiuGheNhieu']);
     
 });
-// -- ajax ---
+
+// --- ajax ---
 Route::prefix('ajax')->group(function () {
     Route::get('/phim-theo-rap', [PhimController::class, 'ajaxPhimTheoRap']);
     Route::get('/ngay-chieu-theo-rap-phim', [PhimController::class, 'ajaxNgayChieuTheoRapPhim']);
     Route::get('/suat-chieu-theo-rap-phim-ngay', [PhimController::class, 'ajaxSuatChieuTheoRapPhimNgay']);
 });
 
-Route::get('/test-pusher', function () {
-    broadcast(new GheDuocGiu('A1', 999, 111, now()->addMinutes(5)->timestamp, 'hold'))->toOthers();
-    return 'ok';
+// --- Rạp ---
+Route::prefix('rap')->group(function () {
+    Route::get('/{id}', [RapChiTietController::class, 'chiTiet'])->name('rap.chiTiet');
 });
+
+
 // --- Thanh toán ---
 Route::prefix('thanh-toan')->group(function () {
-    // Route thanh toán chính
     Route::post('/', [ThanhToanController::class, 'payment'])->name('payment');
-
-    // Routes cho PayOS embedded payment
     Route::post('/payos-embedded/create', [PayOSController::class, 'createEmbeddedPaymentLink'])->name('payos.embedded.create');
-    // Routes xử lý callback từ PayOS
     Route::get('/payos-return', [PayOSController::class, 'handleReturn'])->name('payos.return');
     Route::get('/payos-cancel', [PayOSController::class, 'handleCancel'])->name('payos.cancel');
-    // Route kiểm tra trạng thái thanh toán
     Route::get('/status/{orderCode}', [PayOSController::class, 'checkPaymentStatus'])->name('payos.status');
-    // Route hiển thị trang trạng thái checkout
     Route::get('/checkout-status', [ThanhToanController::class, 'checkoutStatus'])->name('checkout_status');
 });
 
