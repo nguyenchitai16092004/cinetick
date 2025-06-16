@@ -12,8 +12,9 @@ return new class extends Migration
     public function up()
     {
         Schema::create('khuyen_mai', function (Blueprint $table) {
-            $table->id('ID_ChiTietKM');
-            $table->string('TenKhuyenMai', 100);
+            $table->id('ID_KhuyenMai');
+            $table->string('MaKguyenMai', 100);
+            $table->date('NgayKetThuc');
             $table->integer('PhanTramGiam');
             $table->decimal('GiaTriToiDa', 10, 2);
             $table->timestamps();
