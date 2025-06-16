@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Rap;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Exception;
+use Illuminate\Support\Str;
 
 class RapController extends Controller
 {
@@ -21,15 +23,30 @@ class RapController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'TenRap' => 'required|max:100',
-            'DiaChi' => 'required|max:255',
-            'TrangThai' => 'required|max:50',
-        ]);
+        try {
+            $request->validate([
+                'TenRap' => 'required|max:100',
+                'MoTa' => 'required|max:255',
+                'Hotline' => 'nullable|string|max:20|regex:/^[0-9]{9,15}$/',
+                'DiaChi' => 'required|max:255',
+                'TrangThai' => 'required|max:50',
+            ]);
 
-        Rap::create($request->all());
-        return redirect()->route('rap.index')->with('success', 'Rạp đã được thêm thành công');
+            Rap::create([
+                'TenRap' => $request->TenRap,
+                'Slug' => Str::slug($request->TenRap),
+                'MoTa' => $request->MoTa,
+                'Hotline' => $request->Hotline,
+                'DiaChi' => $request->DiaChi,
+                'TrangThai' => $request->TrangThai,
+            ]);
+
+            return redirect()->route('rap.index')->with('success', 'Rạp đã được thêm thành công');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Đã xảy ra lỗi: ' . $e->getMessage())->withInput();
+        }
     }
+
 
     public function edit($id)
     {
@@ -41,6 +58,8 @@ class RapController extends Controller
     {
         $request->validate([
             'TenRap' => 'required|max:100',
+            'MoTa' => 'required|max:255',
+            'Hotline' => 'nullable|string|max:20|regex:/^[0-9]{9,15}$/',
             'DiaChi' => 'required|max:255',
             'TrangThai' => 'required|max:50',
         ]);

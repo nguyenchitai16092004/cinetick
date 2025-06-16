@@ -14,7 +14,7 @@ class Rap extends Model
     protected $primaryKey = 'ID_Rap';
 
     protected $fillable = [
-        'TenRap', 'DiaChi', 'TrangThai'
+        'TenRap', 'Slug', 'DiaChi', 'TrangThai', 'MoTa', 'Hotline'
     ];
 
 
