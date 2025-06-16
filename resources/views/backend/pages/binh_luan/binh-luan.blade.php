@@ -33,12 +33,6 @@
                                     </select>
                                 </div>
 
-                                <div class="col-md-3">
-                                    <label for="keyword">Từ khóa:</label>
-                                    <input type="text" name="keyword" id="keyword" class="form-control" 
-                                           value="{{ request('keyword') }}" placeholder="Tìm trong nội dung...">
-                                </div>  
-
                                 <div class="col-md-4 d-flex align-items-end">
                                     <button type="submit" class="btn btn-primary mr-2">
                                         <i class="fas fa-search"></i> Tìm kiếm
@@ -75,7 +69,6 @@
                                                 <th width="80">ID</th>
                                                 <th>Phim</th>
                                                 <th>Người dùng</th>
-                                                <th>Nội dung</th>
                                                 <th width="100">Điểm</th>
                                                 <th width="120">Ngày tạo</th>
                                                 <th width="150">Thao tác</th>
@@ -94,24 +87,6 @@
                                                     </td>
                                                     <td>
                                                         <span class="badge badge-info text-black">{{ $bl->TenDN }}</span>
-                                                    </td>
-                                                    <td>
-                                                        <div class="comment-content" style="max-width: 300px;">
-                                                            @if(strlen($bl->NoiDung) > 100)
-                                                                <span class="short-content">
-                                                                    {{ substr($bl->NoiDung, 0, 100) }}...
-                                                                </span>
-                                                                <span class="full-content" style="display: none;">
-                                                                    {{ $bl->NoiDung }}
-                                                                </span>
-                                                                <br>
-                                                                <button type="button" class="btn btn-link btn-sm p-0 toggle-content">
-                                                                    Xem thêm
-                                                                </button>
-                                                            @else
-                                                                {{ $bl->NoiDung }}
-                                                            @endif
-                                                        </div>
                                                     </td>
                                                     <td class="text-center ">
                                                         @if($bl->DiemDanhGia)

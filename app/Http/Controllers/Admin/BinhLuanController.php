@@ -25,12 +25,6 @@ class BinhLuanController extends Controller
         if ($request->filled('phim_id')) {
             $query->where('binh_luan.ID_Phim', $request->phim_id);
         }
-        if ($request->filled('keyword')) {
-            $query->where('binh_luan.NoiDung', 'LIKE', '%' . $request->keyword . '%');
-        }
-        if ($request->filled('status')) {
-            $query->where('binh_luan.TrangThai', $request->status);
-        }
 
         $binhLuans = $query->orderByDesc('binh_luan.created_at')->paginate(15);
         $binhLuans->appends($request->query());
@@ -40,18 +34,21 @@ class BinhLuanController extends Controller
 
     public function show($id)
     {
-        $binhLuan = DB::table('binh_luan')->join('tai_khoan', 'binh_luan.ID_TaiKhoan', '=', 'tai_khoan.ID_TaiKhoan')
+        $binhLuan = DB::table('binh_luan')
+            ->join('tai_khoan', 'binh_luan.ID_TaiKhoan', '=', 'tai_khoan.ID_TaiKhoan')
             ->join('phim', 'binh_luan.ID_Phim', '=', 'phim.ID_Phim')
-            ->select('binh_luan.*', 'tai_khoan.TenDN', 'tai_khoan.Email', 'phim.TenPhim')
-            ->where('binh_luan.ID_BinhLuan', $id)->first();
+            ->select('binh_luan.*', 'tai_khoan.TenDN', 'phim.TenPhim')
+            ->where('binh_luan.ID_BinhLuan', $id)
+            ->first(); // dùng first() để lấy 1 dòng dữ liệu
 
         if (!$binhLuan) {
             return redirect()->route('binh-luan.index')
-                ->with('error', 'Không tìm thấy bình luận nào hết ');
+                ->with('error', 'Không tìm thấy bình luận nào hết');
         }
 
-        return view('backend.pages.binh_luan.show', compact('binhLuan'));
+        return view('backend.pages.binh_luan.detail-binh-luan', compact('binhLuan'));
     }
+
 
     public function KiemTraTrangThai($id)
     {
