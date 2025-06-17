@@ -182,6 +182,7 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
 
         // AJAX routes
         Route::post('/loc-phim-theo-ngay', [SuatChieuController::class, 'filterMovieByDate'])->name('loc-phim-theo-ngay');
+        Route::post('/loc-phong', [SuatChieuController::class, 'filterPhong'])->name('loc-phong');
         Route::post('/check-conflict', [SuatChieuController::class, 'checkLoi'])->name('check-conflict');
     });
 

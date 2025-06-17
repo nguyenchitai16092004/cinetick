@@ -20,17 +20,20 @@
                             max="100">
                     </div>
                     <div class="form-group mb-3">
-                        <label for="GiaTriToiDa">Giá trị tối đa (đ)</label>
-                        <input type="number" name="GiaTriToiDa" class="form-control" required step="1000">
+                        <label for="NgayKetThuc">Ngày hết hạn</label>
+                        <input type="date" name="NgayKetThuc" id="NgayKetThuc" class="form-control" required>
                     </div>
-                    <div class="form-group mb-3">
-                        <label for="NgayKetThuc">Ngày hết hạn </label>
-                        <input type="date" name="NgayKetThuc" class="form-control" required step="1000">
-                    </div>
+
                     <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Lưu</button>
                     <a href="{{ route('khuyen-mai.index') }}" class="btn btn-secondary">Quay lại</a>
                 </form>
             </div>
         </div>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+            document.getElementById("NgayKetThuc").setAttribute('min', today);
+        });
+    </script>
 @endsection

@@ -7,8 +7,13 @@ document.getElementById('start_date').addEventListener('change', function () {
     const value = this.value;
     if (value) {
         document.getElementById("ID_Phim").disabled = false;
-        getMovie(); // Gọi hàm sau khi có ngày
+        getMovie();
     }
+});
+
+document.getElementById('ID_Rap').addEventListener('change', function () {
+    document.getElementById("ID_PhongChieu").disabled = false;
+    getPhong();
 });
 
 document.addEventListener('DOMContentLoaded', function () {

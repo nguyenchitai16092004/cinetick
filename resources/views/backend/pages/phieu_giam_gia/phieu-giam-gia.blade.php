@@ -18,8 +18,7 @@
                     <th>ID</th>
                     <th>Mã khuyến mãi</th>
                     <th>Phần trăm giảm</th>
-                    <th>Giá trị tối đa</th>
-                    <th>Ngày Kết Thúc(hết date)</th>
+                    <th>Ngày Kết Thúc (hết date)</th>
                     <th>Thao tác</th>
                 </tr>
             </thead>
@@ -29,7 +28,6 @@
                         <td>{{ $km->ID_KhuyenMai }}</td>
                         <td>{{ $km->MaKhuyenMai }}</td>
                         <td>{{ $km->PhanTramGiam }}%</td>
-                        <td>{{ number_format($km->GiaTriToiDa, 0, ',', '.') }}đ</td>
                         <td>{{ \Carbon\Carbon::parse($km->NgayKetThuc)->format('d/m/Y') }}</td>
                         <td>
                             <a href="{{ route('khuyen-mai.edit', $km->ID_KhuyenMai) }}" class="btn btn-warning btn-sm"><i

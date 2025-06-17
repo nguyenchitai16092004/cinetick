@@ -23,8 +23,8 @@ class SuatChieuController extends Controller
 
     public function create()
     {
-        $phongChieus = PhongChieu::join('rap', 'phong_chieu.ID_Rap', '=', 'rap.ID_Rap')->select('phong_chieu.TenPhongChieu', 'phong_chieu.ID_PhongChieu', 'rap.DiaChi', 'rap.TenRap', 'phong_chieu.ID_Rap')->get();
-        return view('backend.pages.suat_chieu.create-suat-chieu', compact('phongChieus'));
+        $raps = Rap::all();
+        return view('backend.pages.suat_chieu.create-suat-chieu', compact('raps'));
     }
 
 
@@ -99,6 +99,12 @@ class SuatChieuController extends Controller
 
         return response()->json($Phim);
     }
+
+    public function filterPhong($id){
+        $phongs = PhongChieu::join('rap', 'rap.ID_Rap', '=', 'phong_chieu.ID_Rap')->where('phong_chieu.TrangThai', 1)->where('phong_chieu.ID_Rap', $id)->get();
+        return $phongs;
+    }
+
     private function checkLichTrinhXungDot($phongChieuId, $ngayChieu, $gioChieu, $phimId, $excludeId = null)
     {
         $phim = Phim::find($phimId);
