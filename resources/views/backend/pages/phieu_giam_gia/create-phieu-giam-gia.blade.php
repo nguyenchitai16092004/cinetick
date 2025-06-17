@@ -11,9 +11,15 @@
                 <form action="{{ route('khuyen-mai.store') }}" method="POST">
                     @csrf
                     <div class="form-group mb-3">
-                        <label for="MaKhuyenMai">Mã khuyến mãi</label>
-                        <input type="text" name="MaKhuyenMai" class="form-control" required>
+                        <label for="MaKhuyenMai" class="form-label">Mã khuyến mãi</label>
+                        <div class="input-group">
+                            <input type="text" name="MaKhuyenMai" id="MaKhuyenMai" class="form-control" required>
+                            <button class="btn btn-outline-secondary" type="button" id="randomMaKM">
+                                <i class="fas fa-dice"></i>
+                            </button>
+                        </div>
                     </div>
+
                     <div class="form-group mb-3">
                         <label for="PhanTramGiam">Phần trăm giảm (%)</label>
                         <input type="number" name="PhanTramGiam" class="form-control" required min="1"
@@ -34,6 +40,17 @@
         document.addEventListener('DOMContentLoaded', function() {
             const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
             document.getElementById("NgayKetThuc").setAttribute('min', today);
+        });
+        let maKhuyenMai = document.getElementById('MaKhuyenMai');
+        let randomMaKM = document.getElementById('randomMaKM');
+
+        randomMaKM.addEventListener('click', function() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let result = '';
+            for (let i = 0; i < 6; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+           document.getElementById('MaKhuyenMai').value = result;
         });
     </script>
 @endsection
