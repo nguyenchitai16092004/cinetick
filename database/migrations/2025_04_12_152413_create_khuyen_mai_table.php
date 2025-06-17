@@ -13,10 +13,9 @@ return new class extends Migration
     {
         Schema::create('khuyen_mai', function (Blueprint $table) {
             $table->id('ID_KhuyenMai');
-            $table->string('MaKguyenMai', 100);
+            $table->string('MaKhuyenMai', 100);
             $table->date('NgayKetThuc')->nullable();
-            $table->integer('PhanTramGiam');
-            $table->decimal('GiaTriToiDa', 10, 2);
+            $table->integer('PhanTramGiam');    
             $table->timestamps();
         });
     }

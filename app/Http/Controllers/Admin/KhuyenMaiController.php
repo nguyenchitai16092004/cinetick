@@ -25,7 +25,6 @@ class KhuyenMaiController extends Controller
         $request->validate([
             'MaKhuyenMai' => 'nullable|max:100|unique:khuyen_mai,MaKhuyenMai',
             'PhanTramGiam' => 'required|integer|min:1|max:100',
-            'GiaTriToiDa' => 'required|numeric|min:0',
             'NgayKetThuc' => 'date|nullable',
         ]);
 
@@ -39,7 +38,6 @@ class KhuyenMaiController extends Controller
         KhuyenMai::create([
             'MaKhuyenMai' => $maKhuyenMai,
             'PhanTramGiam' => $request->PhanTramGiam,
-            'GiaTriToiDa' => $request->GiaTriToiDa,
             'NgayKetThuc' => $request->NgayKetThuc,
         ]);
 
@@ -58,7 +56,6 @@ class KhuyenMaiController extends Controller
             $request->validate([
                 'MaKhuyenMai' => 'nullable|max:100',
                 'PhanTramGiam' => 'required|integer|min:1|max:100',
-                'GiaTriToiDa' => 'required|numeric|min:0',
                 'NgayKetThuc' => 'date|nullable',
             ]);
             $maKhuyenMai = $request->MaKhuyenMai;
@@ -72,7 +69,6 @@ class KhuyenMaiController extends Controller
             $km->update([
                 'MaKhuyenMai' => $maKhuyenMai,
                 'PhanTramGiam' => $request->PhanTramGiam,
-                'GiaTriToiDa' => $request->GiaTriToiDa,
                 'NgayKetThuc' => $request->NgayKetThuc,
             ]);
 

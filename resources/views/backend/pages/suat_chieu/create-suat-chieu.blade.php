@@ -13,22 +13,12 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="d-flex justify-content-between align-items-center">
-                            <h5 class="m-0">Tạo suất chiếu hàng loạt</h5>
+                            <h5 class="m-0">Tạo suất chiếu hàng loạt ( Vui lòng chọn ngày chiếu trước mới chọn được phim )</h5>
                             <a href="{{ route('suat-chieu.index') }}" class="btn btn-secondary">Quay lại</a>
                         </div>
                     </div>
 
                     <div class="card-body">
-                        @if ($errors->any())
-                            <div class="alert alert-danger">
-                                <ul class="mb-0">
-                                    @foreach ($errors->all() as $error)
-                                        <li>{{ $error }}</li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                        @endif
-
                         <form action="{{ route('suat-chieu.store') }}" method="POST" id="bulkSuatChieuForm">
                             @csrf
 
@@ -44,14 +34,12 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group mb-3">
-                                        <label for="ID_PhongChieu">Phòng chiếu <span class="text-danger">*</span></label>
-                                        <select name="ID_PhongChieu" id="ID_PhongChieu" class="form-control" required>
-                                            <option value="">-- Chọn phòng chiếu --</option>
-                                            @foreach ($phongChieus as $phongChieu)
-                                                <option value="{{ $phongChieu->ID_PhongChieu }}"
-                                                    data-rap-id="{{ $phongChieu->ID_Rap }}">
-                                                    {{ $phongChieu->TenPhongChieu }} ({{ $phongChieu->TenRap }} :
-                                                    {{ $phongChieu->DiaChi }})
+                                        <label for="ID_Rap">Rạp <span class="text-danger">*</span></label>
+                                        <select name="ID_Rap" id="ID_Rap" class="form-control" required>
+                                            <option value="">-- Chọn rạp --</option>
+                                            @foreach ($raps as $rap)
+                                                <option value="{{ $rap->ID_Rap }}">
+                                                    ({{ $rap->TenRap }} : {{ $rap->DiaChi }})
                                                 </option>
                                             @endforeach
                                         </select>
@@ -69,25 +57,30 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group mb-3">
-                                        <label>Khoảng thời gian</label>
-                                        <div class="row">
-                                            <div class="col-6">
-                                                <input type="date" class="form-control" id="start_date"
-                                                    min="{{ date('Y-m-d') }}"
-                                                    max="{{ date('Y-m-d', strtotime('+3 months')) }}"
-                                                    placeholder="Từ ngày">
-                                            </div>
-                                            <div class="col-6">
-                                                <input type="date" class="form-control" id="end_date"
-                                                    min="{{ date('Y-m-d') }}"
-                                                    max="{{ date('Y-m-d', strtotime('+3 months')) }}"
-                                                    placeholder="Đến ngày">
-                                            </div>
+                                        <label for="ID_PhongChieu">Phòng chiếu <span class="text-danger">*</span></label>
+                                        <select name="ID_PhongChieu" id="ID_PhongChieu" class="form-control" required disabled>
+                                            <option value="">-- Chọn phòng chiếu --</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group mb-3">
+                                    <label>Khoảng thời gian</label>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <input type="date" class="form-control" id="start_date"
+                                                min="{{ date('Y-m-d') }}" max="{{ date('Y-m-d', strtotime('+3 months')) }}"
+                                                placeholder="Từ ngày">
+                                        </div>
+                                        <div class="col-6">
+                                            <input type="date" class="form-control" id="end_date"
+                                                min="{{ date('Y-m-d') }}" max="{{ date('Y-m-d', strtotime('+3 months')) }}"
+                                                placeholder="Đến ngày">
                                         </div>
                                     </div>
                                 </div>
                             </div>
-
                             <input type="hidden" name="ID_Rap" id="ID_Rap">
 
                             <!-- Chọn ngày và giờ chiếu -->
@@ -175,6 +168,39 @@
                 },
                 error: function(xhr) {
                     alert('Lỗi khi lọc phim!');
+                    console.error(xhr.responseText);
+                }
+            });
+        }
+
+        function getPhong() {
+            const selectedRap = document.getElementById("ID_Rap").value;
+            if (!selectedRap) return;
+
+            console.log("Gửi request lọc phòng :", selectedRap);
+
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            $.ajax({
+                url: "{{ route('suat-chieu.loc-phong') }}",
+                method: 'POST',
+                data: {
+                    date: selectedRap
+                },
+                success: function(data) {
+                    let html = '<option value="">-- Chọn phòng --</option>';
+                    data.forEach(phong => {
+                        html +=
+                            `<option value="${phong.ID_Phong}" data-duration="${phong.ThoiLuong || 120}">${phong.Phong}</option>`;
+                    });
+                    $('#ID_Phong').html(html).prop('disabled', false);
+                },
+                error: function(xhr) {
+                    alert('Lỗi khi lọc phòng !');
                     console.error(xhr.responseText);
                 }
             });

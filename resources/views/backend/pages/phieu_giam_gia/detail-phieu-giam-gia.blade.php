@@ -12,19 +12,15 @@
                 @csrf
                 <div class="form-group mb-3">
                     <label for="MaKhuyenMai">Mã khuyến mãi</label>
-                    <input type="text" name="MaKhuyenMai" class="form-control" value="{{ $km->MaKhuyenMai }}" required>
+                    <input type="text" name="MaKhuyenMai" class="form-control" value="{{ $km->MaKhuyenMai }}"   >
                 </div>
                 <div class="form-group mb-3">
                     <label for="PhanTramGiam">Phần trăm giảm (%)</label>
                     <input type="number" name="PhanTramGiam" class="form-control" value="{{ $km->PhanTramGiam }}" required min="1" max="100">
                 </div>
                 <div class="form-group mb-3">
-                    <label for="GiaTriToiDa">Giá trị tối đa (đ)</label>
-                    <input type="number" name="GiaTriToiDa" class="form-control" value="{{ $km->GiaTriToiDa }}" required step="1000">
-                </div>
-                <div class="form-group mb-3">
-                    <label for="NgayKetThuc">Ngày kết thúc</label>
-                    <input type="date" name="NgayKetThuc" class="form-control" value="{{ $km->NgayKetThuc }}" required step="1000">
+                    <label for="NgayKetThuc">Ngày hết hạn</label>
+                    <input type="date" name="NgayKetThuc" class="form-control" value="{{ $km->NgayKetThuc }}" required >
                 </div>
                 <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Cập nhật</button>
                 <a href="{{ route('khuyen-mai.index') }}" class="btn btn-secondary">Quay lại</a>
@@ -32,4 +28,10 @@
         </div>
     </div>
 </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+            document.getElementById("NgayKetThuc").setAttribute('min', today);
+        });
+    </script>
 @endsection
