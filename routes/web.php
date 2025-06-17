@@ -251,6 +251,7 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
         Route::get('/edit/{id}', [TinTucController::class, 'edit'])->name('edit');
         Route::put('/update/{id}', [TinTucController::class, 'update'])->name('update'); // dùng PUT
         Route::delete('/delete/{id}', [TinTucController::class, 'destroy'])->name('destroy'); // dùng DELETE
+        Route::post('/ckeditor/upload', [TinTucController::class, 'upload'])->name('ckeditor.upload');
     });
 
     // Routes quản lý bình luận (cập nhật)

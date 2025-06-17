@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('ghe_ngoi', function (Blueprint $table) {
             $table->id('ID_Ghe');
             $table->string('TenGhe', 10);
-            $table->tinyInteger('LoaiTrangThaiGhe'); // 0: không hoạt động, 1: thường, 2: VIP
+            $table->tinyInteger('LoaiTrangThaiGhe')->comment('0: Đang bảo trì, 1: Ghế thường, 2: Ghế VIP');
             $table->unsignedBigInteger('ID_PhongChieu');
             $table->foreign('ID_PhongChieu')->references('ID_PhongChieu')->on('phong_chieu');
             $table->timestamps();

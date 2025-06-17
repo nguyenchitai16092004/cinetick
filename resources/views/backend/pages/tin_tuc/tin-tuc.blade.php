@@ -17,6 +17,7 @@
                     <th>Loại bài</th>
                     <th>Hình ảnh</th>
                     <th>Người đăng</th>
+                    <th>Trạng thái</th>
                     <th>Hành động</th>
                 </tr>
             </thead>
@@ -26,11 +27,17 @@
                         <td>{{ $tin->TieuDe }}</td>
                         <td>{{ $tin->LoaiBaiViet == 1 ? 'Khuyến mãi' : 'Phim' }}</td>
                         <td>
-                            @if ($tin->HinhAnh)
-                                <img src="{{ asset($tin->HinhAnh) }}" width="100">
+                            @if ($tin->AnhDaiDien)
+                                <img src="{{ asset($tin->AnhDaiDien) }}" width="100">
                             @endif
                         </td>
                         <td>{{ $tin->TenDN }}</td>
+                        <td>
+                            <span class="badge {{ $tin->TrangThai == 1 ? 'badge-success bg-success' : 'badge-danger bg-danger' }}">
+                                {{ $tin->TrangThai == 1 ? 'Đã xuất bản' : 'Chờ xuất bản' }}
+                            </span>
+                        </td>
+
                         <td>
                             <a href="{{ route('tin_tuc.edit', $tin->ID_TinTuc) }}" class="btn btn-warning btn-sm">Sửa</a>
                             <form action="{{ route('tin_tuc.destroy', $tin->ID_TinTuc) }}" method="POST"
