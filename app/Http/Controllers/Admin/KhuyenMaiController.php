@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\KhuyenMai;
+use Illuminate\Support\Str;
 
 class KhuyenMaiController extends Controller
 {
@@ -22,12 +23,25 @@ class KhuyenMaiController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'TenKhuyenMai' => 'required|max:100|unique:khuyen_mai,TenKhuyenMai',
+            'MaKhuyenMai' => 'nullable|max:100|unique:khuyen_mai,MaKhuyenMai',
             'PhanTramGiam' => 'required|integer|min:1|max:100',
             'GiaTriToiDa' => 'required|numeric|min:0',
+            'NgayKetThuc' => 'date|nullable',
         ]);
 
-        KhuyenMai::create($request->all());
+        $maKhuyenMai = $request->MaKhuyenMai;
+        if (empty($maKhuyenMai)) {
+            $maKhuyenMai = strtoupper(Str::random(6));
+        } else {
+            $maKhuyenMai = strtoupper($maKhuyenMai);
+        }
+
+        KhuyenMai::create([
+            'MaKhuyenMai' => $maKhuyenMai,
+            'PhanTramGiam' => $request->PhanTramGiam,
+            'GiaTriToiDa' => $request->GiaTriToiDa,
+            'NgayKetThuc' => $request->NgayKetThuc,
+        ]);
 
         return redirect()->route('khuyen-mai.index')->with('success', 'Đã thêm khuyến mãi mới!');
     }
@@ -40,16 +54,32 @@ class KhuyenMaiController extends Controller
 
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'TenKhuyenMai' => 'required|max:100|unique:khuyen_mai,TenKhuyenMai',
-            'PhanTramGiam' => 'required|integer|min:1|max:100',
-            'GiaTriToiDa' => 'required|numeric|min:0',
-        ]);
+        try {
+            $request->validate([
+                'MaKhuyenMai' => 'nullable|max:100',
+                'PhanTramGiam' => 'required|integer|min:1|max:100',
+                'GiaTriToiDa' => 'required|numeric|min:0',
+                'NgayKetThuc' => 'date|nullable',
+            ]);
+            $maKhuyenMai = $request->MaKhuyenMai;
+            if (empty($maKhuyenMai)) {
+                $maKhuyenMai = strtoupper(Str::random(6));
+            } else {
+                $maKhuyenMai = strtoupper($maKhuyenMai);
+            }
 
-        $km = KhuyenMai::findOrFail($id);
-        $km->update($request->all());
+            $km = KhuyenMai::findOrFail($id);
+            $km->update([
+                'MaKhuyenMai' => $maKhuyenMai,
+                'PhanTramGiam' => $request->PhanTramGiam,
+                'GiaTriToiDa' => $request->GiaTriToiDa,
+                'NgayKetThuc' => $request->NgayKetThuc,
+            ]);
 
-        return redirect()->route('khuyen-mai.index')->with('success', 'Cập nhật thành công!');
+            return redirect()->route('khuyen-mai.index')->with('success', 'Cập nhật thành công!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Đã xảy ra lỗi: ' . $e->getMessage())->withInput();
+        }
     }
 
     public function destroy($id)

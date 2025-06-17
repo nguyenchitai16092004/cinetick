@@ -10,11 +10,12 @@ class KhuyenMai extends Model
     use HasFactory;
 
     protected $table = 'khuyen_mai';
-    protected $primaryKey = 'ID_ChiTietKM';
+    protected $primaryKey = 'ID_KhuyenMai';
 
     protected $fillable = [
-        'TenKhuyenMai',
+        'MaKhuyenMai',
         'PhanTramGiam',
         'GiaTriToiDa',
+        'NgayKetThuc',
     ];
 }
