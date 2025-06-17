@@ -115,7 +115,7 @@
                                     </ul>
                                 </li>
                                 <li><a href="{{ asset('/uu-dai') }}">Khuyến Mãi</a></li>
-                                <li><a href="{{ asset('/tin-tuc') }}">Điện Ảnh</a></li>
+                                <li><a href="{{ route('bai-viet-dien-anh') }}">Điện Ảnh</a></li>
                                 <li><a href="{{ asset('/lien-he') }}">Liên hệ</a></li>
                             </ul>
                         </nav>

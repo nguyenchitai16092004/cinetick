@@ -1,16 +1,13 @@
+// ------------------------
+// HOME.JS - Toàn bộ code
+// Đã comment rõ chức năng mỗi hàm bằng tiếng Việt
+// ĐÃ LOẠI BỎ hiệu ứng hạt bay particles ở banner!
+// ------------------------
 
-/**
- * Đóng tất cả dropdown đang hiển thị.
- */
-function closeAllDropdowns() {
-    document.querySelectorAll(".dropdown-content").forEach((dropdown) => {
-        dropdown.classList.remove("show");
-    });
-}
+// ==================== ĐẶT VÉ: QUẢN LÝ DROPDOWN & TÓM TẮT ====================
 
-// --- Luồng chính đặt vé khi DOMContentLoaded ---
 document.addEventListener("DOMContentLoaded", function () {
-    // Lấy các phần tử cần thiết
+    // Lấy các phần tử cần thiết cho đặt vé
     const theaterBtn = document.getElementById("theater-btn");
     const theaterContent = document.getElementById("theater-content");
     const movieBtn = document.getElementById("movie-btn");
@@ -21,21 +18,32 @@ document.addEventListener("DOMContentLoaded", function () {
     const timeContent = document.getElementById("time-content");
     const bookBtn = document.getElementById("book-btn");
     const bookingSummary = document.getElementById("booking-summary");
-    // Step indicators
+
+    // Indicator các bước
     const step2 = document.getElementById("step-2");
     const step3 = document.getElementById("step-3");
     const step4 = document.getElementById("step-4");
     const separator1 = document.getElementById("separator-1");
     const separator2 = document.getElementById("separator-2");
     const separator3 = document.getElementById("separator-3");
-    // Biến lưu lựa chọn
+
+    // Các biến lưu lựa chọn
     let selectedTheater = "";
     let selectedMovie = "";
     let selectedDate = "";
     let selectedTime = "";
 
     /**
-     * Xử lý khi click vào nút chọn rạp: mở dropdown, tải phim tương ứng, reset các lựa chọn sau đó.
+     * Đóng tất cả dropdown đang mở.
+     */
+    function closeAllDropdowns() {
+        document.querySelectorAll(".dropdown-content").forEach((dropdown) => {
+            dropdown.classList.remove("show");
+        });
+    }
+
+    /**
+     * Mở/đóng dropdown chọn rạp
      */
     theaterBtn.addEventListener("click", function () {
         closeAllDropdowns();
@@ -43,43 +51,40 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     /**
-     * Xử lý khi chọn một rạp: cập nhật giao diện, tải danh sách phim cho rạp đó.
+     * Xử lý chọn rạp phim
      */
     theaterContent.addEventListener("click", function (e) {
         const item = e.target.closest(".dropdown-item:not(.disabled)");
         if (!item) return;
         selectedTheater = item.textContent.trim();
-        for (const el of theaterContent.querySelectorAll(".dropdown-item")) el.classList.remove("selected");
+        theaterContent.querySelectorAll(".dropdown-item").forEach(el => el.classList.remove("selected"));
         item.classList.add("selected");
         theaterBtn.innerHTML = `<span>${selectedTheater}</span><span><i class="fas fa-chevron-down"></i></span>`;
         theaterBtn.classList.add("active");
         theaterContent.classList.remove("show");
-        // Hiển thị bước tiếp theo
+
+        // Bật bước chọn phim, tắt các bước sau
         step2.classList.add("active");
         separator1.classList.add("active");
         step3.classList.remove("active");
         separator2.classList.remove("active");
         step4.classList.remove("active");
         separator3.classList.remove("active");
-        // Reset & Disable các bước sau
-        selectedMovie = "";
+        selectedMovie = ""; selectedDate = ""; selectedTime = "";
         movieBtn.innerHTML = '<span>2. Chọn Phim</span><span><i class="fas fa-chevron-down"></i></span>';
         movieBtn.classList.remove("active");
         movieBtn.classList.add("disabled");
-        selectedDate = "";
         dateBtn.innerHTML = '<span>3. Chọn Ngày</span><span><i class="fas fa-chevron-down"></i></span>';
         dateBtn.classList.remove("active");
         dateBtn.classList.add("disabled");
-        selectedTime = "";
         timeBtn.innerHTML = '<span>4. Chọn Suất</span><span><i class="fas fa-chevron-down"></i></span>';
         timeBtn.classList.remove("active");
         timeBtn.classList.add("disabled");
         bookBtn.classList.add("disabled");
-        // Reset nội dung dropdown
         movieContent.innerHTML = '<div class="dropdown-item disabled">Vui lòng chọn rạp trước</div>';
         dateContent.innerHTML = '<div class="dropdown-item disabled">Vui lòng chọn phim trước</div>';
         timeContent.innerHTML = '<div class="dropdown-item disabled">Vui lòng chọn ngày trước</div>';
-        // AJAX lấy danh sách phim theo rạp
+        // AJAX lấy phim theo rạp
         const idRap = item.dataset.value;
         $.get("/ajax/phim-theo-rap", { id_rap: idRap }, function (data) {
             if (data.error || data.length === 0) {
@@ -95,7 +100,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     /**
-     * Xử lý khi click vào nút chọn phim: mở dropdown phim nếu được phép.
+     * Mở/đóng dropdown chọn phim
      */
     movieBtn.addEventListener("click", function () {
         if (!this.classList.contains("disabled")) {
@@ -105,35 +110,34 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     /**
-     * Xử lý khi chọn một phim: cập nhật giao diện, tải danh sách ngày chiếu phim tại rạp đã chọn.
+     * Xử lý chọn phim
      */
     movieContent.addEventListener("click", function (e) {
         const item = e.target.closest(".dropdown-item:not(.disabled)");
         if (!item) return;
         selectedMovie = item.textContent.trim();
-        for (const el of movieContent.querySelectorAll(".dropdown-item")) el.classList.remove("selected");
+        movieContent.querySelectorAll(".dropdown-item").forEach(el => el.classList.remove("selected"));
         item.classList.add("selected");
         movieBtn.innerHTML = `<span>${selectedMovie}</span><span><i class="fas fa-chevron-down"></i></span>`;
         movieBtn.classList.add("active");
         movieContent.classList.remove("show");
-        // Hiển thị bước tiếp theo
+
+        // Bật bước chọn ngày, reset các bước sau
         step3.classList.add("active");
         separator2.classList.add("active");
         step4.classList.remove("active");
         separator3.classList.remove("active");
-        // Reset các bước sau
-        selectedDate = "";
+        selectedDate = ""; selectedTime = "";
         dateBtn.innerHTML = '<span>3. Chọn Ngày</span><span><i class="fas fa-chevron-down"></i></span>';
         dateBtn.classList.remove("active");
         dateBtn.classList.add("disabled");
-        selectedTime = "";
         timeBtn.innerHTML = '<span>4. Chọn Suất</span><span><i class="fas fa-chevron-down"></i></span>';
         timeBtn.classList.remove("active");
         timeBtn.classList.add("disabled");
         bookBtn.classList.add("disabled");
-        // Reset nội dung dropdown
         dateContent.innerHTML = '<div class="dropdown-item disabled">Đang tải ngày chiếu...</div>';
         timeContent.innerHTML = '<div class="dropdown-item disabled">Vui lòng chọn ngày trước</div>';
+
         // AJAX lấy ngày chiếu
         const idRap = theaterContent.querySelector(".dropdown-item.selected").dataset.value;
         function formatVietnameseDate(dateStr) {
@@ -159,7 +163,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     /**
-     * Xử lý khi click vào nút chọn ngày: mở dropdown ngày nếu được phép.
+     * Mở/đóng dropdown chọn ngày
      */
     dateBtn.addEventListener("click", function () {
         if (!this.classList.contains("disabled")) {
@@ -169,27 +173,28 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     /**
-     * Xử lý khi chọn một ngày: cập nhật giao diện, tải danh sách suất chiếu của phim đã chọn vào ngày đó. Bật luôn step 4.
+     * Xử lý chọn ngày chiếu
      */
     dateContent.addEventListener("click", function (e) {
         const item = e.target.closest(".dropdown-item:not(.disabled)");
         if (!item) return;
         selectedDate = item.textContent.trim();
-        for (const el of dateContent.querySelectorAll(".dropdown-item")) el.classList.remove("selected");
+        dateContent.querySelectorAll(".dropdown-item").forEach(el => el.classList.remove("selected"));
         item.classList.add("selected");
         dateBtn.innerHTML = `<span>${selectedDate}</span><span><i class="fas fa-chevron-down"></i></span>`;
         dateBtn.classList.add("active");
         dateContent.classList.remove("show");
-        // Hiển thị luôn bước 4
+
+        // Bật bước chọn suất chiếu, reset bước sau
         step4.classList.add("active");
         separator3.classList.add("active");
-        // Reset các bước sau
         selectedTime = "";
         timeBtn.innerHTML = '<span>4. Chọn Suất</span><span><i class="fas fa-chevron-down"></i></span>';
         timeBtn.classList.remove("active");
         timeBtn.classList.add("disabled");
         bookBtn.classList.add("disabled");
         timeContent.innerHTML = '<div class="dropdown-item disabled">Đang tải suất chiếu...</div>';
+
         // AJAX lấy suất chiếu
         const idRap = theaterContent.querySelector(".dropdown-item.selected").dataset.value;
         const idPhim = movieContent.querySelector(".dropdown-item.selected").dataset.id;
@@ -213,7 +218,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     /**
-     * Xử lý khi click vào nút chọn suất: mở dropdown suất nếu được phép.
+     * Mở/đóng dropdown chọn suất chiếu
      */
     timeBtn.addEventListener("click", function () {
         if (!this.classList.contains("disabled")) {
@@ -223,23 +228,22 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     /**
-     * Xử lý khi chọn một suất chiếu: cập nhật giao diện, cho phép bấm nút đặt vé.
+     * Xử lý chọn suất chiếu
      */
     timeContent.addEventListener("click", function (e) {
         const item = e.target.closest(".dropdown-item:not(.disabled)");
         if (!item) return;
         selectedTime = item.textContent.trim();
-        for (const el of timeContent.querySelectorAll(".dropdown-item")) el.classList.remove("selected");
+        timeContent.querySelectorAll(".dropdown-item").forEach(el => el.classList.remove("selected"));
         item.classList.add("selected");
         timeBtn.innerHTML = `<span>${selectedTime}</span><span><i class="fas fa-chevron-down"></i></span>`;
         timeBtn.classList.add("active");
         timeContent.classList.remove("show");
-        // Cho phép đặt vé
         bookBtn.classList.remove("disabled");
     });
 
     /**
-     * Xử lý khi click vào nút đặt vé: chuyển hướng sang trang đặt vé với thông tin đã chọn.
+     * Xử lý click nút đặt vé (chuyển hướng sang trang đặt vé)
      */
     bookBtn.addEventListener("click", function () {
         if (bookBtn.classList.contains("disabled")) return;
@@ -250,7 +254,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     /**
-     * Đóng tất cả dropdown khi click ra ngoài vùng dropdown.
+     * Đóng dropdown khi click ra ngoài
      */
     window.addEventListener("click", function (event) {
         if (
@@ -263,20 +267,153 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
-// --- Carousel phim đang chiếu, sắp chiếu ---
+// ==================== CAROUSEL BANNER ĐẦU TRANG ====================
+
+// Các biến toàn cục cho carousel-wrapper
+let currentSlideIndex = 0;
+const slides = document.querySelectorAll(".carousel-slide");
+const dots = document.querySelectorAll(".dot");
+const track = document.getElementById("carouselTrack");
+const totalSlides = slides.length;
+let autoPlayInterval;
 
 /**
- * Lớp điều khiển carousel hiển thị phim đang chiếu/sắp chiếu (nhiều phim/card).
- * Bao gồm auto-play, chuyển slide, dot indicator, responsive và hiệu ứng dừng khi hover.
+ * Cập nhật số thứ tự slide hiện tại
+ */
+function updateSlideNumber(index) {
+    const currentNumber = document.getElementById("currentNumber");
+    currentNumber.textContent = (index + 1).toString().padStart(2, "0");
+}
+
+/**
+ * Reset lại progress bar của carousel banner (thanh chạy thời gian)
+ */
+function resetProgressBar() {
+    const progressBar = document.getElementById("progressBar");
+    if (progressBar) {
+        progressBar.style.animation = "none";
+        progressBar.offsetHeight; // Trigger reflow
+        progressBar.style.animation = "progressSlide 5s linear";
+    }
+}
+
+/**
+ * Hiển thị slide theo index
+ */
+function showSlide(index) {
+    if (track) {
+        track.style.transform = `translateX(-${index * 100}%)`;
+    }
+    slides.forEach((slide, i) => {
+        slide.classList.toggle("active", i === index);
+    });
+    dots.forEach((dot, i) => {
+        dot.classList.toggle("active", i === index);
+    });
+    currentSlideIndex = index;
+    updateSlideNumber(index);
+    resetProgressBar();
+}
+
+/**
+ * Chuyển sang slide kế tiếp (banner)
+ */
+function nextSlide() {
+    const nextIndex = (currentSlideIndex + 1) % totalSlides;
+    showSlide(nextIndex);
+}
+
+/**
+ * Chuyển về slide trước (banner)
+ */
+function previousSlide() {
+    const prevIndex = (currentSlideIndex - 1 + totalSlides) % totalSlides;
+    showSlide(prevIndex);
+}
+
+/**
+ * Chuyển đến slide bất kỳ (dùng cho dot)
+ */
+function currentSlide(index) {
+    showSlide(index - 1);
+    clearInterval(autoPlayInterval);
+    autoPlayInterval = setInterval(nextSlide, 5000);
+}
+
+/**
+ * Bắt đầu auto-play cho carousel banner
+ */
+function startAutoPlay() {
+    autoPlayInterval = setInterval(nextSlide, 6000);
+}
+
+/**
+ * Dừng auto-play carousel banner
+ */
+function stopAutoPlay() {
+    clearInterval(autoPlayInterval);
+}
+
+// Khởi tạo auto-play & hiệu ứng hover, swipe, keyboard cho banner
+startAutoPlay();
+const carouselWrapper = document.querySelector(".carousel-wrapper");
+if (carouselWrapper) {
+    carouselWrapper.addEventListener("mouseenter", stopAutoPlay);
+    carouselWrapper.addEventListener("mouseleave", startAutoPlay);
+
+    // Touch/Swipe cho mobile banner
+    let startX = 0, endX = 0, startTime = 0, endTime = 0;
+    carouselWrapper.addEventListener("touchstart", (e) => {
+        startX = e.touches[0].clientX;
+        startTime = new Date().getTime();
+    });
+    carouselWrapper.addEventListener("touchend", (e) => {
+        endX = e.changedTouches[0].clientX;
+        endTime = new Date().getTime();
+        handleSwipe();
+    });
+    function handleSwipe() {
+        const threshold = 50;
+        const timeThreshold = 300;
+        const diff = startX - endX;
+        const timeDiff = endTime - startTime;
+        if (Math.abs(diff) > threshold && timeDiff < timeThreshold) {
+            if (diff > 0) nextSlide();
+            else previousSlide();
+            clearInterval(autoPlayInterval);
+            autoPlayInterval = setInterval(nextSlide, 5000);
+        }
+    }
+}
+
+// Keyboard support cho banner
+document.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowLeft") {
+        previousSlide();
+        clearInterval(autoPlayInterval);
+        autoPlayInterval = setInterval(nextSlide, 5000);
+    } else if (e.key === "ArrowRight") {
+        nextSlide();
+        clearInterval(autoPlayInterval);
+        autoPlayInterval = setInterval(nextSlide, 5000);
+    }
+});
+
+// Khởi tạo slide đầu tiên banner
+showSlide(0);
+
+// ==================== CAROUSEL PHIM ĐANG CHIẾU / SẮP CHIẾU ====================
+
+/**
+ * Class điều khiển carousel phim nhiều card (đang chiếu, sắp chiếu)
  */
 class CinemaCarousel {
     /**
-     * Khởi tạo carousel với các tham số DOM và tùy chọn thời gian tự động chuyển slide.
-     * @param {string} gridId ID của grid chứa các card phim
-     * @param {string} prevBtnId ID nút prev
-     * @param {string} nextBtnId ID nút next
-     * @param {string} dotsId ID dot indicator
-     * @param {number} autoPlayInterval Thời gian tự động chuyển slide (ms)
+     * @param {string} gridId - ID của grid chứa card phim
+     * @param {string} prevBtnId - ID nút prev
+     * @param {string} nextBtnId - ID nút next
+     * @param {string} dotsId - ID dot indicator
+     * @param {number} autoPlayInterval - Thời gian tự chuyển slide (ms)
      */
     constructor(gridId, prevBtnId, nextBtnId, dotsId, autoPlayInterval = 4000) {
         this.moviesGrid = document.getElementById(gridId);
@@ -313,16 +450,13 @@ class CinemaCarousel {
             }
         });
 
-        // Auto play setup
         this.startAutoPlay();
-
-        // Pause on hover, resume on mouse leave
         this.moviesGrid.parentElement.addEventListener("mouseenter", () => this.stopAutoPlay());
         this.moviesGrid.parentElement.addEventListener("mouseleave", () => this.startAutoPlay());
     }
 
     /**
-     * Xác định số lượng phim/card hiển thị trên mỗi slide tùy theo kích thước màn hình.
+     * Lấy số lượng card trên 1 slide tùy kích thước màn hình
      */
     getItemsPerView() {
         if (window.innerWidth <= 600) return 1;
@@ -331,7 +465,7 @@ class CinemaCarousel {
     }
 
     /**
-     * Vẽ dot indicator cho carousel.
+     * Vẽ dot indicator
      */
     renderDots() {
         if (!this.dotsIndicator) return;
@@ -346,7 +480,7 @@ class CinemaCarousel {
     }
 
     /**
-     * Cập nhật trạng thái dot indicator dựa trên slide hiện tại.
+     * Cập nhật active dot
      */
     updateDots() {
         const dots = this.dotsIndicator.querySelectorAll(".dot-film");
@@ -356,7 +490,7 @@ class CinemaCarousel {
     }
 
     /**
-     * Cập nhật vị trí carousel khi chuyển slide.
+     * Cập nhật vị trí carousel
      */
     updateCarousel() {
         const card = this.moviesGrid.querySelector(".movie-card");
@@ -368,7 +502,7 @@ class CinemaCarousel {
     }
 
     /**
-     * Chuyển về slide trước đó.
+     * Chuyển slide trước
      */
     prevSlide() {
         if (this.currentIndex > 0) {
@@ -381,7 +515,7 @@ class CinemaCarousel {
     }
 
     /**
-     * Chuyển sang slide tiếp theo.
+     * Chuyển slide sau
      */
     nextSlide() {
         if (this.currentIndex < this.maxIndex) {
@@ -394,7 +528,7 @@ class CinemaCarousel {
     }
 
     /**
-     * Chuyển đến một slide bất kỳ theo index.
+     * Chuyển tới index bất kỳ
      */
     goToSlide(index) {
         this.currentIndex = Math.min(index, this.maxIndex);
@@ -403,7 +537,7 @@ class CinemaCarousel {
     }
 
     /**
-     * Bắt đầu auto-play carousel.
+     * Bắt đầu auto-play
      */
     startAutoPlay() {
         this.stopAutoPlay();
@@ -411,7 +545,7 @@ class CinemaCarousel {
     }
 
     /**
-     * Dừng auto-play carousel.
+     * Dừng auto-play
      */
     stopAutoPlay() {
         if (this.autoPlayTimer) clearInterval(this.autoPlayTimer);
@@ -419,92 +553,61 @@ class CinemaCarousel {
     }
 
     /**
-     * Reset lại auto-play (bắt đầu lại từ đầu).
+     * Reset lại auto-play
      */
     resetAutoPlay() {
         this.startAutoPlay();
     }
 }
 
-/**
- * Khởi tạo carousel cho grid phim.
- */
+// Khởi tạo carousel phim đang chiếu/sắp chiếu
 document.addEventListener("DOMContentLoaded", function () {
     new CinemaCarousel("moviesGrid", "prevBtn", "nextBtn", "dotsIndicator");
+    new CinemaCarousel("moviesGridUpcoming", "prevBtnUpcoming", "nextBtnUpcoming", "dotsIndicatorUpcoming");
 });
 
+// ==================== HIỆU ỨNG KHÁC ====================
+
 /**
- * Hiệu ứng khi hover vào card phim: thay đổi z-index để nổi lên trên.
+ * Hiệu ứng hover nổi card phim
  */
 document.querySelectorAll(".movie-card").forEach((card) => {
-    card.addEventListener("mouseenter", () => {
-        card.style.zIndex = "10";
-    });
-    card.addEventListener("mouseleave", () => {
-        card.style.zIndex = "1";
-    });
+    card.addEventListener("mouseenter", () => { card.style.zIndex = "10"; });
+    card.addEventListener("mouseleave", () => { card.style.zIndex = "1"; });
 });
 
 /**
- * Hiển thị modal popup thông tin phim (dùng khi chưa có chi tiết phim).
- * @param {string} title Tiêu đề phim
+ * Hiển thị popup thông tin phim (khi chưa có chi tiết)
  */
 function showMovieModal(title) {
     const modal = document.createElement("div");
     modal.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.8);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 1000;
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0, 0, 0, 0.8); display: flex; align-items: center; justify-content: center; z-index: 1000;
     `;
-
     const modalContent = document.createElement("div");
     modalContent.style.cssText = `
         background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-        padding: 40px;
-        border-radius: 20px;
-        text-align: center;
-        color: white;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(20px);
-        max-width: 400px;
-        width: 90%;
+        padding: 40px; border-radius: 20px; text-align: center; color: white;
+        border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(20px);
+        max-width: 400px; width: 90%;
     `;
-
     modalContent.innerHTML = `
         <h2 style="margin-bottom: 20px; font-size: 2rem;">${title}</h2>
         <p style="margin-bottom: 30px; color: #a0a0a0;">Thông tin chi tiết về phim sẽ được cập nhật sớm!</p>
         <button class="close-modal-btn" style="
             background: linear-gradient(135deg, #ff6b6b, #ffd93d);
-            border: none;
-            padding: 12px 30px;
-            border-radius: 25px;
-            color: white;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.2s ease;
-        ">Đóng</button>
+            border: none; padding: 12px 30px; border-radius: 25px; color: white;
+            font-weight: 600; cursor: pointer; transition: transform 0.2s ease;">Đóng</button>
     `;
-
     modal.appendChild(modalContent);
     document.body.appendChild(modal);
-
-    modalContent.querySelector(".close-modal-btn").onclick = () => {
-        if (modal.parentNode) modal.parentNode.removeChild(modal);
-    };
-    modal.onclick = (e) => {
-        if (e.target === modal && modal.parentNode) modal.parentNode.removeChild(modal);
-    };
+    modalContent.querySelector(".close-modal-btn").onclick = () => { if (modal.parentNode) modal.parentNode.removeChild(modal); };
+    modal.onclick = (e) => { if (e.target === modal && modal.parentNode) modal.parentNode.removeChild(modal); };
 }
 
 /**
- * Hiển thị popup trailer khi bấm nút play (dùng YouTube embed).
+ * Hiển thị popup trailer phim (YouTube embed)
  */
 document.addEventListener("DOMContentLoaded", function () {
     document.querySelectorAll(".play-button[data-trailer]").forEach((btn) => {
@@ -531,16 +634,165 @@ document.addEventListener("DOMContentLoaded", function () {
                     <iframe width="800" height="450" src="https://www.youtube.com/embed/${videoId}" 
                         frameborder="0" allowfullscreen style="border-radius:12px;max-width:90vw;max-height:80vh;"></iframe>
                     <button class="close-trailer-btn" style="
-                        position:absolute;top:0px;right:-1px;background:#fff;border:none;
+                        position:absolute;top:0;right:-1px;background:#fff;border:none;
                         border-radius:50%;width:40px;height:40px;font-size:1.5rem;cursor:pointer;
                         box-shadow:0 2px 8px rgba(0,0,0,0.2);">×</button>
                 </div>
             `;
             document.body.appendChild(modal);
             modal.querySelector(".close-trailer-btn").onclick = () => document.body.removeChild(modal);
-            modal.onclick = (ev) => {
-                if (ev.target === modal) document.body.removeChild(modal);
-            };
+            modal.onclick = (ev) => { if (ev.target === modal) document.body.removeChild(modal); };
         });
     });
 });
+
+/**
+ * Hiệu ứng click nhỏ cho card Góc điện ảnh, blog, tab
+ */
+document.addEventListener("DOMContentLoaded", function () {
+    // Click nhỏ cho articles
+    const articles = document.querySelectorAll(".sidebar-article");
+    articles.forEach((article) => {
+        article.addEventListener("click", function (e) {
+            e.preventDefault();
+            this.style.transform = "scale(0.98)";
+            setTimeout(() => { this.style.transform = ""; }, 150);
+        });
+    });
+
+    // Tab switching animation
+    const tabs = document.querySelectorAll(".nav-tab");
+    tabs.forEach((tab) => {
+        tab.addEventListener("click", function (e) {
+            e.preventDefault();
+            tabs.forEach((t) => t.classList.remove("active"));
+            this.classList.add("active");
+        });
+    });
+
+    // Parallax cho floating elements
+    document.addEventListener("mousemove", function (e) {
+        const circles = document.querySelectorAll(".floating-circle");
+        const x = e.clientX / window.innerWidth;
+        const y = e.clientY / window.innerHeight;
+        circles.forEach((circle, index) => {
+            const moveX = (x - 0.5) * 50 * (index + 1);
+            const moveY = (y - 0.5) * 50 * (index + 1);
+            circle.style.transform = `translate(${moveX}px, ${moveY}px)`;
+        });
+    });
+
+    // Intersection Observer cho hiệu ứng vào viewport
+    const observerOptions = { threshold: 0.1, rootMargin: "0px 0px -50px 0px" };
+    const observer = new IntersectionObserver(function (entries) {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                entry.target.style.animation = "slideInUp 0.6s ease-out forwards";
+            }
+        });
+    }, observerOptions);
+    articles.forEach((article) => { observer.observe(article); });
+
+    // Thêm hiệu ứng slideInUp
+    const style = document.createElement("style");
+    style.innerHTML = `
+        @keyframes slideInUp {
+            from { opacity: 0; transform: translateY(30px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+    `;
+    document.head.appendChild(style);
+});
+
+/**
+ * Đổi màu nền động khi scroll trang
+ */
+window.addEventListener("scroll", function () {
+    const scrollPercent = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
+    const hue = 220 + scrollPercent * 40; // Từ xanh sang tím
+    document.body.style.background = `linear-gradient(135deg, hsl(${hue}, 100%, 4%) 0%, hsl(${hue}, 80%, 8%) 50%, hsl(${hue}, 60%, 12%) 100%)`;
+});
+
+/**
+ * Hiệu ứng card khuyến mãi: chuyển động, ripple, badge đổi màu động
+ */
+document.addEventListener("DOMContentLoaded", function () {
+    // Card khuyến mãi: hiệu ứng load nổi bật
+    const cards = document.querySelectorAll(".promotion-card");
+    cards.forEach((card, index) => {
+        card.style.opacity = "0";
+        card.style.transform = "translateY(50px)";
+        setTimeout(() => {
+            card.style.transition = "all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)";
+            card.style.opacity = "1";
+            card.style.transform = "translateY(0)";
+        }, index * 200);
+        // Hiệu ứng nhấn nhẹ
+        card.addEventListener("click", function (e) {
+            if (!e.target.classList.contains("promotion-cta")) {
+                this.style.transform = "translateY(-15px) scale(0.98)";
+                setTimeout(() => { this.style.transform = "translateY(-15px) scale(1.02)"; }, 150);
+            }
+        });
+        // Tilt effect
+        card.addEventListener("mousemove", function (e) {
+            const rect = this.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            const rotateX = (y - centerY) / 20;
+            const rotateY = (centerX - x) / 20;
+            this.style.transform = `translateY(-15px) scale(1.02) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+        });
+        card.addEventListener("mouseleave", function () {
+            this.style.transform = "translateY(0) scale(1) rotateX(0) rotateY(0)";
+        });
+    });
+
+    // CTA button hiệu ứng ripple
+    const ctaButtons = document.querySelectorAll(".promotion-cta");
+    ctaButtons.forEach((btn) => {
+        btn.addEventListener("click", function (e) {
+            e.stopPropagation();
+            const ripple = document.createElement("span");
+            const rect = this.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            const x = e.clientX - rect.left - size / 2;
+            const y = e.clientY - rect.top - size / 2;
+            ripple.style.width = ripple.style.height = size + "px";
+            ripple.style.left = x + "px";
+            ripple.style.top = y + "px";
+            ripple.style.position = "absolute";
+            ripple.style.borderRadius = "50%";
+            ripple.style.background = "rgba(255, 255, 255, 0.6)";
+            ripple.style.transform = "scale(0)";
+            ripple.style.animation = "ripple 0.6s linear";
+            this.style.position = "relative";
+            this.appendChild(ripple);
+            setTimeout(() => { ripple.remove(); }, 600);
+        });
+    });
+
+    // Thêm keyframes ripple
+    const style = document.createElement("style");
+    style.innerHTML = `
+        @keyframes ripple {
+            to { transform: scale(4); opacity: 0; }
+        }
+    `;
+    document.head.appendChild(style);
+});
+
+/**
+ * Badge khuyến mãi đổi màu động
+ */
+setInterval(() => {
+    const badges = document.querySelectorAll(".promotion-badge");
+    badges.forEach((badge) => {
+        const hue = Math.random() * 60 + 15;
+        badge.style.background = `linear-gradient(45deg, hsl(${hue}, 80%, 50%), hsl(${hue + 20}, 70%, 55%))`;
+    });
+}, 5000);
+
+// ==================== END OF FILE ====================

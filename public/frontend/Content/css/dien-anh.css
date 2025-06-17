@@ -1,0 +1,121 @@
+
+.container-blog {
+  max-width: 1100px;
+  margin: 36px auto 0 auto;
+  padding: 0 20px;
+}
+.section-title {
+  font-size: 2em;
+  font-weight: 500;
+  border-left: 5px solid #1976d2;
+  padding-left: 12px;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+  color: #444;
+  display: flex;
+  align-items: flex-end;
+}
+.section-title-bar {
+  border-bottom: 3px solid #1976d2;
+  margin-bottom: 30px;
+  margin-top: 2px;
+}
+.movie-list {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  margin-top: 16px;
+}
+.movie-item {
+  display: flex;
+  flex-direction: row;
+  gap: 28px;
+  align-items: flex-start;
+}
+.movie-thumb {
+  flex: 0 0 340px;
+  width: 340px;
+  height: 180px;
+  border-radius: 8px;
+  object-fit: cover;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.10);
+  background: #eaeaea;
+  display: block;
+}
+.movie-detail {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.movie-title {
+  font-size: 1.36em;
+  font-weight: 500;
+  margin: 0 0 12px 0;
+  color: #222;
+}
+.movie-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 9px;
+}
+.btn-like {
+  background: #1976d2;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 5px 18px;
+  font-size: 1em;
+  cursor: pointer;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.15s;
+  outline: none;
+}
+.btn-like.liked {
+  background: #1253a3;
+}
+.like-count {
+  background: #f1f3f6;
+  color: #555;
+  border-radius: 6px;
+  padding: 5px 15px;
+  font-size: 0.98em;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.movie-desc {
+  color: #888;
+  font-size: 1.1em;
+  line-height: 1.5;
+  margin-top: 0;
+  margin-bottom: 0;
+  word-break: break-word;
+}
+.movie-desc a {
+  color: #1976d2;
+  text-decoration: underline;
+}
+.movie-desc b, .movie-desc strong {
+  color: #1a1a1a;
+  font-weight: 700;
+}
+@media (max-width: 1000px) {
+  .movie-item {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .movie-thumb {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    height: 180px;
+    margin-bottom: 8px;
+  }
+}
+@media (max-width: 600px) {
+  .container-blog { padding: 0 2vw; }
+  .movie-thumb { height: 28vw; }
+}

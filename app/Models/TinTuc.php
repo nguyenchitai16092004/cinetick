@@ -11,6 +11,7 @@ class TinTuc extends Model
     // Các trường được phép gán hàng loạt
     protected $fillable = [
         'TieuDe',
+        'Slug',
         'NoiDung',
         'LoaiBaiViet',
         'AnhDaiDien',
