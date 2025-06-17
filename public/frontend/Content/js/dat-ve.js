@@ -24,18 +24,41 @@ function renderSeatLayout() {
     const seatContainer = document.getElementById("seatLayout");
     if (!seatContainer) return;
 
+    if (!seats || seats.length === 0) {
+        seatContainer.innerHTML =
+            '<div class="placeholder-text text-muted text-center py-5">Không có thông tin về sơ đồ ghế</div>';
+        return;
+    }
+
     seatContainer.innerHTML = "";
     seatContainer.className = "seat-container";
 
     const rowCount = seats.length;
     const colCount = seats[0] ? seats[0].length : 0;
 
+    // Tính số cột cho grid-template-columns (label + aisle + seat)
+    let gridTemplateColumns = "auto";
+    let totalCols = 1;
+    for (let j = 0; j < colCount; j++) {
+        if (colAisles.includes(j)) {
+            gridTemplateColumns += " 15px";
+            totalCols++;
+        }
+        gridTemplateColumns += " 35px";
+        totalCols++;
+    }
+    seatContainer.style.display = "grid";
+    seatContainer.style.gridTemplateColumns = gridTemplateColumns;
+
+    // Render từng hàng
     for (let i = 0; i < rowCount; i++) {
+        // Label hàng
         const rowLabel = document.createElement("div");
         rowLabel.className = "row-label";
         rowLabel.textContent = String.fromCharCode(65 + i);
         seatContainer.appendChild(rowLabel);
 
+        // Render từng ghế trong hàng
         for (let j = 0; j < colCount; j++) {
             if (colAisles.includes(j)) {
                 const aisle = document.createElement("div");
@@ -60,9 +83,9 @@ function renderSeatLayout() {
             seat.dataset.col = j;
             seat.dataset.seatId = seatData.ID_Ghe;
 
-            if (myHeldSeats.has(String(seatData.ID_Ghe))) {
-                seat.classList.add("held");
-                seat.classList.add("selected");
+            // Trạng thái ghế
+            if (myHeldSeats && myHeldSeats.has(String(seatData.ID_Ghe))) {
+                seat.classList.add("held", "selected");
                 seat.setAttribute("title", "Bạn đang giữ ghế này");
             } else if (seatData.TrangThaiGhe === 0) {
                 seat.classList.add("disabled");
@@ -76,24 +99,23 @@ function renderSeatLayout() {
                 if (seatData.TrangThaiGhe === 2) seat.classList.add("vip");
                 else seat.classList.add("normal");
             }
+
+
             seatContainer.appendChild(seat);
         }
 
+        // Thêm aisle giữa các hàng (nếu có)
         if (rowAisles.includes(i + 1)) {
             const aisleRow = document.createElement("div");
             aisleRow.className = "aisle aisle-row";
-            aisleRow.style.gridColumn = `1 / span ${colCount + 1}`;
+            aisleRow.style.gridColumn = `1 / span ${totalCols}`;
             aisleRow.style.height = "15px";
             aisleRow.style.backgroundColor = "transparent";
             seatContainer.appendChild(aisleRow);
         }
     }
-    // Cập nhật selectedSeats cho toàn bộ hệ thống dựa trên myHeldSeats!
-    window.selectedSeats = Array.from(myHeldSeats);
-    updateBookingSummary();
     bindSeatClickEvents();
 }
-
 function bindSeatClickEvents() {
     document.querySelectorAll(".seat").forEach((seatEl) => {
         seatEl.onclick = null;
