@@ -22,8 +22,7 @@
 
                     <div class="form-group mb-3">
                         <label for="PhanTramGiam">Phần trăm giảm (%)</label>
-                        <input type="number" name="PhanTramGiam" class="form-control" required min="1"
-                            max="100">
+                        <input type="number" name="PhanTramGiam" class="form-control" required min="1"max="100">
                     </div>
                     <div class="form-group mb-3">
                         <label for="NgayKetThuc">Ngày hết hạn</label>
