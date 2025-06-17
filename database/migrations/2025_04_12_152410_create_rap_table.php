@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('TenRap', 100);
             $table->string('Slug', 100);
             $table->string('DiaChi', 255);
-            $table->boolean('TrangThai');
+            $table->boolean('TrangThai')->comment('0: Đang bảo trì, 1: Hoạt động');;
             $table->text('MoTa');
             $table->string('Hotline', 10);
             $table->timestamps();
