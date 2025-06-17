@@ -76,6 +76,10 @@ Route::prefix('ajax')->group(function () {
     Route::get('/phim-theo-rap', [PhimController::class, 'ajaxPhimTheoRap']);
     Route::get('/ngay-chieu-theo-rap-phim', [PhimController::class, 'ajaxNgayChieuTheoRapPhim']);
     Route::get('/suat-chieu-theo-rap-phim-ngay', [PhimController::class, 'ajaxSuatChieuTheoRapPhimNgay']);
+// --- Đánh giá phim---
+    Route::post('/can-rate', [PhimController::class, 'ajaxCanRatePhim'])->name('ajax.can-rate');
+    Route::post('/send-rating', [PhimController::class, 'ajaxSendRating'])->name('ajax.send-rating');
+    Route::get('/get-rating', [PhimController::class, 'ajaxGetRating'])->name('ajax.get-rating');
 });
 
 // --- Rạp ---

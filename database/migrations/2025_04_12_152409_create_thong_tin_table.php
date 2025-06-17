@@ -17,7 +17,7 @@ return new class extends Migration
             $table->boolean('GioiTinh');
             $table->date('NgaySinh');
             $table->string('Email', 100);
-            $table->string('SDT', 15);
+            $table->string('SDT', 11);
             $table->timestamps();
         });
     }
