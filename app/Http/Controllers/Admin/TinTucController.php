@@ -32,35 +32,34 @@ class TinTucController extends Controller
             'TieuDe' => 'required|max:100',
             'NoiDung' => 'required',
             'LoaiBaiViet' => 'required|in:0,1',
-            'HinhAnh' => 'nullable|image',
+            'TrangThai' => 'required|in:0,1',
+            'AnhDaiDien' => 'nullable|image',
         ]);
 
         if ($validator->fails()) {
             Log::error('Lỗi validate khi thêm tin tức:', [
                 'errors' => $validator->errors()->all(),
                 'user_id' => session('user_id'),
-                'input' => $request->except(['_token', 'HinhAnh'])
+                'input' => $request->except(['_token', 'AnhDaiDien'])
             ]);
-
             return redirect()->back()
                 ->withErrors($validator)
                 ->withInput();
         }
 
-        $data = $request->only(['TieuDe', 'NoiDung', 'LoaiBaiViet']); // bỏ _token
+        $data = $request->only(['TieuDe', 'NoiDung', 'LoaiBaiViet', 'TrangThai']); // Thêm TrangThai
         $data['ID_TaiKhoan'] = session('user_id');
 
         if (!$data['ID_TaiKhoan']) {
             Log::warning('Thêm tin tức thất bại: Không có user_id trong session.');
             return redirect()->back()->with('error', 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại!');
         }
-        if ($request->hasFile('HinhAnh')) {
-            $file = $request->file('HinhAnh');
+        if ($request->hasFile('AnhDaiDien')) {
+            $file = $request->file('AnhDaiDien');
             $fileName = time() . '_' . $file->getClientOriginalName();
-            $file->storeAs('tin-tuc', $fileName, 'public'); // Lưu vào storage/app/public/tin-tuc
-            $data['HinhAnh'] = 'storage/tin-tuc/' . $fileName; // Đường dẫn truy cập từ public
+            $file->storeAs('tin-tuc', $fileName, 'public');
+            $data['AnhDaiDien'] = 'storage/tin-tuc/' . $fileName;
         }
-
         TinTuc::create($data);
 
         Log::info('Tin tức mới đã được thêm thành công', [
@@ -90,28 +89,25 @@ class TinTucController extends Controller
             'TieuDe' => 'required|max:100',
             'NoiDung' => 'required',
             'LoaiBaiViet' => 'required|in:0,1',
-            'HinhAnh' => 'nullable|image',
+            'TrangThai' => 'required|in:0,1',
+            'AnhDaiDien' => 'nullable|image',
         ]);
 
-        $data = $request->only(['TieuDe', 'NoiDung', 'LoaiBaiViet']);
+        $data = $request->only(['TieuDe', 'NoiDung', 'LoaiBaiViet', 'TrangThai']);
 
-        // Gán lại ID_TaiKhoan từ session hoặc giữ nguyên
         $data['ID_TaiKhoan'] = session('user_id') ?? $tinTuc->ID_TaiKhoan;
 
-        // Xử lý ảnh mới nếu có
-        if ($request->hasFile('HinhAnh')) {
-            $file = $request->file('HinhAnh');
+        if ($request->hasFile('AnhDaiDien')) {
+            $file = $request->file('AnhDaiDien');
             $fileName = time() . '_' . $file->getClientOriginalName();
             $file->storeAs('tin-tuc', $fileName, 'public');
-            $data['HinhAnh'] = 'storage/tin-tuc/' . $fileName;
+            $data['AnhDaiDien'] = 'storage/tin-tuc/' . $fileName;
         }
-
 
         $tinTuc->update($data);
 
         return redirect()->route('tin_tuc.index')->with('success', 'Cập nhật tin tức thành công');
     }
-
     // Xóa tin tức
     public function destroy($id)
     {
@@ -119,5 +115,25 @@ class TinTucController extends Controller
         $tinTuc->delete();
 
         return redirect()->route('tin_tuc.index')->with('success', 'Xóa tin tức thành công');
+    }
+    public function upload(Request $request)
+    {
+        if ($request->hasFile('upload')) {
+            $file = $request->file('upload');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->storeAs('uploads/ckeditor', $filename, 'public');
+            $url = asset('storage/uploads/ckeditor/' . $filename);
+
+            // Đáp ứng đúng format CKEditor 4
+            return response()->json([
+                'uploaded' => 1,
+                'fileName' => $filename,
+                'url' => $url
+            ]);
+        }
+        return response()->json([
+            'uploaded' => 0,
+            'error' => ['message' => 'No file uploaded.']
+        ]);
     }
 }

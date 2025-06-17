@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('ID_Rap');
             $table->string('TenPhongChieu', 100);
             $table->boolean('LoaiPhong');
-            $table->boolean('TrangThai');
+            $table->boolean('TrangThai')->comment('0: Đang bảo trì, 1: Hoạt động');;
             $table->integer('SoLuongGhe');
             $table->json('HangLoiDi')-> nullable();
             $table->json('CotLoiDi')-> nullable();

@@ -13,7 +13,8 @@ class TinTuc extends Model
         'TieuDe',
         'NoiDung',
         'LoaiBaiViet',
-        'HinhAnh',
+        'AnhDaiDien',
         'ID_TaiKhoan',
+        'TrangThai'
     ];
 }

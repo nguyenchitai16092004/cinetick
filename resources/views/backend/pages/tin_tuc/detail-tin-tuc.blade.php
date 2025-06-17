@@ -11,12 +11,12 @@
 
 
             <div class="form-group">
-                @if ($tinTuc->HinhAnh)
-                    <img src="{{ asset($tinTuc->HinhAnh) }}"" width="120">
+                @if ($tinTuc->AnhDaiDien)
+                    <img src="{{ asset($tinTuc->AnhDaiDien) }}"" width="120">
                 @endif
                 <label>Hình ảnh hiện tại</label><br>
                 <div class="form-group">
-                    <input type="file" name="HinhAnh" class="form-control">
+                    <input type="file" name="AnhDaiDien" class="form-control">
                 </div>
             </div>
 
@@ -44,7 +44,10 @@
                 <label>ID Tài khoản</label>
                 <input type="number" name="ID_TaiKhoan" value="{{ $tinTuc->ID_TaiKhoan }}" class="form-control" required>
             </div>
-
+            <select name="TrangThai" class="form-control" required>
+                <option value="0" {{ $tinTuc->TrangThai == 0 ? 'selected' : '' }}>Chờ xuất bản</option>
+                <option value="1" {{ $tinTuc->TrangThai == 1 ? 'selected' : '' }}>Xuất bản</option>
+            </select>
             <button type="submit" class="btn btn-primary">Cập nhật</button>
         </form>
     </div>

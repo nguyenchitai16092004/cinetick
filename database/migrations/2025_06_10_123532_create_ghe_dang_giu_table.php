@@ -18,10 +18,8 @@ return new class extends Migration
             $table->unsignedBigInteger('ID_TaiKhoan');
             $table->timestamp('hold_until');
             $table->timestamps();
-
             $table->unique(['ID_Ghe', 'ID_SuatChieu']);
 
-            // Khóa ngoại
             $table->foreign('ID_Ghe')->references('ID_Ghe')->on('ghe_ngoi')->onDelete('cascade');
             $table->foreign('ID_SuatChieu')->references('ID_SuatChieu')->on('suat_chieu')->onDelete('cascade');
             $table->foreign('ID_TaiKhoan')->references('ID_TaiKhoan')->on('tai_khoan')->onDelete('cascade');

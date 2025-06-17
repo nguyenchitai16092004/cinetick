@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('TenDN', 50);
             $table->string('MatKhau', 100); 
             $table->integer('VaiTro');
-            $table->boolean('TrangThai');
+            $table->boolean('TrangThai')->comment('0: Tạm dừng hoạt động, 1: Hoạt động');;
             $table->unsignedBigInteger('ID_CCCD');
 
             $table->foreign('ID_CCCD')->references('ID_CCCD')->on('thong_tin')->onDelete('cascade');
