@@ -81,7 +81,6 @@
                                     </div>
                                 </div>
                             </div>
-                            <input type="hidden" name="ID_Rap" id="ID_Rap">
 
                             <!-- Chọn ngày và giờ chiếu -->
                             <div class="card">
@@ -189,15 +188,15 @@
                 url: "{{ route('suat-chieu.loc-phong') }}",
                 method: 'POST',
                 data: {
-                    date: selectedRap
+                    id_rap : selectedRap
                 },
                 success: function(data) {
                     let html = '<option value="">-- Chọn phòng --</option>';
                     data.forEach(phong => {
                         html +=
-                            `<option value="${phong.ID_Phong}" data-duration="${phong.ThoiLuong || 120}">${phong.Phong}</option>`;
+                            `<option value="${phong.ID_PhongChieu}">${phong.TenPhongChieu}</option>`;
                     });
-                    $('#ID_Phong').html(html).prop('disabled', false);
+                    $('#ID_PhongChieu').html(html).prop('disabled', false);
                 },
                 error: function(xhr) {
                     alert('Lỗi khi lọc phòng !');
