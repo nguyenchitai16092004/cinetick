@@ -106,10 +106,11 @@
                                     <a href="#">Rạp/Giá vé</a>
                                     <ul style="background: -webkit-linear-gradient(left, #171e38, #5841a7);">
                                         @foreach ($raps as $rap)
-                                            <li>
-                                                <a
-                                                    href="{{ route('rap.chiTiet', ['id' => $rap->ID_Rap]) }}">{{ $rap->TenRap }}</a>
-                                            </li>
+                                            @if($rap->TrangThai == 1)
+                                                <li>
+                                                    <a href="{{ route('rap.chiTiet', ['id' => $rap->ID_Rap]) }}">{{ $rap->TenRap }}</a>
+                                                </li>
+                                            @endif
                                         @endforeach
                                     </ul>
                                 </li>

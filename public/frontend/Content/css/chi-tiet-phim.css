@@ -41,8 +41,6 @@ body {
     animation: gradientShift 8s ease-in-out infinite alternate;
 }
 
-
-
 /* Hero Section */
 .movie-hero {
     position: relative;
@@ -79,8 +77,6 @@ body {
     border-radius: 50%;
     animation: float 15s infinite linear;
 }
-
-
 
 .container {
     max-width: 1400px;
@@ -133,6 +129,7 @@ body {
     background: linear-gradient(45deg, rgba(0, 0, 0, 0.3) 0%, transparent 100%);
     opacity: 0;
     transition: opacity 0.3s ease;
+    pointer-events: none;
 }
 
 .movie-poster:hover .poster-overlay {
@@ -174,17 +171,67 @@ body {
 
 .age-badge {
     position: absolute;
-    top: 20px;
-    right: 20px;
-    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
-    padding: 8px 16px;
-    border-radius: 20px;
-    font-weight: 600;
+    top: 565px;
+    right: 15px;
+    background: #ffa500;
     font-size: 14px;
-    box-shadow: 0 10px 20px rgba(255, 107, 107, 0.3);
+    color: #fff;
+    padding: 1px 10px;
+    border-radius: 5px;
+    font-weight: 600;
+}
+.rating {
+    position: absolute;
+    bottom: 10px;
+    right: 325px;
+    font-size: 1.12rem;
+    background: rgba(0, 0, 0, 0.8);
+    padding: 2px 9px 2px 7px;
+    border-radius: 5px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    color: #fff;
+    z-index: 2;
+}
+.rating .star {
+    color: #ffc107;
+    margin-left: 4px;
+    font-size: 1.1em;
+}
+.evaluate {
+    position: absolute;
+    left: 76px;
+    bottom: 1px;
+    font-size: 1.08rem;
+    background: linear-gradient(90deg, #23234b 60%, #38b6ff 100%);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+    padding: 8px 18px 8px 14px;
+    border-radius: 18px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    color: #fff;
+    letter-spacing: 0.5px;
+    transition: background 0.3s;
+    border: 1.5px solid linear-gradient(90deg, #23234b 60%, #38b6ff 100%);
+    min-width: 64px;
+    gap: 8px;
+    cursor: pointer;
+}
+.total-rating {
+    display: flex;
+    align-items: center;
+    gap: 4px;
 }
 
-/* Movie Info */
+.evaluate .star {
+    color: #ffd700;
+    margin-left: 6px;
+    font-size: 1.18em;
+    filter: drop-shadow(0 0 2px #fff176);
+}
+
 .movie-info {
     padding-left: 20px;
 }
@@ -199,8 +246,6 @@ body {
     background-clip: text;
     animation: titleGlow 3s ease-in-out infinite alternate;
 }
-
-
 
 .movie-badges {
     display: flex;
@@ -413,8 +458,6 @@ body {
     animation: bounce 2s infinite;
 }
 
-
-
 .empty-title {
     font-size: 1.8rem;
     font-weight: 600;
@@ -489,8 +532,6 @@ body {
     transition: filter 0.4s ease;
 }
 
-
-
 .trailer-container {
     position: relative;
     width: 100%;
@@ -505,8 +546,6 @@ body {
     box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8);
     animation: trailerSlideIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
-
-
 
 .trailer-video {
     width: 100%;
@@ -523,7 +562,6 @@ body {
     color: rgba(255, 255, 255, 0.8);
     font-size: 14px;
 }
-
 
 .fade-in-up {
     animation: fadeInUp 0.8s ease-out forwards;
@@ -621,5 +659,222 @@ body {
     100% {
         transform: translateY(-100px) rotate(360deg);
         opacity: 0;
+    }
+}
+
+.rating-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(30, 30, 30, 0.65);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.rating-modal-box {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+    max-width: 480px;
+    width: 100%;
+    overflow: hidden;
+    font-family: "Josefin Sans", sans-serif;
+    animation: popupShow 0.2s cubic-bezier(0.33, 1, 0.68, 1);
+    display: flex;
+    flex-direction: column;
+    max-height: 600px;
+    min-height: 520px;
+}
+
+@media (max-width: 520px) {
+    .rating-modal-box {
+        min-height: 420px;
+    }
+}
+
+@keyframes popupShow {
+    from {
+        transform: translateY(40px) scale(0.95);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+}
+
+/* Modal header with image */
+.rating-modal-image {
+    width: 100%;
+    height: 200px;
+    background: #eee;
+    object-fit: contain;
+    position: relative;
+    border-bottom: 4px solid #ff9800;
+}
+
+.rating-modal-close {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: #fff;
+    border-radius: 50%;
+    border: none;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    font-size: 21px;
+    color: #555;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+    transition: background 0.2s;
+    z-index: 2;
+}
+
+.rating-modal-close:hover {
+    background: #f5f5f5;
+}
+
+/* Modal content */
+.rating-modal-content {
+    flex: 1 1 auto;
+    padding: 0 20px 12px 20px;
+    text-align: center;
+    background: #fff;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    min-height: 190px;
+}
+.custom-rating-input {
+    margin-top: 10px;
+    text-align: center;
+    font-size: 1rem;
+}
+.custom-rating-input input[type="number"] {
+    width: 80px;
+    padding: 5px 8px;
+    font-size: 1.1rem;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    margin-left: 8px;
+    text-align: right;
+}
+.customRatingInput-title{
+    color: #333;
+}
+#customRatingInput{
+    width: 60px;
+    height: 40px;
+    border: 2px solid #ff9800;
+}
+.rating-movie-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 20px 0 12px 0;
+    color: #333;
+}
+
+.rating-modal-score {
+    margin: 0 auto 8px auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.rating-modal-score .star-icon {
+    color: #ff9800;
+    font-size: 1.5rem;
+    margin-bottom: -2px;
+}
+
+.rating-modal-score .score-value {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #222;
+}
+
+.rating-modal-score .score-count {
+    font-size: 0.95rem;
+    color: #888;
+    margin-top: 2px;
+}
+
+.rating-stars {
+    display: flex;
+    justify-content: center;
+    margin: 16px 0 0 0;
+    gap: 4px;
+}
+#ratingMsg {
+    min-height: 22px;
+    margin: 8px 0 0 0;
+    text-align: center;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: color 0.15s;
+    word-break: break-word;
+    display: block;
+}
+.rating-star {
+    font-size: 2rem;
+    color: #ddd;
+    cursor: pointer;
+    transition: color 0.15s;
+    user-select: none;
+}
+
+.rating-star.active { color: #ff9800; }
+
+/* Modal actions */
+.rating-modal-actions {
+    display: flex;
+    border-top: 1px solid #eee;
+    background: #fff;
+    position: relative;
+    min-height: 60px;
+}
+
+.rating-modal-actions button {
+    flex: 1 1 0;
+    padding: 14px 0;
+    font-size: 1rem;
+    border: none;
+    outline: none;
+    background: transparent;
+    cursor: pointer;
+    transition: background 0.18s;
+}
+
+.rating-modal-actions .btn-cancel {
+    color: #666;
+    border-right: 1px solid #eee;
+    border-radius: 0 0 0 16px;
+}
+
+.rating-modal-actions .btn-confirm {
+    color: #fff;
+    background: #ff9800;
+    border-radius: 0 0 16px 0;
+    font-weight: 500;
+}
+
+.rating-modal-actions .btn-confirm:hover {
+    background: #e98d04;
+}
+
+.rating-modal-actions .btn-cancel:hover {
+    background: #f5f5f5;
+}
+@media (max-width: 520px) {
+    .rating-modal-box {
+        max-width: 98vw;
+    }
+    .rating-modal-image {
+        height: 120px;
     }
 }

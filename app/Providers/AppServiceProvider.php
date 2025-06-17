@@ -37,7 +37,7 @@ class AppServiceProvider extends ServiceProvider
         }
         */
         View::composer('*', function ($view) {
-            $raps = Rap::all();
+            $raps = Rap::where('TrangThai', 1)->get();
             $view->with('raps', $raps);
         });
     }

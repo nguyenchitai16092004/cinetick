@@ -17,7 +17,7 @@
                     <h2>{{ $rap->TenRap }}</h2>
                     <div class="cinema-address">
                         Địa chỉ: {{ $rap->DiaChi }}<br>
-                        Hotline: <a href="tel:{{ $rap->Hotline }}" class="hotline"> {!! $rap->MoTa ?? 'Đang cập nhật...' !!}</a>
+                        Hotline: <a href="tel:{{ $rap->Hotline }}" class="hotline">{{ $rap->Hotline }}</a>
                     </div>
                 </div>
             </div>
@@ -82,7 +82,7 @@
                 </header>
                 <div class="detail-address">
                     <strong>Địa chỉ:</strong> {{ $rap->DiaChi }}<br>
-                    <strong>Số điện thoại:</strong> {{ $rap->Hotline }}
+                    <strong>Số điện thoại:</strong> <a href="tel:{{ $rap->Hotline }}" class="hotline">{{ $rap->Hotline }}</a>
                 </div>
 
                 <div class="detail-desc">

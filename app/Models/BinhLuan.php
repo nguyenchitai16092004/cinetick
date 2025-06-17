@@ -11,11 +11,13 @@ class BinhLuan extends Model
 
     protected $table = 'binh_luan';
     protected $primaryKey = 'ID_BinhLuan';
-    
+    public $timestamps = true;
     protected $fillable = [
-        'DiemDanhGia',
+        'ID_Phim',
         'ID_TaiKhoan',
-        'ID_Phim'
+        'DiemDanhGia',
+        'created_at',
+        'updated_at'
     ];
 
     public function taiKhoan()
