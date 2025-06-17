@@ -405,7 +405,7 @@ span, small{
 }
 
 .seat-container {
-    display: grid;
+    display: z;
     grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
     gap: 6px;
     justify-items: center;
