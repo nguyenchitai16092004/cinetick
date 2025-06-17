@@ -42,7 +42,8 @@
                                 @error('NgayChieu')
                                     <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
                                 @enderror
-                                <small class="form-text text-muted">Chỉ có thể chỉnh sửa suất chiếu trong vòng 3 tháng tới</small>
+                                <small class="form-text text-muted">Chỉ có thể chỉnh sửa suất chiếu trong vòng 3 tháng
+                                    tới</small>
                             </div>
 
                             <div class="form-group mb-3">
@@ -58,33 +59,34 @@
                                 <small class="form-text text-muted">Chỉ hiển thị phim còn trong thời gian chiếu</small>
                             </div>
 
-                            <div class="form-group mb-3">
-                                <label for="ID_PhongChieu">Phòng chiếu <span class="text-danger">*</span></label>
-                                <select name="ID_PhongChieu" id="ID_PhongChieu"
-                                    class="form-control @error('ID_PhongChieu') is-invalid @enderror" required>
-                                    <option value="">-- Chọn phòng chiếu --</option>
-                                    @foreach ($phongChieus as $phongChieu)
-                                        <option value="{{ $phongChieu->ID_PhongChieu }}"
-                                            data-rap-id="{{ $phongChieu->ID_Rap }}"
-                                            {{ old('ID_PhongChieu', $suatChieu->ID_PhongChieu) == $phongChieu->ID_PhongChieu ? 'selected' : '' }}>
-                                            {{ $phongChieu->TenPhongChieu }} ({{ $phongChieu->TenRap }} :
-                                            {{ $phongChieu->DiaChi }} )
-                                        </option>
-                                    @endforeach
-                                </select>
-                                @error('ID_PhongChieu')
-                                    <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
-                                @enderror
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="ID_Rap">Rạp <span class="text-danger">*</span></label>
+                                        <select name="ID_Rap" id="ID_Rap" class="form-control" required>
+                                            <option value="">-- Chọn rạp --</option>
+                                            @foreach ($raps as $rap)
+                                                <option value="{{ $rap->ID_Rap }}"{{ $suatChieu->ID_Rap == $rap->ID_Rap ? 'selected' : '' }}>{{ $rap->TenRap }} : {{ $rap->DiaChi }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="ID_PhongChieu">Phòng chiếu <span class="text-danger">*</span></label>
+                                        <select name="ID_PhongChieu" id="ID_PhongChieu" class="form-control" required
+                                            disabled>
+                                            <option value="">-- Chọn phòng chiếu --</option>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
-
                             <input type="hidden" name="ID_Rap" id="ID_Rap"
                                 value="{{ old('ID_Rap', $suatChieu->ID_Rap) }}">
 
                             <div class="form-group mb-3">
                                 <label for="GioChieu">Giờ chiếu <span class="text-danger">*</span></label>
-                                <input type="time" class="form-control @error('GioChieu') is-invalid @enderror"
-                                    id="GioChieu" name="GioChieu" value="{{ old('GioChieu', $suatChieu->GioChieu) }}"
-                                    required>
+                                <input type="time" class="form-control @error('GioChieu') is-invalid @enderror" id="GioChieu" name="GioChieu" value="{{ old('GioChieu', $suatChieu->GioChieu) }}" required>
                                 @error('GioChieu')
                                     <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
                                 @enderror
@@ -121,8 +123,14 @@
         let conflictCheckTimeout;
         const currentSuatChieuId = {{ $suatChieu->ID_SuatChieu }};
 
+        document.getElementById('ID_Rap').addEventListener('change', function() {
+            document.getElementById("ID_PhongChieu").disabled = false;
+            getPhong();
+        });
+
         document.addEventListener('DOMContentLoaded', function() {
             // Khóa dropdown phim khi chưa chọn ngày chiếu
+            getPhong()
             document.getElementById('ID_Phim').disabled = true;
 
             // Lấy các phần tử
@@ -145,18 +153,6 @@
                 rapIdInput.value = rapId;
             }
 
-            // Khi chọn phòng chiếu thì cập nhật ID_Rap
-            phongChieuSelect.addEventListener('change', function() {
-                if (this.value) {
-                    var selectedOption = this.options[this.selectedIndex];
-                    var rapId = selectedOption.getAttribute('data-rap-id');
-                    rapIdInput.value = rapId;
-                } else {
-                    rapIdInput.value = '';
-                }
-                checkLichTrinhXungDot();
-            });
-
             // AJAX lấy danh sách phim khi chọn ngày chiếu
             ngayChieu.addEventListener('change', function() {
                 const selectedDate = this.value;
@@ -171,8 +167,7 @@
 
         function getMovie() {
             const selectedDate = document.getElementById("NgayChieu").value;
-            if (!selectedDate) return;
-
+ 
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -188,20 +183,54 @@
                 success: function(data) {
                     let html = '<option value="">-- Chọn phim --</option>';
                     const currentPhimId = {{ old('ID_Phim', $suatChieu->ID_Phim) }};
-                    
+
                     data.forEach(phim => {
                         const selected = phim.ID_Phim == currentPhimId ? 'selected' : '';
-                        html += `<option value="${phim.ID_Phim}" data-duration="${phim.ThoiLuong || 120}" ${selected}>${phim.TenPhim}</option>`;
+                        html +=
+                            `<option value="${phim.ID_Phim}" data-duration="${phim.ThoiLuong || 120}" ${selected}>${phim.TenPhim}</option>`;
                     });
                     $('#ID_Phim').html(html).prop('disabled', false);
-                    
-                    // Trigger conflict check after loading movies
+
                     if (currentPhimId) {
                         checkLichTrinhXungDot();
                     }
                 },
                 error: function(xhr) {
                     alert('Lỗi khi lọc phim!');
+                    console.error(xhr.responseText);
+                }
+            });
+        }
+
+        function getPhong() {
+            const selectedRap = document.getElementById("ID_Rap").value;
+            if (!selectedRap) return;
+
+            console.log("Gửi request lọc phòng :", selectedRap);
+
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            $.ajax({
+                url: "{{ route('suat-chieu.loc-phong') }}",
+                method: 'POST',
+                data: {
+                    id_rap: selectedRap
+                },
+                success: function(data) {
+                    let html = '<option value="">-- Chọn phòng --</option>';
+                    data.forEach(phong => {
+                        const phongSelect = {{ old('ID_PhongChieu', $suatChieu->ID_PhongChieu) }};
+                        html +=
+                            `<option value="${phong.ID_PhongChieu}" ${ phong.ID_PhongChieu == phongSelect ? 'selected' : '' }>${phong.TenPhongChieu}</option>`;
+                    });
+                    $('#ID_PhongChieu').html(html).prop('disabled', false);
+                },
+                error: function(xhr) {
+                    alert('Lỗi khi lọc phòng !');
                     console.error(xhr.responseText);
                 }
             });

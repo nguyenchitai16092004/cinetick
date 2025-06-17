@@ -20,18 +20,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const phongChieuSelect = document.getElementById('ID_PhongChieu');
     const rapIdInput = document.getElementById('ID_Rap');
 
-    // Cập nhật ID_Rap khi chọn phòng chiếu
-    phongChieuSelect.addEventListener('change', function () {
-        if (this.value) {
-            const selectedOption = this.options[this.selectedIndex];
-            const rapId = selectedOption.getAttribute('data-rap-id');
-            rapIdInput.value = rapId;
-        } else {
-            rapIdInput.value = '';
-        }
-        checkXungDotToanBo();
-    });
-
     // Kiểm tra xung đột khi thay đổi phim
     document.getElementById('ID_Phim').addEventListener('change', checkXungDotToanBo);
 

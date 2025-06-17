@@ -100,8 +100,9 @@ class SuatChieuController extends Controller
         return response()->json($Phim);
     }
 
-    public function filterPhong($id){
-        $phongs = PhongChieu::join('rap', 'rap.ID_Rap', '=', 'phong_chieu.ID_Rap')->where('phong_chieu.TrangThai', 1)->where('phong_chieu.ID_Rap', $id)->get();
+    public function filterPhong(Request $request){
+        $id = $request->ID_Rap;
+        $phongs = PhongChieu::all();
         return $phongs;
     }
 
