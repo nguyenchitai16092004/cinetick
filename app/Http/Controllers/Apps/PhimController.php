@@ -6,8 +6,12 @@ use App\Models\Phim;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Carbon;
 use App\Models\Rap;
-use Illuminate\Http\Request;    
+use Illuminate\Http\Request;
 use App\Models\SuatChieu;
+use App\Models\BinhLuan;
+use App\Models\HoaDon;
+use Illuminate\Support\Facades\Log;
+use App\Models\VeXemPhim;
 
 class PhimController extends Controller
 {
@@ -17,14 +21,12 @@ class PhimController extends Controller
         $currentMonth = now()->month;
         $currentYear = now()->year;
 
-        $raps = Rap::all();
+        $raps = Rap::where('TrangThai', 1)->get();
         $phims = Phim::with('theLoai')
             ->orderBy('updated_at', 'desc')
             ->paginate(10);
 
-        $dsPhimDangChieu = Phim::join('suat_chieu' , 'suat_chieu.ID_Phim' , '=' , 'phim.ID_Phim')
-            ->whereDate('suat_chieu.NgayChieu' , $today)
-            ->whereDate('NgayKhoiChieu', '<=', $today)
+        $dsPhimDangChieu = Phim::whereDate('NgayKhoiChieu', '<=', $today)
             ->whereDate('NgayKetThuc', '>=', $today)
             ->get();
 
@@ -42,19 +44,22 @@ class PhimController extends Controller
     public function phimDangChieu()
     {
         $today = now()->toDateString();
-        $dsPhimDangChieu = Phim::whereDate('NgayKhoiChieu', '<=', $today)
+        $danhSachPhim = Phim::whereDate('NgayKhoiChieu', '<=', $today)
             ->whereDate('NgayKetThuc', '>=', $today)
             ->get();
 
-        return view('frontend.pages.phim-dang-chieu', compact('dsPhimDangChieu'));
+        $title = 'Phim đang chiếu';
+        return view('frontend.pages.phim', compact('danhSachPhim', 'title'));
     }
+
     public function phimSapChieu()
     {
         $today = now()->toDateString();
-        $dsPhimSapChieu = Phim::whereDate('NgayKhoiChieu', '>=', $today)
+        $danhSachPhim = Phim::whereDate('NgayKhoiChieu', '>=', $today)
             ->get();
 
-        return view('frontend.pages.phim-sap-chieu', compact('dsPhimSapChieu'));
+        $title = 'Phim sắp chiếu';
+        return view('frontend.pages.phim', compact('danhSachPhim', 'title'));
     }
 
     public function chiTiet($slug)
@@ -83,6 +88,11 @@ class PhimController extends Controller
     public function ajaxPhimTheoRap(Request $request)
     {
         $id_rap = $request->input('id_rap');
+        // Chỉ lấy rạp có TrangThai == 1
+        $rap = Rap::where('ID_Rap', $id_rap)->where('TrangThai', 1)->first();
+        if (!$rap) {
+            return response()->json(['error' => 'Rạp không tồn tại hoặc đã ngừng hoạt động!'], 404);
+        }
         $phims = SuatChieu::where('ID_Rap', $id_rap)
             ->where('NgayChieu', '>=', now()->toDateString())
             ->with('phim')
@@ -137,5 +147,106 @@ class PhimController extends Controller
             ->get();
 
         return response()->json($suatChieu, 200);
+    }
+
+    public function ajaxCanRatePhim(Request $request)
+    {
+        if (!session()->has('user_id')) {
+            return response()->json(['allow' => false, 'message' => 'Bạn cần đăng nhập để đánh giá phim!']);
+        }
+        $userId = session('user_id');
+        $idPhim = $request->input('id_phim');
+        $phim = Phim::find($idPhim);
+
+        // Kiểm tra đã đánh giá chưa
+        $exist = BinhLuan::where('ID_Phim', $idPhim)->where('ID_TaiKhoan', $userId)->exists();
+        if ($exist) {
+            return response()->json(['allow' => false, 'message' => 'Bạn đã đánh giá phim này rồi!']);
+        }
+
+        // Kiểm tra vé xem phim này
+        $veList = VeXemPhim::whereHas('hoaDon', function ($q) use ($userId) {
+            $q->where('ID_TaiKhoan', $userId)
+                ->where('TrangThaiXacNhanHoaDon', 1)
+                ->where('TrangThaiXacNhanThanhToan', 1);
+        })
+            ->whereHas('suatChieu', function ($q) use ($idPhim) {
+                $q->where('ID_Phim', $idPhim);
+            })->get();
+
+        if ($veList->isEmpty()) {
+            return response()->json([
+                'allow' => false,
+                'message' => "Để có thể đánh giá phim này, bạn vui lòng trải nghiệm phim " . ($phim ? $phim->TenPhim : '') . " tại rạp CineTick nhé!"
+            ]);
+        }
+
+        // Kiểm tra đã xem xong phim chưa
+        $now = now();
+        $isWatched = false;
+        foreach ($veList as $ve) {
+            $suat = $ve->suatChieu;
+            if (!$suat) continue;
+
+            $gioChieu = strlen($suat->GioChieu) === 5 ? $suat->GioChieu . ':00' : $suat->GioChieu;
+            $endTime = Carbon::createFromFormat('Y-m-d H:i:s', $suat->NgayChieu . ' ' . $gioChieu)
+                ->addMinutes($suat->phim->ThoiLuong ?? 0);
+            
+            Log::info('Thời gian bình luận:', [
+                'now' => $now->toDateTimeString(),
+                'showTime' => $suat->NgayChieu . ' ' . $gioChieu,
+                'movieDuration' => $suat->phim->ThoiLuong ?? 0,
+                'endTime' => $endTime->toDateTimeString(),
+                'canComment' => $now->greaterThanOrEqualTo($endTime)
+            ]);
+
+            if ($now->greaterThanOrEqualTo($endTime)) {
+                $isWatched = true;
+                break;
+            }
+        }
+
+        if (!$isWatched) {
+            return response()->json([
+                'allow' => false,
+                'message' => 'Cảm ơn bạn đã đã mua vé xem phim tại CineTick! Để có thể đánh giá phim này, bạn vui lòng trải nghiệm phim ' . ($phim ? $phim->TenPhim : '') . ' tại rạp. Chức năng đánh giá sẽ hoạt động ngay sau khi bạn xem phim xong. Chúc bạn có trải nghiệm thú vị, vui vẻ tại CineTick!'
+            ]);
+        }
+
+        return response()->json(['allow' => true]);
+    }
+    public function ajaxSendRating(Request $request)
+    {
+        if (!session()->has('user_id')) {
+            return response()->json(['success' => false, 'message' => 'Bạn cần đăng nhập để đánh giá phim!']);
+        }
+        $userId = session('user_id');
+        $idPhim = $request->input('id_phim');
+        $diem = floatval($request->input('diem'));
+        if ($diem < 1 || $diem > 10) {
+            return response()->json(['success' => false, 'message' => 'Điểm không hợp lệ!']);
+        }
+        $exist = BinhLuan::where('ID_Phim', $idPhim)->where('ID_TaiKhoan', $userId)->exists();
+        if ($exist) {
+            return response()->json(['success' => false, 'message' => 'Bạn đã đánh giá phim này rồi!']);
+        }
+        // Lưu đánh giá
+        BinhLuan::create([
+            'ID_Phim' => $idPhim,
+            'ID_TaiKhoan' => $userId,
+            'DiemDanhGia' => $diem,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+        return response()->json(['success' => true, 'message' => 'Đánh giá thành công!']);
+    }
+
+    public function ajaxGetRating(Request $request)
+    {
+        $idPhim = $request->input('id_phim');
+        $avg = BinhLuan::where('ID_Phim', $idPhim)->avg('DiemDanhGia');
+        $count = BinhLuan::where('ID_Phim', $idPhim)->count();
+        $avg = $avg ? number_format($avg, 1) : '0.0';
+        return response()->json(['avg' => $avg, 'count' => $count]);
     }
 }

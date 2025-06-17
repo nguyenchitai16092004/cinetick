@@ -1,19 +1,27 @@
 @extends('frontend.layouts.master')
-@section('title', 'Phim đang chiếu')
+@section('title', $title)
 @section('main')
+
+<link rel="stylesheet" href="{{ asset('frontend/Content/css/home.css') }}">
+<link rel="stylesheet" href="{{ asset('frontend/Content/css/chi-tiet-phim.css') }}">
+
+<div class="bg-gradient"></div>
+<div class="floating-elements">
+    <div class="floating-circle"></div>
+    <div class="floating-circle"></div>
+    <div class="floating-circle"></div>
+</div>
     <section class="filmoja-movie-list-area section_30 container bg-main"
-        style="min-height: 600px; background: #e6e7e9; max-width: 100% !important; border-top: 1px solid; ">
+        style="min-height: 600px; max-width: 100% !important; border-top: 1px solid; ">
         <div class="container">
             <div class="movie-grid-box list-film">
-                <!-- Single Movie List Start -->
                 <div class="amy-mv-grid layout3" style="text-align:center">
-                    @foreach ($dsPhimDangChieu as $phim)
+                    @foreach ($danhSachPhim as $phim)
                         <div class="col-lg-3 col-md-6 col-sm-12 grid-item" style="float:left" onclick="">
                             <article class="entry-item">
                                 <div class="front">
                                     <div class="entry-thumb">
-                                        <img
-                                        src="{{ $phim->HinhAnh ? asset('storage/' . $phim->HinhAnh) : asset('images/no-image.jpg') }}">
+                                        <img src="{{ $phim->HinhAnh ? asset('storage/' . $phim->HinhAnh) : asset('images/no-image.jpg') }}">
                                     </div>
                                     <a href="{{ route('phim.chiTiet', ['slug' => $phim->Slug]) }}">
                                         <h4 class="entry-title">{{ $phim->TenPhim }} (T{{ $phim->DoTuoi }})</h4>
@@ -35,13 +43,14 @@
                                     <div class="movie-char-info-left">
                                         <p style="font-style:italic">
                                             @foreach ($phim->theLoai as $index => $theLoai)
-                                                <p>{{ $theLoai->TenTheLoai }}{{ $index < count($phim->theLoai) - 1 ? ', ' : '' }}</p>
+                                                {{ $theLoai->TenTheLoai }}{{ $index < count($phim->theLoai) - 1 ? ', ' : '' }}
                                             @endforeach
                                         </p>
                                     </div>
                                     <div class="entry-time">
                                         <i class="fa fa-clock-o">
-                                        </i>@php
+                                        </i>
+                                        @php
                                             $gio = floor($phim->ThoiLuong / 60);
                                             $phut = $phim->ThoiLuong % 60;
                                         @endphp
@@ -59,7 +68,6 @@
                                         </a>
                                     </div>
                                     <div class="movie-char-info">
-
                                         <div class="clearfix"></div>
                                         <div class="movie-char-info-left">
                                             <h6>Đạo diễn</h6>
@@ -72,12 +80,10 @@
                                         </div>
                                         <div class="clearfix"></div>
                                     </div>
-
                                 </div>
                             </article>
                         </div>
                     @endforeach
-                    <!-- Single Movie List End -->
                     <div class="clearfix"></div>
                 </div>
             </div>

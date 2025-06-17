@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class HoaDon extends Model
 {
-    protected $table = 'hoa_don'; 
-    protected $primaryKey = 'ID_HoaDon'; 
+    protected $table = 'hoa_don';
+    protected $primaryKey = 'ID_HoaDon';
     public $timestamps = true;
     public $incrementing = false;
     protected $keyType = 'string';
@@ -18,21 +18,22 @@ class HoaDon extends Model
         'TongTien',
         'PTTT',
         'ID_TaiKhoan',
-        'Email',   
+        'Email',
         'TrangThaiXacNhanHoaDon',
         'TrangThaiXacNhanThanhToan',
         'payment_link',
         'order_code',
         'SoLuongVe',
     ];
-    
-    // Quan hệ với TaiKhoan - một hóa đơn thuộc về một tài khoản
+
     public function taiKhoan()
     {
         return $this->belongsTo(TaiKhoan::class, 'ID_TaiKhoan', 'ID_TaiKhoan');
     }
-    
-    // Quan hệ với VeXemPhim - một hóa đơn có nhiều vé xem phim
+    public function suatChieu()
+    {
+        return $this->belongsTo(SuatChieu::class, 'ID_SuatChieu', 'ID_SuatChieu');
+    }
     public function veXemPhim()
     {
         return $this->hasMany(VeXemPhim::class, 'ID_HoaDon', 'ID_HoaDon');

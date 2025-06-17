@@ -13,7 +13,7 @@ class RapChiTietController extends Controller
 {
     public function chiTiet($id)
     {
-        $rap = Rap::findOrFail($id);
+        $rap = Rap::where('TrangThai', 1)->findOrFail($id);
 
         $days = [];
         $today = now();

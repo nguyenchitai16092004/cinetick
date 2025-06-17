@@ -1,7 +1,6 @@
 @extends('frontend.layouts.master')
 @section('title', 'Chi tiết phim')
 @section('main')
-
     <link rel="stylesheet" href="{{ asset('frontend/Content/css/chi-tiet-phim.css') }}">
 
     <div class="bg-gradient"></div>
@@ -27,6 +26,10 @@
                             <i class="fas fa-play"></i>
                         </a>
                         <span class="age-badge">{{ $phim->DoTuoi }}</span>
+                        <span class="rating">
+                            <span>9.5</span>
+                            <span class="star">★</span>
+                        </span>
                     </div>
                 </div>
 
@@ -37,6 +40,11 @@
 
                     <div class="movie-badges fade-in-up stagger-3">
                         <span class="badge badge-format">{{ $phim->DoHoa }}</span>
+                        <div class="evaluate" id="openRatingModal">
+                            <span class="star">★</span>
+                            <span id="avgRatingInfo">--</span>
+                            (<span id="countRatingInfo">0</span> lượt đánh giá)
+                        </div>
                     </div>
 
                     <div class="movie-meta fade-in-up stagger-4">
@@ -96,7 +104,7 @@
                                 @endforeach
                             </div>
                         </div>
-                        
+
                     </div>
 
                     <div class="movie-description fade-in-up stagger-4">
@@ -112,7 +120,44 @@
             </div>
         </div>
     </section>
-
+    <!-- 2. Popup đánh giá (ẩn sẵn, chỉ khi click mới hiện) -->
+    <div class="rating-modal-overlay" id="ratingModal" style="display:none;">
+        <div class="rating-modal-box">
+            <div style="position:relative;">
+                <img class="rating-modal-image"
+                    src="{{ $phim->HinhAnh ? asset('storage/' . $phim->HinhAnh) : asset('images/no-image.jpg') }}"
+                    alt="Poster">
+                <button class="rating-modal-close" id="closeRatingModal" title="Đóng">&times;</button>
+            </div>
+            <div class="rating-modal-content">
+                <div class="rating-movie-title">{{ $phim->TenPhim }}</div>
+                <div class="rating-modal-score">
+                    <div class="total-rating">
+                        <span class="star-icon">★</span>
+                        <span class="score-value" id="avgRatingModal">--</span>
+                        <span class="score-divider">/10</span>
+                    </div>
+                    <div class="score-count">
+                        (<span id="countRatingModal">0</span> đánh giá)
+                    </div>
+                </div>
+                <div class="rating-stars" id="starContainer" title="Đánh giá của bạn">
+                    @for ($i = 1; $i <= 10; $i++)
+                        <span class="rating-star" data-value="{{ $i }}">★</span>
+                    @endfor
+                </div>
+                <div class="custom-rating-input">
+                    <label class="customRatingInput-title" for="customRatingInput">Hoặc nhập điểm bạn muốn (0 - 10):</label>
+                    <input type="number" id="customRatingInput" min="0" max="10" step="0.1" value="" placeholder="">
+                </div>
+                <div id="ratingMsg"></div>
+            </div>
+            <div class="rating-modal-actions">
+                <button class="btn-cancel" id="cancelRatingModal">Đóng</button>
+                <button class="btn-confirm" id="sendRatingBtn">Xác Nhận</button>
+            </div>
+        </div>
+    </div>
 
     <div class="trailer-modal" id="trailerModal">
         <div class="trailer-container">
@@ -183,17 +228,26 @@
         </div>
     </section>
     @php
-    use Illuminate\Support\Str;
-    $trailerEmbed = $phim->Trailer;
-    if (Str::contains($trailerEmbed, 'watch?v=')) {
-        $trailerEmbed = str_replace('watch?v=', 'embed/', $trailerEmbed);
-    } elseif (Str::contains($trailerEmbed, 'youtu.be/')) {
-        $videoId = Str::after($trailerEmbed, 'youtu.be/');
-        $trailerEmbed = 'https://www.youtube.com/embed/' . $videoId;
-    }
-@endphp
+        use Illuminate\Support\Str;
+        $trailerEmbed = $phim->Trailer;
+        if (Str::contains($trailerEmbed, 'watch?v=')) {
+            $trailerEmbed = str_replace('watch?v=', 'embed/', $trailerEmbed);
+        } elseif (Str::contains($trailerEmbed, 'youtu.be/')) {
+            $videoId = Str::after($trailerEmbed, 'youtu.be/');
+            $trailerEmbed = 'https://www.youtube.com/embed/' . $videoId;
+        }
+    @endphp
     <script src="{{ asset('frontend/Content/js/chi-tiet-phim.js') }}"></script>
     <script>
         const trailerUrl = "{{ $trailerEmbed }}";
+        window.initRatingModal({
+            idPhim: "{{ $phim->ID_Phim }}",
+            canRateUrl: "{{ route('ajax.can-rate') }}",
+            sendRatingUrl: "{{ route('ajax.send-rating') }}",
+            getRatingUrl: "{{ route('ajax.get-rating') }}",
+            csrf: "{{ csrf_token() }}"
+        });
+        
     </script>
+
 @stop

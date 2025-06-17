@@ -47,7 +47,7 @@ class DatVeController extends Controller
             $phongChieu = PhongChieu::with('rap')->findOrFail($suatChieu->ID_PhongChieu);
 
             // Get all cinemas
-            $raps = Rap::all();
+            $raps = Rap::where('TrangThai', 1)->get();
 
             // Get seats for the room
             $ghengoi = GheNgoi::where('ID_PhongChieu', $phongChieu->ID_PhongChieu)

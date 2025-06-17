@@ -17,8 +17,8 @@ return new class extends Migration
             $table->string('Slug', 100);
             $table->string('DiaChi', 255);
             $table->boolean('TrangThai');
-            $table->string("MoTa",255);
-            $table->string('Hotline',20);
+            $table->text('MoTa');
+            $table->string('Hotline', 10);
             $table->timestamps();
         });
     }
