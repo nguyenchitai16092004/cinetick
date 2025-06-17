@@ -344,23 +344,25 @@
         </header>
 
         <main class="content-grid">
-            <article class="main-article">
-                <div class="main-article-image">
-                    <img src="https://images.unsplash.com/photo-1489599417793-4d8f4dfc6b10?w=800&h=400&fit=crop"
-                        alt="Final Destination Bloodlines">
-                    <div class="main-article-overlay">
-                        <div class="article-meta">
-                            <span class="article-tag">Thích</span>
-                            <div class="article-views">
-                                <span>👁</span>
-                                <span>54</span>
+            <a href="{{ route('bai-viet.chiTiet') }}">
+                <article class="main-article">
+                    <div class="main-article-image">
+                        <img src="https://images.unsplash.com/photo-1489599417793-4d8f4dfc6b10?w=800&h=400&fit=crop"
+                            alt="Final Destination Bloodlines">
+                        <div class="main-article-overlay">
+                            <h2 class="main-article-title">Final Destination Bloodlines: Hé Lộ Bí Mật Về Vòng Lặp Tử Thần
+                            </h2>
+                            <div class="article-meta">
+                                <span class="article-tag">Thích</span>
+                                <div class="article-views">
+                                    <span>👁</span>
+                                    <span>54</span>
+                                </div>
                             </div>
                         </div>
-                        <h2 class="main-article-title">Final Destination Bloodlines: Hé Lộ Bí Mật Về Vòng Lặp Tử Thần</h2>
                     </div>
-                </div>
-            </article>
-
+                </article>
+            </a>
             <aside class="sidebar">
                 <article class="sidebar-article">
                     <div class="sidebar-image">

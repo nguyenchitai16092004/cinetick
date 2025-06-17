@@ -8,6 +8,7 @@ use App\Models\TinTuc;
 use App\Models\TaiKhoan;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class TinTucController extends Controller
 {
@@ -47,8 +48,11 @@ class TinTucController extends Controller
                 ->withInput();
         }
 
-        $data = $request->only(['TieuDe', 'NoiDung', 'LoaiBaiViet', 'TrangThai']); // Thêm TrangThai
+        $data = $request->only(['TieuDe', 'NoiDung', 'LoaiBaiViet', 'TrangThai']);
         $data['ID_TaiKhoan'] = session('user_id');
+
+        // Tạo slug từ tiêu đề
+        $data['Slug'] = Str::slug($data['TieuDe']);
 
         if (!$data['ID_TaiKhoan']) {
             Log::warning('Thêm tin tức thất bại: Không có user_id trong session.');
@@ -69,9 +73,6 @@ class TinTucController extends Controller
 
         return redirect()->back()->with('success', 'Thêm tin tức thành công!');
     }
-
-
-
 
     // Hiển thị form chỉnh sửa
     public function edit($id)
@@ -94,8 +95,9 @@ class TinTucController extends Controller
         ]);
 
         $data = $request->only(['TieuDe', 'NoiDung', 'LoaiBaiViet', 'TrangThai']);
-
         $data['ID_TaiKhoan'] = session('user_id') ?? $tinTuc->ID_TaiKhoan;
+
+        $data['Slug'] = Str::slug($data['TieuDe']);
 
         if ($request->hasFile('AnhDaiDien')) {
             $file = $request->file('AnhDaiDien');
@@ -108,6 +110,7 @@ class TinTucController extends Controller
 
         return redirect()->route('tin_tuc.index')->with('success', 'Cập nhật tin tức thành công');
     }
+
     // Xóa tin tức
     public function destroy($id)
     {
@@ -116,6 +119,7 @@ class TinTucController extends Controller
 
         return redirect()->route('tin_tuc.index')->with('success', 'Xóa tin tức thành công');
     }
+
     public function upload(Request $request)
     {
         if ($request->hasFile('upload')) {

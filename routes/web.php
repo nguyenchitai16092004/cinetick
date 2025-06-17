@@ -68,7 +68,10 @@ Route::prefix('dat-ve')->group(function () {
     Route::post('/giu-ghe', [DatVeController::class, 'giuGhe']);
     Route::post('/bo-giu-ghe', [DatVeController::class, 'boGiuGhe']);
     Route::post('/bo-giu-ghe-nhieu', [DatVeController::class, 'boGiuGheNhieu']);
-    
+});
+// -- Bài viết --
+Route::prefix('bai-viet')->group(function () {
+    Route::view('/test-chi-tiet-bai-viet', 'frontend.pages.chi-tiet-bai-viet')->name('bai-viet.chiTiet');
 });
 
 // --- ajax ---
@@ -76,7 +79,7 @@ Route::prefix('ajax')->group(function () {
     Route::get('/phim-theo-rap', [PhimController::class, 'ajaxPhimTheoRap']);
     Route::get('/ngay-chieu-theo-rap-phim', [PhimController::class, 'ajaxNgayChieuTheoRapPhim']);
     Route::get('/suat-chieu-theo-rap-phim-ngay', [PhimController::class, 'ajaxSuatChieuTheoRapPhimNgay']);
-// --- Đánh giá phim---
+    //Đánh giá phim
     Route::post('/can-rate', [PhimController::class, 'ajaxCanRatePhim'])->name('ajax.can-rate');
     Route::post('/send-rating', [PhimController::class, 'ajaxSendRating'])->name('ajax.send-rating');
     Route::get('/get-rating', [PhimController::class, 'ajaxGetRating'])->name('ajax.get-rating');
@@ -102,7 +105,7 @@ Route::prefix('thanh-toan')->group(function () {
 // --- Các trang tĩnh ---
 Route::view('/cau-hoi-thuong-gap', 'frontend.pages.cau-hoi-thuong-gap')->name('cau-hoi-thuong-gap');
 Route::view('/lien-he', 'frontend.pages.lien-he')->name('lien-he');
-Route::view('/tin-tuc', 'frontend.pages.tin-tuc')->name('tin-tuc');
+Route::view('/bai-viet-dien-anh', 'frontend.pages.dien-anh')->name('bai-viet-dien-anh');
 Route::view('/uu-dai', 'frontend.pages.uu-dai')->name('uu-dai');
 Route::view('/thanh-cong', 'frontend.pages.thanh-cong')->name('thanh-toan-thanh-cong');
 Route::view('/that-bai', 'frontend.pages.that-bai')->name('thanh-toan-that-bai');
