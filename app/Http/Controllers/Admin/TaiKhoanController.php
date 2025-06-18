@@ -62,7 +62,7 @@ class TaiKhoanController extends Controller
             'SDT' => 'required|string|max:15',
             'TenDN' => 'required|string|max:50|unique:tai_khoan,TenDN',
             'MatKhau' => 'required|string|min:6|max:100',
-            'VaiTro' => 'required|integer|min:0|max:2',
+            'VaiTro' => 'required|integer|min:0|max:1',
             'TrangThai' => 'required|boolean'
         ]);
 
@@ -139,7 +139,7 @@ class TaiKhoanController extends Controller
             'SDT' => 'required|string|max:15',
             'TenDN' => 'required|string|max:50|unique:tai_khoan,TenDN,' . $id . ',ID_TaiKhoan',
             'MatKhau' => 'nullable|string|min:6|max:100',
-            'VaiTro' => 'required|integer|min:0|max:2',
+            'VaiTro' => 'required|integer|min:0|max:1',
             'TrangThai' => 'required|boolean'
         ]);
 

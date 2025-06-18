@@ -17,6 +17,7 @@ use App\Http\Controllers\Admin\ThongKeController;
 use App\Http\Controllers\Admin\TheLoaiPhimController;
 use App\Http\Controllers\Admin\TinTucController;
 use App\Http\Controllers\Admin\HomeController;
+use App\Http\Controllers\Admin\BannerController;
 
 
 use App\Http\Controllers\Apps\PhimController;
@@ -136,7 +137,15 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
     Route::get('/home', [HomeController::class, 'index'])->name('cap-nhat-thong-tin.index');
     Route::post('/cap-nhat-thong-tin-trang', [HomeController::class, 'update'])->name('thong-tin-trang-web.update');
 
-
+    // Banner
+    Route::prefix('banner')->name('banner.')->group(function () {
+        Route::get('/', [BannerController::class, 'index'])->name('index');
+        Route::get('/create', [BannerController::class, 'create'])->name('create');
+        Route::post('/store', [BannerController::class, 'store'])->name('store');
+        Route::get('/edit/{id}', [BannerController::class, 'edit'])->name('edit');
+        Route::put('/update/{id}', [BannerController::class, 'update'])->name('update');
+        Route::delete('/destroy/{id}', [BannerController::class, 'destroy'])->name('destroy');
+    });
 
     // Rap
     Route::prefix('rap')->name('rap.')->group(function () {

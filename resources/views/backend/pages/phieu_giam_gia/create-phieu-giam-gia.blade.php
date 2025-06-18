@@ -19,10 +19,18 @@
                             </button>
                         </div>
                     </div>
+                    <div class="form-group mb-3">
+                        <label for="DieuKienToiThieu">Điều kiện tối thiểu (đ)</label>
+                        <input type="number" name="DieuKienToiThieu" class="form-control" required min="0" step="1000">
+                    </div>
 
                     <div class="form-group mb-3">
                         <label for="PhanTramGiam">Phần trăm giảm (%)</label>
                         <input type="number" name="PhanTramGiam" class="form-control" required min="1"max="100">
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="GiamToiDa">Giảm tối đa (đ)</label>
+                        <input type="number" name="GiamToiDa" class="form-control" required min="0" step="1000">
                     </div>
                     <div class="form-group mb-3">
                         <label for="NgayKetThuc">Ngày hết hạn</label>
@@ -49,7 +57,7 @@
             for (let i = 0; i < 6; i++) {
                 result += chars.charAt(Math.floor(Math.random() * chars.length));
             }
-           document.getElementById('MaKhuyenMai').value = result;
+            document.getElementById('MaKhuyenMai').value = result;
         });
     </script>
 @endsection

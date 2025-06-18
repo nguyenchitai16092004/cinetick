@@ -96,12 +96,69 @@
                 </div>
             </div>
 
+            <!-- Banner Section -->
+            <div class="flex justify-between items-center my-6">
+                <h2 class="text-xl font-semibold text-gray-700 dark:text-gray-200">Danh sách Banner</h2>
+                <a href="{{ route('banner.create') }}"
+                    class="px-4 py-2 bg-purple-600 text-white rounded-lg shadow hover:bg-purple-700">
+                    + Tạo Banner
+                </a>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered align-middle shadow-sm">
+                    <thead class="table-primary text-center">
+                        <tr>
+                            <th style="width: 160px;">Hình ảnh</th>
+                            <th>Tiêu đề</th>
+                            <th style="width: 250px;">Liên kết</th>
+                            <th style="width: 140px;">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse ($banners as $banner)
+                            <tr>
+                                <td class="text-center">
+                                    <img src="{{ asset('storage/' . $banner->HinhAnh) }}" alt="Banner"
+                                        class="img-thumbnail" style="max-height: 80px;">
+                                </td>
+                                <td class="fw-bold text-dark align-middle">
+                                    {{ $banner->TieuDe }}
+                                </td>
+                                <td class="text-truncate align-middle">
+                                    <a href="{{ $banner->Link }}" class="text-decoration-none text-primary" target="_blank">
+                                        {{ $banner->Link }}
+                                    </a>
+                                </td>
+                                <td class="text-center align-middle">
+                                    <a href="{{ route('banner.edit', $banner->id) }}"
+                                        class="btn btn-sm btn-outline-warning me-1">
+                                        ✏️ Sửa
+                                    </a>
+                                    <form action="{{ route('banner.destroy', $banner->id) }}" method="POST"
+                                        class="d-inline"
+                                        onsubmit="return confirm('Bạn có chắc muốn xóa banner này không?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                            🗑️ Xóa
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="4" class="text-center text-muted py-4">Chưa có banner nào.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+
+
+
             <div class="container mt-4">
                 <h2>Thông Tin Trang Web</h2>
-
-                @if (session('success'))
-                    <div class="alert alert-success">{{ session('success') }}</div>
-                @endif
 
                 <form action="{{ route('thong-tin-trang-web.update') }}" method="POST" enctype="multipart/form-data">
                     @csrf

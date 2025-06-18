@@ -122,9 +122,6 @@
                                             <option value="1"
                                                 {{ old('VaiTro', $taiKhoan->VaiTro) == 1 ? 'selected' : '' }}>Nhân viên
                                             </option>
-                                            <option value="2"
-                                                {{ old('VaiTro', $taiKhoan->VaiTro) == 2 ? 'selected' : '' }}>Quản trị
-                                                viên</option>
                                         </select>
                                     </div>
 

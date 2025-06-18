@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('tin_tuc', function (Blueprint $table) {
             $table->id('ID_TinTuc');
             $table->string('TieuDe', 100);
-            $table->string('Slug', 255);
             $table->text('NoiDung');
             $table->boolean('LoaiBaiViet');
             $table->string('AnhDaiDien', 255)->nullable();
