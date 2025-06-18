@@ -7,7 +7,7 @@
     <div class="ctn-thanh-toan">
         <div class="left-column">
             <div class="booking-timer">
-                Thời gian giữ ghế: <span class="timer">06:00</span>
+                Thời gian giữ ghế: <span class="timer"></span>
             </div>
 
             <div class="movie-details">
@@ -39,15 +39,12 @@
             <div class="ticket-details">
                 <div class="ticket-row" style="display: flex; justify-content: space-between;">
                     <div><strong><span>{{ count($selectedSeats) }}x Vé {{ $suatChieu->phim->DoHoa }}</span></strong></div>
-                    <div><strong> {{ number_format($totalPrice, 0, ',', '.') }} đ</strong>
-                    </div>
+                    <div><strong> {{ number_format($totalPrice, 0, ',', '.') }} đ</strong></div>
                 </div>
                 <div style="margin-top: 2px;">
-
                     <br>
                     Ghế:
                     <strong>
-                        {{-- Show từng ghế, phân biệt VIP/Thường và giá --}}
                         @foreach ($seatDetails as $detail)
                             {{ $detail['TenGhe'] }} ({{ $detail['LoaiGhe'] }}){{ !$loop->last ? ', ' : '' }}
                         @endforeach
@@ -55,11 +52,13 @@
                 </div>
             </div>
 
-            <div class="total-row">
+            <div class="total-row" style="display: flex; justify-content: space-between;">
+                <div>Giảm giá</div>
+                <div class="discount-amount" id="discountAmount">0 đ</div>
+            </div>
+            <div class="total-row" style="display: flex; justify-content: space-between;">
                 <div>Tổng cộng</div>
-                <div class="total-price">
-                    {{ number_format($totalPrice, 0, ',', '.') }} đ
-                </div>
+                <div class="total-price" id="totalPrice">{{ number_format($totalPrice, 0, ',', '.') }} đ</div>
             </div>
         </div>
 
@@ -74,9 +73,11 @@
             <div class="promotion-section">
                 <h2>Khuyến mãi</h2>
                 <div class="promo-code">
-                    <input type="text" placeholder="Mã khuyến mãi">
-                    <button>Áp Dụng</button>
+                    <input type="text" placeholder="Mã khuyến mãi" id="promoCodeInput">
+                    <button type="button" id="promoApplyBtn">Áp Dụng</button>
                 </div>
+                <div id="promo-error" style="color:red; margin-top:5px;"></div>
+                <div id="promo-success" style="color:green; margin-top:5px;"></div>
             </div>
 
             <div class="payment-method-section">
@@ -102,6 +103,9 @@
                 <input type="hidden" name="ID_SuatChieu" value="{{ $suatChieu->ID_SuatChieu }}">
                 <input type="hidden" name="paymentMethod" value="PAYOS">
                 <input type="hidden" name="seatDetails" id="seatDetailsInput">
+                <input type="hidden" name="ma_khuyen_mai" id="maKhuyenMaiInput">
+                <input type="hidden" name="so_tien_giam" id="soTienGiamInput">
+                <input type="hidden" name="tong_tien_sau_giam" id="tongTienSauGiamInput">
             </form>
             <script>
                 window.seatDetails = @json($seatDetails ?? []);
@@ -123,29 +127,6 @@
             </div>
         </div>
     </div>
-
-    {{-- PayOS script --}}
-    <script src="https://cdn.payos.vn/payos-checkout/v1/stable/payos-initialize.js"></script>
-    <script>
-        // Đồng hồ đếm ngược 6 phút
-        let timeLeft = 360;
-
-        function updateTimer() {
-            const minutes = Math.floor(timeLeft / 60);
-            const seconds = timeLeft % 60;
-            document.querySelector('.timer').textContent =
-                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-            if (timeLeft > 0) {
-                timeLeft--;
-                setTimeout(updateTimer, 1000);
-            } else {
-                alert('Thời gian giữ ghế đã hết!');
-                window.location.href = "{{ route('home') }}";
-            }
-        }
-        updateTimer();
-    </script>
-
     <div id="paymentConfirmPopup" class="payment-confirm-popup">
         <div class="payment-confirm-content">
             <div class="payment-confirm-header">
@@ -218,15 +199,14 @@
 
                 <div class="payment-info-section">
                     <h3>Thông tin thanh toán</h3>
-                    <div class="payment-info-row">
-                        <span class="label">Phương thức thanh toán:</span>
-                        <span class="value">PayOS</span>
+                    <div class="total-row" style="display: flex; justify-content: space-between;">
+                        <div>Giảm giá</div>
+                        <div class="discount-amount" id="discountAmountPopup">0 đ</div>
                     </div>
-                    <div class="payment-info-row">
-                        <span class="label">Tổng tiền:</span>
-                        <span class="value"
-                            style="color: #f7941d; font-weight: bold;">{{ number_format($totalPrice, 0, ',', '.') }}
-                            đ</span>
+                    <div class="total-row" style="display: flex; justify-content: space-between;">
+                        <div>Tổng cộng</div>
+                        <div class="total-price" id="totalPricePopup">{{ number_format($totalPrice, 0, ',', '.') }} đ
+                        </div>
                     </div>
                 </div>
             </div>
@@ -242,147 +222,15 @@
         </div>
     </div>
 
-    <script>
-        function showPaymentPopup() {
-            document.getElementById('paymentConfirmPopup').style.display = 'flex';
-        }
-
-        function closePaymentPopup() {
-            document.getElementById('paymentConfirmPopup').style.display = 'none';
-        }
-
-        function proceedToPayment() {
-            // Gán seatDetails vào input hidden trước khi gửi
-            document.getElementById('seatDetailsInput').value = JSON.stringify(window.seatDetails || []);
-            const form = document.getElementById('paymentForm');
-            const formData = new FormData(form);
-
-            fetch(form.action, {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
-                        'Accept': 'application/json'
-                    },
-                    body: formData
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.checkoutUrl) {
-                        window.location.href = data.checkoutUrl;
-                    } else if (data.error) {
-                        alert('Lỗi: ' + data.error);
-                    } else {
-                        alert('Không thể tạo đơn hàng. Vui lòng thử lại.');
-                    }
-                })
-                .catch(err => {
-                    alert('Lỗi khi kết nối tới máy chủ.');
-                    console.error(err);
-                });
-        }
-        // Replace the old click handler with the new one
-        document.getElementById('payos-submit-btn').addEventListener('click', function(e) {
-            e.preventDefault();
-            showPaymentPopup();
-        });
-
-        // Close popup when clicking outside
-        document.getElementById('paymentConfirmPopup').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closePaymentPopup();
-            }
-        });
-    </script>
-    <!-- Truyền biến sang JS -->
+    <script src="https://cdn.payos.vn/payos-checkout/v1/stable/payos-initialize.js"></script>
+    <script src="{{ asset('frontend/Content/js/thanh-toan.js') }}"></script>
     <script>
         window.userId = @json(session('user_id'));
         window.selectedSeats = @json(explode(',', request('selectedSeats') ?? ''));
         window.myHeldSeats = @json($myHeldSeats ?? []);
         window.bookingData = window.bookingData || {};
         window.bookingData.suatChieuId = {{ $suatChieu->ID_SuatChieu }};
-
-        function getAllHeldSeats() {
-            // Ưu tiên window.myHeldSeats, fallback sang window.selectedSeats
-            return (window.myHeldSeats && window.myHeldSeats.length) ?
-                window.myHeldSeats :
-                (window.selectedSeats || []);
-        }
-
-        function releaseAllHeldSeats() {
-            var heldSeats = getAllHeldSeats();
-            console.log('releaseAllHeldSeats:', {
-                heldSeats,
-                userId: window.userId,
-                suatChieuId: window.bookingData.suatChieuId
-            });
-            if (!heldSeats || heldSeats.length === 0) return;
-            if (!window.bookingData || !window.bookingData.suatChieuId) return;
-            if (!window.userId) return;
-            fetch("/dat-ve/bo-giu-ghe-nhieu", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    danh_sach_ghe: heldSeats,
-                    suat_chieu_id: window.bookingData.suatChieuId,
-                    user_id: window.userId
-                }),
-                keepalive: true, // QUAN TRỌNG!
-                credentials: "same-origin"
-            });
-        }
-        window.addEventListener("beforeunload", releaseAllHeldSeats);
-        window.addEventListener("visibilitychange", function() {
-            if (document.visibilityState === "hidden") releaseAllHeldSeats();
-        });
-    </script>
-    <!-- Nạp JS release -->
-    <script>
-        document.querySelectorAll('a, .back-button').forEach(function(el) {
-            el.addEventListener('click', function(e) {
-                const href = el.getAttribute('href') || '';
-                if (
-                    href === '/' ||
-                    el.classList.contains('back-button') ||
-                    href === "{{ route('home') }}"
-                ) {
-                    e.preventDefault();
-
-                    var heldSeats = (window.myHeldSeats && window.myHeldSeats.length) ? window.myHeldSeats :
-                        (window.selectedSeats || []);
-                    if (heldSeats && heldSeats.length && window.bookingData && window.bookingData
-                        .suatChieuId) {
-                        fetch("/dat-ve/bo-giu-ghe-nhieu", {
-                            method: "POST",
-                            headers: {
-                                "Content-Type": "application/json",
-                                "X-CSRF-TOKEN": document.querySelector('input[name="_token"]')
-                                    .value // THÊM DÒNG NÀY
-                            },
-                            body: JSON.stringify({
-                                danh_sach_ghe: heldSeats,
-                                suat_chieu_id: window.bookingData.suatChieuId,
-                                user_id: window.userId
-                            }),
-                            keepalive: true,
-                            credentials: "same-origin"
-                        }).finally(() => {
-                            if (href) {
-                                window.location.href = href;
-                            } else {
-                                window.history.back();
-                            }
-                        });
-                    } else {
-                        if (href) {
-                            window.location.href = href;
-                        } else {
-                            window.history.back();
-                        }
-                    }
-                }
-            });
-        });
+        window.totalPrice = Number({{ $totalPrice ?? 0 }});
+        window.bookingTimeLeft = {{ $bookingTimeLeft ?? 360 }};
     </script>
 @stop

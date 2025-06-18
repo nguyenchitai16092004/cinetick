@@ -15,6 +15,8 @@ use App\Http\Controllers\Apps\PayOSController;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Validation\ValidationException;
 use App\Http\Controllers\Controller;
+use App\Models\KhuyenMai;
+use Carbon\Carbon;
 
 class ThanhToanController extends Controller
 {
@@ -97,6 +99,9 @@ class ThanhToanController extends Controller
                 'selectedSeats'  => $selectedSeats, // MẢNG!
                 'seatDetails'    => $seatDetails,   // MẢNG!
                 'tong_tien'      => $calculatedTotal,
+                'so_tien_giam'   => $request->input('so_tien_giam', 0),
+                'tong_tien_sau_giam' => $request->input('tong_tien_sau_giam', $calculatedTotal),
+                'ma_khuyen_mai'  => $request->input('ma_khuyen_mai', ''),
                 'ten_phim'       => $suatChieu->phim->TenPhim,
                 'ngay_xem'       => $suatChieu->NgayChieu,
                 'gio_xem'        => $suatChieu->GioChieu,
@@ -254,5 +259,42 @@ class ThanhToanController extends Controller
         ];
 
         return view('frontend.pages.kiem-tra-thanh-toan', $viewData)->with('status', $status);
+    }
+    public function kiemTraKhuyenMai(Request $request)
+    {
+        $ma = trim($request->input('ma_khuyen_mai'));
+        $tongTien = (int) $request->input('tong_tien');
+        $now = Carbon::now()->toDateString();
+
+        $km = KhuyenMai::where('MaKhuyenMai', $ma)
+            ->where('NgayKetThuc', '>=', $now)
+            ->first();
+
+        if (!$km) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Mã khuyến mãi không đúng hoặc đã hết hạn!'
+            ]);
+        }
+
+        $phanTram = $km->PhanTramGiam;
+        $soTienGiam = floor($tongTien * $phanTram / 100); // Sửa đúng tại đây!
+        $tongTienSauGiam = $tongTien - $soTienGiam;
+
+        Log::info('Áp dụng mã khuyến mãi', [
+            'tong_tien' => $tongTien,
+            'ma_khuyen_mai' => $ma,
+            'phan_tram_giam' => $phanTram,
+            'so_tien_giam' => $soTienGiam,
+            'tong_tien_sau_giam' => $tongTienSauGiam
+        ]);
+
+        return response()->json([
+            'status' => true,
+            'phan_tram_giam' => $phanTram,
+            'so_tien_giam' => $soTienGiam,
+            'tong_tien_sau_giam' => $tongTienSauGiam,
+            'message' => "Đã áp dụng mã giảm $phanTram%"
+        ]);
     }
 }

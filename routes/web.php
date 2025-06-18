@@ -83,6 +83,8 @@ Route::prefix('ajax')->group(function () {
     Route::post('/can-rate', [PhimController::class, 'ajaxCanRatePhim'])->name('ajax.can-rate');
     Route::post('/send-rating', [PhimController::class, 'ajaxSendRating'])->name('ajax.send-rating');
     Route::get('/get-rating', [PhimController::class, 'ajaxGetRating'])->name('ajax.get-rating');
+    //Kiểm tra mã khuyến mãi
+    Route::post('/kiem-tra-khuyen-mai', [ThanhToanController::class, 'kiemTraKhuyenMai'])->name('ajax.kiem-tra-khuyen-mai');
 });
 
 // --- Rạp ---
