@@ -208,7 +208,16 @@ class DatVeController extends Controller
                     ];
                 }
             }
-
+            // Thời gian giữ ghế (giây)
+            $holdSeconds = 360;
+            // Nếu chưa có session hold_start thì set luôn (đề phòng user vô trực tiếp)
+            if (!session()->has('hold_start')) {
+                session(['hold_start' => now()]);
+            }
+            $holdStart = session('hold_start');
+            $now = now();
+            $timePassed = $now->diffInSeconds($holdStart, false);
+            $bookingTimeLeft = max(0, $holdSeconds - $timePassed);
             return view('frontend.pages.thanh-toan', [
                 // Truyền xuống view là TenGhe chứ không phải ID_Ghe
                 'selectedSeats' => $selectedSeatNames,
@@ -216,6 +225,7 @@ class DatVeController extends Controller
                 'seatDetails' => $seatDetails,
                 'totalPrice' => $totalPrice,
                 'myHeldSeats' => $myHeldSeats,
+                'bookingTimeLeft' => $bookingTimeLeft,
             ]);
         } catch (\Exception $e) {
             Log::error('Error in thanhToan: ' . $e->getMessage());

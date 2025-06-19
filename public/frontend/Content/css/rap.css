@@ -151,13 +151,18 @@
     color: #fff;
 }
 .update-showtime {
-    position: absolute;
-    top: 62%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 100%;
+    grid-column: 1 / -1; 
+    justify-self: center;
+    align-self: center;
     text-align: center;
     font-size: 1.2em;
+    background: rgba(24, 24, 40, 0.92);
+    color: #fff;
+    padding: 22px 32px;
+    border-radius: 16px;
+    margin: 32px 0;
+    width: auto;
+    max-width: 80%;
 }
 
 .film-rating .star {

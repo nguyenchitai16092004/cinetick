@@ -1,5 +1,5 @@
 @extends('frontend.layouts.master')
-@section('title', 'Bài viết điện ảnh')
+@section('title', 'Danh sách bài viết điện ảnh')
 @section('main')
     <link rel="stylesheet" href="{{ asset('frontend/Content/css/dien-anh.css') }}">
     <div class="container-blog">

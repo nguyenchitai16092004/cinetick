@@ -16,6 +16,7 @@ class HoaDon extends Model
         'ID_HoaDon',
         'NgayTao',
         'TongTien',
+        'SoTienGiam',
         'PTTT',
         'ID_TaiKhoan',
         'Email',

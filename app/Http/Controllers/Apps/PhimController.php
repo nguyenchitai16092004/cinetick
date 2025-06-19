@@ -12,14 +12,13 @@ use App\Models\BinhLuan;
 use App\Models\HoaDon;
 use Illuminate\Support\Facades\Log;
 use App\Models\VeXemPhim;
+use App\Models\TinTuc;
 
 class PhimController extends Controller
 {
     public function index()
     {
         $today = now()->toDateString();
-        $currentMonth = now()->month;
-        $currentYear = now()->year;
 
         $raps = Rap::where('TrangThai', 1)->get();
         $phims = Phim::with('theLoai')
@@ -30,16 +29,23 @@ class PhimController extends Controller
             ->whereDate('NgayKetThuc', '>=', $today)
             ->get();
 
-        $dsPhimSapChieu = Phim::whereDate('NgayKhoiChieu', '>=', $today)
+        $dsPhimSapChieu = Phim::whereDate('NgayKhoiChieu', '>', $today)
             ->get();
 
+        $tinTucs = TinTuc::where('LoaiBaiViet', 0)
+            ->where('TrangThai', 1)
+            ->orderByDesc('created_at')
+            ->take(4)
+            ->get();
 
-        return view('frontend.pages.home', compact(
-            'dsPhimDangChieu',
-            'dsPhimSapChieu',
-            'raps',
-            'phims'
-        ));
+        return view('frontend.pages.home', [
+            'dsPhimDangChieu' => $dsPhimDangChieu,
+            'dsPhimSapChieu'  => $dsPhimSapChieu,
+            'raps'            => $raps,
+            'phims'           => $phims,
+            'mainArticle'     => $tinTucs->first(),
+            'sidebarArticles' => $tinTucs->slice(1, 3),
+        ]);
     }
     public function phimDangChieu()
     {

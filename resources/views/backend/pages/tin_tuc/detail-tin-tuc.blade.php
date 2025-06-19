@@ -51,4 +51,11 @@
             <button type="submit" class="btn btn-primary">Cập nhật</button>
         </form>
     </div>
+    <script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
+    <script>
+        CKEDITOR.replace('NoiDung', {
+            filebrowserUploadUrl: "{{ route('tin_tuc.ckeditor.upload') . '?_token=' . csrf_token() }}",
+            filebrowserUploadMethod: 'form'
+        });
+    </script>
 @endsection

@@ -47,16 +47,17 @@
                     <p>Trải nghiệm điện ảnh đỉnh cao tại rạp chiếu phim CineTick</p>
                 </div>
                 @foreach ($days as $idx => $date)
-                    <div class="films-by-date" data-date="{{ $date }}" style="{{ $idx == 0 ? '' : 'display:none' }}">
+                    <div class="films-by-date" data-date="{{ $date }}"
+                        style="{{ $idx == 0 ? '' : 'display:none' }}">
                         <div class="films-list">
                             @forelse($phimsByDay[$date] as $phim)
                                 <a href="{{ route('phim.chiTiet', ['slug' => $phim->Slug]) }}" class="film-card-link">
                                     <div class="film-card">
                                         <div class="film-poster">
-                                            <img
-                                                src="{{ $phim->HinhAnh ? asset('storage/' . $phim->HinhAnh) : asset('images/no-image.jpg') }}"
+                                            <img src="{{ $phim->HinhAnh ? asset('storage/' . $phim->HinhAnh) : asset('images/no-image.jpg') }}"
                                                 alt="{{ $phim->TenPhim }}">
-                                            <div class="film-rating"><span>{{ $phim->DanhGia ?? 'N/A' }}</span><span class="star">★</span></div>
+                                            <div class="film-rating"><span>{{ $phim->DanhGia ?? 'N/A' }}</span><span
+                                                    class="star">★</span></div>
                                             <div class="film-age">{{ $phim->DoTuoi }}</div>
                                         </div>
                                         <div class="film-title">{{ $phim->TenPhim }}</div>
@@ -68,12 +69,14 @@
                                     </div>
                                 </a>
                             @empty
-                                <p class="update-showtime">Suất chiếu tại rạp {{ $rap->TenRap }} đang được cập nhật...</p>
+                                <p class="update-showtime">Suất chiếu tại rạp {{ $rap->TenRap }} đang được cập nhật...
+                                </p>
                             @endforelse
                         </div>
                     </div>
                 @endforeach
-            </div>        </div>
+            </div>
+        </div>
 
         <div class="info-container">
             <div class="cinema-detail">
@@ -82,7 +85,8 @@
                 </header>
                 <div class="detail-address">
                     <strong>Địa chỉ:</strong> {{ $rap->DiaChi }}<br>
-                    <strong>Số điện thoại:</strong> <a href="tel:{{ $rap->Hotline }}" class="hotline">{{ $rap->Hotline }}</a>
+                    <strong>Số điện thoại:</strong> <a href="tel:{{ $rap->Hotline }}"
+                        class="hotline">{{ $rap->Hotline }}</a>
                 </div>
 
                 <div class="detail-desc">

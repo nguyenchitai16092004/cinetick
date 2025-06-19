@@ -71,7 +71,7 @@ Route::prefix('dat-ve')->group(function () {
 });
 // -- Bài viết --
 Route::prefix('bai-viet')->group(function () {
-    Route::view('/test-chi-tiet-bai-viet', 'frontend.pages.chi-tiet-bai-viet')->name('bai-viet.chiTiet');
+    Route::get('/{slug}', [TinTucController::class, 'chiTiet'])->name('bai-viet.chiTiet');
 });
 
 // --- ajax ---
@@ -83,11 +83,13 @@ Route::prefix('ajax')->group(function () {
     Route::post('/can-rate', [PhimController::class, 'ajaxCanRatePhim'])->name('ajax.can-rate');
     Route::post('/send-rating', [PhimController::class, 'ajaxSendRating'])->name('ajax.send-rating');
     Route::get('/get-rating', [PhimController::class, 'ajaxGetRating'])->name('ajax.get-rating');
+    //Kiểm tra mã khuyến mãi
+    Route::post('/kiem-tra-khuyen-mai', [ThanhToanController::class, 'kiemTraKhuyenMai'])->name('ajax.kiem-tra-khuyen-mai');
 });
 
 // --- Rạp ---
 Route::prefix('rap')->group(function () {
-    Route::get('/{id}', [RapChiTietController::class, 'chiTiet'])->name('rap.chiTiet');
+    Route::get('/{slug}', [RapChiTietController::class, 'chiTiet'])->name('rap.chiTiet');
 });
 
 
