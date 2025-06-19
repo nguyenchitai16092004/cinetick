@@ -15,9 +15,11 @@ return new class extends Migration
             $table->id('ID_TinTuc');
             $table->string('TieuDe', 100);
             $table->string('Slug', 255);
-            $table->text('NoiDung');
+            $table->longText('NoiDung');
             $table->boolean('LoaiBaiViet');
-            $table->string('AnhDaiDien', 255)->nullable();
+            $table->integer('LuotThich')->default(0);
+            $table->integer('LuotXem')->default(0);
+            $table->string('AnhDaiDien', 255);
             $table->unsignedBigInteger('ID_TaiKhoan');
             $table->boolean('TrangThai')->comment('0: Chờ xuất bản, 1: Xuất bản');;
             $table->foreign('ID_TaiKhoan')->references('ID_TaiKhoan')->on('tai_khoan')->onDelete('cascade');

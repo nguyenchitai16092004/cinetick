@@ -65,9 +65,13 @@ class RapController extends Controller
         ]);
 
         $rap = Rap::where('ID_Rap', '=', $id)->first();
-        $rap->update($request->all());
 
-        return redirect()->route('rap.index')->with('success', 'Rạp đã sửa thêm thành công');
+        $data = $request->all();
+        $data['Slug'] = Str::slug($request->TenRap);
+
+        $rap->update($data);
+
+        return redirect()->route('rap.index')->with('success', 'Rạp đã sửa thành công');
     }
 
     public function destroy($id)

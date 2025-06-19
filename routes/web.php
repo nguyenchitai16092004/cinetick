@@ -25,6 +25,7 @@ use App\Http\Controllers\Apps\DatVeController;
 use App\Http\Controllers\Apps\PayOSController;
 use App\Http\Controllers\Apps\ThanhToanController;
 use App\Http\Controllers\Apps\RapChiTietController;
+use App\Http\Controllers\Apps\TinTucChiTietController;
 
 use App\Events\GheDuocGiu;
 
@@ -69,9 +70,22 @@ Route::prefix('dat-ve')->group(function () {
     Route::post('/bo-giu-ghe', [DatVeController::class, 'boGiuGhe']);
     Route::post('/bo-giu-ghe-nhieu', [DatVeController::class, 'boGiuGheNhieu']);
 });
-// -- Bài viết --
-Route::prefix('bai-viet')->group(function () {
-    Route::get('/{slug}', [TinTucController::class, 'chiTiet'])->name('bai-viet.chiTiet');
+// -- Bài viết điện ảnh --
+Route::prefix('goc-dien-anh')->group(function () {
+    Route::get('/', [TinTucChiTietController::class, 'listDienAnh'])->name('ds-bai-viet-dien-anh');
+    Route::get('/{slug}', [TinTucChiTietController::class, 'chiTiet'])->name('bai-viet.chiTiet');
+    Route::post('/{slug}/like', [TinTucChiTietController::class, 'like'])->name('tin_tuc.like');
+    Route::post('/{slug}/unlike', [TinTucChiTietController::class, 'unlike'])->name('tin_tuc.unlike');
+    Route::post('/{slug}/view', [TinTucChiTietController::class, 'view'])->name('tin_tuc.view');
+});
+
+// -- Bài viết tin khuyến mãi --
+Route::prefix('tin-khuyen-mai')->group(function () {
+    Route::get('/', [TinTucChiTietController::class, 'listKhuyenMai'])->name('ds-bai-viet-khuyen-mai');
+    Route::get('/{slug}', [TinTucChiTietController::class, 'chiTiet'])->name('bai-viet.chiTiet');
+    Route::post('/{slug}/like', [TinTucChiTietController::class, 'like'])->name('tin_tuc.like');
+    Route::post('/{slug}/unlike', [TinTucChiTietController::class, 'unlike'])->name('tin_tuc.unlike');
+    Route::post('/{slug}/view', [TinTucChiTietController::class, 'view'])->name('tin_tuc.view');
 });
 
 // --- ajax ---
@@ -107,8 +121,6 @@ Route::prefix('thanh-toan')->group(function () {
 // --- Các trang tĩnh ---
 Route::view('/cau-hoi-thuong-gap', 'frontend.pages.cau-hoi-thuong-gap')->name('cau-hoi-thuong-gap');
 Route::view('/lien-he', 'frontend.pages.lien-he')->name('lien-he');
-Route::view('/bai-viet-dien-anh', 'frontend.pages.dien-anh')->name('bai-viet-dien-anh');
-Route::view('/uu-dai', 'frontend.pages.uu-dai')->name('uu-dai');
 Route::view('/thanh-cong', 'frontend.pages.thanh-cong')->name('thanh-toan-thanh-cong');
 Route::view('/that-bai', 'frontend.pages.that-bai')->name('thanh-toan-that-bai');
 
@@ -125,15 +137,10 @@ Route::prefix('chinh-sach')->group(function () {
 //===============================Admin=====================================//
 Route::get('/admin', [AutController::class, 'index']);
 Route::get('/admin/login', fn() => view('backend.login'));
-
 Route::post('/dang-nhap-quan-ly', [AutController::class, 'dang_nhap'])->name('login_admin');
-
 Route::post('/admin/dang-xuat', [AutController::class, 'dang_xuat'])->name('logout_admin');
-
 Route::get('/admin/404', fn() => view('backend.pages.404'));
-
 Route::get('/admin/charts', fn() => view('backend.pages.charts'));
-
 Route::prefix('admin')->middleware(['admin'])->group(function () {
     Route::get('/home', [HomeController::class, 'index'])->name('cap-nhat-thong-tin.index');
     Route::post('/cap-nhat-thong-tin-trang', [HomeController::class, 'update'])->name('thong-tin-trang-web.update');
@@ -256,7 +263,7 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
         Route::get('/edit/{id}', [TinTucController::class, 'edit'])->name('edit');
         Route::put('/update/{id}', [TinTucController::class, 'update'])->name('update'); // dùng PUT
         Route::delete('/delete/{id}', [TinTucController::class, 'destroy'])->name('destroy'); // dùng DELETE
-        Route::post('/ckeditor/upload', [TinTucController::class, 'upload'])->name('ckeditor.upload');
+        Route::post('/tinymce/upload', [TinTucController::class, 'tinymceUpload'])->name('tinymce.upload');
     });
 
     // Routes quản lý bình luận (cập nhật)
