@@ -637,7 +637,7 @@
                         <div class="pricing-row">
                             <span class="pricing-label @if (session('status') !== 'success') failure @endif">Giảm giá</span>
                             <span class="pricing-value @if (session('status') !== 'success') failure @endif">
-                                {{ $giam > 0 ? '-' . number_format($giam, 0, ',', '.') . 'đ' : '0 đ' }}
+                                {{ $giam > 0 ? '-' . number_format($giam, 0, ',', '.') . 'đ' : '0đ' }}
                             </span>
                         </div>
                         <div class="pricing-row">

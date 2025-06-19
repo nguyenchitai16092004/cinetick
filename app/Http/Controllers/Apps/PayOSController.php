@@ -189,7 +189,7 @@ class PayOSController extends Controller
                 'SoLuongVe'   => count($orderData['selectedSeats']),
                 'created_at'  => now(),
                 'updated_at'  => now(),
-                'SoTienGiam'  => !empty($orderData['so_tien_giam']) ? $orderData['so_tien_giam'] : null,
+                'SoTienGiam'  => $orderData['so_tien_giam'] ?? 0,
             ]);
 
             $suatChieu = SuatChieu::with(['rap'])->find($orderData['ID_SuatChieu']);
@@ -252,7 +252,7 @@ class PayOSController extends Controller
         if (!$hoaDon) return;
 
         // Update trạng thái hóa đơn
-        $hoaDon->TrangThaiXacNhanThanhToan = 0; // Chờ thanh toán
+        $hoaDon->TrangThaiXacNhanThanhToan = 0; // Chưa thanh toán
         $hoaDon->TrangThaiXacNhanHoaDon = 2;    // Đã hủy 
         $hoaDon->save();
 

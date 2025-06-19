@@ -71,7 +71,7 @@ Route::prefix('dat-ve')->group(function () {
 });
 // -- Bài viết --
 Route::prefix('bai-viet')->group(function () {
-    Route::view('/test-chi-tiet-bai-viet', 'frontend.pages.chi-tiet-bai-viet')->name('bai-viet.chiTiet');
+    Route::get('/{slug}', [TinTucController::class, 'chiTiet'])->name('bai-viet.chiTiet');
 });
 
 // --- ajax ---
@@ -89,7 +89,7 @@ Route::prefix('ajax')->group(function () {
 
 // --- Rạp ---
 Route::prefix('rap')->group(function () {
-    Route::get('/{id}', [RapChiTietController::class, 'chiTiet'])->name('rap.chiTiet');
+    Route::get('/{slug}', [RapChiTietController::class, 'chiTiet'])->name('rap.chiTiet');
 });
 
 

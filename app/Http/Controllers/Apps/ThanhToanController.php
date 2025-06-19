@@ -278,7 +278,7 @@ class ThanhToanController extends Controller
         }
 
         $phanTram = $km->PhanTramGiam;
-        $soTienGiam = floor($tongTien * $phanTram / 100); // Sửa đúng tại đây!
+        $soTienGiam = floor($tongTien * $phanTram / 100); 
         $tongTienSauGiam = $tongTien - $soTienGiam;
 
         Log::info('Áp dụng mã khuyến mãi', [

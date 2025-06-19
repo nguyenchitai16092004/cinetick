@@ -347,15 +347,17 @@
             <a href="{{ route('bai-viet.chiTiet') }}">
                 <article class="main-article">
                     <div class="main-article-image">
-                        <img src="https://images.unsplash.com/photo-1489599417793-4d8f4dfc6b10?w=800&h=400&fit=crop"
+                        <img src="https://cdn.galaxycine.vn/media/2025/5/16/until-dawn-2048_1747365952336.jpg"
                             alt="Final Destination Bloodlines">
                         <div class="main-article-overlay">
                             <h2 class="main-article-title">Final Destination Bloodlines: Hé Lộ Bí Mật Về Vòng Lặp Tử Thần
                             </h2>
                             <div class="article-meta">
-                                <span class="article-tag">Thích</span>
+                                <button id="likeBtn" class="action-btn">
+                                    <i id="likeIcon" class="fa-regular fa-thumbs-up"></i> Thích <span id="likeCount">0</span>
+                                </button>
                                 <div class="article-views">
-                                    <span>👁</span>
+                                    <span><i class="fa-regular fa-eye"></i></span>
                                     <span>54</span>
                                 </div>
                             </div>
@@ -373,9 +375,11 @@
                         <h3 class="sidebar-title">Bùi Thạc Chuyên Và 11 Năm Tâm Huyết Với Địa Đạo: Mặt Trời Trong Bóng Tối
                         </h3>
                         <div class="article-meta">
-                            <span class="article-tag">Thích</span>
+                            <button id="likeBtn" class="action-btn">
+                                <i id="likeIcon" class="fa-regular fa-thumbs-up"></i> Thích <span id="likeCount">0</span>
+                            </button>
                             <div class="article-views">
-                                <span>👁</span>
+                                <span><i class="fa-regular fa-eye"></i></span>
                                 <span>104</span>
                             </div>
                         </div>
@@ -390,9 +394,11 @@
                     <div class="sidebar-content">
                         <h3 class="sidebar-title">Tổng Hợp Oscar 2025: Anora Thắng Lớn</h3>
                         <div class="article-meta">
-                            <span class="article-tag">Thích</span>
+                            <button id="likeBtn" class="action-btn">
+                                <i id="likeIcon" class="fa-regular fa-thumbs-up"></i> Thích <span id="likeCount">0</span>
+                            </button>
                             <div class="article-views">
-                                <span>👁</span>
+                                <span><i class="fa-regular fa-eye"></i></span>
                                 <span>33</span>
                             </div>
                         </div>
@@ -407,9 +413,11 @@
                     <div class="sidebar-content">
                         <h3 class="sidebar-title">Nụ Hôn Bạc Tỷ: Thúy Kiều - Thúy Vân Phiên Bản 2025?</h3>
                         <div class="article-meta">
-                            <span class="article-tag">Thích</span>
+                            <button id="likeBtn" class="action-btn">
+                                <i id="likeIcon" class="fa-regular fa-thumbs-up"></i> Thích <span id="likeCount">0</span>
+                            </button>
                             <div class="article-views">
-                                <span>👁</span>
+                                <span><i class="fa-regular fa-eye"></i></span>
                                 <span>114</span>
                             </div>
                         </div>
