@@ -37,6 +37,13 @@ class PhimController extends Controller
             ->orderByDesc('created_at')
             ->take(4)
             ->get();
+            
+        $khuyenMais = TinTuc::where('LoaiBaiViet', 1)
+            ->where('TrangThai', 1)
+            ->orderByDesc('created_at')
+            ->take(4)
+            ->get();
+
 
         return view('frontend.pages.home', [
             'dsPhimDangChieu' => $dsPhimDangChieu,
@@ -45,6 +52,7 @@ class PhimController extends Controller
             'phims'           => $phims,
             'mainArticle'     => $tinTucs->first(),
             'sidebarArticles' => $tinTucs->slice(1, 3),
+            'khuyenMais'      => $khuyenMais,
         ]);
     }
     public function phimDangChieu()

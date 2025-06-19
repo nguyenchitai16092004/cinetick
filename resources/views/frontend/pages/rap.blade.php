@@ -69,8 +69,9 @@
                                     </div>
                                 </a>
                             @empty
-                                <p class="update-showtime">Suất chiếu tại rạp {{ $rap->TenRap }} đang được cập nhật...
-                                </p>
+                            <p class="update-showtime">
+                                <span class="marquee-text">Suất chiếu tại rạp {{ $rap->TenRap }} đang được cập nhật...</span>
+                            </p>
                             @endforelse
                         </div>
                     </div>

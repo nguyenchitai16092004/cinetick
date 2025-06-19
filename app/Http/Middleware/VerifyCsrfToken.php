@@ -6,9 +6,7 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken as Middleware;
 
 class VerifyCsrfToken extends Middleware
 {
-      protected $except = [
-    'dat-ve/bo-giu-ghe-nhieu',
-    '/dat-ve/bo-giu-ghe-nhieu',
-    'dat-ve/*',
-];
+  protected $except = [
+    'tin-tuc/tinymce/upload',
+  ];
 }

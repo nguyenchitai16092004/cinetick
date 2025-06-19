@@ -1,8 +1,3 @@
-// ------------------------
-// HOME.JS - Toàn bộ code
-// Đã comment rõ chức năng mỗi hàm bằng tiếng Việt
-// ĐÃ LOẠI BỎ hiệu ứng hạt bay particles ở banner!
-// ------------------------
 
 // ==================== ĐẶT VÉ: QUẢN LÝ DROPDOWN & TÓM TẮT ====================
 
@@ -57,7 +52,9 @@ document.addEventListener("DOMContentLoaded", function () {
         const item = e.target.closest(".dropdown-item:not(.disabled)");
         if (!item) return;
         selectedTheater = item.textContent.trim();
-        theaterContent.querySelectorAll(".dropdown-item").forEach(el => el.classList.remove("selected"));
+        theaterContent
+            .querySelectorAll(".dropdown-item")
+            .forEach((el) => el.classList.remove("selected"));
         item.classList.add("selected");
         theaterBtn.innerHTML = `<span>${selectedTheater}</span><span><i class="fas fa-chevron-down"></i></span>`;
         theaterBtn.classList.add("active");
@@ -70,25 +67,36 @@ document.addEventListener("DOMContentLoaded", function () {
         separator2.classList.remove("active");
         step4.classList.remove("active");
         separator3.classList.remove("active");
-        selectedMovie = ""; selectedDate = ""; selectedTime = "";
-        movieBtn.innerHTML = '<span>2. Chọn Phim</span><span><i class="fas fa-chevron-down"></i></span>';
+        selectedMovie = "";
+        selectedDate = "";
+        selectedTime = "";
+        movieBtn.innerHTML =
+            '<span>2. Chọn Phim</span><span><i class="fas fa-chevron-down"></i></span>';
         movieBtn.classList.remove("active");
         movieBtn.classList.add("disabled");
-        dateBtn.innerHTML = '<span>3. Chọn Ngày</span><span><i class="fas fa-chevron-down"></i></span>';
+        dateBtn.innerHTML =
+            '<span>3. Chọn Ngày</span><span><i class="fas fa-chevron-down"></i></span>';
         dateBtn.classList.remove("active");
         dateBtn.classList.add("disabled");
-        timeBtn.innerHTML = '<span>4. Chọn Suất</span><span><i class="fas fa-chevron-down"></i></span>';
+        timeBtn.innerHTML =
+            '<span>4. Chọn Suất</span><span><i class="fas fa-chevron-down"></i></span>';
         timeBtn.classList.remove("active");
         timeBtn.classList.add("disabled");
         bookBtn.classList.add("disabled");
-        movieContent.innerHTML = '<div class="dropdown-item disabled">Vui lòng chọn rạp trước</div>';
-        dateContent.innerHTML = '<div class="dropdown-item disabled">Vui lòng chọn phim trước</div>';
-        timeContent.innerHTML = '<div class="dropdown-item disabled">Vui lòng chọn ngày trước</div>';
+        movieContent.innerHTML =
+            '<div class="dropdown-item disabled">Vui lòng chọn rạp trước</div>';
+        dateContent.innerHTML =
+            '<div class="dropdown-item disabled">Vui lòng chọn phim trước</div>';
+        timeContent.innerHTML =
+            '<div class="dropdown-item disabled">Vui lòng chọn ngày trước</div>';
         // AJAX lấy phim theo rạp
         const idRap = item.dataset.value;
         $.get("/ajax/phim-theo-rap", { id_rap: idRap }, function (data) {
             if (data.error || data.length === 0) {
-                movieContent.innerHTML = `<div class="dropdown-item disabled">${data.error || "Hiện tại các thông tin rạp chiếu đang được cập nhật!"}</div>`;
+                movieContent.innerHTML = `<div class="dropdown-item disabled">${
+                    data.error ||
+                    "Hiện tại các thông tin rạp chiếu đang được cập nhật!"
+                }</div>`;
             } else {
                 movieContent.innerHTML = "";
                 data.forEach(function (phim) {
@@ -116,7 +124,9 @@ document.addEventListener("DOMContentLoaded", function () {
         const item = e.target.closest(".dropdown-item:not(.disabled)");
         if (!item) return;
         selectedMovie = item.textContent.trim();
-        movieContent.querySelectorAll(".dropdown-item").forEach(el => el.classList.remove("selected"));
+        movieContent
+            .querySelectorAll(".dropdown-item")
+            .forEach((el) => el.classList.remove("selected"));
         item.classList.add("selected");
         movieBtn.innerHTML = `<span>${selectedMovie}</span><span><i class="fas fa-chevron-down"></i></span>`;
         movieBtn.classList.add("active");
@@ -127,39 +137,61 @@ document.addEventListener("DOMContentLoaded", function () {
         separator2.classList.add("active");
         step4.classList.remove("active");
         separator3.classList.remove("active");
-        selectedDate = ""; selectedTime = "";
-        dateBtn.innerHTML = '<span>3. Chọn Ngày</span><span><i class="fas fa-chevron-down"></i></span>';
+        selectedDate = "";
+        selectedTime = "";
+        dateBtn.innerHTML =
+            '<span>3. Chọn Ngày</span><span><i class="fas fa-chevron-down"></i></span>';
         dateBtn.classList.remove("active");
         dateBtn.classList.add("disabled");
-        timeBtn.innerHTML = '<span>4. Chọn Suất</span><span><i class="fas fa-chevron-down"></i></span>';
+        timeBtn.innerHTML =
+            '<span>4. Chọn Suất</span><span><i class="fas fa-chevron-down"></i></span>';
         timeBtn.classList.remove("active");
         timeBtn.classList.add("disabled");
         bookBtn.classList.add("disabled");
-        dateContent.innerHTML = '<div class="dropdown-item disabled">Đang tải ngày chiếu...</div>';
-        timeContent.innerHTML = '<div class="dropdown-item disabled">Vui lòng chọn ngày trước</div>';
+        dateContent.innerHTML =
+            '<div class="dropdown-item disabled">Đang tải ngày chiếu...</div>';
+        timeContent.innerHTML =
+            '<div class="dropdown-item disabled">Vui lòng chọn ngày trước</div>';
 
         // AJAX lấy ngày chiếu
-        const idRap = theaterContent.querySelector(".dropdown-item.selected").dataset.value;
+        const idRap = theaterContent.querySelector(".dropdown-item.selected")
+            .dataset.value;
         function formatVietnameseDate(dateStr) {
-            const days = ["Chủ Nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"];
+            const days = [
+                "Chủ Nhật",
+                "Thứ Hai",
+                "Thứ Ba",
+                "Thứ Tư",
+                "Thứ Năm",
+                "Thứ Sáu",
+                "Thứ Bảy",
+            ];
             const [year, month, day] = dateStr.split("-");
             const jsDate = new Date(dateStr);
             const thu = days[jsDate.getDay()];
             return `${thu}, ${day}-${month}-${year}`;
         }
         const idPhim = item.dataset.id;
-        $.get("/ajax/ngay-chieu-theo-rap-phim", { id_rap: idRap, id_phim: idPhim }, function (data) {
-            if (data.error || data.length === 0) {
-                dateContent.innerHTML = `<div class="dropdown-item disabled">${data.error || "Phim đang được cập nhật!"}</div>`;
-            } else {
-                dateContent.innerHTML = "";
-                data.forEach(function (ngay) {
-                    const ngayHienThi = formatVietnameseDate(ngay);
-                    $("#date-content").append(`<div class="dropdown-item" data-value="${ngay}"><span class="marquee-text">${ngayHienThi}</span></div>`);
-                });
-                dateBtn.classList.remove("disabled");
+        $.get(
+            "/ajax/ngay-chieu-theo-rap-phim",
+            { id_rap: idRap, id_phim: idPhim },
+            function (data) {
+                if (data.error || data.length === 0) {
+                    dateContent.innerHTML = `<div class="dropdown-item disabled">${
+                        data.error || "Phim đang được cập nhật!"
+                    }</div>`;
+                } else {
+                    dateContent.innerHTML = "";
+                    data.forEach(function (ngay) {
+                        const ngayHienThi = formatVietnameseDate(ngay);
+                        $("#date-content").append(
+                            `<div class="dropdown-item" data-value="${ngay}"><span class="marquee-text">${ngayHienThi}</span></div>`
+                        );
+                    });
+                    dateBtn.classList.remove("disabled");
+                }
             }
-        });
+        );
     });
 
     /**
@@ -179,7 +211,9 @@ document.addEventListener("DOMContentLoaded", function () {
         const item = e.target.closest(".dropdown-item:not(.disabled)");
         if (!item) return;
         selectedDate = item.textContent.trim();
-        dateContent.querySelectorAll(".dropdown-item").forEach(el => el.classList.remove("selected"));
+        dateContent
+            .querySelectorAll(".dropdown-item")
+            .forEach((el) => el.classList.remove("selected"));
         item.classList.add("selected");
         dateBtn.innerHTML = `<span>${selectedDate}</span><span><i class="fas fa-chevron-down"></i></span>`;
         dateBtn.classList.add("active");
@@ -189,32 +223,48 @@ document.addEventListener("DOMContentLoaded", function () {
         step4.classList.add("active");
         separator3.classList.add("active");
         selectedTime = "";
-        timeBtn.innerHTML = '<span>4. Chọn Suất</span><span><i class="fas fa-chevron-down"></i></span>';
+        timeBtn.innerHTML =
+            '<span>4. Chọn Suất</span><span><i class="fas fa-chevron-down"></i></span>';
         timeBtn.classList.remove("active");
         timeBtn.classList.add("disabled");
         bookBtn.classList.add("disabled");
-        timeContent.innerHTML = '<div class="dropdown-item disabled">Đang tải suất chiếu...</div>';
+        timeContent.innerHTML =
+            '<div class="dropdown-item disabled">Đang tải suất chiếu...</div>';
 
         // AJAX lấy suất chiếu
-        const idRap = theaterContent.querySelector(".dropdown-item.selected").dataset.value;
-        const idPhim = movieContent.querySelector(".dropdown-item.selected").dataset.id;
+        const idRap = theaterContent.querySelector(".dropdown-item.selected")
+            .dataset.value;
+        const idPhim = movieContent.querySelector(".dropdown-item.selected")
+            .dataset.id;
         const ngay = item.dataset.value;
-        $.get("/ajax/suat-chieu-theo-rap-phim-ngay", { id_rap: idRap, id_phim: idPhim, ngay: ngay }, function (data) {
-            if (data.error || data.length === 0) {
-                timeContent.innerHTML = `<div class="dropdown-item disabled">${data.error || "Suất chiếu đang được cập nhật!"}</div>`;
-            } else {
-                timeContent.innerHTML = "";
-                data.forEach(function (suat) {
-                    const gio = suat.GioChieu ? suat.GioChieu.substring(0, 5) : "";
-                    $("#time-content").append(
-                        `<div class="dropdown-item" data-value="${suat.GioChieu}" data-id="${suat.ID_SuatChieu}">
-                            <span class="marquee-text">${gio}${suat.DinhDang ? " - " + suat.DinhDang : ""}</span>
+        $.get(
+            "/ajax/suat-chieu-theo-rap-phim-ngay",
+            { id_rap: idRap, id_phim: idPhim, ngay: ngay },
+            function (data) {
+                if (data.error || data.length === 0) {
+                    timeContent.innerHTML = `<div class="dropdown-item disabled">${
+                        data.error || "Suất chiếu đang được cập nhật!"
+                    }</div>`;
+                } else {
+                    timeContent.innerHTML = "";
+                    data.forEach(function (suat) {
+                        const gio = suat.GioChieu
+                            ? suat.GioChieu.substring(0, 5)
+                            : "";
+                        $("#time-content").append(
+                            `<div class="dropdown-item" data-value="${
+                                suat.GioChieu
+                            }" data-id="${suat.ID_SuatChieu}">
+                            <span class="marquee-text">${gio}${
+                                suat.DinhDang ? " - " + suat.DinhDang : ""
+                            }</span>
                         </div>`
-                    );
-                });
-                timeBtn.classList.remove("disabled");
+                        );
+                    });
+                    timeBtn.classList.remove("disabled");
+                }
             }
-        });
+        );
     });
 
     /**
@@ -234,7 +284,9 @@ document.addEventListener("DOMContentLoaded", function () {
         const item = e.target.closest(".dropdown-item:not(.disabled)");
         if (!item) return;
         selectedTime = item.textContent.trim();
-        timeContent.querySelectorAll(".dropdown-item").forEach(el => el.classList.remove("selected"));
+        timeContent
+            .querySelectorAll(".dropdown-item")
+            .forEach((el) => el.classList.remove("selected"));
         item.classList.add("selected");
         timeBtn.innerHTML = `<span>${selectedTime}</span><span><i class="fas fa-chevron-down"></i></span>`;
         timeBtn.classList.add("active");
@@ -247,9 +299,12 @@ document.addEventListener("DOMContentLoaded", function () {
      */
     bookBtn.addEventListener("click", function () {
         if (bookBtn.classList.contains("disabled")) return;
-        const phimSlug = movieContent.querySelector(".dropdown-item.selected").dataset.value;
-        const ngay = dateContent.querySelector(".dropdown-item.selected").dataset.value;
-        const gio = timeContent.querySelector(".dropdown-item.selected").dataset.value;
+        const phimSlug = movieContent.querySelector(".dropdown-item.selected")
+            .dataset.value;
+        const ngay = dateContent.querySelector(".dropdown-item.selected")
+            .dataset.value;
+        const gio = timeContent.querySelector(".dropdown-item.selected").dataset
+            .value;
         window.location.href = `/dat-ve/${phimSlug}/${ngay}/${gio}`;
     });
 
@@ -259,11 +314,70 @@ document.addEventListener("DOMContentLoaded", function () {
     window.addEventListener("click", function (event) {
         if (
             !event.target.matches(".dropdown-btn") &&
-            !(event.target.parentElement && event.target.parentElement.matches(".dropdown-btn")) &&
+            !(
+                event.target.parentElement &&
+                event.target.parentElement.matches(".dropdown-btn")
+            ) &&
             !event.target.matches(".fa-chevron-down")
         ) {
             closeAllDropdowns();
         }
+    });
+    /**
+     * Nút click bài viết
+     */
+    document.querySelectorAll(".action-btn[data-slug]").forEach(function (btn) {
+        const slug = btn.getAttribute("data-slug");
+        const likedKey = `liked_goc_dien_anh_${slug}`;
+        let liked = localStorage.getItem(likedKey) === "true";
+        const icon = btn.querySelector("i");
+        const likeCountSpan = btn.querySelector("span");
+
+        // Giao diện ban đầu nếu đã like
+        if (liked) {
+            btn.classList.add("liked");
+            icon.classList.remove("fa-regular");
+            icon.classList.add("fa-solid");
+        }
+
+        btn.addEventListener("click", function (e) {
+            e.preventDefault();
+            if (!liked) {
+                fetch(`/goc-dien-anh/${slug}/like`, {
+                    method: "POST",
+                    headers: {
+                        "X-CSRF-TOKEN": window.Laravel.csrfToken,
+                        Accept: "application/json",
+                    },
+                })
+                    .then((res) => res.json())
+                    .then((data) => {
+                        likeCountSpan.textContent = data.LuotThich;
+                        btn.classList.add("liked");
+                        icon.classList.remove("fa-regular");
+                        icon.classList.add("fa-solid");
+                        liked = true;
+                        localStorage.setItem(likedKey, "true");
+                    });
+            } else {
+                fetch(`/goc-dien-anh/${slug}/unlike`, {
+                    method: "POST",
+                    headers: {
+                        "X-CSRF-TOKEN": window.Laravel.csrfToken,
+                        Accept: "application/json",
+                    },
+                })
+                    .then((res) => res.json())
+                    .then((data) => {
+                        likeCountSpan.textContent = data.LuotThich;
+                        btn.classList.remove("liked");
+                        icon.classList.remove("fa-solid");
+                        icon.classList.add("fa-regular");
+                        liked = false;
+                        localStorage.setItem(likedKey, "false");
+                    });
+            }
+        });
     });
 });
 
@@ -650,15 +764,7 @@ document.addEventListener("DOMContentLoaded", function () {
  * Hiệu ứng click nhỏ cho card Góc điện ảnh, blog, tab
  */
 document.addEventListener("DOMContentLoaded", function () {
-    // Click nhỏ cho articles
-    const articles = document.querySelectorAll(".sidebar-article");
-    articles.forEach((article) => {
-        article.addEventListener("click", function (e) {
-            e.preventDefault();
-            this.style.transform = "scale(0.98)";
-            setTimeout(() => { this.style.transform = ""; }, 150);
-        });
-    });
+
 
     // Tab switching animation
     const tabs = document.querySelectorAll(".nav-tab");
@@ -717,38 +823,7 @@ window.addEventListener("scroll", function () {
  * Hiệu ứng card khuyến mãi: chuyển động, ripple, badge đổi màu động
  */
 document.addEventListener("DOMContentLoaded", function () {
-    // Card khuyến mãi: hiệu ứng load nổi bật
-    const cards = document.querySelectorAll(".promotion-card");
-    cards.forEach((card, index) => {
-        card.style.opacity = "0";
-        card.style.transform = "translateY(50px)";
-        setTimeout(() => {
-            card.style.transition = "all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)";
-            card.style.opacity = "1";
-            card.style.transform = "translateY(0)";
-        }, index * 200);
-        // Hiệu ứng nhấn nhẹ
-        card.addEventListener("click", function (e) {
-            if (!e.target.classList.contains("promotion-cta")) {
-                this.style.transform = "translateY(-15px) scale(0.98)";
-                setTimeout(() => { this.style.transform = "translateY(-15px) scale(1.02)"; }, 150);
-            }
-        });
-        // Tilt effect
-        card.addEventListener("mousemove", function (e) {
-            const rect = this.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            const centerX = rect.width / 2;
-            const centerY = rect.height / 2;
-            const rotateX = (y - centerY) / 20;
-            const rotateY = (centerX - x) / 20;
-            this.style.transform = `translateY(-15px) scale(1.02) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-        });
-        card.addEventListener("mouseleave", function () {
-            this.style.transform = "translateY(0) scale(1) rotateX(0) rotateY(0)";
-        });
-    });
+
 
     // CTA button hiệu ứng ripple
     const ctaButtons = document.querySelectorAll(".promotion-cta");
@@ -783,16 +858,5 @@ document.addEventListener("DOMContentLoaded", function () {
     `;
     document.head.appendChild(style);
 });
-
-/**
- * Badge khuyến mãi đổi màu động
- */
-setInterval(() => {
-    const badges = document.querySelectorAll(".promotion-badge");
-    badges.forEach((badge) => {
-        const hue = Math.random() * 60 + 15;
-        badge.style.background = `linear-gradient(45deg, hsl(${hue}, 80%, 50%), hsl(${hue + 20}, 70%, 55%))`;
-    });
-}, 5000);
 
 // ==================== END OF FILE ====================
