@@ -11,9 +11,9 @@ use Carbon\Carbon;
 
 class RapChiTietController extends Controller
 {
-    public function chiTiet($id)
+    public function chiTiet($slug)
     {
-        $rap = Rap::where('TrangThai', 1)->findOrFail($id);
+        $rap = Rap::where('TrangThai', 1)->where('Slug', $slug)->firstOrFail();
 
         $days = [];
         $today = now();
@@ -23,7 +23,7 @@ class RapChiTietController extends Controller
 
         $phimsByDay = [];
         foreach ($days as $date) {
-            $phimIds = SuatChieu::where('ID_Rap', $id)
+            $phimIds = SuatChieu::where('ID_Rap', $rap->ID_Rap)
                 ->where('NgayChieu', $date)
                 ->pluck('ID_Phim')
                 ->unique();

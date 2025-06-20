@@ -47,7 +47,9 @@ class PayOSController extends Controller
         ) {
             return response()->json(['error' => 'Thiếu thông tin đơn hàng!'], 400);
         }
-
+        $total = isset($orderData['tong_tien_sau_giam'])
+            ? (int)$orderData['tong_tien_sau_giam']
+            : ((isset($orderData['tong_tien']) ? (int)$orderData['tong_tien'] : 0));
         // chỉ tạo orderCode tạm thời (random hoặc time-based) để gửi cho PayOS
         $orderCodeNum = rand(100000000, 999999999);
 
@@ -65,7 +67,7 @@ class PayOSController extends Controller
         try {
             $response = $this->payOS->createPaymentLink([
                 'orderCode'   => $orderCodeNum,
-                'amount'      => (int) $orderData['tong_tien'],
+                'amount'      => $total,
                 'description' => substr("Thanh toán vé xem phim", 0, 255),
                 'returnUrl'   => route('payos.return') . '?orderCode=' . $orderCodeNum,
                 'cancelUrl'   => route('payos.cancel') . '?orderCode=' . $orderCodeNum,
@@ -178,15 +180,16 @@ class PayOSController extends Controller
 
             $hoaDon = HoaDon::create([
                 'ID_HoaDon'   => $maHoaDon,
-                'TongTien'    => $orderData['tong_tien'],
+                'TongTien'    => isset($orderData['tong_tien']) ? $orderData['tong_tien'] : 0,
                 'PTTT'        => 'PayOS',
                 'ID_TaiKhoan' => session('user_id'),
                 'order_code'  => $orderCode,
-                'TrangThaiXacNhanHoaDon'     => 1, // đã xác nhận
-                'TrangThaiXacNhanThanhToan'  => 1, // đã thanh toán
+                'TrangThaiXacNhanHoaDon'     => 1,
+                'TrangThaiXacNhanThanhToan'  => 1,
                 'SoLuongVe'   => count($orderData['selectedSeats']),
                 'created_at'  => now(),
                 'updated_at'  => now(),
+                'SoTienGiam'  => $orderData['so_tien_giam'] ?? 0,
             ]);
 
             $suatChieu = SuatChieu::with(['rap'])->find($orderData['ID_SuatChieu']);
@@ -249,7 +252,7 @@ class PayOSController extends Controller
         if (!$hoaDon) return;
 
         // Update trạng thái hóa đơn
-        $hoaDon->TrangThaiXacNhanThanhToan = 0; // Chờ thanh toán
+        $hoaDon->TrangThaiXacNhanThanhToan = 0; // Chưa thanh toán
         $hoaDon->TrangThaiXacNhanHoaDon = 2;    // Đã hủy 
         $hoaDon->save();
 

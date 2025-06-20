@@ -11,6 +11,7 @@ class KhuyenMai extends Model
 
     protected $table = 'khuyen_mai';
     protected $primaryKey = 'ID_KhuyenMai';
+    public $timestamps = true;
 
     protected $fillable = [
         'MaKhuyenMai',

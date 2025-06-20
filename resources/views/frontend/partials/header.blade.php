@@ -108,7 +108,7 @@
                                         @foreach ($raps as $rap)
                                             @if($rap->TrangThai == 1)
                                                 <li>
-                                                    <a href="{{ route('rap.chiTiet', ['id' => $rap->ID_Rap]) }}">{{ $rap->TenRap }}</a>
+                                                    <a href="{{ route('rap.chiTiet', ['slug' => $rap->Slug]) }}">{{ $rap->TenRap }}</a>
                                                 </li>
                                             @endif
                                         @endforeach

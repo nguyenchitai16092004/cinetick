@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('ID_HoaDon', 7)->primary(); // Mã hóa đơn random gồm chữ in hoa và số, 7 ký tự
 
             $table->decimal('TongTien', 12, 2);
+            $table->decimal('SoTienGiam', 12, 2)->default(0);
             $table->string('PTTT', 50)->charset('utf8mb4')->collation('utf8mb4_unicode_ci');
             $table->unsignedBigInteger('ID_TaiKhoan');
             $table->integer('SoLuongVe')->default(0);

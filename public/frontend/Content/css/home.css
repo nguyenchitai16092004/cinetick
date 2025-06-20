@@ -1347,6 +1347,7 @@
     backdrop-filter: blur(15px);
     border: 1px solid rgba(255, 255, 255, 0.1);
     transition: all 0.4s ease;
+    height: 495px;
 }
 
 .main-article:hover {
@@ -1356,7 +1357,7 @@
 
 .main-article-image {
     position: relative;
-    height: 400px;
+    height: 495px;
     overflow: hidden;
 }
 
@@ -1395,15 +1396,7 @@
     margin-bottom: 1rem;
 }
 
-.article-tag {
-    background: linear-gradient(45deg, #ff6b35, #f7931e);
-    color: white;
-    padding: 0.3rem 0.8rem;
-    border-radius: 15px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    text-transform: uppercase;
-}
+
 
 .article-views {
     display: flex;
@@ -1425,6 +1418,7 @@
     background: rgba(255, 255, 255, 0.05);
     border-radius: 15px;
     padding: 1rem;
+    padding-top: 35px;
     border: 1px solid rgba(255, 255, 255, 0.1);
     transition: all 0.3s ease;
     backdrop-filter: blur(10px);
@@ -1981,4 +1975,30 @@
     }
 }
 
+.action-btn {
+    background: #1877f2;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 7px 16px;
+    font-size: 1em;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.15s, transform 0.1s;
+    outline: none;
+}
 
+.action-btn.share-btn {
+    background: #5e72e4;
+}
+
+.action-btn:active {
+    background: #125ecb;
+    transform: scale(0.97);
+}
+
+.action-btn.liked {
+    background: #125ecb;
+}
