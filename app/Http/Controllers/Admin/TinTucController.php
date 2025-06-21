@@ -14,9 +14,15 @@ class TinTucController extends Controller
 {
     public function index()
     {
-        $tinTucs = TinTuc::join('tai_khoan', 'tin_tuc.ID_TaiKhoan', '=', 'tai_khoan.ID_TaiKhoan')
-            ->select('tin_tuc.*', 'tai_khoan.TenDN')
-            ->paginate(5);
+        $query = TinTuc::join('tai_khoan', 'tin_tuc.ID_TaiKhoan', '=', 'tai_khoan.ID_TaiKhoan')
+            ->select('tin_tuc.*', 'tai_khoan.TenDN');
+
+        if (request()->filled('loai_bai_viet')) {
+            $query->where('tin_tuc.LoaiBaiViet', request('loai_bai_viet'));
+        }
+
+        $tinTucs = $query->paginate(5)->appends(request()->query());
+
         return view('backend.pages.tin_tuc.tin-tuc', compact('tinTucs'));
     }
 
@@ -32,7 +38,7 @@ class TinTucController extends Controller
         $validator = Validator::make($request->all(), [
             'TieuDe' => 'required|max:100',
             'NoiDung' => 'required',
-            'LoaiBaiViet' => 'required|in:0,1',
+            'LoaiBaiViet' => 'required|in:1,2,3,4',
             'TrangThai' => 'required|in:0,1',
             'AnhDaiDien' => 'nullable|image',
         ]);
@@ -88,7 +94,7 @@ class TinTucController extends Controller
         $request->validate([
             'TieuDe' => 'required|max:100',
             'NoiDung' => 'required',
-            'LoaiBaiViet' => 'required|in:0,1',
+            'LoaiBaiViet' => 'required|in:1,2,3,4',
             'TrangThai' => 'required|in:0,1',
             'AnhDaiDien' => 'nullable|image',
         ]);

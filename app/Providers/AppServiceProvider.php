@@ -7,6 +7,8 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\View;
 use App\Models\Rap;
+use App\Models\TinTuc;
+use App\Models\ThongTinTrangWeb;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -39,6 +41,9 @@ class AppServiceProvider extends ServiceProvider
         View::composer('*', function ($view) {
             $raps = Rap::where('TrangThai', 1)->get();
             $view->with('raps', $raps);
+            $view->with('footerGioiThieu', TinTuc::where('LoaiBaiViet', 2)->where('TrangThai', 1)->orderBy('created_at')->get());
+            $view->with('footerChinhSach', TinTuc::where('LoaiBaiViet', 3)->where('TrangThai', 1)->orderBy('created_at')->get());
+            $view->with('thongTinTrangWeb', ThongTinTrangWeb::first());
         });
     }
 }

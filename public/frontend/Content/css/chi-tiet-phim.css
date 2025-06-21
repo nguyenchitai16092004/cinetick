@@ -621,7 +621,9 @@ body {
     background: radial-gradient(circle, rgba(255, 107, 53, 0.1), transparent);
     animation: float 6s ease-in-out infinite;
 }
-
+.avgRatingInfo{
+  margin-left: 4px;
+}
 .floating-circle:nth-child(1) {
     width: 100px;
     height: 100px;

@@ -350,7 +350,7 @@
 
         <main class="content-grid">
             @if (isset($mainArticle))
-                <a href="{{ route('bai-viet.chiTiet', ['slug' => $mainArticle->Slug]) }}">
+                <a href="{{ route('bai-viet.chiTiet.dien-anh', ['slug' => $mainArticle->Slug]) }}">
                     <article class="main-article">
                         <div class="main-article-image">
                             <img src="{{ $mainArticle->AnhDaiDien ? asset('storage/' . $mainArticle->AnhDaiDien) : asset('images/no-image.jpg') }}"
@@ -374,7 +374,7 @@
             @endif
             <aside class="sidebar">
                 @foreach ($sidebarArticles as $article)
-                    <a href="{{ route('bai-viet.chiTiet', ['slug' => $article->Slug]) }}">
+                    <a href="{{ route('bai-viet.chiTiet.dien-anh', ['slug' => $article->Slug]) }}">
                         <article class="sidebar-article">
                             <div class="sidebar-image">
                                 <img src="{{ $article->AnhDaiDien ? asset('storage/' . $article->AnhDaiDien) : asset('images/no-image.jpg') }}"
@@ -410,7 +410,7 @@
 
         <div class="promotions-grid">
             @foreach ($khuyenMais as $khuyenMai)
-                <a href="{{ route('bai-viet.chiTiet', ['slug' => $khuyenMai->Slug]) }}">
+                <a href="{{ route('bai-viet.chiTiet.khuyen-mai', ['slug' => $khuyenMai->Slug]) }}">
                     <div class="promotion-card promotion-special">
                         <div class="promotion-image">
                             <img src="{{ $khuyenMai->AnhDaiDien ? asset('storage/' . $khuyenMai->AnhDaiDien) : asset('images/no-image.jpg') }}"

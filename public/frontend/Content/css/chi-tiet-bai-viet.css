@@ -77,11 +77,13 @@ h1 {
 .views i {
   color: #7a7a7a;
 }
-
+strong {
+  color: #fff;
+}
 .intro {
   margin-top: 0;
   font-size: 1.12em;
-  color: #444;
+  color: #fff;
   line-height: 1.7;
 }
 

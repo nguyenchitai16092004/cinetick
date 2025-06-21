@@ -24,7 +24,7 @@
         <div class="movie-list">
             @if ($dienAnhs->count())
                 @foreach ($dienAnhs as $dienAnh)
-                    <a href="{{ route('bai-viet.chiTiet', ['slug' => $dienAnh->Slug]) }}">
+                    <a href="{{ route('bai-viet.chiTiet.dien-anh', ['slug' => $dienAnh->Slug]) }}">
                         <div class="movie-item">
                             <img class="movie-thumb"
                                 src="{{ $dienAnh->AnhDaiDien ? asset('storage/' . $dienAnh->AnhDaiDien) : asset('images/no-image.jpg') }}"
