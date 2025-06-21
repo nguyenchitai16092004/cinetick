@@ -140,9 +140,7 @@
                                         onsubmit="return confirm('Bạn có chắc muốn xóa banner này không?')">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-outline-danger">
-                                            🗑️ Xóa
-                                        </button>
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">🗑️ Xóa </button>
                                     </form>
                                 </td>
                             </tr>

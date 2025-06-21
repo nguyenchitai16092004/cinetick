@@ -7,13 +7,59 @@
 
 @section('main')
     <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    <!-- Modal thêm giờ chiếu -->
+    <div class="modal fade" id="addTimeModal" tabindex="-1" aria-labelledby="addTimeModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Thêm giờ chiếu cho ngày <span id="selected-date"></span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="time" id="datetime-input" class="form-control" step="900" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Huỷ</button>
+                    <button type="button" class="btn btn-primary" onclick="xacNhanThemGio()">Xác nhận</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal tạo suất chiếu tự động -->
+    <div class="modal fade" id="autoScheduleModal" tabindex="-1" aria-labelledby="autoScheduleLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Tạo tự động suất chiếu cho ngày <span id="auto-date"></span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="start-time" class="form-label">Giờ bắt đầu</label>
+                        <input type="time" id="start-time" class="form-control" step="900" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="end-time" class="form-label">Giờ kết thúc</label>
+                        <input type="time" id="end-time" class="form-control" step="900" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Huỷ</button>
+                    <button type="button" class="btn btn-primary" onclick="taoSuatChieuTuDong()">Tạo suất chiếu</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-10">
                 <div class="card">
                     <div class="card-header">
                         <div class="d-flex justify-content-between align-items-center">
-                            <h5 class="m-0">Tạo suất chiếu hàng loạt ( Vui lòng chọn ngày chiếu trước mới chọn được phim )</h5>
+                            <h5 class="m-0">Tạo suất chiếu hàng loạt ( Vui lòng chọn ngày chiếu trước mới chọn được phim
+                                )</h5>
                             <a href="{{ route('suat-chieu.index') }}" class="btn btn-secondary">Quay lại</a>
                         </div>
                     </div>
@@ -24,12 +70,23 @@
 
                             <!-- Thông tin chung -->
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-12">
                                     <div class="form-group mb-3">
-                                        <label for="ID_Phim">Phim <span class="text-danger">*</span></label>
-                                        <select name="ID_Phim" id="ID_Phim" class="form-control" required>
-                                            <option value="">-- Chọn phim --</option>
-                                        </select>
+                                        <label>Khoảng thời gian bắt đầu (*) - kết thúc</label>
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <input type="date" class="form-control" id="start_date"
+                                                    min="{{ date('Y-m-d') }}"
+                                                    max="{{ date('Y-m-d', strtotime('+3 months')) }}" placeholder="Từ ngày">
+                                            </div>
+                                            <div class="col-6">
+
+                                                <input type="date" class="form-control" id="end_date"
+                                                    min="{{ date('Y-m-d') }}"
+                                                    max="{{ date('Y-m-d', strtotime('+3 months')) }}"
+                                                    placeholder="Đến ngày">
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -45,39 +102,40 @@
                                         </select>
                                     </div>
                                 </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="ID_PhongChieu">Phòng chiếu <span class="text-danger">*</span></label>
+                                        <select name="ID_PhongChieu" id="ID_PhongChieu" class="form-control" required
+                                            disabled>
+                                            <option value="">-- Chọn phòng chiếu --</option>
+                                        </select>
+                                    </div>
+                                </div>
+
                             </div>
 
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group mb-3">
-                                        <label for="GiaVe">Giá vé (VNĐ) <span class="text-danger">*</span></label>
-                                        <input type="number" class="form-control" id="GiaVe" name="GiaVe"
-                                            value="45000" min="0" step="1000" required>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group mb-3">
-                                        <label for="ID_PhongChieu">Phòng chiếu <span class="text-danger">*</span></label>
-                                        <select name="ID_PhongChieu" id="ID_PhongChieu" class="form-control" required disabled>
-                                            <option value="">-- Chọn phòng chiếu --</option>
+                                        <label for="ID_Phim">Phim <span class="text-danger">*</span></label>
+                                        <select name="ID_Phim" id="ID_Phim" class="form-control" required>
+                                            <option value="">-- Chọn phim --</option>
+                                            @foreach ($phims as $phim)
+                                                <option value="{{ $phim->ID_Phim }}"
+                                                    data-duration="{{ $phim->ThoiLuong }}"
+                                                    data-ngaykhoichieu="{{ $phim->NgayKhoiChieu }}">
+                                                    {{ $phim->TenPhim }}
+                                                </option>
+                                            @endforeach
                                         </select>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-md-12">
-                                <div class="form-group mb-3">
-                                    <label>Khoảng thời gian</label>
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <input type="date" class="form-control" id="start_date"
-                                                min="{{ date('Y-m-d') }}" max="{{ date('Y-m-d', strtotime('+3 months')) }}"
-                                                placeholder="Từ ngày">
-                                        </div>
-                                        <div class="col-6">
-                                            <input type="date" class="form-control" id="end_date"
-                                                min="{{ date('Y-m-d') }}" max="{{ date('Y-m-d', strtotime('+3 months')) }}"
-                                                placeholder="Đến ngày">
-                                        </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="GiaVe">Giá vé (VNĐ) <span class="text-danger">*</span></label>
+                                        <input type="number" class="form-control" id="GiaVe" name="GiaVe"
+                                            value="45000" min="0" step="1000" required>
                                     </div>
                                 </div>
                             </div>
@@ -113,19 +171,9 @@
                                     </div>
                                 </div>
                             </div>
-
-                            <!-- Xung đột và tổng kết -->
-                            <div id="conflict-summary" class="alert alert-warning d-none">
-                                <strong>Cảnh báo xung đột lịch chiếu!</strong>
-                                <div id="conflict-list"></div>
-                            </div>
-                            <div id="schedule-summary" class="alert alert-info d-none">
-                                <strong>Tổng kết:</strong>
-                                <div id="summary-content"></div>
-                            </div>
-
                             <div class="form-group text-center">
-                                <button type="submit" class="btn btn-primary btn-lg" id="submitBtn" disabled>
+                                <button type="submit" class="btn btn-primary btn-lg" onclick="kiemTraSuatChieuSom()"
+                                    id="submitBtn" disabled>
                                     <i class="fas fa-save"></i> Tạo tất cả suất chiếu (<span id="total-count">0</span>)
                                 </button>
                             </div>
@@ -139,39 +187,6 @@
 @section('js')
     <script src="{{ asset('backend/assets/js/suat-chieu.js') }}" defer></script>
     <script>
-        function getMovie() {
-            const selectedDate = document.getElementById("start_date").value;
-            if (!selectedDate) return;
-
-            console.log("Gửi request lọc phim cho ngày:", selectedDate);
-
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-
-            $.ajax({
-                url: "{{ route('suat-chieu.loc-phim-theo-ngay') }}",
-                method: 'POST',
-                data: {
-                    date: selectedDate
-                },
-                success: function(data) {
-                    let html = '<option value="">-- Chọn phim --</option>';
-                    data.forEach(phim => {
-                        html +=
-                            `<option value="${phim.ID_Phim}" data-duration="${phim.ThoiLuong || 120}">${phim.TenPhim}</option>`;
-                    });
-                    $('#ID_Phim').html(html).prop('disabled', false);
-                },
-                error: function(xhr) {
-                    alert('Lỗi khi lọc phim!');
-                    console.error(xhr.responseText);
-                }
-            });
-        }
-
         function getPhong() {
             const selectedRap = document.getElementById("ID_Rap").value;
             if (!selectedRap) return;
@@ -188,7 +203,7 @@
                 url: "{{ route('suat-chieu.loc-phong') }}",
                 method: 'POST',
                 data: {
-                    id_rap : selectedRap
+                    ID_Rap: selectedRap
                 },
                 success: function(data) {
                     let html = '<option value="">-- Chọn phòng --</option>';

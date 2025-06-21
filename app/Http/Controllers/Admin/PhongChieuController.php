@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 use App\Models\PhongChieu;
 use App\Models\GheNgoi;
 use App\Models\Rap;
@@ -29,8 +30,16 @@ class PhongChieuController extends Controller
         if ($soPhongChieu >= 5) {
             return redirect()->back()->with('error', 'Rạp này đã đạt tối đa 5 phòng chiếu.')->withInput();
         }
+
         $request->validate([
-            'roomName' => 'required|string|max:100',
+            'roomName' => [
+                'required',
+                'string',
+                'max:100',
+                Rule::unique('phong_chieu', 'TenPhongChieu')->where(function ($query) use ($request) {
+                    return $query->where('ID_Rap', $request->ID_Rap);
+                }),
+            ],
             'ID_Rap' => 'required|exists:rap,ID_Rap',
             'LoaiPhong' => 'required|integer|in:0,1',
             'rowCount' => 'required|integer|min:5|max:10',
@@ -41,6 +50,7 @@ class PhongChieuController extends Controller
             'colAisles' => 'nullable|array',
             'colAisles.*' => 'integer|min:1',
         ]);
+
 
         try {
             DB::beginTransaction();
@@ -145,16 +155,27 @@ class PhongChieuController extends Controller
 
     public function update(Request $request, $id)
     {
+        // Validate dữ liệu đầu vào
         $validated = $request->validate([
-            'roomName' => 'required|string|max:100',
+            'roomName' => [
+                'required',
+                'string',
+                'max:100',
+                Rule::unique('phong_chieu', 'TenPhongChieu')
+                    ->where(function ($query) use ($request) {
+                        return $query->where('ID_Rap', $request->ID_Rap);
+                    })
+                    ->ignore($id, 'ID_PhongChieu'), // bỏ qua chính phòng hiện tại
+            ],
             'ID_Rap' => 'required|exists:rap,ID_Rap',
             'LoaiPhong' => 'required|integer|in:0,1',
             'rowCount' => 'required|integer|min:5|max:10',
-            'colCount' => 'required|integer|in:6,7,8,9,10,12',
-            'rowAisles' => 'array|nullable',
-            'colAisles' => 'array|nullable',
-            'TrangThai' => 'required|boolean',
-            'seatLayout' => 'required|json'
+            'colCount' => 'required|integer|min:6|max:12',
+            'seatLayout' => 'required|json',
+            'rowAisles' => 'nullable|array',
+            'rowAisles.*' => 'integer|min:1',
+            'colAisles' => 'nullable|array',
+            'colAisles.*' => 'integer|min:1',
         ]);
 
         try {
@@ -168,22 +189,24 @@ class PhongChieuController extends Controller
                 foreach ($row as $seat) {
                     if (isset($seat['TrangThaiGhe']) && $seat['TrangThaiGhe'] > 0) {
                         $soLuongGhe++;
-                    } else if (isset($seat['TrangThai']) && $seat['TrangThai'] == 1) {
+                    } elseif (isset($seat['TrangThai']) && $seat['TrangThai'] == 1) {
                         $soLuongGhe++;
                     }
                 }
             }
 
+            // Cập nhật thông tin phòng chiếu
             $phongChieu->update([
                 'TenPhongChieu' => $validated['roomName'],
                 'ID_Rap' => $validated['ID_Rap'],
                 'LoaiPhong' => $validated['LoaiPhong'],
-                'TrangThai' => $validated['TrangThai'],
+                'TrangThai' => $phongChieu->TrangThai, // giữ nguyên trạng thái nếu không chỉnh sửa
                 'SoLuongGhe' => $soLuongGhe,
                 'HangLoiDi' => json_encode($validated['rowAisles'] ?? []),
-                'CotLoiDi' => json_encode($validated['colAisles'] ?? [])
+                'CotLoiDi' => json_encode($validated['colAisles'] ?? []),
             ]);
 
+            // Lấy danh sách ghế cũ
             $existingSeats = GheNgoi::where('ID_PhongChieu', $id)
                 ->pluck('TenGhe')
                 ->toArray();
@@ -199,12 +222,8 @@ class PhongChieuController extends Controller
 
                     if (isset($seat['TrangThaiGhe'])) {
                         $trangThaiGhe = $seat['TrangThaiGhe'];
-                    } else if (isset($seat['TrangThai'])) {
-                        if ($seat['TrangThai'] == 1) {
-                            $trangThaiGhe = isset($seat['LoaiGhe']) && $seat['LoaiGhe'] == 1 ? 2 : 1;
-                        } else {
-                            $trangThaiGhe = 0;
-                        }
+                    } elseif (isset($seat['TrangThai']) && $seat['TrangThai'] == 1) {
+                        $trangThaiGhe = isset($seat['LoaiGhe']) && $seat['LoaiGhe'] == 1 ? 2 : 1;
                     }
 
                     $gheNgoi = GheNgoi::where('ID_PhongChieu', $id)
@@ -218,12 +237,13 @@ class PhongChieuController extends Controller
                         GheNgoi::create([
                             'TenGhe' => $tenGhe,
                             'ID_PhongChieu' => $id,
-                            'LoaiTrangThaiGhe' => $trangThaiGhe
+                            'LoaiTrangThaiGhe' => $trangThaiGhe,
                         ]);
                     }
                 }
             }
 
+            // Xóa các ghế không còn trong sơ đồ mới
             $obsoleteSeats = array_diff($existingSeats, $processedSeats);
             if (!empty($obsoleteSeats)) {
                 GheNgoi::where('ID_PhongChieu', $id)

@@ -55,8 +55,8 @@ class KhuyenMaiController extends Controller
 
     public function edit($id)
     {
-        $km = KhuyenMai::findOrFail($id);
-        return view('backend.pages.phieu_giam_gia.detail-phieu-giam-gia', compact('km'));
+        $khuyenMai = KhuyenMai::findOrFail($id);
+        return view('backend.pages.phieu_giam_gia.detail-phieu-giam-gia', compact('khuyenMai'));
     }
 
     public function update(Request $request, $id)

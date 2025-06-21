@@ -53,14 +53,19 @@
                                             </button>
                                         </form>
 
-                                        <form action="{{ route('rap.destroy', $rap->ID_Rap) }}" method="POST"
-                                            class="inline-block" onsubmit="return confirm('Bạn có chắc muốn xoá?')">
+                                        <!-- Nút Xóa (KHÔNG gửi form trực tiếp) -->
+                                        <button type="button"
+                                            class="px-3 py-1 text-sm font-medium text-white bg-red-600 rounded hover:bg-red-700"
+                                            onclick="moModalXoa({{ $rap->ID_Rap }}, '{{ $rap->TenRap }}')">
+                                            Xoá
+                                        </button>
+
+                                        <!-- Form xóa ẩn -->
+                                        <form id="form-xoa-{{ $rap->ID_Rap }}"
+                                            action="{{ route('rap.destroy', $rap->ID_Rap) }}" method="POST"
+                                            style="display: none;">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit"
-                                                class="px-3 py-1 text-sm font-medium text-white bg-red-600 rounded hover:bg-red-700">
-                                                Xoá
-                                            </button>
                                         </form>
                                     </td>
                                 </tr>
@@ -77,4 +82,58 @@
                 </div>
             </div>
         </section>
+        <!-- Modal xác nhận xoá -->
+        <div class="modal fade" id="modalXacNhanXoa" tabindex="-1" aria-labelledby="modalXoaLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header bg-danger text-white">
+                        <h5 class="modal-title" id="modalXoaLabel">Xác nhận xoá rạp</h5>
+                        <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Bạn có chắc chắn muốn xoá rạp <strong id="tenRapModal"></strong>?</p>
+                        <p class="text-danger">Nút xoá sẽ kích hoạt sau <span id="demNguoc">5</span> giây.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Huỷ</button>
+                        <button type="button" class="btn btn-danger" id="btnXacNhanXoa" disabled>Xoá</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    @endsection
+    @section('js')
+        <script>
+            let idRapCanXoa = null;
+            let timeoutXoa = null;
+            let intervalDemNguoc = null;
+
+            function moModalXoa(id, tenRap) {
+                idRapCanXoa = id;
+                document.getElementById('tenRapModal').textContent = tenRap;
+                document.getElementById('btnXacNhanXoa').disabled = true;
+
+                let giay = 5;
+                document.getElementById('demNguoc').textContent = giay;
+
+                intervalDemNguoc = setInterval(() => {
+                    giay--;
+                    document.getElementById('demNguoc').textContent = giay;
+                    if (giay <= 0) {
+                        clearInterval(intervalDemNguoc);
+                        document.getElementById('btnXacNhanXoa').disabled = false;
+                    }
+                }, 1000);
+
+                const modal = new bootstrap.Modal(document.getElementById('modalXacNhanXoa'));
+                modal.show();
+            }
+
+            document.getElementById('btnXacNhanXoa').addEventListener('click', function() {
+                if (idRapCanXoa) {
+                    document.getElementById('form-xoa-' + idRapCanXoa).submit();
+                }
+            });
+        </script>
     @endsection

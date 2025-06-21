@@ -168,6 +168,7 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
         Route::get('/edit/{id}', [BannerController::class, 'edit'])->name('edit');
         Route::put('/update/{id}', [BannerController::class, 'update'])->name('update');
         Route::delete('/destroy/{id}', [BannerController::class, 'destroy'])->name('destroy');
+        Route::post('/get-data-by-type', [BannerController::class, 'layDuLieuBangType'])->name('get-data-by-type');
     });
 
     // Rap
@@ -238,7 +239,7 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
         Route::get('/create', [KhuyenMaiController::class, 'create'])->name('create');
         Route::post('/store', [KhuyenMaiController::class, 'store'])->name('store');
         Route::get('/edit/{id}', [KhuyenMaiController::class, 'edit'])->name('edit');
-        Route::post('/update/{id}', [KhuyenMaiController::class, 'update'])->name('update');
+        Route::put('/update/{id}', [KhuyenMaiController::class, 'update'])->name('update');
         Route::get('/delete/{id}', [KhuyenMaiController::class, 'destroy'])->name('delete');
     });
 

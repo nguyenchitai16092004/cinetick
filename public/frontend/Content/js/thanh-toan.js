@@ -234,7 +234,7 @@ document.getElementById("promoApplyBtn").addEventListener("click", function () {
                 .value,
             Accept: "application/json",
         },
-        body: JSON.stringify({ ma_khuyen_mai: code, tong_tien: tongTien }),
+        body: JSON.stringify({ ma_khuyen_mai: code, tong_tien: tongTien ,  }),
     })
         .then((res) => res.json())
         .then((data) => {
