@@ -22,27 +22,36 @@ class KhuyenMaiController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'MaKhuyenMai' => 'nullable|max:100|unique:khuyen_mai,MaKhuyenMai',
-            'PhanTramGiam' => 'required|integer|min:1|max:100',
-            'NgayKetThuc' => 'date|nullable',
-        ]);
+        try {
+            $request->validate([
+                'MaKhuyenMai' => 'nullable|max:100|unique:khuyen_mai,MaKhuyenMai',
+                'DieuKienToiThieu' => 'nullable|numeric|min:0',
+                'PhanTramGiam' => 'required|integer|min:1|max:100',
+                'GiamToiDa' => 'required|numeric|min:0',
+                'NgayKetThuc' => 'date|nullable',
+            ]);
 
-        $maKhuyenMai = $request->MaKhuyenMai;
-        if (empty($maKhuyenMai)) {
-            $maKhuyenMai = strtoupper(Str::random(6));
-        } else {
-            $maKhuyenMai = strtoupper($maKhuyenMai);
+            $maKhuyenMai = $request->MaKhuyenMai;
+            if (empty($maKhuyenMai)) {
+                $maKhuyenMai = strtoupper(Str::random(6));
+            } else {
+                $maKhuyenMai = strtoupper($maKhuyenMai);
+            }
+
+            KhuyenMai::create([
+                'MaKhuyenMai' => $maKhuyenMai,
+                'DieuKienToiThieu' => $request->DieuKienToiThieu,
+                'PhanTramGiam' => $request->PhanTramGiam,
+                'GiamToiDa' => $request->GiamToiDa,
+                'NgayKetThuc' => $request->NgayKetThuc,
+            ]);
+
+            return redirect()->route('khuyen-mai.index')->with('success', 'Đã thêm khuyến mãi mới!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Đã xảy ra lỗi: ' . $e->getMessage())->withInput();
         }
-
-        KhuyenMai::create([
-            'MaKhuyenMai' => $maKhuyenMai,
-            'PhanTramGiam' => $request->PhanTramGiam,
-            'NgayKetThuc' => $request->NgayKetThuc,
-        ]);
-
-        return redirect()->route('khuyen-mai.index')->with('success', 'Đã thêm khuyến mãi mới!');
     }
+
 
     public function edit($id)
     {
@@ -55,9 +64,12 @@ class KhuyenMaiController extends Controller
         try {
             $request->validate([
                 'MaKhuyenMai' => 'nullable|max:100',
+                'DieuKienToiThieu' => 'nullable|numeric|min:0',
                 'PhanTramGiam' => 'required|integer|min:1|max:100',
+                'GiamToiDa' => 'required|numeric|min:0',
                 'NgayKetThuc' => 'date|nullable',
             ]);
+
             $maKhuyenMai = $request->MaKhuyenMai;
             if (empty($maKhuyenMai)) {
                 $maKhuyenMai = strtoupper(Str::random(6));
@@ -68,7 +80,9 @@ class KhuyenMaiController extends Controller
             $km = KhuyenMai::findOrFail($id);
             $km->update([
                 'MaKhuyenMai' => $maKhuyenMai,
+                'DieuKienToiThieu' => $request->DieuKienToiThieu,
                 'PhanTramGiam' => $request->PhanTramGiam,
+                'GiamToiDa' => $request->GiamToiDa,
                 'NgayKetThuc' => $request->NgayKetThuc,
             ]);
 

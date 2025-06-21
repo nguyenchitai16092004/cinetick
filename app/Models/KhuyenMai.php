@@ -15,7 +15,9 @@ class KhuyenMai extends Model
 
     protected $fillable = [
         'MaKhuyenMai',
+        'DieuKienToiThieu',
         'PhanTramGiam',
+        'GiamToiDa',
         'NgayKetThuc',
     ];
 }

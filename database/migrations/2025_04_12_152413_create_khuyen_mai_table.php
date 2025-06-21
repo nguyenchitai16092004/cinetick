@@ -15,7 +15,10 @@ return new class extends Migration
             $table->id('ID_KhuyenMai');
             $table->string('MaKhuyenMai', 100);
             $table->date('NgayKetThuc')->nullable();
-            $table->integer('PhanTramGiam');    
+            $table->decimal('DieuKienToiThieu', 10, 2)->nullable()->comment('Giá trị đơn hàng tối thiểu để áp dụng khuyến mãi');
+            $table->decimal('GiamToiDa', 10, 2)->nullable()->comment('Giá trị giảm tối đa');
+            $table->integer('PhanTramGiam');
+
             $table->timestamps();
         });
     }

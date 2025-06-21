@@ -234,3 +234,4 @@
         window.bookingTimeLeft = {{ $bookingTimeLeft ?? 360 }};
     </script>
 @stop
+    

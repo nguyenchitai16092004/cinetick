@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\ThongTinTrangWeb;
 use Illuminate\Http\Request;
+use App\Models\Banner;
 use Illuminate\Support\Facades\Storage;
 
 class HomeController extends Controller
@@ -12,7 +13,8 @@ class HomeController extends Controller
     public function index()
     {
         $thongTin = ThongTinTrangWeb::first();
-        return view('backend.pages.home', compact('thongTin'));
+        $banners = Banner::all();
+        return view('backend.pages.home', compact('thongTin' , 'banners'));
     }
 
     public function update(Request $request)

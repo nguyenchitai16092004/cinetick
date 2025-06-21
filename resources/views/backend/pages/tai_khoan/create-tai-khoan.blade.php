@@ -99,7 +99,6 @@
                             <select class="form-control" id="VaiTro" name="VaiTro" required>
                                 <option value="0" {{ old('VaiTro') == '0' ? 'selected' : '' }}>Người dùng</option>
                                 <option value="1" {{ old('VaiTro') == '1' ? 'selected' : '' }}>Nhân viên</option>
-                                <option value="2" {{ old('VaiTro') == '2' ? 'selected' : '' }}>Quản trị viên</option>
                             </select>
                         </div>
 

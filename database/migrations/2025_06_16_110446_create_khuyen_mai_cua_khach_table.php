@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('khuyen_mai_cua_khach', function (Blueprint $table) {
+        Schema::create('khuyen_mai_da_su_dung', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('ID_TaiKhoan');
             $table->unsignedBigInteger('ID_KhuyenMai');
@@ -21,7 +21,7 @@ return new class extends Migration
         });
     }
 
-    /**
+    /** 
      * Reverse the migrations.
      */
     public function down(): void
