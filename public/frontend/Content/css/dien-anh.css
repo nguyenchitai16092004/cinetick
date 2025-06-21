@@ -1,20 +1,10 @@
 
 .container-blog {
   max-width: 1100px;
-  margin: 36px auto 0 auto;
+  margin: 36px auto 36px auto;
   padding: 0 20px;
 }
-.section-title {
-  font-size: 2em;
-  font-weight: 500;
-  border-left: 5px solid #1976d2;
-  padding-left: 12px;
-  letter-spacing: 1px;
-  margin-bottom: 10px;
-  color: #444;
-  display: flex;
-  align-items: flex-end;
-}
+
 .section-title-bar {
   border-bottom: 3px solid #1976d2;
   margin-bottom: 30px;
@@ -46,11 +36,14 @@
   flex: 1 1 auto;
   min-width: 0;
 }
-.movie-title {
+.movie-desc strong{
+  color: #fff !important;
+}
+.post-movie-title {
   font-size: 1.36em;
   font-weight: 500;
   margin: 0 0 12px 0;
-  color: #222;
+  color: #fff;
 }
 .movie-actions {
   display: flex;
@@ -118,4 +111,83 @@
 @media (max-width: 600px) {
   .container-blog { padding: 0 2vw; }
   .movie-thumb { height: 28vw; }
+}
+.pagination-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.pagination {
+  display: flex;
+  padding-left: 0;
+  list-style: none;
+  border-radius: 0.5rem;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+}
+
+.pagination li {
+  margin: 0 3px;
+}
+
+.page-link {
+  color: #2c3e50;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 0.4rem;
+  padding: 0.5rem 1rem;
+  transition: all 0.2s;
+  font-weight: 500;
+}
+
+.page-link:hover,
+.page-link:focus {
+  color: #fff;
+  background-color: #007bff;
+  border-color: #007bff;
+  box-shadow: 0 2px 8px rgba(0,123,255,0.08);
+  text-decoration: none;
+}
+
+.pagination .active .page-link {
+  color: #fff;
+  background-color: #007bff;
+  border-color: #007bff;
+  pointer-events: none;
+}
+
+.pagination .disabled .page-link {
+  color: #6c757d;
+  background-color: #f8f9fa;
+  border-color: #dee2e6;
+  pointer-events: none;
+  opacity: 0.6;
+}
+.update-showtime {
+  grid-column: 1 / -1; 
+  justify-self: center;
+  align-self: center;
+  text-align: center;
+  font-size: 1.2em;
+  background: rgba(24, 24, 40, 0.92);
+  color: #fff;
+  padding: 22px 32px;
+  border-radius: 16px;
+  margin: 32px 0;
+  width: auto;
+  max-width: 80%;
+  position: relative;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.update-showtime .marquee-text {
+  display: inline-block;
+  padding-left: 100%;
+  animation: marquee 8s linear infinite;
+}
+
+@keyframes marquee {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
 }

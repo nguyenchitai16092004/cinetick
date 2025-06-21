@@ -114,8 +114,8 @@
                                         @endforeach
                                     </ul>
                                 </li>
-                                <li><a href="{{ asset('/uu-dai') }}">Khuyến Mãi</a></li>
-                                <li><a href="{{ route('bai-viet-dien-anh') }}">Điện Ảnh</a></li>
+                                <li><a href="{{ route('ds-bai-viet-khuyen-mai') }}">Khuyến Mãi</a></li>
+                                <li><a href="{{ route('ds-bai-viet-dien-anh') }}">Điện Ảnh</a></li>
                                 <li><a href="{{ asset('/lien-he') }}">Liên hệ</a></li>
                             </ul>
                         </nav>

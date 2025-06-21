@@ -7,8 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class TinTuc extends Model
 {
     protected $table = 'tin_tuc';
-   protected $primaryKey = "ID_TinTuc";
-    // Các trường được phép gán hàng loạt
+    protected $primaryKey = "ID_TinTuc";
     protected $fillable = [
         'TieuDe',
         'Slug',
@@ -16,6 +15,8 @@ class TinTuc extends Model
         'LoaiBaiViet',
         'AnhDaiDien',
         'ID_TaiKhoan',
+        'LuotThich',
+        'LuotXem',
         'TrangThai'
     ];
 }

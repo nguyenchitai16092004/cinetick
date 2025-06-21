@@ -16,7 +16,7 @@ class TinTucController extends Controller
     {
         $tinTucs = TinTuc::join('tai_khoan', 'tin_tuc.ID_TaiKhoan', '=', 'tai_khoan.ID_TaiKhoan')
             ->select('tin_tuc.*', 'tai_khoan.TenDN')
-            ->get();
+            ->paginate(5);
         return view('backend.pages.tin_tuc.tin-tuc', compact('tinTucs'));
     }
 
@@ -62,7 +62,7 @@ class TinTucController extends Controller
             $file = $request->file('AnhDaiDien');
             $fileName = time() . '_' . $file->getClientOriginalName();
             $file->storeAs('tin-tuc', $fileName, 'public');
-            $data['AnhDaiDien'] = 'storage/tin-tuc/' . $fileName;
+            $data['AnhDaiDien'] = 'tin-tuc/' . $fileName;
         }
         TinTuc::create($data);
 
@@ -71,8 +71,7 @@ class TinTucController extends Controller
             'TieuDe' => $data['TieuDe'],
         ]);
 
-        return redirect()->back()->with('success', 'Thêm tin tức thành công!');
-    }
+        return redirect()->route('tin_tuc.index')->with('success', 'Thêm tin tức thành công!');    }
 
     // Hiển thị form chỉnh sửa
     public function edit($id)
@@ -103,7 +102,7 @@ class TinTucController extends Controller
             $file = $request->file('AnhDaiDien');
             $fileName = time() . '_' . $file->getClientOriginalName();
             $file->storeAs('tin-tuc', $fileName, 'public');
-            $data['AnhDaiDien'] = 'storage/tin-tuc/' . $fileName;
+            $data['AnhDaiDien'] = 'tin-tuc/' . $fileName;
         }
 
         $tinTuc->update($data);
@@ -120,24 +119,18 @@ class TinTucController extends Controller
         return redirect()->route('tin_tuc.index')->with('success', 'Xóa tin tức thành công');
     }
 
-    public function upload(Request $request)
+    public function tinymceUpload(Request $request)
     {
-        if ($request->hasFile('upload')) {
-            $file = $request->file('upload');
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
             $filename = time() . '_' . $file->getClientOriginalName();
-            $file->storeAs('uploads/ckeditor', $filename, 'public');
-            $url = asset('storage/uploads/ckeditor/' . $filename);
+            $file->storeAs('uploads/tinymce', $filename, 'public');
+            $url = asset('storage/uploads/tinymce/' . $filename);
 
-            // Đáp ứng đúng format CKEditor 4
             return response()->json([
-                'uploaded' => 1,
-                'fileName' => $filename,
-                'url' => $url
+                'location' => $url
             ]);
         }
-        return response()->json([
-            'uploaded' => 0,
-            'error' => ['message' => 'No file uploaded.']
-        ]);
+        return response()->json(['error' => 'No file uploaded.'], 400);
     }
 }

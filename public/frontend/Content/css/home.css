@@ -1393,7 +1393,6 @@
     display: flex;
     align-items: center;
     gap: 1rem;
-    margin-bottom: 1rem;
 }
 
 
@@ -1417,8 +1416,7 @@
     gap: 1rem;
     background: rgba(255, 255, 255, 0.05);
     border-radius: 15px;
-    padding: 1rem;
-    padding-top: 35px;
+    padding: 16px;
     border: 1px solid rgba(255, 255, 255, 0.1);
     transition: all 0.3s ease;
     backdrop-filter: blur(10px);
@@ -1449,9 +1447,7 @@
     transform: scale(1.1);
 }
 
-.sidebar-content {
-    flex: 1;
-}
+
 
 .sidebar-title {
     font-size: 1rem;
@@ -1696,20 +1692,7 @@
     transform: scale(1.1) rotate(1deg);
 }
 
-.promotion-badge {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    background: linear-gradient(45deg, #ff1744, #ff6b35);
-    color: white;
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    z-index: 3;
-    animation: bounce 2s ease-in-out infinite;
-}
+
 
 @keyframes bounce {
     0%,
@@ -1754,11 +1737,7 @@
     margin-top: auto;
 }
 
-.promotion-date {
-    color: #ff6b35;
-    font-size: 0.9rem;
-    font-weight: 600;
-}
+
 
 .promotion-cta {
     background: linear-gradient(45deg, #ff6b35, #f7931e);
@@ -1799,29 +1778,7 @@
     border: 2px solid #ff6b35;
 }
 
-.promotion-special::after {
-    content: "HOT";
-    position: absolute;
-    top: -10px;
-    left: 20px;
-    background: linear-gradient(45deg, #ff1744, #ff6b35);
-    color: white;
-    padding: 0.3rem 0.8rem;
-    border-radius: 10px;
-    font-size: 0.7rem;
-    font-weight: 700;
-    animation: glow 1.5s ease-in-out infinite alternate;
-}
 
-@keyframes glow {
-    from {
-        box-shadow: 0 0 10px rgba(255, 23, 68, 0.5);
-    }
-    to {
-        box-shadow: 0 0 20px rgba(255, 23, 68, 0.8),
-            0 0 30px rgba(255, 23, 68, 0.6);
-    }
-}
 
 .view-all-section {
     text-align: center;

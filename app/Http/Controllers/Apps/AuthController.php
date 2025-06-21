@@ -136,7 +136,7 @@ class AuthController extends Controller
         session([
             'user_id' => $user->ID_TaiKhoan,
             'user_name' => $user->TenDN,
-            'cccd_id' => $user->ID_CCCD,
+            'cccd_id' => $user->thongTin->ID_CCCD,
             'user_role' => $user->VaiTro,
             'user_fullname' => $user->thongTin->HoTen ?? 'Người dùng',
             'user_email' => $user->thongTin->Email ?? 'Chưa cập nhật',
