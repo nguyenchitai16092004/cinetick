@@ -2,8 +2,17 @@
 @section('title', 'Trang chủ')
 @section('main')
     <link rel="stylesheet" href="{{ asset('frontend/Content/css/home.css') }}">
-
-    {{-- <div class="bg-gradient"></div> --}}
+    <script>
+        window.Laravel = {
+            csrfToken: '{{ csrf_token() }}'
+        };
+    </script>
+    <div class="bg-gradient"></div>
+    <div class="floating-elements">
+        <div class="floating-circle"></div>
+        <div class="floating-circle"></div>
+        <div class="floating-circle"></div>
+    </div>
 
     <div class="filmoja-slider-area fix">
         <div class="floating-particles" id="particles"></div>
@@ -328,11 +337,7 @@
         </div>
     </div>
 
-    <div class="floating-elements">
-        <div class="floating-circle"></div>
-        <div class="floating-circle"></div>
-        <div class="floating-circle"></div>
-    </div>
+
 
     <div class="container">
         <header class="header">
@@ -344,90 +349,58 @@
         </header>
 
         <main class="content-grid">
-            <a href="{{ route('bai-viet.chiTiet') }}">
-                <article class="main-article">
-                    <div class="main-article-image">
-                        <img src="https://cdn.galaxycine.vn/media/2025/5/16/until-dawn-2048_1747365952336.jpg"
-                            alt="Final Destination Bloodlines">
-                        <div class="main-article-overlay">
-                            <h2 class="main-article-title">Final Destination Bloodlines: Hé Lộ Bí Mật Về Vòng Lặp Tử Thần
-                            </h2>
-                            <div class="article-meta">
-                                <button id="likeBtn" class="action-btn">
-                                    <i id="likeIcon" class="fa-regular fa-thumbs-up"></i> Thích <span id="likeCount">0</span>
-                                </button>
-                                <div class="article-views">
-                                    <span><i class="fa-regular fa-eye"></i></span>
-                                    <span>54</span>
+            @if (isset($mainArticle))
+                <a href="{{ route('bai-viet.chiTiet.dien-anh', ['slug' => $mainArticle->Slug]) }}">
+                    <article class="main-article">
+                        <div class="main-article-image">
+                            <img src="{{ $mainArticle->AnhDaiDien ? asset('storage/' . $mainArticle->AnhDaiDien) : asset('images/no-image.jpg') }}"
+                                alt="{{ $mainArticle->TieuDe }}">
+                            <div class="main-article-overlay">
+                                <h2 class="main-article-title">{{ $mainArticle->TieuDe }}</h2>
+                                <div class="article-meta">
+                                    <button class="action-btn" data-slug="{{ $mainArticle->Slug }}">
+                                        <i class="fa-regular fa-thumbs-up"></i> Thích
+                                        <span>{{ $mainArticle->LuotThich }}</span>
+                                    </button>
+                                    <div class="article-views">
+                                        <span><i class="fa-regular fa-eye"></i></span>
+                                        <span>{{ $mainArticle->LuotXem }}</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </article>
-            </a>
+                    </article>
+                </a>
+            @endif
             <aside class="sidebar">
-                <article class="sidebar-article">
-                    <div class="sidebar-image">
-                        <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=150&h=150&fit=crop"
-                            alt="Bùi Thạc Chuyên">
-                    </div>
-                    <div class="sidebar-content">
-                        <h3 class="sidebar-title">Bùi Thạc Chuyên Và 11 Năm Tâm Huyết Với Địa Đạo: Mặt Trời Trong Bóng Tối
-                        </h3>
-                        <div class="article-meta">
-                            <button id="likeBtn" class="action-btn">
-                                <i id="likeIcon" class="fa-regular fa-thumbs-up"></i> Thích <span id="likeCount">0</span>
-                            </button>
-                            <div class="article-views">
-                                <span><i class="fa-regular fa-eye"></i></span>
-                                <span>104</span>
+                @foreach ($sidebarArticles as $article)
+                    <a href="{{ route('bai-viet.chiTiet.dien-anh', ['slug' => $article->Slug]) }}">
+                        <article class="sidebar-article">
+                            <div class="sidebar-image">
+                                <img src="{{ $article->AnhDaiDien ? asset('storage/' . $article->AnhDaiDien) : asset('images/no-image.jpg') }}"
+                                    alt="{{ $article->TieuDe }}">
                             </div>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="sidebar-article">
-                    <div class="sidebar-image">
-                        <img src="https://images.unsplash.com/photo-1579952363873-27d3bfad9c0d?w=150&h=150&fit=crop"
-                            alt="Oscar 2025">
-                    </div>
-                    <div class="sidebar-content">
-                        <h3 class="sidebar-title">Tổng Hợp Oscar 2025: Anora Thắng Lớn</h3>
-                        <div class="article-meta">
-                            <button id="likeBtn" class="action-btn">
-                                <i id="likeIcon" class="fa-regular fa-thumbs-up"></i> Thích <span id="likeCount">0</span>
-                            </button>
-                            <div class="article-views">
-                                <span><i class="fa-regular fa-eye"></i></span>
-                                <span>33</span>
+                            <div class="sidebar-content">
+                                <h3 class="sidebar-title">{{ $article->TieuDe }}</h3>
+                                <div class="article-meta">
+                                    <button class="action-btn" data-slug="{{ $article->Slug }}">
+                                        <i class="fa-regular fa-thumbs-up"></i> Thích
+                                        <span>{{ $article->LuotThich }}</span>
+                                    </button>
+                                    <div class="article-views">
+                                        <span><i class="fa-regular fa-eye"></i></span>
+                                        <span>{{ $article->LuotXem }}</span>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="sidebar-article">
-                    <div class="sidebar-image">
-                        <img src="https://images.unsplash.com/photo-1594908900066-3f4adf00b6f6?w=150&h=150&fit=crop"
-                            alt="Nụ Hôn Bạc Tỷ">
-                    </div>
-                    <div class="sidebar-content">
-                        <h3 class="sidebar-title">Nụ Hôn Bạc Tỷ: Thúy Kiều - Thúy Vân Phiên Bản 2025?</h3>
-                        <div class="article-meta">
-                            <button id="likeBtn" class="action-btn">
-                                <i id="likeIcon" class="fa-regular fa-thumbs-up"></i> Thích <span id="likeCount">0</span>
-                            </button>
-                            <div class="article-views">
-                                <span><i class="fa-regular fa-eye"></i></span>
-                                <span>114</span>
-                            </div>
-                        </div>
-                    </div>
-                </article>
+                        </article>
+                    </a>
+                @endforeach
             </aside>
         </main>
 
         <div class="view-more">
-            <a href="#" class="view-more-btn">Xem thêm</a>
+            <a href="{{ route('ds-bai-viet-dien-anh') }}" class="view-more-btn">Xem thêm</a>
         </div>
     </div>
     <div class="container">
@@ -436,69 +409,35 @@
         </header>
 
         <div class="promotions-grid">
-            <div class="promotion-card promotion-special">
-                <div class="promotion-badge">New</div>
-                <div class="promotion-image">
-                    <img src="https://images.unsplash.com/photo-1489599417793-4d8f4dfc6b10?w=400&h=250&fit=crop"
-                        alt="U22 Vui Vẻ - Bắp Nước Siêu Hạt Dẻ">
-                </div>
-                <div class="promotion-content">
-                    <h3 class="promotion-title">U22 Vui Vẻ - Bắp Nước Siêu Hạt Dẻ</h3>
-                    <div class="promotion-meta">
-                        <span class="promotion-date">Còn 5 ngày</span>
-                        <button class="promotion-cta">Xem Chi Tiết</button>
-                    </div>
-                </div>
-            </div>
+            @foreach ($khuyenMais as $khuyenMai)
+                <a href="{{ route('bai-viet.chiTiet.khuyen-mai', ['slug' => $khuyenMai->Slug]) }}">
+                    <div class="promotion-card promotion-special">
+                        <div class="promotion-image">
+                            <img src="{{ $khuyenMai->AnhDaiDien ? asset('storage/' . $khuyenMai->AnhDaiDien) : asset('images/no-image.jpg') }}"
+                                alt="{{ $khuyenMai->TieuDe }}">
+                        </div>
+                        <div class="promotion-content">
+                            <h3 class="promotion-title">{{ $khuyenMai->TieuDe }}</h3>
+                            <div class="promotion-meta">
+                            </div>
+                            <div class="article-meta">
+                                <button class="action-btn" data-slug="{{ $khuyenMai->Slug }}">
+                                    <i class="fa-regular fa-thumbs-up"></i> Thích
+                                    <span>{{ $khuyenMai->LuotThich }}</span>
+                                </button>
+                                <div class="article-views">
+                                    <span><i class="fa-regular fa-eye"></i></span>
+                                    <span>{{ $khuyenMai->LuotXem }}</span>
+                                </div>
+                            </div>
 
-            <div class="promotion-card">
-                <div class="promotion-badge">Hot</div>
-                <div class="promotion-image">
-                    <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=250&fit=crop"
-                        alt="Snack Dư Vị - Xem Phim Hay Hết Ý">
-                </div>
-                <div class="promotion-content">
-                    <h3 class="promotion-title">Snack Dư Vị - Xem Phim Hay Hết Ý</h3>
-                    <div class="promotion-meta">
-                        <span class="promotion-date">Còn 12 ngày</span>
-                        <button class="promotion-cta">Khám Phá</button>
+                        </div>
                     </div>
-                </div>
-            </div>
-
-            <div class="promotion-card">
-                <div class="promotion-badge">Premium</div>
-                <div class="promotion-image">
-                    <img src="https://images.unsplash.com/photo-1579952363873-27d3bfad9c0d?w=400&h=250&fit=crop"
-                        alt="Trọn Vẹn Cảm Giác Điện Ảnh">
-                </div>
-                <div class="promotion-content">
-                    <h3 class="promotion-title">Trọn Vẹn Cảm Giác Điện Ảnh: Từ Rạp Phim Về Đến Nhà</h3>
-                    <div class="promotion-meta">
-                        <span class="promotion-date">Còn 8 ngày</span>
-                        <button class="promotion-cta">Tham Gia</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="promotion-card">
-                <div class="promotion-badge">25% Off</div>
-                <div class="promotion-image">
-                    <img src="https://images.unsplash.com/photo-1594908900066-3f4adf00b6f6?w=400&h=250&fit=crop"
-                        alt="Bánh Phồng Đế Rec Rec">
-                </div>
-                <div class="promotion-content">
-                    <h3 class="promotion-title">Bánh Phồng Đế Rec Rec - Snack Để Giàu Đạm Nhiều Dinh Dưỡng</h3>
-                    <div class="promotion-meta">
-                        <span class="promotion-date">Còn 15 ngày</span>
-                        <button class="promotion-cta">Mua Ngay</button>
-                    </div>
-                </div>
-            </div>
+                </a>
+            @endforeach
         </div>
-
         <div class="view-all-section">
-            <a href="#" class="view-all-btn">Xem Tất Cả Khuyến Mãi</a>
+            <a href="{{ route('ds-bai-viet-khuyen-mai') }}" class="view-all-btn">Xem Tất Cả Khuyến Mãi</a>
         </div>
     </div>
     <script src=" {{ asset('frontend/Content/js/home.js') }}"></script>

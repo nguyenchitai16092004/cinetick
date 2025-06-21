@@ -96,8 +96,8 @@ class ThanhToanController extends Controller
                 'ten_khach_hang' => $validated['ten_khach_hang'],
                 'email'          => $validated['email'],
                 'ID_SuatChieu'   => $validated['ID_SuatChieu'],
-                'selectedSeats'  => $selectedSeats, // MẢNG!
-                'seatDetails'    => $seatDetails,   // MẢNG!
+                'selectedSeats'  => $selectedSeats, 
+                'seatDetails'    => $seatDetails,   
                 'tong_tien'      => $calculatedTotal,
                 'so_tien_giam'   => $request->input('so_tien_giam', 0),
                 'tong_tien_sau_giam' => $request->input('tong_tien_sau_giam', $calculatedTotal),

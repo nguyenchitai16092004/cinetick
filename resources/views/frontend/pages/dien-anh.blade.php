@@ -1,78 +1,61 @@
 @extends('frontend.layouts.master')
 @section('title', 'Danh sách bài viết điện ảnh')
 @section('main')
+    <script>
+        window.Laravel = {
+            csrfToken: '{{ csrf_token() }}'
+        };
+    </script>
     <link rel="stylesheet" href="{{ asset('frontend/Content/css/dien-anh.css') }}">
+    <link rel="stylesheet" href="{{ asset('frontend/Content/css/home.css') }}">
+
+    <div class="bg-gradient"></div>
+    <div class="floating-elements">
+        <div class="floating-circle"></div>
+        <div class="floating-circle"></div>
+        <div class="floating-circle"></div>
+    </div>
+
     <div class="container-blog">
-        <div class="section-title">PHIM HAY THÁNG</div>
+        <header class="section-header">
+            <h1 class="section-title">Góc điện ảnh</h1>
+        </header>
         <div class="section-title-bar"></div>
         <div class="movie-list">
-            <!-- Movie 1 -->
-            <div class="movie-item">
-                <img class="movie-thumb" src="https://static2.galaxycine.vn/media/2024/5/30/banner-web_1717059037596.jpg"
-                    alt="Tết Thiếu Nhi">
-                <div class="movie-detail">
-                    <div class="movie-title">Phim Hay Tháng 06.2025: Tết Thiếu Nhi</div>
-                    <div class="movie-actions">
-                        <button class="btn-like" onclick="likeMovie(this)">
-                            <i class="fa-regular fa-thumbs-up"></i> Thích
-                        </button>
-                        <div class="like-count">
-                            <i class="fa-regular fa-user"></i>
-                            <span class="like-num">0</span>
+            @if ($dienAnhs->count())
+                @foreach ($dienAnhs as $dienAnh)
+                    <a href="{{ route('bai-viet.chiTiet.dien-anh', ['slug' => $dienAnh->Slug]) }}">
+                        <div class="movie-item">
+                            <img class="movie-thumb"
+                                src="{{ $dienAnh->AnhDaiDien ? asset('storage/' . $dienAnh->AnhDaiDien) : asset('images/no-image.jpg') }}"
+                                alt="{{ $dienAnh->TieuDe }}">
+                            <div class="movie-detail">
+                                <div class="post-movie-title">{{ $dienAnh->TieuDe }}</div>
+                                <div class="movie-actions">
+                                    <button class="btn-like" data-slug="{{ $dienAnh->Slug }}">
+                                        <i class="fa-regular fa-thumbs-up"></i> Thích
+                                        <span>{{ $dienAnh->LuotThich }}</span>
+                                    </button>
+                                    <div class="like-count">
+                                        <i class="fa-regular fa-eye"></i>
+                                        <span class="like-num">{{ $dienAnh->LuotXem }}</span>
+                                    </div>
+                                </div>
+                                <div class="movie-desc">
+                                    {!! Str::words(strip_tags($dienAnh->NoiDung), 60, '...') !!} </div>
+                            </div>
                         </div>
-                    </div>
-                    <p class="movie-desc">
-                        Để các khối còn lại có thể bình tâm thư giãn, đôi khi là “thao túng” được khối nghỉ hè, hãy đến với
-                        <strong>Galaxy Cinema</strong>, nơi có vô vàn những bộ phim cực kì thú vị dành cho mọi người, mọi
-                        nhà.
-                    </p>
-                </div>
-            </div>
-            <!-- Movie 2 -->
-            <div class="movie-item">
-                <img class="movie-thumb"
-                    src="https://static2.galaxycine.vn/media/2024/4/29/cum-phim-meo-web_1714365680058.jpg" alt="Cún pk Mèo">
-                <div class="movie-detail">
-                    <div class="movie-title">Phim Hay Tháng 05.2025: Mèo pk. Chó</div>
-                    <div class="movie-actions">
-                        <button class="btn-like" onclick="likeMovie(this)">
-                            <i class="fa-regular fa-thumbs-up"></i> Thích
-                        </button>
-                        <div class="like-count">
-                            <i class="fa-regular fa-user"></i>
-                            <span class="like-num">0</span>
-                        </div>
-                    </div>
-                    <p class="movie-desc">
-                        <strong>Galaxy Cinema</strong> quyết định mở một cuộc chiến giữa “chó” Stitch và mèo Doraemon tại <a
-                            href="#">rạp chiếu phim</a> để các Stars tha hồ giải trí.
-                    </p>
-                </div>
-            </div>
-            <!-- Movie 3 -->
-            <div class="movie-item">
-                <img class="movie-thumb" src="https://static2.galaxycine.vn/media/2024/3/28/web_1711618746352.jpg"
-                    alt="Mặt Trời Trong Bóng Tối">
-                <div class="movie-detail">
-                    <div class="movie-title">Phim Hay Tháng 04.2025: Mặt Trời Trong Bóng Tối</div>
-                    <div class="movie-actions">
-                        <button class="btn-like" onclick="likeMovie(this)">
-                            <i class="fa-regular fa-thumbs-up"></i> Thích
-                        </button>
-                        <div class="like-count">
-                            <i class="fa-regular fa-user"></i>
-                            <span class="like-num">0</span>
-                        </div>
-                    </div>
-                    <p class="movie-desc">
-                        Ngoài những phim hay như sự trở lại của thám tử Kiên trong <strong>Người Vợ Cuối Cùng</strong>, phần
-                        thứ 8 của chuỗi phim <strong>Lật Mặt</strong> do đạo diễn Lý Hải sản xuất, khán giả còn được thưởng
-                        thức tác phẩm mang đậm dấu ấn lịch sử là <b>Địa Đạo: Mặt Trời Trong Bóng Tối</b> – hoàn toàn phù
-                        h...
-                    </p>
-                </div>
-            </div>
+                    </a>
+                @endforeach
+            @else
+                <p class="update-showtime">
+                    <span class="marquee-text">Ôi không! Các bài viết điện ảnh đâu rồi? Đừng lo lắng chúng tôi sẽ cập nhật chúng ngay thôi.</span>
+                </p>
+            @endif
+        </div>
+        <div class="pagination-wrapper">
+            {{ $dienAnhs->links('pagination::bootstrap-4') }}
         </div>
     </div>
-    <script src=" {{ asset('frontend/Content/js/dien-anh.js') }}"></script>
+    <script src="{{ asset('frontend/Content/js/dien-anh.js') }}"></script>
 @stop

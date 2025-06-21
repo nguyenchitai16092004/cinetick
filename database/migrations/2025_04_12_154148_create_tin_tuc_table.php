@@ -14,11 +14,14 @@ return new class extends Migration
         Schema::create('tin_tuc', function (Blueprint $table) {
             $table->id('ID_TinTuc');
             $table->string('TieuDe', 100);
-            $table->text('NoiDung');
-            $table->boolean('LoaiBaiViet');
+            $table->string('Slug', 255);
+            $table->longText('NoiDung');
+            $table->tinyInteger('LoaiBaiViet', false, true)->length(2)->comment('1: Khuyến mãi, 2: Giới thiệu, 3: Chính sách, 4: Phim');
+            $table->integer('LuotThich')->default(0);
+            $table->integer('LuotXem')->default(0);
             $table->string('AnhDaiDien', 255)->nullable();
             $table->unsignedBigInteger('ID_TaiKhoan');
-            $table->boolean('TrangThai')->comment('0: Chờ xuất bản, 1: Xuất bản');;
+            $table->boolean('TrangThai')->comment('0: Chờ xuất bản, 1: Xuất bản');
             $table->foreign('ID_TaiKhoan')->references('ID_TaiKhoan')->on('tai_khoan')->onDelete('cascade');
             $table->timestamps();
         });

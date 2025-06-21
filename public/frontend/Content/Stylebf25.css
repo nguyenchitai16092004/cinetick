@@ -5762,16 +5762,7 @@ input[type="button"].btn-block {
     color: #6c757d;
 }
 
-.pagination {
-    display: -webkit-box;
-    display: -webkit-flex;
-    display: -ms-flexbox;
-    display: flex;
-    padding-left: 0;
-    list-style: none;
-    -webkit-border-radius: 0.25rem;
-    border-radius: 0.25rem;
-}
+
 
 .page-link {
     position: relative;
@@ -5801,76 +5792,6 @@ input[type="button"].btn-block {
 
 .page-link:not(:disabled):not(.disabled) {
     cursor: pointer;
-}
-
-.page-item:first-child .page-link {
-    margin-left: 0;
-    -webkit-border-top-left-radius: 0.25rem;
-    border-top-left-radius: 0.25rem;
-    -webkit-border-bottom-left-radius: 0.25rem;
-    border-bottom-left-radius: 0.25rem;
-}
-
-.page-item:last-child .page-link {
-    -webkit-border-top-right-radius: 0.25rem;
-    border-top-right-radius: 0.25rem;
-    -webkit-border-bottom-right-radius: 0.25rem;
-    border-bottom-right-radius: 0.25rem;
-}
-
-.page-item.active .page-link {
-    z-index: 1;
-    color: #fff;
-    background-color: #007bff;
-    border-color: #007bff;
-}
-
-.page-item.disabled .page-link {
-    color: #6c757d;
-    pointer-events: none;
-    cursor: auto;
-    background-color: #fff;
-    border-color: #dee2e6;
-}
-
-.pagination-lg .page-link {
-    padding: 0.75rem 1.5rem;
-    font-size: 1.25rem;
-    line-height: 1.5;
-}
-
-.pagination-lg .page-item:first-child .page-link {
-    -webkit-border-top-left-radius: 0.3rem;
-    border-top-left-radius: 0.3rem;
-    -webkit-border-bottom-left-radius: 0.3rem;
-    border-bottom-left-radius: 0.3rem;
-}
-
-.pagination-lg .page-item:last-child .page-link {
-    -webkit-border-top-right-radius: 0.3rem;
-    border-top-right-radius: 0.3rem;
-    -webkit-border-bottom-right-radius: 0.3rem;
-    border-bottom-right-radius: 0.3rem;
-}
-
-.pagination-sm .page-link {
-    padding: 0.25rem 0.5rem;
-    font-size: 0.875rem;
-    line-height: 1.5;
-}
-
-.pagination-sm .page-item:first-child .page-link {
-    -webkit-border-top-left-radius: 0.2rem;
-    border-top-left-radius: 0.2rem;
-    -webkit-border-bottom-left-radius: 0.2rem;
-    border-bottom-left-radius: 0.2rem;
-}
-
-.pagination-sm .page-item:last-child .page-link {
-    -webkit-border-top-right-radius: 0.2rem;
-    border-top-right-radius: 0.2rem;
-    -webkit-border-bottom-right-radius: 0.2rem;
-    border-bottom-right-radius: 0.2rem;
 }
 
 .badge {
@@ -16979,7 +16900,6 @@ This files contents are outlined below >>>>
 01 - IMPORTED CSS
 02 - DEFAULT CSS
 03 - RESPONSIVE CSS
-04 - PAGINATION CSS
 05 - BREADCROMB CSS
 06 - BTN TOP CSS
 07 - HEADER CSS
@@ -17326,53 +17246,6 @@ li {
     background-color: #333333;
 }
 
-/*================================================
-04 - PAGINATION CSS
-==================================================*/
-
-.pagination-box-row {
-    text-align: center;
-}
-
-.pagination-box-row p {
-    display: inline-block;
-    font-size: 15px;
-    color: #444;
-    margin-right: 15px;
-}
-
-.pagination {
-    margin-top: 50px;
-    text-align: center;
-    float: none;
-    display: inline-block;
-}
-
-.pagination li {
-    display: inline-block;
-    margin-right: 5px;
-}
-
-.pagination li:last-child {
-    margin-right: 0;
-}
-
-.pagination li a {
-    display: block;
-    width: 35px;
-    height: 35px;
-    font-size: 15px;
-    line-height: 35px;
-    border-radius: 50%;
-    color: #111;
-    font-weight: 500;
-}
-
-.pagination li.active a,
-.pagination li a:hover {
-    background: #101010 none repeat scroll 0 0;
-    color: #fff;
-}
 
 /*================================================
 05 - BREADCROMB CSS
@@ -17392,7 +17265,6 @@ li {
     color: #fff;
     text-transform: capitalize;
     font-family: "Josefin Sans", sans-serif;
-    letter-spacing: 2px;
     font-size: 38px;
     font-weight: 400;
     text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.004);
@@ -18761,9 +18633,7 @@ li {
     margin-bottom: 0;
 }
 
-.filmoja-blog-page .pagination-box-row {
-    text-align: left;
-}
+
 
 .blog-page-list .post-content > p {
     margin: 0 0 10px;
@@ -24992,11 +24862,7 @@ h3.no-underline {
         margin: 30px auto 0;
     }
 
-    .filmoja-blog-page .single-news-item,
-    .filmoja-blog-page .pagination-box-row {
-        width: 95%;
-        margin: 0 auto 30px;
-    }
+
 
     .filmoja-movie-list-area .list-sidebar,
     .browse-option-box {
@@ -25180,9 +25046,7 @@ h3.no-underline {
         margin: 0 auto;
     }
 
-    .filmoja-movie-list-area .pagination-box-row {
-        margin-top: 0px !important;
-    }
+
 
     .details-banner-action {
         display: none;
@@ -25505,9 +25369,7 @@ h3.no-underline {
         margin-bottom: 30px;
     }
 
-    .filmoja-blog-page .pagination {
-        margin-top: 30px;
-    }
+
 
     .margin-top {
         margin-top: 50px;
@@ -25592,9 +25454,7 @@ h3.no-underline {
         margin-right: 0;
     }
 
-    .responsive-pag .pagination {
-        margin-top: 15px;
-    }
+
 
     .movie-grid-layout .single-movie-list-right .movie-list-info {
         display: block;
@@ -25932,9 +25792,7 @@ h3.no-underline {
         margin-bottom: 30px;
     }
 
-    .filmoja-blog-page .pagination {
-        margin-top: 30px;
-    }
+
 
     .margin-top {
         margin-top: 50px;
@@ -26019,9 +25877,7 @@ h3.no-underline {
         margin-right: 0;
     }
 
-    .responsive-pag .pagination {
-        margin-top: 15px;
-    }
+
 
     .movie-grid-layout .single-movie-list-right .movie-list-info {
         display: block;

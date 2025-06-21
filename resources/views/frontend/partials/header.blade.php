@@ -78,7 +78,8 @@
                 <div class="col-lg-3">
                     <div class="site-logo">
                         <a href="{{ asset('/') }}">
-                            <img width="150px" src="Content/img/logoCineTick.png" alt="filmoja" />
+                            <img width="100px" src="{{ $thongTinTrangWeb->Logo ? asset('storage/' . $thongTinTrangWeb->Logo) : asset('images/no-image.jpg') }}"
+                                alt="{{ $thongTinTrangWeb->TenWebsite }}" alt="filmoja" />
                         </a>
                     </div>
                     <!-- Responsive Menu Start -->
@@ -114,8 +115,8 @@
                                         @endforeach
                                     </ul>
                                 </li>
-                                <li><a href="{{ asset('/uu-dai') }}">Khuyến Mãi</a></li>
-                                <li><a href="{{ route('bai-viet-dien-anh') }}">Điện Ảnh</a></li>
+                                <li><a href="{{ route('ds-bai-viet-khuyen-mai') }}">Khuyến Mãi</a></li>
+                                <li><a href="{{ route('ds-bai-viet-dien-anh') }}">Điện Ảnh</a></li>
                                 <li><a href="{{ asset('/lien-he') }}">Liên hệ</a></li>
                             </ul>
                         </nav>

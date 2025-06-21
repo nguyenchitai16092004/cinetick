@@ -1,122 +1,187 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
     <title>Vé Xem Phim - {{ $data['ma_hoa_don'] ?? '' }}</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background: #f2f2f2;
+            background: #f4f6fb;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
             margin: 0;
-            padding: 20px;
+            padding: 24px;
         }
-
         .ticket-container {
-            max-width: 450px;
-            margin: 0 auto;
+            max-width: 480px;
+            margin: 32px auto;
             background: #fff;
             border-radius: 18px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, .15);
-            padding: 24px 32px 32px 32px;
-            border: 2px dashed #e74c3c;
+            box-shadow: 0 4px 18px rgba(44, 62, 80, 0.09);
+            padding: 32px 38px 30px 38px;
+            border: 1.5px solid #e74c3c;
             position: relative;
+            overflow: hidden;
         }
-
         .ticket-header {
             text-align: center;
-            padding-bottom: 8px;
+            margin-bottom: 10px;
         }
-
         .ticket-header h2 {
             margin: 0;
             color: #e74c3c;
+            font-size: 28px;
+            font-weight: 800;
+            text-shadow: 1px 3.5px 6px rgba(231,76,60,0.08);
+            letter-spacing: 1.2px;
         }
-
-        .ticket-info {
-            margin: 18px 0;
-        }
-
-        .ticket-info strong {
+        .ticket-header .code {
+            margin-top: 6px;
+            color: #2c3e50;
+            font-size: 13.5px;
+            background: #fbeee9;
             display: inline-block;
-            width: 120px;
-            color: #444;
+            padding: 2.5px 14px;
+            border-radius: 15px;
+            font-weight: bold;
+            border: 1px solid #ffd6cc;
         }
-
         .divider {
             border-top: 1px dashed #e74c3c;
-            margin: 18px 0;
+            margin: 20px 0 22px 0;
         }
-
-        .ticket-footer {
-            text-align: center;
-            font-size: 13px;
+        .ticket-info {
+            font-size: 15.5px;
+            color: #30323d;
+        }
+        .ticket-info-row {
+            margin-bottom: 11px;
+            display: flex;
+        }
+        .ticket-info-label {
+            width: 112px;
             color: #888;
-            margin-top: 22px;
+            font-weight: bold;
+            flex-shrink: 0;
         }
-
+        .ticket-info-value {
+            flex: 1;
+            color: #222;
+        }
         .seat-list {
             display: inline-block;
             background: #e74c3c;
             color: #fff;
-            padding: 2px 8px;
-            border-radius: 6px;
-            font-weight: bold;
-            margin-right: 4px;
+            padding: 2.5px 11px;
+            border-radius: 7px;
+            font-weight: 600;
+            font-size: 15px;
+            margin-right: 5px;
+            margin-bottom: 2px;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 7px rgba(231,76,60,0.06);
         }
-
         .qr-code {
             text-align: center;
+            margin-top: 24px;
+            margin-bottom: 16px;
+        }
+        .qr-code img {
+            width: 104px;
+            height: 104px;
+            border-radius: 9px;
+            border: 2.5px solid #e74c3c33;
+            box-shadow: 0 2px 12px rgba(44,62,80,0.08);
+        }
+        .qr-hint {
+            color: #e67e22;
+            font-size: 12.5px;
+            margin-top: 7px;
+            font-style: italic;
+        }
+        .ticket-footer {
+            text-align: center;
+            color: #888;
+            font-size: 13.7px;
+            border-top: 1px solid #f1d5d5;
+            padding-top: 19px;
             margin-top: 18px;
         }
-
-        .qr-code img {
-            width: 96px;
-            height: 96px;
+        @media (max-width: 550px) {
+            .ticket-container { padding: 12px 4vw 18px 4vw; }
         }
     </style>
 </head>
-
 <body>
     <div class="ticket-container">
         <div class="ticket-header">
             <h2>VÉ XEM PHIM</h2>
-            <div>Mã hóa đơn: <b>{{ $data['ma_hoa_don'] ?? '' }}</b></div>
+            <div class="code">Mã hóa đơn: {{ $data['ma_hoa_don'] ?? '' }}</div>
         </div>
         <div class="divider"></div>
         <div class="ticket-info">
-            <div><strong>Khách hàng:</strong> {{ $data['ten_khach_hang'] ?? '' }}</div>
-            <div><strong>Email:</strong> {{ $data['email'] ?? '' }}</div>
-            <div><strong>Tên phim:</strong> {{ $data['ten_phim'] ?? '' }}</div>
-            <div><strong>Suất chiếu:</strong> {{ $data['gio_chieu'] ?? '' }} - {{ $data['ngay_chieu'] ?? '' }}</div>
-            <div><strong>Phòng:</strong> {{ $data['phong'] ?? '' }}</div>
-            <div>
-                <strong>Ghế:</strong>
-                @if (!empty($data['ghe']))
-                    @foreach (explode(',', $data['ghe']) as $ghe)
-                        <span class="seat-list">{{ trim($ghe) }}</span>
-                    @endforeach
-                @endif
+            <div class="ticket-info-row">
+                <div class="ticket-info-label">Khách hàng:</div>
+                <div class="ticket-info-value">{{ $data['ten_khach_hang'] ?? '' }}</div>
             </div>
-            <div><strong>Giá vé:</strong> {{ number_format($data['gia_ve'] ?? 0, 0, ',', '.') }} đ</div>
-            <div><strong>Thanh toán:</strong> {{ $data['hinh_thuc_thanh_toan'] ?? '' }}</div>
-            <div><strong>Thời gian đặt:</strong> {{ $data['thoi_gian_dat'] ?? '' }}</div>
-            <div><strong>Trạng thái:</strong> {{ $data['trang_thai'] ?? '' }}</div>
+            <div class="ticket-info-row">
+                <div class="ticket-info-label">Email:</div>
+                <div class="ticket-info-value">{{ $data['email'] ?? '' }}</div>
+            </div>
+            <div class="ticket-info-row">
+                <div class="ticket-info-label">Tên phim:</div>
+                <div class="ticket-info-value">{{ $data['ten_phim'] ?? '' }}</div>
+            </div>
+            <div class="ticket-info-row">
+                <div class="ticket-info-label">Suất chiếu:</div>
+                <div class="ticket-info-value">
+                    {{ $data['gio_chieu'] ?? '' }}
+                    @if (!empty($data['ngay_chieu']))
+                        - {{ $data['ngay_chieu'] }}
+                    @endif
+                </div>
+            </div>
+            <div class="ticket-info-row">
+                <div class="ticket-info-label">Phòng:</div>
+                <div class="ticket-info-value">{{ $data['phong'] ?? '' }}</div>
+            </div>
+            <div class="ticket-info-row">
+                <div class="ticket-info-label">Ghế:</div>
+                <div class="ticket-info-value">
+                    @if (!empty($data['ghe']))
+                        @foreach (explode(',', $data['ghe']) as $ghe)
+                            <span class="seat-list">{{ trim($ghe) }}</span>
+                        @endforeach
+                    @endif
+                </div>
+            </div>
+            <div class="ticket-info-row">
+                <div class="ticket-info-label">Giá vé:</div>
+                <div class="ticket-info-value">{{ number_format($data['gia_ve'] ?? 0, 0, ',', '.') }} đ</div>
+            </div>
+            <div class="ticket-info-row">
+                <div class="ticket-info-label">Thanh toán:</div>
+                <div class="ticket-info-value">{{ $data['hinh_thuc_thanh_toan'] ?? '' }}</div>
+            </div>
+            <div class="ticket-info-row">
+                <div class="ticket-info-label">Thời gian đặt:</div>
+                <div class="ticket-info-value">{{ $data['thoi_gian_dat'] ?? '' }}</div>
+            </div>
+            <div class="ticket-info-row">
+                <div class="ticket-info-label">Trạng thái:</div>
+                <div class="ticket-info-value">{{ $data['trang_thai'] ?? '' }}</div>
+            </div>
         </div>
         <div class="divider"></div>
         @if (!empty($data['ma_hoa_don']))
             <div class="qr-code">
-                {{-- Nếu có mã QR code, bạn thay thế src này bằng mã QR thật --}}
-                <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data={{ $data['ma_hoa_don'] }}"
-                    alt="QR Vé Xem Phim" />
-                <div>Mã hóa đơn dùng để check-in</div>
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data={{ $data['ma_hoa_don'] }}" alt="QR Vé Xem Phim" />
+                <div class="qr-hint">Quét mã hoặc xuất trình vé để check-in tại rạp</div>
             </div>
         @endif
         <div class="ticket-footer">
-            Cảm ơn bạn đã mua vé tại hệ thống! <br>
-            Vui lòng xuất trình vé này (hoặc mã QR) khi đến rạp.
+            Cảm ơn bạn đã mua vé tại <span >CineTick</span>!<br>
+            Vui lòng xuất trình vé này (hoặc mã QR) khi đến rạp.<br>
+            &copy; {{ date('Y') }} CineTick
         </div>
     </div>
 </body>
-
 </html>

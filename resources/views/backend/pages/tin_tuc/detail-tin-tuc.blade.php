@@ -12,7 +12,8 @@
 
             <div class="form-group">
                 @if ($tinTuc->AnhDaiDien)
-                    <img src="{{ asset($tinTuc->AnhDaiDien) }}"" width="120">
+                    <img src="{{ $tinTuc->AnhDaiDien ? asset('storage/' . $tinTuc->AnhDaiDien) : asset('images/no-image.jpg') }}"
+                        width="120">
                 @endif
                 <label>Hình ảnh hiện tại</label><br>
                 <div class="form-group">
@@ -27,14 +28,16 @@
 
             <div class="form-group">
                 <label>Nội dung</label>
-                <textarea name="NoiDung" class="form-control" rows="5" required>{{ $tinTuc->NoiDung }}</textarea>
+                <textarea name="NoiDung" class="form-control" rows="10">{{ old('NoiDung', $tinTuc->NoiDung) }}</textarea>
             </div>
 
             <div class="form-group">
                 <label>Loại bài viết</label>
                 <select name="LoaiBaiViet" class="form-control" required>
-                    <option value="0" {{ $tinTuc->LoaiBaiViet == 0 ? 'selected' : '' }}>Phim</option>
                     <option value="1" {{ $tinTuc->LoaiBaiViet == 1 ? 'selected' : '' }}>Khuyến mãi</option>
+                    <option value="2" {{ $tinTuc->LoaiBaiViet == 2 ? 'selected' : '' }}>Giới thiệu</option>
+                    <option value="3" {{ $tinTuc->LoaiBaiViet == 3 ? 'selected' : '' }}>Chính sách</option>
+                    <option value="4" {{ $tinTuc->LoaiBaiViet == 4 ? 'selected' : '' }}>Phim</option>
                 </select>
             </div>
 
@@ -51,11 +54,38 @@
             <button type="submit" class="btn btn-primary">Cập nhật</button>
         </form>
     </div>
-    <script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
+    <script src="https://cdn.tiny.cloud/1/sasoygoht1uf9889ttoe6d3ut0fkhp824q1z9fmh7zoea39y/tinymce/7/tinymce.min.js"
+        referrerpolicy="origin"></script>
     <script>
-        CKEDITOR.replace('NoiDung', {
-            filebrowserUploadUrl: "{{ route('tin_tuc.ckeditor.upload') . '?_token=' . csrf_token() }}",
-            filebrowserUploadMethod: 'form'
+        tinymce.init({
+            selector: 'textarea[name=NoiDung]',
+            plugins: [
+                'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'image', 'link', 'lists', 'media',
+                'searchreplace', 'table', 'visualblocks', 'wordcount',
+                'checklist', 'mediaembed', 'casechange', 'formatpainter', 'pageembed', 'a11ychecker',
+                'tinymcespellchecker', 'permanentpen', 'powerpaste', 'advtable', 'advcode', 'editimage',
+                'advtemplate', 'ai', 'mentions', 'tinycomments', 'tableofcontents', 'footnotes', 'mergetags',
+                'autocorrect', 'typography', 'inlinecss', 'markdown', 'importword', 'exportword', 'exportpdf'
+            ],
+            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+            tinycomments_mode: 'embedded',
+            tinycomments_author: 'Author name',
+            mergetags_list: [{
+                    value: 'First.Name',
+                    title: 'First Name'
+                },
+                {
+                    value: 'Email',
+                    title: 'Email'
+                },
+            ],
+            ai_request: (request, respondWith) => respondWith.string(() => Promise.reject(
+                'See docs to implement AI Assistant')),
+            images_upload_url: '{{ route('tin_tuc.tinymce.upload') }}',
+            images_upload_credentials: true,
+            relative_urls: false,
+            remove_script_host: false,
+            convert_urls: true
         });
     </script>
 @endsection

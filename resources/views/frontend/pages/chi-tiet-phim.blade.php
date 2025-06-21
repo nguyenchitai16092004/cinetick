@@ -27,8 +27,8 @@
                         </a>
                         <span class="age-badge">{{ $phim->DoTuoi }}</span>
                         <span class="rating">
-                            <span>9.5</span>
                             <span class="star">★</span>
+                            <span class="avgRatingInfo">--</span>
                         </span>
                     </div>
                 </div>
@@ -148,7 +148,8 @@
                 </div>
                 <div class="custom-rating-input">
                     <label class="customRatingInput-title" for="customRatingInput">Hoặc nhập điểm bạn muốn (0 - 10):</label>
-                    <input type="number" id="customRatingInput" min="0" max="10" step="0.1" value="" placeholder="">
+                    <input type="number" id="customRatingInput" min="0" max="10" step="0.1" value=""
+                        placeholder="">
                 </div>
                 <div id="ratingMsg"></div>
             </div>
@@ -247,7 +248,6 @@
             getRatingUrl: "{{ route('ajax.get-rating') }}",
             csrf: "{{ csrf_token() }}"
         });
-        
     </script>
 
 @stop
