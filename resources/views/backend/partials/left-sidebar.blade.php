@@ -60,6 +60,13 @@
 
             {{-- Đăng xuất --}}
             <li class="relative px-6 py-3">
+                <a class="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
+                    href="{{ route('lien-he.index') }}">
+                    <i class="fas fa-headset"></i>
+                    <span class="ml-4">Quản lý liên hệ</span>
+                </a>
+            </li>
+            <li class="relative px-6 py-3">
                 <form action="{{ route('logout_admin') }}" method="post">
                     @csrf
                     <button type="submit"

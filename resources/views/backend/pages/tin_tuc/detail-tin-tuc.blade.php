@@ -34,8 +34,10 @@
             <div class="form-group">
                 <label>Loại bài viết</label>
                 <select name="LoaiBaiViet" class="form-control" required>
-                    <option value="0" {{ $tinTuc->LoaiBaiViet == 0 ? 'selected' : '' }}>Phim</option>
                     <option value="1" {{ $tinTuc->LoaiBaiViet == 1 ? 'selected' : '' }}>Khuyến mãi</option>
+                    <option value="2" {{ $tinTuc->LoaiBaiViet == 2 ? 'selected' : '' }}>Giới thiệu</option>
+                    <option value="3" {{ $tinTuc->LoaiBaiViet == 3 ? 'selected' : '' }}>Chính sách</option>
+                    <option value="4" {{ $tinTuc->LoaiBaiViet == 4 ? 'selected' : '' }}>Phim</option>
                 </select>
             </div>
 

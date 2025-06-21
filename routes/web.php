@@ -18,6 +18,7 @@ use App\Http\Controllers\Admin\TheLoaiPhimController;
 use App\Http\Controllers\Admin\TinTucController;
 use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Admin\BannerController;
+use App\Http\Controllers\Admin\LienHeController;
 
 
 use App\Http\Controllers\Apps\PhimController;
@@ -27,6 +28,7 @@ use App\Http\Controllers\Apps\PayOSController;
 use App\Http\Controllers\Apps\ThanhToanController;
 use App\Http\Controllers\Apps\RapChiTietController;
 use App\Http\Controllers\Apps\TinTucChiTietController;
+use App\Http\Controllers\Apps\LienHeChiTietController;
 
 use App\Events\GheDuocGiu;
 
@@ -74,7 +76,7 @@ Route::prefix('dat-ve')->group(function () {
 // -- Bài viết điện ảnh --
 Route::prefix('goc-dien-anh')->group(function () {
     Route::get('/', [TinTucChiTietController::class, 'listDienAnh'])->name('ds-bai-viet-dien-anh');
-    Route::get('/{slug}', [TinTucChiTietController::class, 'chiTiet'])->name('bai-viet.chiTiet');
+    Route::get('/{slug}', [TinTucChiTietController::class, 'chiTiet'])->name('bai-viet.chiTiet.dien-anh');
     Route::post('/{slug}/like', [TinTucChiTietController::class, 'like'])->name('tin_tuc.like');
     Route::post('/{slug}/unlike', [TinTucChiTietController::class, 'unlike'])->name('tin_tuc.unlike');
     Route::post('/{slug}/view', [TinTucChiTietController::class, 'view'])->name('tin_tuc.view');
@@ -83,7 +85,15 @@ Route::prefix('goc-dien-anh')->group(function () {
 // -- Bài viết tin khuyến mãi --
 Route::prefix('tin-khuyen-mai')->group(function () {
     Route::get('/', [TinTucChiTietController::class, 'listKhuyenMai'])->name('ds-bai-viet-khuyen-mai');
-    Route::get('/{slug}', [TinTucChiTietController::class, 'chiTiet'])->name('bai-viet.chiTiet');
+    Route::get('/{slug}', [TinTucChiTietController::class, 'chiTiet'])->name('bai-viet.chiTiet.khuyen-mai');
+    Route::post('/{slug}/like', [TinTucChiTietController::class, 'like'])->name('tin_tuc.like');
+    Route::post('/{slug}/unlike', [TinTucChiTietController::class, 'unlike'])->name('tin_tuc.unlike');
+    Route::post('/{slug}/view', [TinTucChiTietController::class, 'view'])->name('tin_tuc.view');
+});
+
+// -- Bài viết thông tin website --
+Route::prefix('thong-tin-cinetick')->group(function () {
+    Route::get('/{slug}', [TinTucChiTietController::class, 'thongTinCineTickStatic'])->name('thongtincinetick.static');
     Route::post('/{slug}/like', [TinTucChiTietController::class, 'like'])->name('tin_tuc.like');
     Route::post('/{slug}/unlike', [TinTucChiTietController::class, 'unlike'])->name('tin_tuc.unlike');
     Route::post('/{slug}/view', [TinTucChiTietController::class, 'view'])->name('tin_tuc.view');
@@ -118,10 +128,14 @@ Route::prefix('thanh-toan')->group(function () {
     Route::get('/checkout-status', [ThanhToanController::class, 'checkoutStatus'])->name('checkout_status');
 });
 
+// --- Liên hệ ---
+Route::prefix('lien-he')->group(function () {
+    Route::get('/', [LienHeChiTietController::class, 'index'])->name('lien-he');
+    Route::post('/gui-lien-he', [LienHeChiTietController::class, 'send'])->name('lien-he.gui-lien-he');
+});
 
 // --- Các trang tĩnh ---
 Route::view('/cau-hoi-thuong-gap', 'frontend.pages.cau-hoi-thuong-gap')->name('cau-hoi-thuong-gap');
-Route::view('/lien-he', 'frontend.pages.lien-he')->name('lien-he');
 Route::view('/thanh-cong', 'frontend.pages.thanh-cong')->name('thanh-toan-thanh-cong');
 Route::view('/that-bai', 'frontend.pages.that-bai')->name('thanh-toan-that-bai');
 
@@ -283,6 +297,13 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
         Route::delete('/destroy/{id}', [BinhLuanController::class, 'destroy'])->name('destroy');
         Route::delete('/destroy-multiple', [BinhLuanController::class, 'destroyMultiple'])->name('destroy-multiple');
         Route::get('/export', [BinhLuanController::class, 'export'])->name('export');
+    });
+
+    // Routes liên hệ
+    Route::prefix('lien-he')->name('lien-he.')->group(function () {
+        Route::get('/', [LienHeController::class, 'index'])->name('index');
+        Route::post('/xuly/{id}', [LienHeController::class, 'xuly'])->name('xuly');
+        Route::delete('/destroy/{id}', [LienHeController::class, 'destroy'])->name('destroy');
     });
 
     Route::prefix('thong-ke')->name('thong-ke.')->group(function () {

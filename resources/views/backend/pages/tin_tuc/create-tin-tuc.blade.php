@@ -24,8 +24,10 @@
             <div class="form-group">
                 <label>Loại bài viết</label>
                 <select name="LoaiBaiViet" class="form-control" required>
-                    <option value="0">Phim</option>
                     <option value="1">Khuyến Mãi</option>
+                    <option value="2">Giới thiệu</option>
+                    <option value="3">Chính sách</option>
+                    <option value="4">Phim</option>
                 </select>
             </div>
             <div class="form-group">

@@ -20,11 +20,14 @@ class HomeController extends Controller
     public function update(Request $request)
     {
         $request->validate([
+            'TenDonVi' => 'nullable|string|max:255',
+            'TenWebsite' => 'nullable|string|max:255',
             'Logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'Hotline' => 'nullable|string|max:15|regex:/^[0-9]{9,15}$/',
             'Zalo' => 'nullable|string|max:50',
             'Facebook' => 'nullable|string|max:100',
             'Instagram' => 'nullable|string|max:100',
+            'Youtube' => 'nullable|string|max:100',
             'Email' => 'nullable|email|max:100',
             'DiaChi' => 'nullable|string|max:255',
         ]);
@@ -34,7 +37,7 @@ class HomeController extends Controller
             $thongTin = ThongTinTrangWeb::create([]);
         }
 
-        $data = $request->only(['Zalo','Hotline', 'Facebook', 'Instagram', 'Email', 'DiaChi']);
+        $data = $request->only(['TenDonVi','TenWebsite','Zalo','Hotline', 'Facebook', 'Instagram', 'Youtube', 'Email', 'DiaChi']);
 
         if ($request->hasFile('Logo')) {
             if ($thongTin->Logo) {

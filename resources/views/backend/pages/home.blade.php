@@ -183,6 +183,25 @@
                         @enderror
                     </div>
 
+                    <!-- Tên đơn vị -->
+                    <div class="mb-3">
+                        <label for="TenDonVi" class="form-label">Tên đơn vị:</label>
+                        <input type="text" class="form-control" name="TenDonVi" id="TenDonVi"
+                            value="{{ old('TenDonVi', $thongTin->TenDonVi ?? '') }}">
+                        @error('TenDonVi')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <!-- Tên website -->
+                    <div class="mb-3">
+                        <label for="TenWebsite" class="form-label">Tên Website:</label>
+                        <input type="text" class="form-control" name="TenWebsite" id="TenWebsite"
+                            value="{{ old('TenWebsite', $thongTin->TenWebsite ?? '') }}">
+                        @error('TenWebsite')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
                     <!-- Zalo -->
                     <div class="mb-3">
                         <label for="Zalo" class="form-label">Zalo:</label>
@@ -219,6 +238,16 @@
                         <input type="text" class="form-control" name="Instagram" id="Instagram"
                             value="{{ old('Instagram', $thongTin->Instagram ?? '') }}">
                         @error('Instagram')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <!-- Youtube -->
+                    <div class="mb-3">
+                        <label for="Youtube" class="form-label">Youtube:</label>
+                        <input type="text" class="form-control" name="Youtube" id="Youtube"
+                            value="{{ old('Youtube', $thongTin->Youtube ?? '') }}">
+                        @error('Youtube')
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
                     </div>

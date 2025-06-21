@@ -86,7 +86,8 @@ class PayOSController extends Controller
         } catch (\Exception $e) {
             return response()->json(['error' => 'Tạo yêu cầu thanh toán thất bại: ' . $e->getMessage()], 500);
         }
-    }    /**
+    }
+    /**
      * Lấy thông tin link thanh toán
      * @param int|string $orderCode
      * @return array|null
@@ -174,6 +175,35 @@ class PayOSController extends Controller
             return;
         }
 
+        // Lấy thông tin giao dịch từ PayOS
+        $paymentInfo = $this->getPaymentLinkInformation($orderCode);
+
+        // Mặc định null
+        $soTaiKhoan = null;
+        $tenTaiKhoan = null;
+        $tenNganHang = null;
+        if (!empty($paymentInfo['transactions'][0])) {
+            $tran = $paymentInfo['transactions'][0];
+            $soTaiKhoan    = $tran['accountNumber'] ?? null;
+            $tenTaiKhoan   = $tran['counterAccountName'] ?? null;
+            $tenNganHang   = $tran['counterAccountBankName'] ?? null;
+            if (!$tenNganHang && !empty($tran['counterAccountBankId'])) {
+                $bankNames = [
+                    '970407' => 'Techcombank',
+                    '970405' => 'Agribank',
+                    '970418' => 'BIDV',
+                    '970422' => 'MB Bank (Ngân hàng TMCP Quân đội)',
+                    '970416' => 'ACB',
+                    '970441' => 'VIB',
+                    '970403' => 'Sacombank (STB)',
+                    '970432' => 'VPBank',
+                    '970423' => 'TPBank',
+                    '970436' => 'Vietcombank (VCB)',
+                ];
+                $tenNganHang = $bankNames[$tran['counterAccountBankId']] ?? null;
+            }
+        }
+
         DB::beginTransaction();
         try {
             $maHoaDon = HoaDon::generateMaHoaDon();
@@ -184,6 +214,9 @@ class PayOSController extends Controller
                 'PTTT'        => 'PayOS',
                 'ID_TaiKhoan' => session('user_id'),
                 'order_code'  => $orderCode,
+                'SoTaiKhoan'  => $soTaiKhoan,         
+                'TenTaiKhoan' => $tenTaiKhoan,        
+                'TenNganHang' => $tenNganHang,        
                 'TrangThaiXacNhanHoaDon'     => 1,
                 'TrangThaiXacNhanThanhToan'  => 1,
                 'SoLuongVe'   => count($orderData['selectedSeats']),
@@ -202,7 +235,7 @@ class PayOSController extends Controller
                     'NgayXem'      => $orderData['ngay_xem'] ?? '',
                     'DiaChi'       => $diaChiRap,
                     'GiaVe'        => $seat['GiaVe'],
-                    'TrangThai'    => 1, // đã thanh toán
+                    'TrangThai'    => 0, // Chưa nhận vé
                     'ID_SuatChieu' => $orderData['ID_SuatChieu'],
                     'ID_HoaDon'    => $maHoaDon,
                     'ID_Ghe'       => $seat['ID_Ghe'],
@@ -223,7 +256,8 @@ class PayOSController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
         }
-    }    public function handleCancel(Request $request)
+    }
+    public function handleCancel(Request $request)
     {
         $orderCode = $request->input('orderCode');
 
@@ -260,4 +294,5 @@ class PayOSController extends Controller
         VeXemPhim::where('ID_HoaDon', $hoaDon->ID_HoaDon)->update([
             'TrangThai' => 2 // Đã hủy
         ]);
-    }}
+    }
+}

@@ -1,223 +1,254 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>Phim Hay Tháng</title>
-  <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-  <style>
-    body {
-      font-family: 'Roboto', Arial, sans-serif;
-      background: #fafbfc;
-      margin: 0;
-      color: #222;
-    }
-    .container {
-      max-width: 1100px;
-      margin: 36px auto 0 auto;
-      padding: 0 20px;
-    }
-    .section-title {
-      font-size: 2em;
-      font-weight: 500;
-      border-left: 5px solid #1976d2;
-      padding-left: 12px;
-      letter-spacing: 1px;
-      margin-bottom: 10px;
-      color: #444;
-      display: flex;
-      align-items: flex-end;
-    }
-    .section-title-bar {
-      border-bottom: 3px solid #1976d2;
-      margin-bottom: 30px;
-      margin-top: 2px;
-    }
-    .movie-list {
-      display: flex;
-      flex-direction: column;
-      gap: 32px;
-      margin-top: 16px;
-    }
-    .movie-item {
-      display: flex;
-      flex-direction: row;
-      gap: 28px;
-      align-items: flex-start;
-    }
-    .movie-thumb {
-      flex: 0 0 340px;
-      width: 340px;
-      height: 180px;
-      border-radius: 8px;
-      object-fit: cover;
-      box-shadow: 0 4px 18px rgba(0,0,0,0.10);
-      background: #eaeaea;
-      display: block;
-    }
-    .movie-detail {
-      flex: 1 1 auto;
-      min-width: 0;
-    }
-    .movie-title {
-      font-size: 1.36em;
-      font-weight: 500;
-      margin: 0 0 12px 0;
-      color: #222;
-    }
-    .movie-actions {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 9px;
-    }
-    .btn-like {
-      background: #1976d2;
-      color: #fff;
-      border: none;
-      border-radius: 6px;
-      padding: 5px 18px;
-      font-size: 1em;
-      cursor: pointer;
-      font-weight: 500;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      transition: background 0.15s;
-      outline: none;
-    }
-    .btn-like.liked {
-      background: #1253a3;
-    }
-    .like-count {
-      background: #f1f3f6;
-      color: #555;
-      border-radius: 6px;
-      padding: 5px 15px;
-      font-size: 0.98em;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-    .movie-desc {
-      color: #888;
-      font-size: 1.1em;
-      line-height: 1.5;
-      margin-top: 0;
-      margin-bottom: 0;
-      word-break: break-word;
-    }
-    .movie-desc a {
-      color: #1976d2;
-      text-decoration: underline;
-    }
-    .movie-desc b, .movie-desc strong {
-      color: #1a1a1a;
-      font-weight: 700;
-    }
-    @media (max-width: 1000px) {
-      .movie-item {
-        flex-direction: column;
-        gap: 10px;
-      }
-      .movie-thumb {
-        width: 100%;
-        min-width: 0;
-        max-width: 100%;
-        height: 180px;
-        margin-bottom: 8px;
-      }
-    }
-    @media (max-width: 600px) {
-      .container { padding: 0 2vw; }
-      .movie-thumb { height: 28vw; }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <title>Liên hệ với chúng tôi</title>
+    <meta name="viewport" content="width=1200">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:700,500&display=swap" rel="stylesheet">
+    <style>
+        .contact-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 40px 0 0 0;
+            min-height: 90vh;
+        }
+        .left-col {
+            width: 46%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .contact-title {
+            font-size: 40px;
+            font-weight: 700;
+            margin-bottom: 50px;
+            text-align: center;
+        }
+        .social-box {
+            width: 420px;
+            height: 80px;
+            background: linear-gradient(90deg, #7b41d8 0%, #3b6fd8 100%);
+            border-radius: 14px;
+            margin-bottom: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            box-shadow: 0 6px 18px 0 rgba(0,0,0,0.13);
+            position: relative;
+        }
+        .social-box img {
+            height: 60px;
+            margin-left: 18px;
+            margin-right: 30px;
+        }
+        .social-box .social-label {
+            font-size: 32px;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: 2px;
+        }
+        .right-col {
+            width: 48%;
+            background: #3766bc;
+            border-radius: 12px;
+            padding: 36px 36px 28px 36px;
+            min-height: 700px;
+            box-sizing: border-box;
+            box-shadow: 0 10px 32px 0 rgba(0,0,0,0.14);
+        }
+        .contact-info-title {
+            font-size: 26px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 22px;
+        }
+        .info-list {
+            margin-bottom: 32px;
+        }
+        .info-list li {
+            list-style: none;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            font-size: 18px;
+        }
+        .info-list li img {
+            width: 22px;
+            height: 22px;
+            margin-right: 11px;
+            vertical-align: middle;
+        }
+        /* Form styles with new padding */
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+            padding: 0 28px 28px 28px;
+        }
+        .contact-form input,
+        .contact-form textarea {
+            width: 100%;
+            border: none;
+            border-radius: 7px;
+            font-size: 18px;
+            padding: 13px 18px;
+            margin-bottom: 20px;
+            font-family: inherit;
+            background: #fff;
+            color: #222;
+            transition: box-shadow .2s;
+        }
+        .contact-form input:focus,
+        .contact-form textarea:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px #6186e2;
+        }
+        .contact-form textarea {
+            height: 160px;
+            resize: vertical;
+        }
+        .contact-form label {
+            font-size: 16px;
+            margin-bottom: 7px;
+            font-weight: 500;
+            color: #fff;
+        }
+        .upload-preview {
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+        }
+        #uploadedImage {
+            max-width: 150px;
+            max-height: 100px;
+            border-radius: 7px;
+            margin-top: 2px;
+            border: 2px solid #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.09);
+            display: none;
+        }
+
+        /* Gradient button with effect */
+        .submit-btn {
+            position: relative;
+            background: #ffe829;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 24px;
+            font-weight: bold;
+            padding: 18px 0;
+            margin-top: 8px;
+            cursor: pointer;
+            letter-spacing: 2px;
+            overflow: hidden;
+            transition: background .2s, color .2s;
+            width: 100%;
+            z-index: 1;
+        }
+        .submit-btn span {
+            position: relative;
+            z-index: 2;
+        }
+        .submit-btn::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; bottom: 0; /* Đổi right: 0 thành left: 0 */
+    width: 0;
+    background: linear-gradient(90deg, #8133a6 0%, #406be0 100%);
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    transition: width 1.4s cubic-bezier(0.22, 1, 0.36, 1);
+    z-index: 1;
+}
+        .submit-btn:hover::after {
+            width: 100%; /* yellow bar width */
+        }
+        .submit-btn:hover span {
+            color: #222;
+            transition: color .2s;
+        }
+
+        @media (max-width: 1100px) {
+            .contact-container { flex-direction: column; align-items: center; }
+            .left-col, .right-col { width: 98%; margin-bottom: 40px; }
+            .right-col { padding: 20px 8px; }
+            .contact-form { padding: 0 6px 20px 6px; }
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <div class="section-title">PHIM HAY THÁNG</div>
-    <div class="section-title-bar"></div>
-    <div class="movie-list">
-      <!-- Movie 1 -->
-      <div class="movie-item">
-        <img class="movie-thumb" src="https://static2.galaxycine.vn/media/2024/5/30/banner-web_1717059037596.jpg" alt="Tết Thiếu Nhi">
-        <div class="movie-detail">
-          <div class="movie-title">Phim Hay Tháng 06.2025: Tết Thiếu Nhi</div>
-          <div class="movie-actions">
-            <button class="btn-like" onclick="likeMovie(this)">
-              <i class="fa-regular fa-thumbs-up"></i> Thích
-            </button>
-            <div class="like-count">
-              <i class="fa-regular fa-user"></i>
-              <span class="like-num">0</span>
+    <div class="contact-container">
+        <!-- Left: Social & Title -->
+        <div class="left-col">
+            <div class="contact-title">
+                LIÊN HỆ VỚI CHÚNG TÔI
             </div>
-          </div>
-          <p class="movie-desc">
-            Để các khối còn lại có thể bình tâm thư giãn, đôi khi là “thao túng” được khối nghỉ hè, hãy đến với <strong>Galaxy Cinema</strong>, nơi có vô vàn những bộ phim cực kì thú vị dành cho mọi người, mọi nhà.
-          </p>
-        </div>
-      </div>
-      <!-- Movie 2 -->
-      <div class="movie-item">
-        <img class="movie-thumb" src="https://static2.galaxycine.vn/media/2024/4/29/cum-phim-meo-web_1714365680058.jpg" alt="Cún pk Mèo">
-        <div class="movie-detail">
-          <div class="movie-title">Phim Hay Tháng 05.2025: Mèo pk. Chó</div>
-          <div class="movie-actions">
-            <button class="btn-like" onclick="likeMovie(this)">
-              <i class="fa-regular fa-thumbs-up"></i> Thích
-            </button>
-            <div class="like-count">
-              <i class="fa-regular fa-user"></i>
-              <span class="like-num">0</span>
+            <div class="social-box">
+                <img src="facebook-icon.png" alt="Facebook" />
+                <span class="social-label">FACEBOOK</span>
             </div>
-          </div>
-          <p class="movie-desc">
-            <strong>Galaxy Cinema</strong> quyết định mở một cuộc chiến giữa “chó” Stitch và mèo Doraemon tại <a href="#">rạp chiếu phim</a> để các Stars tha hồ giải trí.
-          </p>
         </div>
-      </div>
-      <!-- Movie 3 -->
-      <div class="movie-item">
-        <img class="movie-thumb" src="https://static2.galaxycine.vn/media/2024/3/28/web_1711618746352.jpg" alt="Mặt Trời Trong Bóng Tối">
-        <div class="movie-detail">
-          <div class="movie-title">Phim Hay Tháng 04.2025: Mặt Trời Trong Bóng Tối</div>
-          <div class="movie-actions">
-            <button class="btn-like" onclick="likeMovie(this)">
-              <i class="fa-regular fa-thumbs-up"></i> Thích
-            </button>
-            <div class="like-count">
-              <i class="fa-regular fa-user"></i>
-              <span class="like-num">0</span>
-            </div>
-          </div>
-          <p class="movie-desc">
-            Ngoài những phim hay như sự trở lại của thám tử Kiên trong <strong>Người Vợ Cuối Cùng</strong>, phần thứ 8 của chuỗi phim <strong>Lật Mặt</strong> do đạo diễn Lý Hải sản xuất, khán giả còn được thưởng thức tác phẩm mang đậm dấu ấn lịch sử là <b>Địa Đạo: Mặt Trời Trong Bóng Tối</b> – hoàn toàn phù h...
-          </p>
+        <!-- Right: Info & Form -->
+        <div class="right-col">
+            <div class="contact-info-title">THÔNG TIN LIÊN HỆ</div>
+            <ul class="info-list">
+                <li>
+                    <img src="email-icon.png" alt="Mail"> cskh@cinestar.com.vn
+                </li>
+                <li>
+                    <img src="phone-icon.png" alt="Phone"> 1900.0085
+                </li>
+                <li>
+                    <img src="location-icon.png" alt="Location"> 135 Hai Bà Trưng, phường Bến Nghé, Quận 1, TP.HCM
+                </li>
+            </ul>
+            <form class="contact-form" id="contactForm" autocomplete="off">
+                <input type="text" name="name" placeholder="Họ và tên" required>
+                <input type="email" name="email" placeholder="Điền email" required>
+                <input type="tel" name="phone" placeholder="Số điện thoại" pattern="[0-9]{8,15}" required>
+                <textarea name="message" placeholder="Thông tin liên hệ hoặc phản ánh" required></textarea>
+                <div class="upload-preview">
+                    <label for="imageUpload" style="font-weight:500;color:#fff;font-size:16px;margin-bottom:0;">
+                        Ảnh minh họa:
+                    </label>
+                    <input type="file" id="imageUpload" accept="image/*" style="margin-left:14px;">
+                </div>
+                <img id="uploadedImage" alt="Ảnh đã upload" />
+                <button type="submit" class="submit-btn"><span>GỬI NGAY</span></button>
+            </form>
         </div>
-      </div>
     </div>
-  </div>
-  <script>
-    // Like button logic for all movies (independent)
-    function likeMovie(btn) {
-      var countSpan = btn.parentElement.querySelector('.like-num');
-      var icon = btn.querySelector('i');
-      var liked = btn.classList.toggle('liked');
-      // Toggle icon style
-      if(liked) {
-        icon.classList.remove('fa-regular');
-        icon.classList.add('fa-solid');
-        let current = parseInt(countSpan.textContent, 10);
-        countSpan.textContent = current + 1;
-      } else {
-        icon.classList.remove('fa-solid');
-        icon.classList.add('fa-regular');
-        let current = parseInt(countSpan.textContent, 10);
-        countSpan.textContent = current - 1;
-      }
-    }
-  </script>
+    <script>
+    // Xử lý upload ảnh và hiện ảnh preview
+    document.getElementById('imageUpload').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        const img = document.getElementById('uploadedImage');
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                img.src = evt.target.result;
+                img.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        } else {
+            img.src = '';
+            img.style.display = 'none';
+        }
+    });
+
+    // Demo ngăn reload, show alert khi gửi form
+    document.getElementById('contactForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        alert('Thông tin của bạn đã được gửi! (Demo)');
+        this.reset();
+        document.getElementById('uploadedImage').src = '';
+        document.getElementById('uploadedImage').style.display = 'none';
+    });
+    </script>
 </body>
 </html>

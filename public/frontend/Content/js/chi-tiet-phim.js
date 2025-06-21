@@ -151,10 +151,17 @@ window.initRatingModal = function (options) {
             .then((res) => res.json())
             .then((data) => {
                 // Cập nhật bên ngoài info
+                let avg = parseFloat( data.avg );
+                
                 var avgInfo = document.getElementById("avgRatingInfo");
-                var countInfo = document.getElementById("countRatingInfo");
-                if (avgInfo) avgInfo.textContent = data.avg;
-                if (countInfo) countInfo.textContent = data.count;
+                var countInfo = document.getElementById( "countRatingInfo" );
+                document.querySelector(".avgRatingInfo").textContent =
+                    avg % 1 === 0 ? avg.toString() : avg.toFixed( 1 );
+                
+                    if (avgInfo)
+                        avgInfo.textContent =
+                            avg % 1 === 0 ? avg.toString() : avg.toFixed(1);
+                    if (countInfo) countInfo.textContent = data.count;
 
                 // Cập nhật trong popup modal
                 var avgModal = document.getElementById("avgRatingModal");

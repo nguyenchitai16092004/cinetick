@@ -25,6 +25,9 @@ class HoaDon extends Model
         'payment_link',
         'order_code',
         'SoLuongVe',
+        'SoTaiKhoan',
+        'TenTaiKhoan',
+        'TenNganHang',
     ];
 
     public function taiKhoan()

@@ -13,6 +13,7 @@ use App\Models\HoaDon;
 use Illuminate\Support\Facades\Log;
 use App\Models\VeXemPhim;
 use App\Models\TinTuc;
+use App\Models\ThongTinTrangWeb;
 
 class PhimController extends Controller
 {
@@ -32,7 +33,7 @@ class PhimController extends Controller
         $dsPhimSapChieu = Phim::whereDate('NgayKhoiChieu', '>', $today)
             ->get();
 
-        $tinTucs = TinTuc::where('LoaiBaiViet', 0)
+        $tinTucs = TinTuc::where('LoaiBaiViet', 4)
             ->where('TrangThai', 1)
             ->orderByDesc('created_at')
             ->take(4)
@@ -43,6 +44,18 @@ class PhimController extends Controller
             ->orderByDesc('created_at')
             ->take(4)
             ->get();
+            
+        $footerGioiThieu = TinTuc::where('LoaiBaiViet', 2)
+            ->where('TrangThai', 1)
+            ->orderBy('created_at', 'asc')
+            ->get();
+            
+        $footerChinhSach = TinTuc::where('LoaiBaiViet', 3)
+            ->where('TrangThai', 1)
+            ->orderBy('created_at', 'asc')
+            ->get();
+            
+        $thongTinTrangWeb = ThongTinTrangWeb::all();
 
 
         return view('frontend.pages.home', [
@@ -53,6 +66,9 @@ class PhimController extends Controller
             'mainArticle'     => $tinTucs->first(),
             'sidebarArticles' => $tinTucs->slice(1, 3),
             'khuyenMais'      => $khuyenMais,
+            'footerGioiThieu' => $footerGioiThieu,
+            'footerChinhSach' => $footerChinhSach,
+            'thongTinTrangWeb' => $thongTinTrangWeb,
         ]);
     }
     public function phimDangChieu()

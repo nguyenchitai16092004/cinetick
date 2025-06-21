@@ -7,12 +7,12 @@
 
     <div class="promotion-section">
         <header class="section-header">
-            <h1 class="section-title">Ưu đãi</h1>
+            <h1 class="section-title">Tin khuyến mãi</h1>
         </header>
         <div class="promotion-list">
             @if ($khuyenMais->count())
               @foreach ($khuyenMais as $khuyenMai)
-                <a href="{{ route('bai-viet.chiTiet', ['slug' => $khuyenMai->Slug]) }}">
+                <a href="{{ route('bai-viet.chiTiet.khuyen-mai', ['slug' => $khuyenMai->Slug]) }}">
                   <div class="promotion-card">
                     <img class="promotion-img"
                       src="{{ $khuyenMai->AnhDaiDien ? asset('storage/' . $khuyenMai->AnhDaiDien) : asset('images/no-image.jpg') }}"
