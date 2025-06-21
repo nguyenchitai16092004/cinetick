@@ -24,7 +24,8 @@ class SuatChieuController extends Controller
     public function create()
     {
         $raps = Rap::all();
-        return view('backend.pages.suat_chieu.create-suat-chieu', compact('raps'));
+        $phims = Phim::all();
+        return view('backend.pages.suat_chieu.create-suat-chieu', compact('raps' , 'phims'));
     }
 
 
@@ -102,7 +103,7 @@ class SuatChieuController extends Controller
 
     public function filterPhong(Request $request){
         $id = $request->ID_Rap;
-        $phongs = PhongChieu::all();
+        $phongs = PhongChieu::where('ID_Rap', $id)->get();
         return $phongs;
     }
 

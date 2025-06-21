@@ -2,13 +2,9 @@ let data_lich_trinh = [];
 let conflictCheckTimeout;
 
 
-document.getElementById("ID_Phim").disabled = true;
-document.getElementById('start_date').addEventListener('change', function () {
-    const value = this.value;
-    if (value) {
-        document.getElementById("ID_Phim").disabled = false;
-        getMovie();
-    }
+document.getElementById("ID_Phim").addEventListener('change', function () {
+    data_lich_trinh.forEach(item => item.times = []);
+    capNhatGiaoDien();
 });
 
 document.getElementById('ID_Rap').addEventListener('change', function () {
@@ -71,6 +67,16 @@ function addTimeToDate(date) {
         return;
     }
 
+    const fullDateTime = new Date(`${date}T${time}:00`);
+
+    const now = new Date();
+    const nowPlus15 = new Date(now.getTime() + 15 * 60 * 1000);
+
+    if (fullDateTime <= nowPlus15) {
+        alert('Không được nhập thời gian nhỏ hơn hiện tại + 15 phút!');
+        return;
+    }
+
     const dateItem = data_lich_trinh.find(item => item.date === date);
     if (dateItem && !dateItem.times.includes(time)) {
         dateItem.times.push(time);
@@ -79,6 +85,7 @@ function addTimeToDate(date) {
         checkXungDotToanBo();
     }
 }
+
 
 
 
@@ -124,35 +131,42 @@ function capNhatGiaoDien() {
     emptyState.style.display = 'none';
 
     container.innerHTML = data_lich_trinh.map(item => `
-                <div class="schedule-date-item mb-3 p-3 border rounded">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <h6 class="mb-0">
-                            📅 ${formatDate(item.date)} 
-                            <small class="text-muted">(${item.times.length} suất chiếu)</small>
-                        </h6>
-                        <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeDateFromSchedule('${item.date}')">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                    
-                    <div class="times-container">
-                        ${item.times.map(time => `
-                                <span class="badge badge-secondary mr-1 mb-1 text-dark" style="font-size: 0.9em;">
-                                    🕐 ${time}
-                                    <button type="button" class="btn btn-sm p-0 ml-1" onclick="removeTimeFromDate('${item.date}', '${time}')" style="color: dark; background: none; border: none;">
-                                        ×
-                                    </button>
-                                </span>
-                            `).join('')}
-                        
-                        <button type="button" class="btn btn-sm btn-outline-primary ml-1" onclick="addTimeToDate('${item.date}')">
-                            <i class="fas fa-plus"></i> Thêm giờ
-                        </button>
-                    </div>
-                    
-                    <input type="hidden" name="schedule[${item.date}]" value="${item.times.join(',')}">
+        <div class="schedule-date-item mb-3 p-3 border rounded">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h6 class="mb-0">
+                    📅 ${formatDate(item.date)} 
+                    <small class="text-muted">(${item.times.length} suất chiếu)</small>
+                </h6>
+                <div>
+                    <button type="button" class="btn btn-sm btn-success me-1" onclick="addTimeToDate('${item.date}')">
+                        <i class="fas fa-plus-circle"></i> Thêm giờ
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeDateFromSchedule('${item.date}')">
+                        <i class="fas fa-trash"></i>
+                    </button>
                 </div>
-            `).join('');
+            </div>
+            
+            <div class="times-container mb-2">
+                ${item.times.map(time => `
+                    <span class="badge bg-light border text-dark me-1 mb-1" style="font-size: 0.9em;">
+                        🕐 ${time}
+                        <button type="button" class="btn btn-sm p-0 ms-1"  onclick="removeTimeFromDate('${item.date}', '${time}')" style="color: #dc3545; background: none; border: none;">×</button>
+                    </span>
+                `).join('')}
+
+                <!-- Nút Tự động (chỉ 1 lần) -->
+                <div class="mt-2">
+                    <button onclick="moModalTaoTuDong('${item.date}')" class="btn btn-sm btn-outline-primary" type="button" >
+                        Tự động tạo suất chiếu
+                    </button>
+                </div>
+            </div>
+
+            
+            <input type="hidden" name="schedule[${item.date}]" value="${item.times.join(',')}">
+        </div>
+    `).join('');
 
     updateSubmitButton();
     updateSummary();
@@ -265,5 +279,153 @@ function checkXungDotToanBo() {
     }, 1000);
 }
 
+let currentDateForAdd = null;
+
+// Hàm gọi modal khi thêm giờ cho một ngày cụ thể
+function addTimeToDate(date) {
+    currentDateForAdd = date;
+    document.getElementById('selected-date').textContent = date;
+    document.getElementById('datetime-input').value = ''; // reset input
+
+    const modal = new bootstrap.Modal(document.getElementById('addTimeModal'));
+    modal.show();
+}
+
+// Hàm xác nhận thêm giờ
+function xacNhanThemGio() {
+    const time = document.getElementById('datetime-input').value;
+    if (!time) {
+        alert('Vui lòng nhập giờ chiếu!');
+        return;
+    }
+
+    // Kiểm tra định dạng HH:MM
+    if (!/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/.test(time)) {
+        alert('Định dạng giờ không hợp lệ! (HH:MM)');
+        return;
+    }
+
+    // ✅ Kiểm tra nếu là hôm nay và giờ nhập < giờ hiện tại + 15 phút
+    const todayStr = new Date().toISOString().split('T')[0];
+    const timeToCheck = new Date(`${currentDateForAdd}T${time}:00`);
+    const nowPlus15 = new Date(new Date().getTime() + 15 * 60 * 1000);
+
+    if (currentDateForAdd === todayStr && timeToCheck <= nowPlus15) {
+        alert('Không được nhập giờ chiếu nhỏ hơn thời điểm hiện tại + 15 phút!');
+        return;
+    }
+
+    const dateItem = data_lich_trinh.find(item => item.date === currentDateForAdd);
+    if (dateItem && !dateItem.times.includes(time)) {
+        dateItem.times.push(time);
+        dateItem.times.sort();
+        capNhatGiaoDien();
+        checkXungDotToanBo();
+    }
+
+    bootstrap.Modal.getInstance(document.getElementById('addTimeModal')).hide();
+}
+
+
+let currentDateForAuto = null;
+
+function moModalTaoTuDong(date) {
+    currentDateForAuto = date;
+    document.getElementById('auto-date').innerText = date;
+    document.getElementById('start-time').value = '';
+    document.getElementById('end-time').value = '';
+    new bootstrap.Modal(document.getElementById('autoScheduleModal')).show();
+}
+
+function taoSuatChieuTuDong() {
+    const gioBatDau = document.getElementById('start-time').value;
+    const gioKetThuc = document.getElementById('end-time').value;
+    const luaChonPhim = document.querySelector('#ID_Phim option:checked');
+    const thoiLuongPhim = luaChonPhim ? parseInt(luaChonPhim.getAttribute('data-duration')) : 0;
+
+    if (!thoiLuongPhim) {
+        alert('Vui lòng chọn phim trước khi thêm giờ!');
+        return;
+    }
+
+    if (!gioBatDau || !gioKetThuc) {
+        alert('Vui lòng nhập đầy đủ giờ bắt đầu và kết thúc!');
+        return;
+    }
+
+    const [gioBD, phutBD] = gioBatDau.split(':').map(Number);
+    const [gioKT, phutKT] = gioKetThuc.split(':').map(Number);
+
+    let tongPhutBatDau = gioBD * 60 + phutBD;
+    const tongPhutKetThuc = gioKT * 60 + phutKT;
+
+    if (tongPhutBatDau >= tongPhutKetThuc) {
+        alert('Giờ bắt đầu phải nhỏ hơn giờ kết thúc!');
+        return;
+    }
+
+    const ngayDangChon = data_lich_trinh.find(item => item.date === currentDateForAuto);
+    if (!ngayDangChon) {
+        alert('Không tìm thấy ngày chiếu!');
+        return;
+    }
+
+    // Làm tròn lên phút chia hết cho 5
+    if (tongPhutBatDau % 5 !== 0) {
+        tongPhutBatDau += 5 - (tongPhutBatDau % 5);
+    }
+
+    for (let phutChieu = tongPhutBatDau; phutChieu <= tongPhutKetThuc;) {
+        const gio = String(Math.floor(phutChieu / 60)).padStart(2, '0');
+        const phut = String(phutChieu % 60).padStart(2, '0');
+        let gioChieu = `${gio}:${phut}`;
+
+        const ngayHomNay = new Date().toISOString().split('T')[0];
+        const thoiGianCanKiem = new Date(`${currentDateForAuto}T${gioChieu}:00`);
+        const thoiGianToiThieu = new Date(new Date().getTime() + 15 * 60 * 1000);
+
+        // Nếu là hôm nay và giờ chiếu nhỏ hơn hiện tại + 15 phút
+        if (currentDateForAuto === ngayHomNay && thoiGianCanKiem < thoiGianToiThieu) {
+            const tongPhutToiThieu = Math.ceil(thoiGianToiThieu.getHours() * 60 + thoiGianToiThieu.getMinutes());
+
+            // Làm tròn đến phút chia hết cho 5
+            const lamTron5Phut = tongPhutToiThieu % 5 === 0
+                ? tongPhutToiThieu
+                : tongPhutToiThieu + (5 - (tongPhutToiThieu % 5));
+
+            phutChieu = lamTron5Phut;
+            continue; // quay lại vòng lặp với thời gian mới
+        }
+
+        // Tạo suất chiếu nếu chưa tồn tại
+        if (!ngayDangChon.times.includes(gioChieu)) {
+            ngayDangChon.times.push(gioChieu);
+        }
+
+        // Tăng thời gian theo thời lượng phim + 30 phút nghỉ
+        phutChieu += thoiLuongPhim + 30;
+    }
+
+    ngayDangChon.times.sort();
+    capNhatGiaoDien();
+    checkXungDotToanBo();
+
+    bootstrap.Modal.getInstance(document.getElementById('autoScheduleModal')).hide();
+}
+
+function kiemTraSuatChieuSom() {
+    const luaChonPhim = document.querySelector('#ID_Phim option:checked');
+    const ngayKhoiChieu = luaChonPhim ? luaChonPhim.getAttribute('data-ngaykhoichieu') : null;
+
+    if (!ngayKhoiChieu) return true; // Không có dữ liệu thì cho qua
+
+    for (const item of data_lich_trinh) {
+        if (item.date < ngayKhoiChieu) {
+            return confirm('⚠️ Hiện bạn đang tạo suất chiếu sớm hơn ngày khởi chiếu của phim. Bạn có chắc chắn muốn tiếp tục không?');
+        }
+    }
+
+    return true;
+}
 
 

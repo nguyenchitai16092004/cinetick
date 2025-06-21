@@ -218,7 +218,7 @@
                 url: "{{ route('suat-chieu.loc-phong') }}",
                 method: 'POST',
                 data: {
-                    id_rap: selectedRap
+                    ID_Rap: selectedRap
                 },
                 success: function(data) {
                     let html = '<option value="">-- Chọn phòng --</option>';

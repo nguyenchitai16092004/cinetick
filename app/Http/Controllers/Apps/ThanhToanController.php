@@ -96,8 +96,8 @@ class ThanhToanController extends Controller
                 'ten_khach_hang' => $validated['ten_khach_hang'],
                 'email'          => $validated['email'],
                 'ID_SuatChieu'   => $validated['ID_SuatChieu'],
-                'selectedSeats'  => $selectedSeats, 
-                'seatDetails'    => $seatDetails,   
+                'selectedSeats'  => $selectedSeats,
+                'seatDetails'    => $seatDetails,
                 'tong_tien'      => $calculatedTotal,
                 'so_tien_giam'   => $request->input('so_tien_giam', 0),
                 'tong_tien_sau_giam' => $request->input('tong_tien_sau_giam', $calculatedTotal),
@@ -277,8 +277,22 @@ class ThanhToanController extends Controller
             ]);
         }
 
+        // Kiểm tra điều kiện tối thiểu
+        if ($tongTien < $km->DieuKienToiThieu) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Hóa đơn phải có giá trị tối thiểu ' . number_format($km->DieuKienToiThieu, 0, ',', '.') . ' đ để áp dụng mã khuyến mãi!'
+            ]);
+        }
+
         $phanTram = $km->PhanTramGiam;
-        $soTienGiam = floor($tongTien * $phanTram / 100); 
+        $soTienGiam = floor($tongTien * $phanTram / 100);
+
+        // Giới hạn giảm tối đa
+        if ($km->GiamToiDa > 0 && $soTienGiam > $km->GiamToiDa) {
+            $soTienGiam = $km->GiamToiDa;
+        }
+
         $tongTienSauGiam = $tongTien - $soTienGiam;
 
         Log::info('Áp dụng mã khuyến mãi', [
