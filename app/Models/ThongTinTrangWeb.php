@@ -11,11 +11,14 @@ class ThongTinTrangWeb extends Model
     public $incrementing = false;
 
     protected $fillable = [
+        'TenDonVi',
+        'TenWebsite',
         'Logo',
         'Hotline',
         'Zalo',
         'Facebook',
         'Instagram',
+        'Youtube',
         'Email',
         'DiaChi',
     ];

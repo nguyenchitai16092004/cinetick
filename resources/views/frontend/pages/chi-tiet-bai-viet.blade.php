@@ -18,7 +18,14 @@
     
     <nav class="breadcrumb">
         <a href="{{ route('home') }}">Trang chủ</a> /
-        <a href="{{ route('ds-bai-viet-dien-anh') }}">Góc điện ảnh</a> /
+        @php
+            $prefix = request()->route()->getPrefix();
+        @endphp
+        @if($prefix === '/goc-dien-anh')
+            <a href="{{ route('ds-bai-viet-dien-anh') }}">Góc điện ảnh</a> /
+        @elseif($prefix === '/tin-khuyen-mai')
+            <a href="{{ route('ds-bai-viet-khuyen-mai') }}">Tin khuyến mãi</a> /
+        @endif
         <span>{{ $tinTuc->TieuDe }}</span>
     </nav>
 

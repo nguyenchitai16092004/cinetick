@@ -45,7 +45,7 @@ class TinTucChiTietController extends Controller
     }
     public function listDienAnh()
     {
-        $dienAnhs = TinTuc::where('LoaiBaiViet', 0)
+        $dienAnhs = TinTuc::where('LoaiBaiViet', 4)
             ->where('TrangThai', 1)
             ->orderByDesc('created_at')
             ->paginate(5);
@@ -60,5 +60,13 @@ class TinTucChiTietController extends Controller
             ->paginate(5);
 
         return view('frontend.pages.khuyen-mai', compact('khuyenMais'));
+    }
+    public function thongTinCineTickStatic($slug)
+    {
+        $tinTuc = TinTuc::where('Slug', $slug)
+            ->where('TrangThai', 1)
+            ->firstOrFail();
+        $userLikedThis = false; 
+        return view('frontend.pages.chi-tiet-bai-viet', compact('tinTuc', 'userLikedThis'));
     }
 }

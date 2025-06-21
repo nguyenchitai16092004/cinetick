@@ -1,97 +1,94 @@
 @extends('frontend.layouts.master')
 @section('title', 'Liên hệ')
 @section('main')
-    <section class="filmoja-blog-page container bg-main section_15"
-        style="background: #e6e7e9; max-width: 100% !important; border-top: 1px solid;">
-        <div class="container">
-            <main class="contact-page ptb100">
-                <div class="container">
-                    <div class="row">
+    <link rel="stylesheet" href="{{ asset('frontend/Content/css/lien-he.css') }}">
 
-
-                        <!-- Start of Contact Details -->
-                        <div class="col-md-4 col-sm-12">
-                            <h3 class="title"
-                                style=" margin-bottom: 15px; text-transform: uppercase; font-weight: 500; color: #444444; text-decoration: underline; background-image: url(Content/img/tag.png); -webkit-background-size: 21px 6px; background-size: 21px 6px; background-position: left center; background-repeat: no-repeat; padding-left: 30px;">
-                                Thông tin</h3>
-
-                            <div class="details-wrapper">
-                                <ul class="contact-details">
-                                    <li>
-                                        <i class="icon-phone"></i>
-                                        <strong>Hotline:</strong>
-                                        <span>19001722</span>
-                                    </li>
-                                    <li>
-                                        <i class="icon-printer"></i>
-                                        <strong>TRỤ SỞ CHÍNH:</strong>
-                                        <span> 39 TRẦN KHÁNH DƯ, PHƯỜNG TÂN LỢI, TP. BUÔN MA THUỘT, TỈNH ĐẮK LẮK, VIỆT NAM
-                                        </span>
-                                    </li>
-                                    <li>
-                                        <i class="icon-globe"></i>
-                                        <strong>Web:</strong>
-                                        <span><a href="#">www.starlight.vn</a></span>
-                                    </li>
-                                    <li>
-                                        <i class="icon-paper-plane"></i>
-                                        <strong>E-Mail:</strong>
-                                        <span><a href="#">support@starlight.vn</a></span>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        <!-- Start of Contact Details -->
-                        <!-- Start of Contact Form -->
-                        <div class="col-md-8 col-sm-12">
-                            <h3 class="title"
-                                style=" margin-bottom: 15px; text-transform: uppercase; font-weight: 500; color: #444444; text-decoration: underline; background-image: url(Content/img/tag.png); -webkit-background-size: 21px 6px; background-size: 21px 6px; background-position: left center; background-repeat: no-repeat; padding-left: 30px;">
-                                Gửi liên hệ</h3>
-
-                            <!-- Start of Contact Form -->
-                            <form id="contact-form">
-
-                                <!-- contact result -->
-                                <div id="contact-result"></div>
-                                <!-- end of contact result -->
-                                <!-- Form Group -->
-                                <div class="form-group">
-                                    <input class="form-control input-box" type="text" name="name" id="cName"
-                                        placeholder="Họ tên" autocomplete="off">
-                                </div>
-
-                                <!-- Form Group -->
-                                <div class="form-group">
-                                    <input class="form-control input-box" type="email" name="email" id="cEmail"
-                                        placeholder="your-email@gmail.com" autocomplete="off">
-                                </div>
-
-
-                                <!-- Form Group -->
-                                <div class="form-group">
-                                    <input class="form-control input-box" type="text" name="subject" id="cPhone"
-                                        placeholder="SĐT" autocomplete="off">
-                                </div>
-
-                                <!-- Form Group -->
-                                <div class="form-group mb20">
-                                    <textarea class="form-control textarea-box" rows="8" id="cContent" name="message"
-                                        placeholder="Nội dung cần liên hệ..."></textarea>
-                                </div>
-
-                                <!-- Form Group -->
-                                <div class="form-group text-center">
-                                    <button class="btn btn-main btn-effect" type="submit"
-                                        style=" background: #f37a3b; color: #fff;" onclick="sendContact()">Send</button>
-                                </div>
-                            </form>
-                            <!-- End of Contact Form -->
-                        </div>
-                        <!-- Start of Contact Form -->
-
+    <div class="contact-container">
+        <!-- Left: Social & Title -->
+        <div class="left-col">
+            <div class="header">
+                <h1>LIÊN HỆ VỚI CHÚNG TÔI</h1>
+            </div>
+            <div>
+                <a href="{{ $thongTinTrangWeb->Facebook }}">
+                    <div class="social-box facebook">
+                        <img src="{{ asset('frontend/Content/img/fb.png') }}" alt="Facebook" />
+                        <span class="social-label">FACEBOOK</span>
                     </div>
-                </div>
-            </main>
+                </a>
+                <a href="{{ $thongTinTrangWeb->Instagram }}">
+                    <div class="social-box instagram">
+                        <span class="social-label">INSTAGRAM</span>
+                        <img src="{{ asset('frontend/Content/img/instagram.png') }}" alt="Instagram" />
+                    </div>
+                </a>
+            </div>
+
+
         </div>
-    </section>
+        <!-- Right: Info & Form -->
+        <div class="right-col">
+            <div class="contact-info-title">THÔNG TIN LIÊN HỆ</div>
+            <ul class="info-list">
+                <li>
+                    <i class="fa fa-envelope"></i> {{ $thongTinTrangWeb->Email }}
+                </li>
+                <li>
+                    <i class="fa fa-phone"></i> {{ $thongTinTrangWeb->Hotline }}
+                </li>
+                <li>
+                    <i class="fa-solid fa-location-dot"></i> {{ $thongTinTrangWeb->DiaChi }}
+                </li>
+            </ul>
+            <form class="contact-form" id="contactForm" autocomplete="off" method="POST"
+                action="{{ route('lien-he.gui-lien-he') }}" enctype="multipart/form-data">
+                @csrf
+                <input type="text" name="name" placeholder="Họ và tên" required>
+                <input type="email" name="email" placeholder="Email" required>
+                <input type="tel" name="phone" placeholder="Số điện thoại" pattern="[0-9]{8,11}" maxlength="11" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,11);" required>
+                <input type="text" name="subject" placeholder="Tiêu đề" required>
+                <textarea name="message" placeholder="Thông tin liên hệ hoặc phản ánh" required></textarea>
+                <div class="upload-preview">
+                    <label for="imageUpload" style="font-weight:500;color:#fff;font-size:16px;margin-bottom:0;">
+                        Ảnh minh họa:
+                    </label>
+                    <input type="file" id="imageUpload" name="image" accept="image/*" style="margin-left:14px;">
+                </div>
+                <img id="uploadedImage" alt="Ảnh đã upload" style="display:none;" />
+                <div class="g-recaptcha" data-sitekey="6Ldai2grAAAAAFzqDGUH58U8bQji9SJTuGTXeyTe"></div>
+                <button type="submit" class="submit-btn"><span>GỬI NGAY</span></button>
+            </form>
+        </div>
+    </div>
+    <script src="{{ asset('frontend/Content/js/lien-he.js') }}"></script>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    @if ($errors->has('captcha'))
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi xác thực',
+                text: '{{ $errors->first('captcha') }}',
+            });
+        </script>
+    @endif
+
+    @if (session('success'))
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Thành công',
+                text: '{{ session('success') }}',
+            });
+        </script>
+    @endif
+    @if (session('email_error'))
+    <script>
+        Swal.fire({
+            icon: 'error',
+            title: 'Lỗi gửi email',
+            text: '{{ session('email_error') }}',
+        });
+    </script>
+@endif
 @stop
