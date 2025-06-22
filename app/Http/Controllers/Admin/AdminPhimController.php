@@ -31,6 +31,7 @@ class AdminPhimController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'TenPhim' => 'required|max:100|unique:phim,TenPhim',
+            'NhaSanXuat' => 'required|max:100',
             'DaoDien' => 'required|max:100',
             'DienVien' => 'required|max:255',
             'ThoiLuong' => 'required|integer|min:1|max:180',
@@ -40,7 +41,7 @@ class AdminPhimController extends Controller
             'Trailer' => 'nullable|url|max:255',
             'HinhAnh' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'DoTuoi' => 'required|max:100',
-            'DoHoa' => 'required|max:50',
+            'DoHoa' => 'nullable|max:50',
             'QuocGia' => 'required|max:100',
             'ID_TheLoaiPhim' => 'required|array|min:1',
             'ID_TheLoaiPhim.*' => 'exists:the_loai_phim,ID_TheLoaiPhim',
@@ -62,6 +63,7 @@ class AdminPhimController extends Controller
         $phim = Phim::create([
             'TenPhim' => $request->TenPhim,
             'Slug' => Str::slug($request->TenPhim),
+            'NhaSanXuat' => $request->NhaSanXuat,
             'DaoDien' => $request->DaoDien,
             'DienVien' => $request->DienVien,
             'ThoiLuong' => $request->ThoiLuong,
@@ -92,6 +94,7 @@ class AdminPhimController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'TenPhim' => 'required|max:100',
+            'NhaSanXuat' => 'required|max:100',
             'DaoDien' => 'required|max:100',
             'DienVien' => 'required|max:255',
             'ThoiLuong' => 'required|integer|min:1|max:180',
@@ -101,7 +104,7 @@ class AdminPhimController extends Controller
             'Trailer' => 'nullable|url|max:255',
             'HinhAnh' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'DoTuoi' => 'required|max:100',
-            'DoHoa' => 'required|max:50',
+            'DoHoa' => 'nullable|max:50',
             'QuocGia' => 'required|max:100',
             'ID_TheLoaiPhim' => 'required|array|min:1',
             'ID_TheLoaiPhim.*' => 'exists:the_loai_phim,ID_TheLoaiPhim',
@@ -127,6 +130,7 @@ class AdminPhimController extends Controller
         $phim->update([
             'TenPhim' => $request->TenPhim,
             'Slug' => Str::slug($request->TenPhim),
+            'NhaSanXuat' => $request->NhaSanXuat,
             'DaoDien' => $request->DaoDien,
             'DienVien' => $request->DienVien,
             'ThoiLuong' => $request->ThoiLuong,

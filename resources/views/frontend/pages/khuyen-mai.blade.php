@@ -4,7 +4,12 @@
     <link rel="stylesheet" href="{{ asset('frontend/Content/css/khuyen-mai.css') }}">
     <link rel="stylesheet" href="{{ asset('frontend/Content/css/home.css') }}">
 
-
+    <div class="bg-gradient"></div>
+    <div class="floating-elements">
+        <div class="floating-circle"></div>
+        <div class="floating-circle"></div>
+        <div class="floating-circle"></div>
+    </div>
     <div class="promotion-section">
         <header class="section-header">
             <h1 class="section-title">Tin khuyến mãi</h1>

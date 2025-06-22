@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('binh_luan', function (Blueprint $table) {
             $table->id('ID_BinhLuan');
-            $table->float('DiemDanhGia', 3, 1);
+            $table->float('DiemDanhGia', 3, 1)->default(10);
             $table->unsignedBigInteger('ID_TaiKhoan');
             $table->unsignedBigInteger('ID_Phim');
             $table->foreign('ID_TaiKhoan')->references('ID_TaiKhoan')->on('tai_khoan');

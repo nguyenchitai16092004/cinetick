@@ -3,6 +3,13 @@
 @section('main')
     <link rel="stylesheet" href="{{ asset('frontend/Content/css/lien-he.css') }}">
 
+
+    <div class="bg-gradient"></div>
+    <div class="floating-elements">
+        <div class="floating-circle"></div>
+        <div class="floating-circle"></div>
+        <div class="floating-circle"></div>
+    </div>
     <div class="contact-container">
         <!-- Left: Social & Title -->
         <div class="left-col">

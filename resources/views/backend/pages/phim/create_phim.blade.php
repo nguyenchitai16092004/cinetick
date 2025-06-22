@@ -68,6 +68,12 @@
                                 {{-- Cột phải --}}
                                 <div class="col-md-6">
                                     <div class="form-group">
+                                        <label for="NhaSanXuat">Nhà sản xuất <span class="text-danger">*</span></label>
+                                        <input type="text" name="NhaSanXuat" id="NhaSanXuat" class="form-control"
+                                            value="{{ old('NhaSanXuat') }}" required>
+                                    </div>
+
+                                    <div class="form-group">
                                         <label for="DaoDien">Đạo diễn <span class="text-danger">*</span></label>
                                         <input type="text" name="DaoDien" id="DaoDien" class="form-control"
                                             value="{{ old('DaoDien') }}" required>
@@ -80,8 +86,8 @@
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="DoHoa">Đồ họa <span class="text-danger">*</span></label>
-                                        <select name="DoHoa" id="DoHoa" class="form-control" required>
+                                        <label for="DoHoa">Đồ họa</label>
+                                        <select name="DoHoa" id="DoHoa" class="form-control">
                                             <option value="">-- Chọn đồ họa --</option>
                                             <option value="2D" {{ old('DoHoa') == '2D' ? 'selected' : '' }}>2D</option>
                                             <option value="3D" {{ old('DoHoa') == '3D' ? 'selected' : '' }}>3D</option>
@@ -101,6 +107,7 @@
                                         <option value="Hàn Quốc">Hàn Quốc</option>
                                         <option value="Trung Quốc">Trung Quốc</option>
                                         <option value="Nga">Nga</option>
+                                        <option value="Mỹ">Mỹ</option>
                                     </select>
 
                                     <div class="form-group">

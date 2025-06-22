@@ -27,9 +27,20 @@ class RapChiTietController extends Controller
                 ->where('NgayChieu', $date)
                 ->pluck('ID_Phim')
                 ->unique();
-            $phimsByDay[$date] = Phim::whereIn('ID_Phim', $phimIds)->get();
+            $phims = Phim::whereIn('ID_Phim', $phimIds)->get();
+            // Gán avg_rating cho từng phim
+            foreach ($phims as $phim) {
+                $avg = $phim->binhLuan()->avg('DiemDanhGia');
+                if (is_null($avg)) {
+                    $phim->avg_rating = '10';
+                } elseif (fmod($avg, 1) == 0.0) {
+                    $phim->avg_rating = (string)(int)$avg;
+                } else {
+                    $phim->avg_rating = sprintf('%.2f', floor($avg * 100) / 100);
+                }
+            }
+            $phimsByDay[$date] = $phims;
         }
-
         return view('frontend.pages.rap', compact('rap', 'days', 'phimsByDay'));
     }
 }

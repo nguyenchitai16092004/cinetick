@@ -13,8 +13,9 @@ return new class extends Migration
     {
         Schema::create('banners', function (Blueprint $table) {
             $table->id();
-            $table->string('TieuDe' ,100 );
-            $table->string('MoTa' ,255   );
+            $table->string('TieuDeChinh',100 );
+            $table->string('TieuDePhu', 100);
+            $table->string('MoTa', 255);
             $table->string('HinhAnh' , 255);
             $table->string('Link' , 255)->nullable();
             $table->timestamps();

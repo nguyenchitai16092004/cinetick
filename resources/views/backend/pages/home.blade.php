@@ -110,7 +110,8 @@
                     <thead class="table-primary text-center">
                         <tr>
                             <th style="width: 160px;">Hình ảnh</th>
-                            <th>Tiêu đề</th>
+                            <th>Tiêu đề chính</th>
+                            <th>Tiêu đề phụ</th>
                             <th>Mô tả</th>
                             <th style="width: 250px;">Liên kết</th>
                             <th style="width: 140px;">Thao tác</th>
@@ -124,10 +125,15 @@
                                         class="img-thumbnail" style="max-height: 80px;">
                                 </td>
                                 <td class="fw-bold text-dark align-middle">
-                                    {{ $banner->TieuDe }}
+                                    {{ $banner->TieuDeChinh }}
                                 </td>
+
                                 <td class="fw-bold text-dark align-middle">
-                                    {{ $banner->MoTa     }}
+                                    {{ $banner->TieuDePhu }}
+                                </td>
+                                
+                                <td class="fw-bold text-dark align-middle">
+                                    {{ $banner->MoTa }}
                                 </td>
                                 <td class="text-truncate align-middle">
                                     <a href="{{ $banner->Link }}" class="text-decoration-none text-primary" target="_blank">

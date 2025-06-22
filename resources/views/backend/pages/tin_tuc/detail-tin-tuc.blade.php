@@ -81,7 +81,7 @@
             ],
             ai_request: (request, respondWith) => respondWith.string(() => Promise.reject(
                 'See docs to implement AI Assistant')),
-            images_upload_url: '{{ route('tin_tuc.tinymce.upload') }}',
+            images_upload_url: '{{ route("tin_tuc.upload_image") }}',
             images_upload_credentials: true,
             relative_urls: false,
             remove_script_host: false,

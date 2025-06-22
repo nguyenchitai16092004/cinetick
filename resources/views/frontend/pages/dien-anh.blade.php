@@ -7,7 +7,6 @@
         };
     </script>
     <link rel="stylesheet" href="{{ asset('frontend/Content/css/dien-anh.css') }}">
-    <link rel="stylesheet" href="{{ asset('frontend/Content/css/home.css') }}">
 
     <div class="bg-gradient"></div>
     <div class="floating-elements">

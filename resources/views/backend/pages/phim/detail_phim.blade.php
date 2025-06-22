@@ -87,6 +87,12 @@
                                         {{-- Cột phải của form --}}
                                         <div class="col-md-4">
                                             <div class="form-group">
+                                                <label for="NhaSanXuat">Nhà sản xuất <span class="text-danger">*</span></label>
+                                                <input type="text" name="NhaSanXuat" id="NhaSanXuat" class="form-control"
+                                                    value="{{ old('NhaSanXuat', $phim->NhaSanXuat) }}" required>
+                                            </div>
+
+                                            <div class="form-group">
                                                 <label for="DaoDien">Đạo diễn <span class="text-danger">*</span></label>
                                                 <input type="text" name="DaoDien" id="DaoDien" class="form-control"
                                                     value="{{ old('DaoDien', $phim->DaoDien) }}" required>
@@ -100,7 +106,7 @@
 
                                             <div class="form-group">
                                                 <label for="DoHoa">Đồ họa <span class="text-danger">*</span></label>
-                                                <select name="DoHoa" id="DoHoa" class="form-control" required>
+                                                <select name="DoHoa" id="DoHoa" class="form-control">
                                                     <option value="">-- Chọn đồ họa --</option>
                                                     <option value="2D"
                                                         {{ old('DoHoa', $phim->DoHoa) == '2D' ? 'selected' : '' }}>2D
@@ -140,6 +146,8 @@
                                                 </option>
                                                 <option value="Nga" {{ $phim->QuocGia == 'Nga' ? 'selected' : '' }}>
                                                     Nga</option>
+                                                <option value="Mỹ" {{ $phim->QuocGia == 'Mỹ' ? 'selected' : '' }}>
+                                                    Mỹ</option>
                                             </select>
 
 

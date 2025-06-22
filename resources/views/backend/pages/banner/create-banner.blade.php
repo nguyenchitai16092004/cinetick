@@ -18,14 +18,26 @@
                     @enderror
                 </div>
 
-                <!-- Tiêu đề -->
+                <!-- Tiêu đề chính -->
                 <div class="mb-4">
-                    <label for="TieuDe" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Tiêu
-                        đề</label>
-                    <input type="text" id="TieuDe" name="TieuDe"
+                    <label for="TieuDeChinh" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Tiêu
+                        đề chính</label>
+                    <input type="text" id="TieuDeChinh" name="TieuDeChinh"
                         class="w-full px-4 py-2 border rounded-lg dark:bg-gray-700 dark:text-white"
-                        value="{{ old('TieuDe') }}">
-                    @error('TieuDe')
+                        value="{{ old('TieuDeChinh') }}">
+                    @error('TieuDeChinh')
+                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Tiêu đề phụ -->
+                  <div class="mb-4">
+                    <label for="TieuDePhu" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Tiêu
+                        đề phụ</label>
+                    <input type="text" id="TieuDePhu" name="TieuDePhu"
+                        class="w-full px-4 py-2 border rounded-lg dark:bg-gray-700 dark:text-white"
+                        value="{{ old('TieuDePhu') }}">
+                    @error('TieuDePhu')
                         <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                     @enderror
                 </div>

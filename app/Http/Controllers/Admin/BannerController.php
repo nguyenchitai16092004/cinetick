@@ -19,7 +19,8 @@ class BannerController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'TieuDe' => 'required|string|max:100',
+            'TieuDeChinh' => 'required|string|max:100',
+            'TieuDePhu' => 'required|string|max:100',
             'MoTa' => 'required|string|max:255',
             'HinhAnh' => 'required|image|mimes:jpg,png,jpeg|max:2048',
             'DuongDan' => 'required|string',
@@ -32,7 +33,8 @@ class BannerController extends Controller
         $fullLink = $request->DuongDan . $request->link;
 
         DB::table('banners')->insert([
-            'TieuDe' => $request->TieuDe,
+            'TieuDeChinh' => $request->TieuDeChinh,
+            'TieuDePhu' => $request->TieuDePhu,
             'MoTa' => $request->MoTa,
             'HinhAnh' => $path,
             'Link' => $fullLink,
@@ -91,7 +93,8 @@ class BannerController extends Controller
     {
         try {
             $request->validate([
-                'TieuDe' => 'required|string|max:100',
+                'TieuDeChinh' => 'required|string|max:100',
+                'TieuDePhu' => 'required|string|max:100',
                 'MoTa' => 'required|string|max:255',
                 'HinhAnh' => 'nullable|image|mimes:jpg,png,jpeg|max:2048',
                 'DuongDan' => 'required|string',
@@ -104,7 +107,8 @@ class BannerController extends Controller
             }
 
             $data = [
-                'TieuDe' => $request->TieuDe,
+                'TieuDeChinh' => $request->TieuDeChinh,
+                'TieuDePhu' => $request->TieuDePhu,
                 'MoTa' => $request->MoTa ,
                 'Link' => $request->DuongDan . $request->link,
                 'updated_at' => now(),

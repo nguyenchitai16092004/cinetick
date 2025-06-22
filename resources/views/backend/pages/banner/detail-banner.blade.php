@@ -22,15 +22,24 @@
                     <!-- Form chỉnh sửa -->
                     <div class="col-span-12 md:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-4">
 
-                        <!-- Tiêu đề -->
+                        <!-- Tiêu đề chính -->
                         <div class="col-span-2">
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Tiêu đề *</label>
-                            <input type="text" name="TieuDe" value="{{ old('TieuDe', $banner->TieuDe) }}"
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Tiêu đề chính *</label>
+                            <input type="text" name="TieuDeChinh" value="{{ old('TieuDeChinh', $banner->TieuDeChinh) }}"
                                 class="w-full px-4 py-2 border rounded-lg dark:bg-gray-700 dark:text-white">
-                            @error('TieuDe')
+                            @error('TieuDeChinh')
                                 <p class="text-red-500 text-sm">{{ $message }}</p>
                             @enderror
                         </div>
+
+                        <!-- Tiêu đề phụ -->
+                        <div class="col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Tiêu đề phụ *</label>
+                            <input type="text" name="TieuDePhu" value="{{ old('TieuDePhu', $banner->TieuDePhu) }}"
+                                class="w-full px-4 py-2 border rounded-lg dark:bg-gray-700 dark:text-white">
+                            @error('TieuDePhu')
+                                <p class="text-red-500 text-sm">{{ $message }}</p>
+                            @enderror
 
                         <!-- Mô tả -->
                         <div class="">

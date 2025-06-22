@@ -4,7 +4,7 @@
 
     <link rel="stylesheet" href="{{ asset('frontend/Content/css/phim.css') }}">
     <link rel="stylesheet" href="{{ asset('frontend/Content/css/home.css') }}">
-    
+    <link rel="stylesheet" href="{{ asset('frontend/Content/css/rap.css') }}">
 
     <div class="bg-gradient"></div>
     <div class="floating-elements">
@@ -12,110 +12,70 @@
         <div class="floating-circle"></div>
         <div class="floating-circle"></div>
     </div>
-    @if (Route::currentRouteName() === 'phim.dangChieu')
-        <div class="header-2">
-            <h1 class="twinkle-title-pro">
-                <span class="star-pro star-pro-1"></span>
-                <span class="star-pro star-pro-2"></span>
-                <span class="star-pro star-pro-3"></span>
-                Phim đang chiếu
-                <span class="star-pro star-pro-4"></span>
-                <span class="star-pro star-pro-5"></span>
-                <span class="star-pro star-pro-6"></span>
-            </h1>
-            <p>Trải nghiệm điện ảnh đỉnh cao tại rạp chiếu phim CineTick</p>
-        </div>
-    @elseif (Route::currentRouteName() === 'phim.sapChieu')
-        <div class="header">
-            <h1>Phim sắp chiếu</h1>
-            <p>Trải nghiệm điện ảnh đỉnh cao tại rạp chiếu phim CineTick</p>
-        </div>
-    @endif
-
-    <section class="filmoja-movie-list-area section_30 container bg-main">
-        <div class="container">
-            <div class="movie-grid-box list-film">
-                <div class="amy-mv-grid layout3" style="text-align:center">
-                    @if ($danhSachPhim->isEmpty())
-                        <p class="update-showtime">
-                            <span class="marquee-text">Ôi không! Phim đâu rồi? Đừng lo lắng chúng tôi sẽ cập nhật chúng ngay
-                                thôi.</span>
-                        </p>
-                    @else
-                        @foreach ($danhSachPhim as $phim)
-                            <div class="col-lg-3 col-md-6 col-sm-12 grid-item" style="float:left" onclick="">
-                                <article class="entry-item">
-                                    <div class="front">
-                                        <div class="entry-thumb">
-                                            <img
-                                                src="{{ $phim->HinhAnh ? asset('storage/' . $phim->HinhAnh) : asset('images/no-image.jpg') }}">
-                                        </div>
-                                        <a href="{{ route('phim.chiTiet', ['slug' => $phim->Slug]) }}">
-                                            <h4 class="entry-title">{{ $phim->TenPhim }} (T{{ $phim->DoTuoi }})</h4>
-                                        </a>
-                                        <div class="entry-genre">
-                                            <p>
-                                                @foreach ($phim->theLoai as $index => $theLoai)
-                                                    {{ $theLoai->TenTheLoai }}{{ $index < count($phim->theLoai) - 1 ? ', ' : '' }}
-                                                @endforeach
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div class="back">
-                                        <h3 class="entry-title">
-                                            <a href="{{ route('phim.chiTiet', ['slug' => $phim->Slug]) }}">{{ $phim->TenPhim }}
-                                                (T{{ $phim->DoTuoi }})
-                                            </a>
-                                        </h3>
-                                        <span class="pg">P</span>
-                                        <div class="movie-char-info-left">
-                                            <p style="font-style:italic">
-                                                @foreach ($phim->theLoai as $index => $theLoai)
-                                                    {{ $theLoai->TenTheLoai }}{{ $index < count($phim->theLoai) - 1 ? ', ' : '' }}
-                                                @endforeach
-                                            </p>
-                                        </div>
-                                        <div class="entry-time">
-                                            <i class="fa fa-clock-o">
-                                            </i>
-                                            @php
-                                                $gio = floor($phim->ThoiLuong / 60);
-                                                $phut = $phim->ThoiLuong % 60;
-                                            @endphp
-                                            {{ $gio > 0 ? $gio . ' giờ ' : '' }}{{ $phut > 0 ? $phut . ' phút' : '' }}
-                                        </div>
-                                        <p></p>
-                                        <p>{{ Str::words($phim->MoTaPhim, 40, '...') }}</p>
-                                        <p></p>
-                                        <div class="entry-button">
-                                            <a href="{{ $phim->Trailer }}" class="fancybox.iframe amy-fancybox play-video">
-                                                <i aria-hidden="true" class="fa fa-play"></i>Trailer
-                                            </a>
-                                            <a href="{{ route('phim.chiTiet', ['slug' => $phim->Slug]) }}">
-                                                <i aria-hidden="true" class="fa fa-ticket"></i>Đặt vé
-                                            </a>
-                                        </div>
-                                        <div class="movie-char-info">
-                                            <div class="clearfix"></div>
-                                            <div class="movie-char-info-left">
-                                                <h6>Đạo diễn</h6>
-                                                <span>{{ $phim->DaoDien }}</span>
-                                            </div>
-                                            <div class="clearfix"></div>
-                                            <div class="movie-char-info-right">
-                                                <h6>Diễn viên</h6>
-                                                <span>{{ $phim->DienVien }}</span>
-                                            </div>
-                                            <div class="clearfix"></div>
-                                        </div>
-                                    </div>
-                                </article>
-                            </div>
-                        @endforeach
-                    @endif
-                    <div class="clearfix"></div>
-                </div>
+    <div class="films-lists-wrapper">
+        @if (Route::currentRouteName() === 'phim.dangChieu')
+            <div class="header-2">
+                <h1 class="twinkle-title-pro">
+                    <span class="star-pro star-pro-1"></span>
+                    <span class="star-pro star-pro-2"></span>
+                    <span class="star-pro star-pro-3"></span>
+                    Phim đang chiếu
+                    <span class="star-pro star-pro-4"></span>
+                    <span class="star-pro star-pro-5"></span>
+                    <span class="star-pro star-pro-6"></span>
+                </h1>
+                <p>Trải nghiệm điện ảnh đỉnh cao tại rạp chiếu phim CineTick</p>
             </div>
+        @elseif (Route::currentRouteName() === 'phim.sapChieu')
+            <div class="header-2">
+                <h1 class="twinkle-title-pro">
+                    Phim sắp chiếu
+                </h1>
+                <p>Trải nghiệm điện ảnh đỉnh cao tại rạp chiếu phim CineTick</p>
+            </div>
+        @endif
+
+        @if ($danhSachPhim->isEmpty())
+            <p class="update-showtime">
+                <span class="marquee-text">Ôi không! Phim đâu rồi? Đừng lo lắng chúng tôi sẽ cập nhật chúng ngay
+                    thôi.</span>
+            </p>
+        @else
+            <div class="films-list">
+            @foreach ($danhSachPhim as $phim)
+                <a href="{{ route('phim.chiTiet', ['slug' => $phim->Slug]) }}" class="film-card-link">
+                    <div class="film-card">
+                        <div class="film-poster">
+                            <img src="{{ $phim->HinhAnh ? asset('storage/' . $phim->HinhAnh) : asset('images/no-image.jpg') }}"
+                                alt="{{ $phim->TenPhim }}">
+                            <div class="film-rating">
+                                <span class="star"><svg aria-hidden="true" focusable="false" data-prefix="fas"
+                                        data-icon="star"
+                                        class="svg-inline--fa fa-star text-yellow-400 mr-3 ml-4 text-[12px]"
+                                        role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"
+                                        width="15px">
+                                        <path fill="#FFD700"
+                                            d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z">
+                                        </path>
+                                    </svg>
+                                </span>
+                                <span>{{ $phim->avg_rating }}</span>
+                            </div>
+                            <div class="film-age">{{ $phim->DoTuoi }}</div>
+                        </div>
+                        <div class="film-title">{{ $phim->TenPhim }}</div>
+                        <p class="movie-genre">
+                            @foreach ($phim->theLoai as $index => $theLoai)
+                                {{ $theLoai->TenTheLoai }}{{ $index < count($phim->theLoai) - 1 ? ', ' : '' }}
+                            @endforeach
+                        </p>
+                    </div>
+                </a>
+            @endforeach
+            </div>
+        @endif
+        <div class="pagination-wrapper">
+            {{ $danhSachPhim->links('pagination::bootstrap-4') }}
         </div>
-    </section>
+    </div>
 @stop

@@ -287,7 +287,7 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
         Route::get('/edit/{id}', [TinTucController::class, 'edit'])->name('edit');
         Route::put('/update/{id}', [TinTucController::class, 'update'])->name('update'); // dùng PUT
         Route::delete('/delete/{id}', [TinTucController::class, 'destroy'])->name('destroy'); // dùng DELETE
-        Route::post('/tinymce/upload', [TinTucController::class, 'tinymceUpload'])->name('tinymce.upload');
+        Route::post('/upload-image', [TinTucController::class, 'uploadImage'])->name('upload_image');
     });
 
     // Routes quản lý bình luận (cập nhật)
