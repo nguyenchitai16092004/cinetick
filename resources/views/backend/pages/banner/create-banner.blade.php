@@ -16,7 +16,7 @@
                     @error('HinhAnh')
                         <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                     @enderror
-                </div>  
+                </div>
 
                 <!-- Tiêu đề -->
                 <div class="mb-4">
@@ -29,7 +29,16 @@
                         <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                     @enderror
                 </div>
-
+                <!-- Mô tả -->
+                <div class="mb-4">
+                    <label for="MoTa" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Mô
+                        tả</label>
+                    <textarea id="MoTa" name="MoTa" class="w-full px-4 py-2 border rounded-lg dark:bg-gray-700 dark:text-white"
+                        rows="3">{{ old('MoTa') }}</textarea>
+                    @error('MoTa')
+                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
                 <!-- Loại đường dẫn -->
                 <div class="mb-4">
                     <label for="DuongDan" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">

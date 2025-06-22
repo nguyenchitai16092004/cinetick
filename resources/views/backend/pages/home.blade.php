@@ -111,6 +111,7 @@
                         <tr>
                             <th style="width: 160px;">Hình ảnh</th>
                             <th>Tiêu đề</th>
+                            <th>Mô tả</th>
                             <th style="width: 250px;">Liên kết</th>
                             <th style="width: 140px;">Thao tác</th>
                         </tr>
@@ -125,24 +126,32 @@
                                 <td class="fw-bold text-dark align-middle">
                                     {{ $banner->TieuDe }}
                                 </td>
+                                <td class="fw-bold text-dark align-middle">
+                                    {{ $banner->MoTa     }}
+                                </td>
                                 <td class="text-truncate align-middle">
                                     <a href="{{ $banner->Link }}" class="text-decoration-none text-primary" target="_blank">
                                         {{ $banner->Link }}
                                     </a>
                                 </td>
                                 <td class="text-center align-middle">
-                                    <a href="{{ route('banner.edit', $banner->id) }}"
-                                        class="btn btn-sm btn-outline-warning me-1">
-                                        ✏️ Sửa
-                                    </a>
+                                    <form action="{{ route('banner.edit', $banner->id) }}" method="GET" class="d-inline">
+                                        <button type="submit" class="btn btn-sm btn-outline-warning me-1">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                    </form>
+
                                     <form action="{{ route('banner.destroy', $banner->id) }}" method="POST"
                                         class="d-inline"
                                         onsubmit="return confirm('Bạn có chắc muốn xóa banner này không?')">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-outline-danger">🗑️ Xóa </button>
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
                                     </form>
                                 </td>
+
                             </tr>
                         @empty
                             <tr>
