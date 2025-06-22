@@ -32,10 +32,21 @@
                             @enderror
                         </div>
 
-                        <!-- Tiêu đề -->
+                        <!-- Mô tả -->
+                        <div class="">
+                            <label for="MoTa" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Mô
+                                tả</label>
+                            <textarea id="MoTa" name="MoTa" class="w-full px-4 py-2 border rounded-lg dark:bg-gray-700 dark:text-white"
+                                rows="3">{{ old('MoTa', $banner->MoTa) }}</textarea>
+                            @error('MoTa')
+                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+
                         <div class="col-span-2">
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Link *</label>
-                            <input type="text" name="" value="{{ old('', $banner->Link) }}" class="w-full px-4 py-2 border rounded-lg dark:bg-gray-700 dark:text-white" readonly>
+                            <input type="text" name="" value="{{ old('', $banner->Link) }}"
+                                class="w-full px-4 py-2 border rounded-lg dark:bg-gray-700 dark:text-white" readonly>
                             @error('')
                                 <p class="text-red-500 text-sm">{{ $message }}</p>
                             @enderror
@@ -81,7 +92,7 @@
                         <div class="col-span-2">
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Chọn hình ảnh
                                 mới</label>
-                            <input type="file" name="HinhAnh" class="w-full">
+                            <input type="file" name="HinhAnh" class="w-full" value="{{ $banner->HinhAnh }}">
                             <p class="text-xs text-gray-500 mt-1">Chọn file mới (để trống nếu không thay đổi)</p>
                             @error('HinhAnh')
                                 <p class="text-red-500 text-sm">{{ $message }}</p>

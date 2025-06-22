@@ -19,7 +19,8 @@ class BannerController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'TieuDe' => 'required|string|max:255',
+            'TieuDe' => 'required|string|max:100',
+            'MoTa' => 'required|string|max:255',
             'HinhAnh' => 'required|image|mimes:jpg,png,jpeg|max:2048',
             'DuongDan' => 'required|string',
             'link' => 'required|string',
@@ -32,6 +33,7 @@ class BannerController extends Controller
 
         DB::table('banners')->insert([
             'TieuDe' => $request->TieuDe,
+            'MoTa' => $request->MoTa,
             'HinhAnh' => $path,
             'Link' => $fullLink,
             'created_at' => now(),
@@ -51,13 +53,17 @@ class BannerController extends Controller
 
             foreach ($phims as $phim) {
                 $data[] = [
-                        'ID_Phim' => $phim->ID_Phim,
+                    'ID_Phim' => $phim->ID_Phim,
                     'name' => $phim->TenPhim,
                     'slug' => $phim->Slug
                 ];
             }
         } elseif ($type === '/goc-dien-anh/') {
-            $tintucs = DB::table('tin_tuc')->select('ID_TinTuc', 'TieuDe', 'Slug')->where('TrangThai', 1)->get();
+            $tintucs = DB::table('tin_tuc')
+                ->select('ID_TinTuc', 'TieuDe', 'Slug')
+                ->whereIn('LoaiBaiViet', [1, 4])
+                ->where('TrangThai', 1)
+                ->get();
 
             foreach ($tintucs as $tintuc) {
                 $data[] = [
@@ -83,33 +89,63 @@ class BannerController extends Controller
 
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'TieuDe' => 'required|string|max:255',
-            'HinhAnh' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'Link' => 'nullable|url',
-        ]);
+        try {
+            $request->validate([
+                'TieuDe' => 'required|string|max:100',
+                'MoTa' => 'required|string|max:255',
+                'HinhAnh' => 'nullable|image|mimes:jpg,png,jpeg|max:2048',
+                'DuongDan' => 'required|string',
+                'link' => 'required|string',
+            ]);
 
-        $banner = DB::table('banners')->where('id', $id)->first();
-        if (!$banner) {
-            abort(404);
+            $banner = DB::table('banners')->where('id', $id)->first();
+            if (!$banner) {
+                abort(404);
+            }
+
+            $data = [
+                'TieuDe' => $request->TieuDe,
+                'MoTa' => $request->MoTa ,
+                'Link' => $request->DuongDan . $request->link,
+                'updated_at' => now(),
+            ];
+
+            if ($request->hasFile('HinhAnh')) {
+                if ($banner->HinhAnh && Storage::disk('public')->exists($banner->HinhAnh)) {
+                    Storage::disk('public')->delete($banner->HinhAnh);
+                }
+
+                $data['HinhAnh'] = $request->file('HinhAnh')->store('banners', 'public');
+            }
+
+            DB::table('banners')->where('id', $id)->update($data);
+
+            return redirect()->route('cap-nhat-thong-tin.index')->with('success', 'Cập nhật banner thành công!');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Có lỗi xảy ra: ' . $e->getMessage());
         }
+    }
 
-        $data = [
-            'TieuDe' => $request->TieuDe,
-            'Link' => $request->Link,
-            'updated_at' => now(),
-        ];
+    public function destroy($id)
+    {
+        try {
+            $banner = DB::table('banners')->where('id', $id)->first();
 
-        if ($request->hasFile('HinhAnh')) {
-            // Xoá hình cũ nếu có
+            if (!$banner) {
+                return redirect()->back()->with('error', 'Không tìm thấy banner!');
+            }
+
+            // Xóa ảnh khỏi storage nếu tồn tại
             if ($banner->HinhAnh && Storage::disk('public')->exists($banner->HinhAnh)) {
                 Storage::disk('public')->delete($banner->HinhAnh);
             }
-            $data['HinhAnh'] = $request->file('HinhAnh')->store('banners', 'public');
+
+            // Xóa dữ liệu trong database
+            DB::table('banners')->where('id', $id)->delete();
+
+            return redirect()->route('cap-nhat-thong-tin.index')->with('success', 'Xóa banner thành công!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Đã xảy ra lỗi: ' . $e->getMessage());
         }
-
-        DB::table('banners')->where('id', $id)->update($data);
-
-        return redirect()->route('cap-nhat-thong-tin.index')->with('success', 'Cập nhật banner thành công!');
     }
 }
