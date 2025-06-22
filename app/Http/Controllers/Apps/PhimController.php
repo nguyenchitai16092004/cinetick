@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Log;
 use App\Models\VeXemPhim;
 use App\Models\TinTuc;
 use App\Models\ThongTinTrangWeb;
+use App\Models\Banner;
+
 
 class PhimController extends Controller
 {
@@ -30,33 +32,42 @@ class PhimController extends Controller
             ->whereDate('NgayKetThuc', '>=', $today)
             ->get();
 
+        foreach ($dsPhimDangChieu as $phim) {
+            $phim->avg_rating = round($phim->binhLuan()->avg('DiemDanhGia'), 1) ?: '0.0';
+        }
+
         $dsPhimSapChieu = Phim::whereDate('NgayKhoiChieu', '>', $today)
             ->get();
+
+        foreach ($dsPhimSapChieu as $phim) {
+            $phim->avg_rating = round($phim->binhLuan()->avg('DiemDanhGia'), 1) ?: '0.0';
+        }
 
         $tinTucs = TinTuc::where('LoaiBaiViet', 4)
             ->where('TrangThai', 1)
             ->orderByDesc('created_at')
             ->take(4)
             ->get();
-            
+
         $khuyenMais = TinTuc::where('LoaiBaiViet', 1)
             ->where('TrangThai', 1)
             ->orderByDesc('created_at')
             ->take(4)
             ->get();
-            
+
         $footerGioiThieu = TinTuc::where('LoaiBaiViet', 2)
             ->where('TrangThai', 1)
             ->orderBy('created_at', 'asc')
             ->get();
-            
+
         $footerChinhSach = TinTuc::where('LoaiBaiViet', 3)
             ->where('TrangThai', 1)
             ->orderBy('created_at', 'asc')
             ->get();
-            
+
         $thongTinTrangWeb = ThongTinTrangWeb::all();
 
+        $banners = Banner::all();
 
         return view('frontend.pages.home', [
             'dsPhimDangChieu' => $dsPhimDangChieu,
@@ -69,6 +80,7 @@ class PhimController extends Controller
             'footerGioiThieu' => $footerGioiThieu,
             'footerChinhSach' => $footerChinhSach,
             'thongTinTrangWeb' => $thongTinTrangWeb,
+            'banners'         => $banners,
         ]);
     }
     public function phimDangChieu()
@@ -76,7 +88,7 @@ class PhimController extends Controller
         $today = now()->toDateString();
         $danhSachPhim = Phim::whereDate('NgayKhoiChieu', '<=', $today)
             ->whereDate('NgayKetThuc', '>=', $today)
-            ->get();
+            ->paginate(10);
 
         $title = 'Phim đang chiếu';
         return view('frontend.pages.phim', compact('danhSachPhim', 'title'));
@@ -86,7 +98,7 @@ class PhimController extends Controller
     {
         $today = now()->toDateString();
         $danhSachPhim = Phim::whereDate('NgayKhoiChieu', '>=', $today)
-            ->get();
+            ->paginate(10);
 
         $title = 'Phim sắp chiếu';
         return view('frontend.pages.phim', compact('danhSachPhim', 'title'));
@@ -221,7 +233,7 @@ class PhimController extends Controller
             $gioChieu = strlen($suat->GioChieu) === 5 ? $suat->GioChieu . ':00' : $suat->GioChieu;
             $endTime = Carbon::createFromFormat('Y-m-d H:i:s', $suat->NgayChieu . ' ' . $gioChieu)
                 ->addMinutes($suat->phim->ThoiLuong ?? 0);
-            
+
             Log::info('Thời gian bình luận:', [
                 'now' => $now->toDateTimeString(),
                 'showTime' => $suat->NgayChieu . ' ' . $gioChieu,
@@ -276,7 +288,15 @@ class PhimController extends Controller
         $idPhim = $request->input('id_phim');
         $avg = BinhLuan::where('ID_Phim', $idPhim)->avg('DiemDanhGia');
         $count = BinhLuan::where('ID_Phim', $idPhim)->count();
-        $avg = $avg ? number_format($avg, 1) : '0.0';
-        return response()->json(['avg' => $avg, 'count' => $count]);
+
+        if (is_null($avg)) {
+            $avgStr = '10';
+        } elseif (fmod($avg, 1) == 0.0) {
+            $avgStr = (string)(int)$avg;
+        } else {
+            $avgStr = sprintf('%.2f', floor($avg * 100) / 100);
+        }
+
+        return response()->json(['avg' => $avgStr, 'count' => $count]);
     }
 }

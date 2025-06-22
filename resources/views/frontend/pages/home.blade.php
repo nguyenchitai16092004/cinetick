@@ -21,100 +21,50 @@
         <div class="slide-number">
             <span class="current" id="currentNumber">01</span>
             <span>/</span>
-            <span id="totalNumber">05</span>
+            <span id="totalNumber">{{ str_pad($banners->count(), 2, '0', STR_PAD_LEFT) }}</span>
         </div>
 
         <div class="carousel-wrapper">
-            <div class="carousel-track" id="carouselTrack">
-                <!-- Slide 1 -->
-                <div class="carousel-slide active">
-                    <img src="https://cdn.galaxycine.vn/media/2025/5/16/until-dawn-2048_1747365952336.jpg" alt="Until Dawn">
-                    <div class="slide-content">
-                        <div class="slide-title">UNTIL DAWN</div>
-                        <div class="slide-subtitle">ÁC MỘNG KINH HOÀNG TRỖI DẬY MỖI ĐÊM</div>
-                        <div class="slide-description">Từ đạo diễn của LIGHTS OUT và ANNABELLE: CREATION. Một đêm định mệnh
-                            sẽ thay đổi cuộc sống của nhóm bạn trẻ mãi mãi.</div>
-                        <div class="cta-buttons">
-                            <button class="primary-btn">XEM TRAILER</button>
-                            <button class="secondary-btn">CHI TIẾT</button>
+
+            @if ($banners->isEmpty())
+                <div class="carousel-track" id="carouselTrack">
+                    <div class="carousel-slide active">
+                        <img src="{{ asset('images/no-image.jpg') }}" alt="No Banner">
+                        <div class="slide-content">
+                            <div class="slide-title">Chưa có banner</div>
                         </div>
                     </div>
                 </div>
-
-                <!-- Slide 2 -->
-                <div class="carousel-slide">
-                    <img src="https://cdn.galaxycine.vn/media/2025/5/16/glx-2048x682_1747389452013.png" alt="Lilo & Stitch">
-                    <div class="slide-content">
-                        <div class="slide-title">LILO & STITCH</div>
-                        <div class="slide-subtitle">PHIÊU LƯU CÙNG NGƯỜI BẠN NGOÀI HÀNH TINH</div>
-                        <div class="slide-description">Bộ phim hoạt hình Disney kinh điển trở lại với câu chuyện về tình bạn
-                            và gia đình đầy cảm động.</div>
-                        <div class="cta-buttons">
-                            <button class="primary-btn">XEM TRAILER</button>
-                            <button class="secondary-btn">CHI TIẾT</button>
-                        </div>
-                    </div>
+            @else
+                <div class="carousel-track" id="carouselTrack">
+                    @foreach ($banners as $index => $banner)
+                        <a href="{{ $banner->Link }}">
+                            <div class="carousel-slide {{ $index == 0 ? ' active' : '' }}">
+                                <img src="{{ asset('storage/' . $banner->HinhAnh) }}" alt="{{ $banner->TieuDe }}">
+                                <div class="slide-content">
+                                    <a href="{{ $banner->Link }}" class="slide-link">
+                                        <div class="slide-title">{{ $banner->TieuDeChinh }}</div>
+                                    </a>
+                                    <div class="slide-subtitle">{{ $banner->TieuDePhu }}</div>
+                                    @if ($banner->MoTa)
+                                        <div class="slide-description">{{ $banner->MoTa }}</div>
+                                    @endif
+                                </div>
+                            </div>
+                        </a>
+                    @endforeach
                 </div>
-
-                <!-- Slide 3 -->
-                <div class="carousel-slide">
-                    <img src="https://cdn.galaxycine.vn/media/2025/5/23/doraemon-movie-44-1_1748017461000.jpg"
-                        alt="Doraemon Movie">
-                    <div class="slide-content">
-                        <div class="slide-title">DORAEMON</div>
-                        <div class="slide-subtitle">NOBITA'S ART WORLD TALES</div>
-                        <div class="slide-description">Cuộc phiêu lưu mới trong thế giới nghệ thuật đầy màu sắc và kỳ diệu
-                            cùng Doraemon và những người bạn.</div>
-                        <div class="cta-buttons">
-                            <button class="primary-btn">XEM TRAILER</button>
-                            <button class="secondary-btn">CHI TIẾT</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Slide 4 -->
-                <div class="carousel-slide">
-                    <img src="https://cdn.galaxycine.vn/media/2025/5/15/mua-lua-2048_1747295237842.jpg" alt="Mưa Lửa">
-                    <div class="slide-content">
-                        <div class="slide-title">MƯA LỬA</div>
-                        <div class="slide-subtitle">ANH TRAI VƯỢT NGÀN CHÔNG GAI</div>
-                        <div class="slide-description">Hành trình đầy cam go và thử thách của những người anh em trong cuộc
-                            chiến sinh tồn khốc liệt.</div>
-                        <div class="cta-buttons">
-                            <button class="primary-btn">XEM TRAILER</button>
-                            <button class="secondary-btn">CHI TIẾT</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Slide 5 -->
-                <div class="carousel-slide">
-                    <img src="https://cdn.galaxycine.vn/media/2025/5/9/mi8-2048_1746763282349.jpg"
-                        alt="Mission Impossible 8">
-                    <div class="slide-content">
-                        <div class="slide-title">MISSION</div>
-                        <div class="slide-subtitle">IMPOSSIBLE: THE FINAL RECKONING</div>
-                        <div class="slide-description">Nhiệm vụ cuối cùng và nguy hiểm nhất của Ethan Hunt trong hành trình
-                            đầy kịch tính và bất ngờ.</div>
-                        <div class="cta-buttons">
-                            <button class="primary-btn">XEM TRAILER</button>
-                            <button class="secondary-btn">CHI TIẾT</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
+            @endif
             <!-- Navigation -->
             <button class="carousel-nav carousel-prev" onclick="previousSlide()">‹</button>
             <button class="carousel-nav carousel-next" onclick="nextSlide()">›</button>
 
             <!-- Dots -->
             <div class="carousel-dots" id="carouselDots">
-                <span class="dot active" onclick="currentSlide(1)"></span>
-                <span class="dot" onclick="currentSlide(2)"></span>
-                <span class="dot" onclick="currentSlide(3)"></span>
-                <span class="dot" onclick="currentSlide(4)"></span>
-                <span class="dot" onclick="currentSlide(5)"></span>
+                @foreach ($banners as $index => $banner)
+                    <span class="dot{{ $index == 0 ? ' active' : '' }}"
+                        onclick="currentSlide({{ $index + 1 }})"></span>
+                @endforeach
             </div>
         </div>
     </div>
@@ -246,6 +196,20 @@
                                 <div class="play-button" data-trailer="{{ $phim->Trailer }}">
                                     <div class="play-icon"></div>
                                 </div>
+                                <div class="film-rating-crou">
+                                    <span class="star">
+                                        <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="star"
+                                            class="svg-inline--fa fa-star text-yellow-400 mr-3 ml-4 text-[12px]"
+                                            role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"
+                                            width="15px">
+                                            <path fill="#FFD700"
+                                                d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z">
+                                            </path>
+                                        </svg>
+                                    </span>
+                                    <span>{{ $phim->avg_rating }}</span>
+                                </div>
+                                <div class="age-rating">{{ $phim->DoTuoi }}</div>
                             </div>
                             <div class="movie-info">
                                 <a href="{{ route('phim.chiTiet', ['slug' => $phim->Slug]) }}">
@@ -256,8 +220,6 @@
                                         {{ $theLoai->TenTheLoai }}{{ $index < count($phim->theLoai) - 1 ? ', ' : '' }}
                                     @endforeach
                                 </p>
-                                <div class="film-rating-crou"><span>9.5</span><span class="star">★</span></div>
-                                <div class="age-rating">{{ $phim->DoTuoi }}</div>
                             </div>
                         </div>
                     @endforeach
@@ -299,6 +261,19 @@
                                     src="{{ $phim->HinhAnh ? asset('storage/' . $phim->HinhAnh) : asset('images/no-image.jpg') }}">
                                 <div class="play-button" data-trailer="{{ $phim->Trailer }}">
                                     <div class="play-icon"></div>
+                                </div>
+                                <div class="film-rating-crou">
+                                    <span class="star">
+                                        <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="star"
+                                            class="svg-inline--fa fa-star text-yellow-400 mr-3 ml-4 text-[12px]"
+                                            role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"
+                                            width="15px">
+                                            <path fill="#FFD700"
+                                                d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z">
+                                            </path>
+                                        </svg>
+                                    </span>
+                                    <span>{{ $phim->avg_rating }}</span>
                                 </div>
 
                                 <div class="age-rating">{{ $phim->DoTuoi }}</div>

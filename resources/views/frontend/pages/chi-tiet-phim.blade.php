@@ -27,7 +27,13 @@
                         </a>
                         <span class="age-badge">{{ $phim->DoTuoi }}</span>
                         <span class="rating">
-                            <span class="star">★</span>
+                            <span class="star"> <svg aria-hidden="true" focusable="false" data-prefix="fas"
+                                    data-icon="star" class="svg-inline--fa fa-star text-yellow-400 mr-3 ml-4 text-[12px]"
+                                    role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" width="15px">
+                                    <path fill="#FFD700"
+                                        d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z">
+                                    </path>
+                                </svg></span>
                             <span class="avgRatingInfo">--</span>
                         </span>
                     </div>
@@ -39,15 +45,43 @@
                     </h1>
 
                     <div class="movie-badges fade-in-up stagger-3">
-                        <span class="badge badge-format">{{ $phim->DoHoa }}</span>
+
                         <div class="evaluate" id="openRatingModal">
-                            <span class="star">★</span>
+                            <span class="star"> <svg aria-hidden="true" focusable="false" data-prefix="fas"
+                                    data-icon="star" class="svg-inline--fa fa-star text-yellow-400  text-[12px]"
+                                    role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" width="15px">
+                                    <path fill="#FFD700"
+                                        d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z">
+                                    </path>
+                                </svg></span>
                             <span id="avgRatingInfo">--</span>
                             (<span id="countRatingInfo">0</span> lượt đánh giá)
+                        </div>
+
+                        <div class="badge badge-format" style="{{ empty($phim->DoHoa) ? 'visibility:hidden' : '' }}">
+                            {{ $phim->DoHoa ?? '---' }}
                         </div>
                     </div>
 
                     <div class="movie-meta fade-in-up stagger-4">
+                        <div class="meta-item">
+                            <div class="meta-label">
+                                <i class="fa-solid fa-user-tie"></i>
+                                Nhà sản xuất
+                            </div>
+                            <div class="meta-value">
+                                {{ $phim->NhaSanXuat }}
+                            </div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">
+                                <i class="fa-solid fa-user-tie"></i>
+                                Đạo diễn
+                            </div>
+                            <div class="meta-value">
+                                {{ $phim->DaoDien }}
+                            </div>
+                        </div>
                         <div class="meta-item">
                             <div class="meta-label">
                                 <i class="fa-solid fa-earth-asia"></i>
@@ -71,7 +105,8 @@
                                 <i class="fas fa-calendar-alt"></i>
                                 Ngày khởi chiếu
                             </div>
-                            <div class="meta-value">{{ \Carbon\Carbon::parse($phim->NgayKhoiChieu)->format('d/m/Y') }}</div>
+                            <div class="meta-value">{{ \Carbon\Carbon::parse($phim->NgayKhoiChieu)->format('d/m/Y') }}
+                            </div>
                         </div>
                         <div class="meta-item">
                             <div class="meta-label">
@@ -133,7 +168,13 @@
                 <div class="rating-movie-title">{{ $phim->TenPhim }}</div>
                 <div class="rating-modal-score">
                     <div class="total-rating">
-                        <span class="star-icon">★</span>
+                        <span class="star-icon"> <svg aria-hidden="true" focusable="false" data-prefix="fas"
+                                data-icon="star" class="svg-inline--fa fa-star text-yellow-400  text-[12px]"
+                                role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" width="20px">
+                                <path fill="#FFD700"
+                                    d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z">
+                                </path>
+                            </svg></span>
                         <span class="score-value" id="avgRatingModal">--</span>
                         <span class="score-divider">/10</span>
                     </div>
@@ -147,11 +188,13 @@
                     @endfor
                 </div>
                 <div class="custom-rating-input">
-                    <label class="customRatingInput-title" for="customRatingInput">Hoặc nhập điểm bạn muốn (0 - 10):</label>
-                    <input type="number" id="customRatingInput" min="0" max="10" step="0.1" value=""
-                        placeholder="">
+                    <label class="customRatingInput-title" for="customRatingInput">Hoặc nhập điểm bạn muốn (0 -
+                        10):</label>
+                    <input type="number" id="customRatingInput" min="0" max="10" step="0.1"
+                        value="" placeholder="">
                 </div>
                 <div id="ratingMsg"></div>
+
             </div>
             <div class="rating-modal-actions">
                 <button class="btn-cancel" id="cancelRatingModal">Đóng</button>

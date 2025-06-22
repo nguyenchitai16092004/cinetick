@@ -124,19 +124,17 @@ class TinTucController extends Controller
 
         return redirect()->route('tin_tuc.index')->with('success', 'Xóa tin tức thành công');
     }
-
-    public function tinymceUpload(Request $request)
+    
+    public function uploadImage(Request $request)
     {
         if ($request->hasFile('file')) {
             $file = $request->file('file');
-            $filename = time() . '_' . $file->getClientOriginalName();
-            $file->storeAs('uploads/tinymce', $filename, 'public');
-            $url = asset('storage/uploads/tinymce/' . $filename);
-
-            return response()->json([
-                'location' => $url
-            ]);
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $file->storeAs('tin-tuc', $fileName, 'public');
+            $url = asset('storage/tin-tuc/' . $fileName);
+            return response()->json(['location' => $url]);
         }
         return response()->json(['error' => 'No file uploaded.'], 400);
     }
+
 }

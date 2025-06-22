@@ -17427,6 +17427,8 @@ li {
     position: relative;
     font-weight: 600;
     text-transform: uppercase;
+    z-index: 9999;
+
 }
 
 .mainmenu nav > ul > li > a:after {
@@ -17442,10 +17444,14 @@ li {
     transition: all 0.25s ease-in-out;
     background-image: -webkit-linear-gradient(left, #f37a3b, #f37a3b);
     background-image: linear-gradient(to right, #f37a3b, #f37a3b);
+    z-index: 9999;
+
 }
 
 .mainmenu nav > ul > li.active > a {
     position: relative;
+    z-index: 9999;
+
 }
 
 /* .mainmenu nav > ul > li.active > a:after {
@@ -20165,7 +20171,6 @@ ul.company-desc-list li i {
     font-size: 50px;
     margin-top: 20px;
     display: inline-block;
-    position: relative;
 }
 
 .pricing-head h2 small {

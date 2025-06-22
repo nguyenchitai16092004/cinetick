@@ -16,6 +16,7 @@ class Phim extends Model
         'TenPhim',
         'Slug',
         'DaoDien',
+        'NhaSanXuat',
         'DienVien',
         'ThoiLuong',
         'NgayKhoiChieu',
@@ -46,5 +47,16 @@ class Phim extends Model
     public function binhLuan()
     {
         return $this->hasMany(BinhLuan::class, 'ID_Phim', 'ID_Phim');
+    }
+    public function getAvgRatingAttribute()
+    {
+        $avg = $this->binhLuan()->avg('DiemDanhGia');
+        if (is_null($avg)) {
+            return '10';
+        }
+        if (fmod($avg, 1) == 0.0) {
+            return (string)(int)$avg;
+        }
+        return (string)round($avg, 2);
     }
 }

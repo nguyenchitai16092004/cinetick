@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('TenPhim', 100);
             $table->string('Slug', 255);
             $table->string('DaoDien', 100);
+            $table->string('NhaSanXuat', 100);
             $table->string('DienVien', 255);
             $table->integer('ThoiLuong');
             $table->date('NgayKhoiChieu');
@@ -24,7 +25,7 @@ return new class extends Migration
             $table->string('Trailer', 255)->nullable();
             $table->string('HinhAnh', 255)->nullable();
             $table->string('DoTuoi', 100);
-            $table->string('DoHoa', 3);
+            $table->string('DoHoa', 3)->nullable();
             $table->string('QuocGia', 100);
             $table->timestamps();
         });

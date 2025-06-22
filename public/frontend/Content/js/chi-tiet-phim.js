@@ -155,17 +155,18 @@ window.initRatingModal = function (options) {
                 
                 var avgInfo = document.getElementById("avgRatingInfo");
                 var countInfo = document.getElementById( "countRatingInfo" );
-                document.querySelector(".avgRatingInfo").textContent =
-                    avg % 1 === 0 ? avg.toString() : avg.toFixed( 1 );
+                document.querySelector(".avgRatingInfo").textContent = data.avg;
                 
                     if (avgInfo)
                         avgInfo.textContent =
                             avg % 1 === 0 ? avg.toString() : avg.toFixed(1);
-                    if (countInfo) countInfo.textContent = data.count;
+                            if (avgInfo) avgInfo.textContent = data.avg;
 
                 // Cập nhật trong popup modal
+                var countInfo = document.getElementById("countRatingInfo");
                 var avgModal = document.getElementById("avgRatingModal");
-                var countModal = document.getElementById("countRatingModal");
+                var countModal = document.getElementById( "countRatingModal" );
+                if (countInfo) countInfo.textContent = data.count;
                 if (avgModal) avgModal.textContent = data.avg;
                 if (countModal) countModal.textContent = data.count;
             });
