@@ -1,126 +1,59 @@
 @extends('frontend.layouts.master')
 @section('title', 'Quên mật khẩu')
 @section('main')
-    <div class="sign section--bg" data-bg="/Content/img/section/section.jpg"
-        style="background: #e6e7e9; max-width: 100% !important; border-top: 1px solid;">
-        <div class="container register" style="max-width: 100% !important;">
-            <div class="row">
-                <div class="col-md-3 register-left">
-                    <img src="Content/img/logo-white.png" alt="" />
-                    <p>Nhập Email để reset lại mật khẩu của bạn!</p>
-                </div>
-                <div class="col-md-9 register-right">
-
-                    <div class="tab-content" id="myTabContent">
-                        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-                            <h3 class="register-heading">Lấy lại mật khẩu</h3>
-                            <div class="row register-form">
-                                <div class="col-md-9">
-                                    <div class="form-group">
-                                        <input type="email" class="form-control" id="fgEmail" placeholder="Email"
-                                            value="">
-                                    </div>
-                                    <input type="submit" class="btnRegister" onclick="forgotPass()"
-                                        value="Lấy lại mật khẩu">
-                                    <div class="clearfix"></div>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-
-        </div>
+<link rel="stylesheet" href="{{ asset('frontend/Content/css/quen-mat-khau.css') }}">
+<div class="forgot-outer">
+    <div class="forgot-center-box">
+      <h1 class="forgot-title">QUÊN MẬT KHẨU</h1>
+      <div class="forgot-desc">
+        Nhập địa chỉ email của bạn và chúng tôi sẽ gửi cho bạn<br>
+        hướng dẫn để tạo mật khẩu mới
+      </div>
+      <form class="forgot-form" id="forgotForm" autocomplete="off" onsubmit="return false;">
+        <input type="email" id="fgEmail" placeholder="Email" required>
+        <button type="button" class="btnRegister" onclick="forgotPass()">GỬI MẬT KHẨU MỚI</button>
+      </form>
+      <div id="message" style="margin-top:22px;font-family:Oswald,sans-serif;font-size:1.1rem;font-weight:600;"></div>
     </div>
-
-    <script>
-        function forgotPass() {
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-
-            $(".main-reloader").css("display", "block");
-            var email = $("#fgEmail").val();
-            if (email == "" || email == undefined) {
-                $.sweetModal({
-                    content: 'Vui lòng nhập Email để lấy lại mật khẩu',
-                    title: '',
-                    icon: $.sweetModal.ICON_WARNING,
-                    theme: $.sweetModal.THEME_DARK,
-                    buttons: {
-                        'OK': {
-                            classes: 'redB'
-                        }
-                    }
-                });
-                $(".main-reloader").css("display", "none");
-                return false;
-            }
-
-            var data = JSON.stringify({
-                email: email,
-                _token: $('meta[name="csrf-token"]').attr('content')
-            });
-            $.ajax({
-                url: "{{ route('quen-mat-khau.post') }}",
-                type: "POST",
-                data: data,
-                traditional: true,
-                datatype: "json",
-                contentType: 'application/json; charset=utf-8',
-                success: function(result) {
-                    //alert(result);
-                    if (result === "true" || result === true) {
-                        $(".main-reloader").css("display", "none");
-                        $.sweetModal({
-                            content: 'Vui lòng kiểm tra email để nhận mật khẩu mới. Và đăng nhập <a href="{{ route('login.form') }}">tại đây</a>',
-                            title: 'Thông báo',
-                            icon: $.sweetModal.ICON_WARNING,
-                            theme: $.sweetModal.THEME_DARK,
-                            buttons: {
-                                'OK': {
-                                    classes: 'redB'
-                                }
-                            }
-                        }, function(confirm) {
-                            if (confirm) {
-                                location.href = "{{ asset('/') }}";
-                            }
-                        });
-
-                    } else {
-                        $(".main-reloader").css("display", "none");
-                        $.sweetModal({
-                            content: result,
-                            title: '',
-                            icon: $.sweetModal.ICON_WARNING,
-                            theme: $.sweetModal.THEME_DARK,
-                            buttons: {
-                                'OK': {
-                                    classes: 'redB'
-                                }
-                            }
-                        });
-                    }
-                },
-                error: function(xhr) {
-                    $(".main-reloader").css("display", "none");
-                    $.sweetModal({
-                        content: xhr.responseText || 'Có lỗi xảy ra!',
-                        title: 'Lỗi',
-                        icon: $.sweetModal.ICON_WARNING,
-                        theme: $.sweetModal.THEME_DARK,
-                        buttons: {
-                            'OK': {
-                                classes: 'redB'
-                            }
-                        }
-                    });
-                }
-            });
+</div>
+<script>
+    function forgotPass() {
+        var email = $("#fgEmail").val().trim();
+        var msg = $("#message");
+        msg.css("color", "#f8e12f").text('');
+        if(email === "" || !/^[^@]+@[^@]+\.[^@]+$/.test(email)){
+            msg.css("color", "#ff6060").text('Vui lòng nhập địa chỉ email hợp lệ!');
+            return false;
         }
-    </script>
-@stop
+        msg.text('Đang gửi mã xác minh...');
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        var data = JSON.stringify({
+            email: email,
+            _token: $('meta[name="csrf-token"]').attr('content')
+        });
+        $.ajax({
+            url: "{{ route('quen-mat-khau.post') }}",
+            type: "POST",
+            data: data,
+            traditional: true,
+            datatype: "json",
+            contentType: 'application/json; charset=utf-8',
+            success: function(result) {
+                if (result === "true" || result === true) {
+                    msg.css("color", "#6aff97");
+                    msg.html('Vui lòng kiểm tra email để nhận mật khẩu mới.<br>Và đăng nhập <a href="{{ route('login.form') }}" style="color:#ffe440;">tại đây</a>');
+                } else {
+                    msg.css("color", "#ff6060").text(result);
+                }
+            },
+            error: function(xhr) {
+                msg.css("color", "#ff6060").text(xhr.responseText || 'Có lỗi xảy ra!');
+            }
+        });
+    }
+</script>
+@endsection

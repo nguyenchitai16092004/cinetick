@@ -26,7 +26,7 @@ class PhimController extends Controller
         $raps = Rap::where('TrangThai', 1)->get();
         $phims = Phim::with('theLoai')
             ->orderBy('updated_at', 'desc')
-            ->paginate(10);
+            ->paginate(12);
 
         $dsPhimDangChieu = Phim::whereDate('NgayKhoiChieu', '<=', $today)
             ->whereDate('NgayKetThuc', '>=', $today)
@@ -88,7 +88,7 @@ class PhimController extends Controller
         $today = now()->toDateString();
         $danhSachPhim = Phim::whereDate('NgayKhoiChieu', '<=', $today)
             ->whereDate('NgayKetThuc', '>=', $today)
-            ->paginate(10);
+            ->paginate(12);
 
         $title = 'Phim đang chiếu';
         return view('frontend.pages.phim', compact('danhSachPhim', 'title'));
@@ -98,7 +98,7 @@ class PhimController extends Controller
     {
         $today = now()->toDateString();
         $danhSachPhim = Phim::whereDate('NgayKhoiChieu', '>=', $today)
-            ->paginate(10);
+            ->paginate(12);
 
         $title = 'Phim sắp chiếu';
         return view('frontend.pages.phim', compact('danhSachPhim', 'title'));

@@ -63,8 +63,8 @@
 }
 
 .footer-logo img {
-    width: 150px;
-    height: 108px;
+    width: 300px;
+    height: 300px;
     object-fit: contain;
     margin-bottom: 6px;
 }
@@ -75,9 +75,6 @@
     color: #fff;
 }
 
-.footer-social {
-    margin: 16px 0 24px 0;
-}
 
 .footer-social a {
     display: inline-block;
@@ -85,17 +82,19 @@
     vertical-align: middle;
 }
 
-.footer-social img {
+.footer-social i {
     width: 38px;
     height: 38px;
-    background: #fff;
+    background: #333;
     border-radius: 8px;
-    padding: 4px;
+    padding: 10px 10px;
     object-fit: contain;
     transition: box-shadow 0.2s;
+    position: relative;
+    bottom: 80px;
 }
 
-.footer-social img:hover {
+.footer-social i:hover {
     box-shadow: 0 0 8px #fff;
 }
 
@@ -103,7 +102,7 @@
     margin-top: 8px;
 }
 
-.footer-cert img {
+.footer-cert i {
     vertical-align: middle;
     margin: 8px 2px;
     height: 54px;
@@ -139,10 +138,9 @@ hr {
 }
 
 .footer-bottom-logo img {
-    width: 90px;
-    height: 48px;
+    width: 100px;
+    height: 60px;
     object-fit: contain;
-    margin-bottom: 4px;
 }
 
 .footer-bottom-logo span {

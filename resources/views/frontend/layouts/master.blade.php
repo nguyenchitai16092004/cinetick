@@ -9,7 +9,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title')</title>
-    <link rel="icon" href="{{ asset('frontend/Content/img/lgCineTick.png') }}" type="image/png">
+    <link rel="icon" href="{{ $thongTinTrangWeb->Icon ? asset('storage/' . $thongTinTrangWeb->Icon) : asset('images/no-image.jpg') }}" type="image/png">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -46,7 +46,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
     <script src="{{ asset('frontend/Scripts/Style88a8.js') }}"></script>
     <script src="{{ asset('frontend/Content/js/booking-release-global.js') }}"></script>
-
 
 </body>
 

@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('thong_tin_trang_web', function (Blueprint $table) {
             $table->id('Id');
             $table->string('Logo', 255)->nullable();
+            $table->string('Icon', 255)->nullable();
             $table->string('TenDonVi', 255)->nullable();
             $table->string('TenWebsite', 255)->nullable();
             $table->string('Zalo', 50)->nullable();

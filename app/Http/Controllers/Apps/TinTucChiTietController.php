@@ -48,7 +48,7 @@ class TinTucChiTietController extends Controller
         $dienAnhs = TinTuc::where('LoaiBaiViet', 4)
             ->where('TrangThai', 1)
             ->orderByDesc('created_at')
-            ->paginate(5);
+            ->paginate(12);
 
         return view('frontend.pages.dien-anh', compact('dienAnhs'));
     }
@@ -57,7 +57,7 @@ class TinTucChiTietController extends Controller
         $khuyenMais = TinTuc::where('LoaiBaiViet', 1)
             ->where('TrangThai', 1)
             ->orderByDesc('created_at')
-            ->paginate(5);
+            ->paginate(12);
 
         return view('frontend.pages.khuyen-mai', compact('khuyenMais'));
     }

@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <title>Vé Xem Phim - {{ $data['ma_hoa_don'] ?? '' }}</title>
     <style>
         body {
             background: #f4f6fb;
-            font-family: 'Segoe UI', 'Arial', sans-serif;
+            font-family: "Josefin Sans", sans-serif;
             margin: 0;
             padding: 24px;
         }
+
         .ticket-container {
             max-width: 480px;
             margin: 32px auto;
@@ -21,18 +23,21 @@
             position: relative;
             overflow: hidden;
         }
+
         .ticket-header {
             text-align: center;
             margin-bottom: 10px;
         }
+
         .ticket-header h2 {
             margin: 0;
             color: #e74c3c;
             font-size: 28px;
             font-weight: 800;
-            text-shadow: 1px 3.5px 6px rgba(231,76,60,0.08);
+            text-shadow: 1px 3.5px 6px rgba(231, 76, 60, 0.08);
             letter-spacing: 1.2px;
         }
+
         .ticket-header .code {
             margin-top: 6px;
             color: #2c3e50;
@@ -44,28 +49,34 @@
             font-weight: bold;
             border: 1px solid #ffd6cc;
         }
+
         .divider {
             border-top: 1px dashed #e74c3c;
             margin: 20px 0 22px 0;
         }
+
         .ticket-info {
             font-size: 15.5px;
             color: #30323d;
         }
+
         .ticket-info-row {
             margin-bottom: 11px;
             display: flex;
         }
+
         .ticket-info-label {
             width: 112px;
             color: #888;
             font-weight: bold;
             flex-shrink: 0;
         }
+
         .ticket-info-value {
             flex: 1;
             color: #222;
         }
+
         .seat-list {
             display: inline-block;
             background: #e74c3c;
@@ -77,26 +88,30 @@
             margin-right: 5px;
             margin-bottom: 2px;
             letter-spacing: 0.5px;
-            box-shadow: 0 2px 7px rgba(231,76,60,0.06);
+            box-shadow: 0 2px 7px rgba(231, 76, 60, 0.06);
         }
+
         .qr-code {
             text-align: center;
             margin-top: 24px;
             margin-bottom: 16px;
         }
+
         .qr-code img {
             width: 104px;
             height: 104px;
             border-radius: 9px;
             border: 2.5px solid #e74c3c33;
-            box-shadow: 0 2px 12px rgba(44,62,80,0.08);
+            box-shadow: 0 2px 12px rgba(44, 62, 80, 0.08);
         }
+
         .qr-hint {
             color: #e67e22;
             font-size: 12.5px;
             margin-top: 7px;
             font-style: italic;
         }
+
         .ticket-footer {
             text-align: center;
             color: #888;
@@ -105,11 +120,15 @@
             padding-top: 19px;
             margin-top: 18px;
         }
+
         @media (max-width: 550px) {
-            .ticket-container { padding: 12px 4vw 18px 4vw; }
+            .ticket-container {
+                padding: 12px 4vw 18px 4vw;
+            }
         }
     </style>
 </head>
+
 <body>
     <div class="ticket-container">
         <div class="ticket-header">
@@ -173,15 +192,17 @@
         <div class="divider"></div>
         @if (!empty($data['ma_hoa_don']))
             <div class="qr-code">
-                <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data={{ $data['ma_hoa_don'] }}" alt="QR Vé Xem Phim" />
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data={{ $data['ma_hoa_don'] }}"
+                    alt="QR Vé Xem Phim" />
                 <div class="qr-hint">Quét mã hoặc xuất trình vé để check-in tại rạp</div>
             </div>
         @endif
         <div class="ticket-footer">
-            Cảm ơn bạn đã mua vé tại <span >CineTick</span>!<br>
+            Cảm ơn bạn đã mua vé tại <span>CineTick</span>!<br>
             Vui lòng xuất trình vé này (hoặc mã QR) khi đến rạp.<br>
             &copy; {{ date('Y') }} CineTick
         </div>
     </div>
 </body>
+
 </html>

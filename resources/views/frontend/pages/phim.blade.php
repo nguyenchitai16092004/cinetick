@@ -5,6 +5,7 @@
     <link rel="stylesheet" href="{{ asset('frontend/Content/css/phim.css') }}">
     <link rel="stylesheet" href="{{ asset('frontend/Content/css/home.css') }}">
     <link rel="stylesheet" href="{{ asset('frontend/Content/css/rap.css') }}">
+    <link rel="stylesheet" href="{{ asset('frontend/Content/css/header.css') }}">
 
     <div class="bg-gradient"></div>
     <div class="floating-elements">
@@ -42,7 +43,7 @@
             </p>
         @else
             <div class="films-list">
-            @foreach ($danhSachPhim as $phim)
+            @foreach ($danhSachPhim as $index => $phim)
                 <a href="{{ route('phim.chiTiet', ['slug' => $phim->Slug]) }}" class="film-card-link">
                     <div class="film-card">
                         <div class="film-poster">

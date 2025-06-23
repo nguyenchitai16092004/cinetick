@@ -1,4 +1,3 @@
-
 // ==================== ĐẶT VÉ: QUẢN LÝ DROPDOWN & TÓM TẮT ====================
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -476,7 +475,10 @@ if (carouselWrapper) {
     carouselWrapper.addEventListener("mouseleave", startAutoPlay);
 
     // Touch/Swipe cho mobile banner
-    let startX = 0, endX = 0, startTime = 0, endTime = 0;
+    let startX = 0,
+        endX = 0,
+        startTime = 0,
+        endTime = 0;
     carouselWrapper.addEventListener("touchstart", (e) => {
         startX = e.touches[0].clientX;
         startTime = new Date().getTime();
@@ -538,14 +540,21 @@ class CinemaCarousel {
         this.cards = this.moviesGrid.querySelectorAll(".movie-card");
         this.itemsPerView = this.getItemsPerView();
         this.totalItems = this.cards.length;
-        this.maxIndex = Math.max(0, Math.ceil(this.totalItems / this.itemsPerView) - 1);
+        this.maxIndex = Math.max(
+            0,
+            Math.ceil(this.totalItems / this.itemsPerView) - 1
+        );
         this.autoPlayIntervalTime = autoPlayInterval;
         this.autoPlayTimer = null;
 
         window.addEventListener("resize", () => {
             this.itemsPerView = this.getItemsPerView();
-            this.totalItems = this.moviesGrid.querySelectorAll(".movie-card").length;
-            this.maxIndex = Math.max(0, Math.ceil(this.totalItems / this.itemsPerView) - 1);
+            this.totalItems =
+                this.moviesGrid.querySelectorAll(".movie-card").length;
+            this.maxIndex = Math.max(
+                0,
+                Math.ceil(this.totalItems / this.itemsPerView) - 1
+            );
             this.currentIndex = Math.min(this.currentIndex, this.maxIndex);
             this.renderDots();
             this.updateCarousel();
@@ -559,14 +568,20 @@ class CinemaCarousel {
         // Dot navigation
         this.dotsIndicator.addEventListener("click", (e) => {
             if (e.target.classList.contains("dot-film")) {
-                const dotIndex = Array.from(this.dotsIndicator.children).indexOf(e.target);
+                const dotIndex = Array.from(
+                    this.dotsIndicator.children
+                ).indexOf(e.target);
                 this.goToSlide(dotIndex);
             }
         });
 
         this.startAutoPlay();
-        this.moviesGrid.parentElement.addEventListener("mouseenter", () => this.stopAutoPlay());
-        this.moviesGrid.parentElement.addEventListener("mouseleave", () => this.startAutoPlay());
+        this.moviesGrid.parentElement.addEventListener("mouseenter", () =>
+            this.stopAutoPlay()
+        );
+        this.moviesGrid.parentElement.addEventListener("mouseleave", () =>
+            this.startAutoPlay()
+        );
     }
 
     /**
@@ -584,7 +599,10 @@ class CinemaCarousel {
     renderDots() {
         if (!this.dotsIndicator) return;
         this.dotsIndicator.innerHTML = "";
-        const dotCount = Math.max(1, Math.ceil(this.totalItems / this.itemsPerView));
+        const dotCount = Math.max(
+            1,
+            Math.ceil(this.totalItems / this.itemsPerView)
+        );
         for (let i = 0; i < dotCount; i++) {
             const dot = document.createElement("div");
             dot.className = "dot-film";
@@ -610,7 +628,8 @@ class CinemaCarousel {
         const card = this.moviesGrid.querySelector(".movie-card");
         const slideWidth = card ? card.offsetWidth : 300;
         const gap = parseInt(getComputedStyle(this.moviesGrid).gap) || 30;
-        const offset = (slideWidth + gap) * (this.currentIndex * this.itemsPerView);
+        const offset =
+            (slideWidth + gap) * (this.currentIndex * this.itemsPerView);
         this.moviesGrid.style.transform = `translateX(-${offset}px)`;
         this.updateDots();
     }
@@ -655,7 +674,10 @@ class CinemaCarousel {
      */
     startAutoPlay() {
         this.stopAutoPlay();
-        this.autoPlayTimer = setInterval(() => this.nextSlide(), this.autoPlayIntervalTime);
+        this.autoPlayTimer = setInterval(
+            () => this.nextSlide(),
+            this.autoPlayIntervalTime
+        );
     }
 
     /**
@@ -677,7 +699,12 @@ class CinemaCarousel {
 // Khởi tạo carousel phim đang chiếu/sắp chiếu
 document.addEventListener("DOMContentLoaded", function () {
     new CinemaCarousel("moviesGrid", "prevBtn", "nextBtn", "dotsIndicator");
-    new CinemaCarousel("moviesGridUpcoming", "prevBtnUpcoming", "nextBtnUpcoming", "dotsIndicatorUpcoming");
+    new CinemaCarousel(
+        "moviesGridUpcoming",
+        "prevBtnUpcoming",
+        "nextBtnUpcoming",
+        "dotsIndicatorUpcoming"
+    );
 });
 
 // ==================== HIỆU ỨNG KHÁC ====================
@@ -686,8 +713,12 @@ document.addEventListener("DOMContentLoaded", function () {
  * Hiệu ứng hover nổi card phim
  */
 document.querySelectorAll(".movie-card").forEach((card) => {
-    card.addEventListener("mouseenter", () => { card.style.zIndex = "10"; });
-    card.addEventListener("mouseleave", () => { card.style.zIndex = "1"; });
+    card.addEventListener("mouseenter", () => {
+        card.style.zIndex = "10";
+    });
+    card.addEventListener("mouseleave", () => {
+        card.style.zIndex = "1";
+    });
 });
 
 /**
@@ -716,8 +747,13 @@ function showMovieModal(title) {
     `;
     modal.appendChild(modalContent);
     document.body.appendChild(modal);
-    modalContent.querySelector(".close-modal-btn").onclick = () => { if (modal.parentNode) modal.parentNode.removeChild(modal); };
-    modal.onclick = (e) => { if (e.target === modal && modal.parentNode) modal.parentNode.removeChild(modal); };
+    modalContent.querySelector(".close-modal-btn").onclick = () => {
+        if (modal.parentNode) modal.parentNode.removeChild(modal);
+    };
+    modal.onclick = (e) => {
+        if (e.target === modal && modal.parentNode)
+            modal.parentNode.removeChild(modal);
+    };
 }
 
 /**
@@ -754,8 +790,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 </div>
             `;
             document.body.appendChild(modal);
-            modal.querySelector(".close-trailer-btn").onclick = () => document.body.removeChild(modal);
-            modal.onclick = (ev) => { if (ev.target === modal) document.body.removeChild(modal); };
+            modal.querySelector(".close-trailer-btn").onclick = () =>
+                document.body.removeChild(modal);
+            modal.onclick = (ev) => {
+                if (ev.target === modal) document.body.removeChild(modal);
+            };
         });
     });
 });
@@ -764,8 +803,6 @@ document.addEventListener("DOMContentLoaded", function () {
  * Hiệu ứng click nhỏ cho card Góc điện ảnh, blog, tab
  */
 document.addEventListener("DOMContentLoaded", function () {
-
-
     // Tab switching animation
     const tabs = document.querySelectorAll(".nav-tab");
     tabs.forEach((tab) => {
@@ -793,11 +830,14 @@ document.addEventListener("DOMContentLoaded", function () {
     const observer = new IntersectionObserver(function (entries) {
         entries.forEach((entry) => {
             if (entry.isIntersecting) {
-                entry.target.style.animation = "slideInUp 0.6s ease-out forwards";
+                entry.target.style.animation =
+                    "slideInUp 0.6s ease-out forwards";
             }
         });
     }, observerOptions);
-    articles.forEach((article) => { observer.observe(article); });
+    articles.forEach((article) => {
+        observer.observe(article);
+    });
 
     // Thêm hiệu ứng slideInUp
     const style = document.createElement("style");
@@ -814,7 +854,9 @@ document.addEventListener("DOMContentLoaded", function () {
  * Đổi màu nền động khi scroll trang
  */
 window.addEventListener("scroll", function () {
-    const scrollPercent = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
+    const scrollPercent =
+        window.scrollY /
+        (document.documentElement.scrollHeight - window.innerHeight);
     const hue = 220 + scrollPercent * 40; // Từ xanh sang tím
     document.body.style.background = `linear-gradient(135deg, hsl(${hue}, 100%, 4%) 0%, hsl(${hue}, 80%, 8%) 50%, hsl(${hue}, 60%, 12%) 100%)`;
 });
@@ -823,8 +865,6 @@ window.addEventListener("scroll", function () {
  * Hiệu ứng card khuyến mãi: chuyển động, ripple, badge đổi màu động
  */
 document.addEventListener("DOMContentLoaded", function () {
-
-
     // CTA button hiệu ứng ripple
     const ctaButtons = document.querySelectorAll(".promotion-cta");
     ctaButtons.forEach((btn) => {
@@ -845,7 +885,9 @@ document.addEventListener("DOMContentLoaded", function () {
             ripple.style.animation = "ripple 0.6s linear";
             this.style.position = "relative";
             this.appendChild(ripple);
-            setTimeout(() => { ripple.remove(); }, 600);
+            setTimeout(() => {
+                ripple.remove();
+            }, 600);
         });
     });
 
