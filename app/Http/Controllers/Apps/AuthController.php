@@ -18,7 +18,7 @@ class AuthController extends Controller
 {
     public function DangKy()
     {
-        return view('frontend.pages.dang-ky');
+        return view('frontend.pages.dang-nhap-dang-ky', ['tab' => 'register']);
     }
 
     public function dang_ky(Request $request)
@@ -93,7 +93,7 @@ class AuthController extends Controller
 
     public function DangNhap()
     {
-        return view('frontend.pages.dang-nhap');
+        return view('frontend.pages.dang-nhap-dang-ky', ['tab' => 'login']);
     }
 
     public function dang_nhap(Request $request)

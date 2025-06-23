@@ -14,6 +14,7 @@ class ThongTinTrangWeb extends Model
         'TenDonVi',
         'TenWebsite',
         'Logo',
+        'Icon',
         'Hotline',
         'Zalo',
         'Facebook',

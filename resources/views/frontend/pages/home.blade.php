@@ -18,7 +18,7 @@
         <div class="floating-particles" id="particles"></div>
         <div class="progress-bar" id="progressBar"></div>
 
-        <div class="slide-number">
+        <div style="display:none" class="slide-number">
             <span class="current" id="currentNumber">01</span>
             <span>/</span>
             <span id="totalNumber">{{ str_pad($banners->count(), 2, '0', STR_PAD_LEFT) }}</span>
@@ -69,7 +69,7 @@
         </div>
     </div>
     <!-- Slider Area End -->
-    <div class="booking-container">
+    <div class="booking-container" id="bookingSection">
         <header class="section-header">
             <h1 class="section-title">Đặt vé nhanh</h1>
         </header>

@@ -131,7 +131,7 @@
                                 <td class="fw-bold text-dark align-middle">
                                     {{ $banner->TieuDePhu }}
                                 </td>
-                                
+
                                 <td class="fw-bold text-dark align-middle">
                                     {{ $banner->MoTa }}
                                 </td>
@@ -196,96 +196,113 @@
                         @enderror
                     </div>
 
-                    <!-- Tên đơn vị -->
+                    <!-- Icon hiện tại -->
                     <div class="mb-3">
-                        <label for="TenDonVi" class="form-label">Tên đơn vị:</label>
-                        <input type="text" class="form-control" name="TenDonVi" id="TenDonVi"
-                            value="{{ old('TenDonVi', $thongTin->TenDonVi ?? '') }}">
-                        @error('TenDonVi')
+                        <label for="Icon" class="form-label">Icon hiện tại:</label><br>
+                        @if ($thongTin && $thongTin->Icon)
+                            <img src="{{ asset('storage/' . $thongTin->Icon) }}" alt="Icon" style="height: 100px;">
+                        @else
+                            <p>Chưa có icon</p>
+                        @endif
+                    </div>
+                    <!-- Upload Icon mới -->
+                    <div class="mb-3">
+                        <label for="Icon" class="form-label">Icon mới (nếu có):</label>
+                        <input type="file" class="form-control" name="Icon" id="Icon">
+                        @error('Icon')
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
-                    </div>
 
-                    <!-- Tên website -->
-                    <div class="mb-3">
-                        <label for="TenWebsite" class="form-label">Tên Website:</label>
-                        <input type="text" class="form-control" name="TenWebsite" id="TenWebsite"
-                            value="{{ old('TenWebsite', $thongTin->TenWebsite ?? '') }}">
-                        @error('TenWebsite')
-                            <div class="text-danger">{{ $message }}</div>
-                        @enderror
-                    </div>
-                    <!-- Zalo -->
-                    <div class="mb-3">
-                        <label for="Zalo" class="form-label">Zalo:</label>
-                        <input type="text" class="form-control" name="Zalo" id="Zalo"
-                            value="{{ old('Zalo', $thongTin->Zalo ?? '') }}">
-                        @error('Zalo')
-                            <div class="text-danger">{{ $message }}</div>
-                        @enderror
-                    </div>
+                        <!-- Tên đơn vị -->
+                        <div class="mb-3">
+                            <label for="TenDonVi" class="form-label">Tên đơn vị:</label>
+                            <input type="text" class="form-control" name="TenDonVi" id="TenDonVi"
+                                value="{{ old('TenDonVi', $thongTin->TenDonVi ?? '') }}">
+                            @error('TenDonVi')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
 
-                    <!-- Hotline -->
-                    <div class="mb-3">
-                        <label for="Hotline" class="form-label">Hotline:</label>
-                        <input type="text" class="form-control" name="Hotline" id="Hotline"
-                            value="{{ old('Hotline', $thongTin->Hotline ?? '') }}">
-                        @error('Hotline')
-                            <div class="text-danger">{{ $message }}</div>
-                        @enderror
-                    </div>
+                        <!-- Tên website -->
+                        <div class="mb-3">
+                            <label for="TenWebsite" class="form-label">Tên Website:</label>
+                            <input type="text" class="form-control" name="TenWebsite" id="TenWebsite"
+                                value="{{ old('TenWebsite', $thongTin->TenWebsite ?? '') }}">
+                            @error('TenWebsite')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <!-- Zalo -->
+                        <div class="mb-3">
+                            <label for="Zalo" class="form-label">Zalo:</label>
+                            <input type="text" class="form-control" name="Zalo" id="Zalo"
+                                value="{{ old('Zalo', $thongTin->Zalo ?? '') }}">
+                            @error('Zalo')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
 
-                    <!-- Facebook -->
-                    <div class="mb-3">
-                        <label for="Facebook" class="form-label">Facebook:</label>
-                        <input type="text" class="form-control" name="Facebook" id="Facebook"
-                            value="{{ old('Facebook', $thongTin->Facebook ?? '') }}">
-                        @error('Facebook')
-                            <div class="text-danger">{{ $message }}</div>
-                        @enderror
-                    </div>
+                        <!-- Hotline -->
+                        <div class="mb-3">
+                            <label for="Hotline" class="form-label">Hotline:</label>
+                            <input type="text" class="form-control" name="Hotline" id="Hotline"
+                                value="{{ old('Hotline', $thongTin->Hotline ?? '') }}">
+                            @error('Hotline')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
 
-                    <!-- Instagram -->
-                    <div class="mb-3">
-                        <label for="Instagram" class="form-label">Instagram:</label>
-                        <input type="text" class="form-control" name="Instagram" id="Instagram"
-                            value="{{ old('Instagram', $thongTin->Instagram ?? '') }}">
-                        @error('Instagram')
-                            <div class="text-danger">{{ $message }}</div>
-                        @enderror
-                    </div>
+                        <!-- Facebook -->
+                        <div class="mb-3">
+                            <label for="Facebook" class="form-label">Facebook:</label>
+                            <input type="text" class="form-control" name="Facebook" id="Facebook"
+                                value="{{ old('Facebook', $thongTin->Facebook ?? '') }}">
+                            @error('Facebook')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
 
-                    <!-- Youtube -->
-                    <div class="mb-3">
-                        <label for="Youtube" class="form-label">Youtube:</label>
-                        <input type="text" class="form-control" name="Youtube" id="Youtube"
-                            value="{{ old('Youtube', $thongTin->Youtube ?? '') }}">
-                        @error('Youtube')
-                            <div class="text-danger">{{ $message }}</div>
-                        @enderror
-                    </div>
+                        <!-- Instagram -->
+                        <div class="mb-3">
+                            <label for="Instagram" class="form-label">Instagram:</label>
+                            <input type="text" class="form-control" name="Instagram" id="Instagram"
+                                value="{{ old('Instagram', $thongTin->Instagram ?? '') }}">
+                            @error('Instagram')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
 
-                    <!-- Email -->
-                    <div class="mb-3">
-                        <label for="Email" class="form-label">Email:</label>
-                        <input type="email" class="form-control" name="Email" id="Email"
-                            value="{{ old('Email', $thongTin->Email ?? '') }}">
-                        @error('Email')
-                            <div class="text-danger">{{ $message }}</div>
-                        @enderror
-                    </div>
+                        <!-- Youtube -->
+                        <div class="mb-3">
+                            <label for="Youtube" class="form-label">Youtube:</label>
+                            <input type="text" class="form-control" name="Youtube" id="Youtube"
+                                value="{{ old('Youtube', $thongTin->Youtube ?? '') }}">
+                            @error('Youtube')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
 
-                    <!-- Địa chỉ -->
-                    <div class="mb-3">
-                        <label for="DiaChi" class="form-label">Địa chỉ:</label>
-                        <textarea class="form-control" name="DiaChi" id="DiaChi" rows="3">{{ old('DiaChi', $thongTin->DiaChi ?? '') }}</textarea>
-                        @error('DiaChi')
-                            <div class="text-danger">{{ $message }}</div>
-                        @enderror
-                    </div>
+                        <!-- Email -->
+                        <div class="mb-3">
+                            <label for="Email" class="form-label">Email:</label>
+                            <input type="email" class="form-control" name="Email" id="Email"
+                                value="{{ old('Email', $thongTin->Email ?? '') }}">
+                            @error('Email')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
 
-                    <!-- Submit -->
-                    <button type="submit" class="btn btn-primary">Cập nhật</button>
+                        <!-- Địa chỉ -->
+                        <div class="mb-3">
+                            <label for="DiaChi" class="form-label">Địa chỉ:</label>
+                            <textarea class="form-control" name="DiaChi" id="DiaChi" rows="3">{{ old('DiaChi', $thongTin->DiaChi ?? '') }}</textarea>
+                            @error('DiaChi')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <!-- Submit -->
+                        <button type="submit" class="btn btn-primary">Cập nhật</button>
                 </form>
             </div>
         </div>

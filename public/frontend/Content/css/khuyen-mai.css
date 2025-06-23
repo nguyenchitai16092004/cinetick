@@ -2,12 +2,11 @@
   padding: 32px 0 0 0;
   margin-left: 50px;
 }
-
 .promotion-list {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
   gap: 32px;
-  flex-wrap: wrap;
-  justify-content: center;
+  justify-items: center;
   margin-bottom: 40px;
 }
 .promotion-card {
@@ -32,7 +31,6 @@
   background: #e6eaf1;
   display: block;
 }
-
 .promotion-overlay {
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
@@ -58,10 +56,9 @@
   padding: 0 14px;
   text-shadow: 0 2px 8px rgba(0,0,0,0.18);
 }
-
 @media (max-width: 1100px) {
   .promotion-list {
-    flex-wrap: wrap;
+    grid-template-columns: repeat(2, 1fr);
     gap: 24px;
   }
   .promotion-card {
@@ -71,8 +68,8 @@
 }
 @media (max-width: 800px) {
   .promotion-list {
-    flex-direction: column;
-    align-items: center;
+    grid-template-columns: 1fr;
+    gap: 20px;
   }
   .promotion-card {
     width: 100%;
@@ -88,7 +85,6 @@
   justify-content: center;
   margin-bottom: 30px;
 }
-
 .pagination {
   display: flex;
   padding-left: 0;
@@ -97,13 +93,11 @@
   background: #fff;
   box-shadow: 0 2px 8px rgba(0,0,0,0.07);
 }
-
 .pagination li {
   margin: 0 3px;
 }
-
 .page-link {
-  color: #2c3e50;
+  color: #333 !important;
   background-color: #f8f9fa;
   border: 1px solid #dee2e6;
   border-radius: 0.4rem;
@@ -111,23 +105,19 @@
   transition: all 0.2s;
   font-weight: 500;
 }
-
 .page-link:hover,
 .page-link:focus {
-  color: #fff;
   background-color: #007bff;
   border-color: #007bff;
   box-shadow: 0 2px 8px rgba(0,123,255,0.08);
   text-decoration: none;
 }
-
 .pagination .active .page-link {
   color: #fff;
   background-color: #007bff;
   border-color: #007bff;
   pointer-events: none;
 }
-
 .pagination .disabled .page-link {
   color: #6c757d;
   background-color: #f8f9fa;
@@ -135,7 +125,6 @@
   pointer-events: none;
   opacity: 0.6;
 }
-
 .update-showtime {
   justify-self: center;
   align-self: center;
@@ -157,7 +146,6 @@
   padding-left: 100%;
   animation: marquee 15s linear infinite;
 }
-
 @keyframes marquee {
   0%   { transform: translateX(0); }
   100% { transform: translateX(-100%); }

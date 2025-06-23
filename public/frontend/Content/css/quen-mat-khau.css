@@ -1,0 +1,104 @@
+.forgot-outer {
+    min-height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+.forgot-center-box {
+    margin-top: 60px;
+    width: 600px;
+    max-width: 95vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.forgot-title {
+    margin: 0;
+    margin-bottom: 24px;
+    text-align: center;
+    font-family: "Montserrat", "Josefin Sans", sans-serif;
+    font-size: 3rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    line-height: 1.1;
+    text-transform: uppercase;
+    color: #fff;
+}
+.forgot-desc {
+    text-align: center;
+    font-size: 18px;
+    font-family: "Montserrat", "Josefin Sans", sans-serif;
+    font-weight: 400;
+    margin-bottom: 38px;
+    color: #fff;
+    line-height: 1.5;
+}
+.forgot-form {
+    width: 100%;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+}
+.forgot-form input[type="email"] {
+    width: 100%;
+    max-width: 600px;
+    padding: 18px 20px;
+    border-radius: 0;
+    border: none;
+    font-size: 1.22rem;
+    font-family: inherit;
+    background: #fff;
+    color: #242424;
+    outline: none;
+    box-sizing: border-box;
+    margin-bottom: 0;
+    transition: box-shadow 0.15s;
+    font-weight: 400;
+    letter-spacing: 1.2px;
+}
+.forgot-form input[type="email"]:focus {
+    box-shadow: 0 0 0 2px #f8e14299;
+}
+.forgot-form button,
+.forgot-form .btnRegister {
+    width: 100%;
+    max-width: 600px;
+    padding: 18px 0;
+    margin: 0;
+    background: #f8e12f;
+    color: #181818;
+    font-size: 1.32rem;
+    font-family: "Montserrat", "Josefin Sans", sans-serif;
+
+    font-weight: 700;
+    border: none;
+    border-radius: 0;
+    cursor: pointer;
+    letter-spacing: 2px;
+    transition: filter 0.18s, background 0.18s;
+    box-shadow: none;
+    text-transform: uppercase;
+    text-align: center;
+}
+.forgot-form button:active,
+.forgot-form .btnRegister:active {
+    filter: brightness(0.97);
+}
+@media (max-width: 700px) {
+    .forgot-center-box {
+        width: 98vw;
+    }
+    .forgot-form input,
+    .forgot-form button {
+        max-width: 99vw;
+    }
+    .forgot-title {
+        font-size: 2.1rem;
+    }
+    .forgot-desc {
+        font-size: 1.05rem;
+    }
+}

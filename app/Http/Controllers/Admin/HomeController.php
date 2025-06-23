@@ -23,6 +23,7 @@ class HomeController extends Controller
             'TenDonVi' => 'nullable|string|max:255',
             'TenWebsite' => 'nullable|string|max:255',
             'Logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'Icon' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'Hotline' => 'nullable|string|max:15|regex:/^[0-9]{9,15}$/',
             'Zalo' => 'nullable|string|max:50',
             'Facebook' => 'nullable|string|max:100',
@@ -46,7 +47,13 @@ class HomeController extends Controller
             $path = $request->file('Logo')->store('logos', 'public');
             $data['Logo'] = $path;
         }
-
+        if ($request->hasFile('Icon')) {
+            if ($thongTin->Icon) {
+                Storage::disk('public')->delete($thongTin->Icon);
+            }
+            $path = $request->file('Icon')->store('icons', 'public');
+            $data['Icon'] = $path;
+        }
         $thongTin->update($data);
 
         return redirect()->route('cap-nhat-thong-tin.index')->with('success', 'Cập nhật thông tin trang web thành công.');

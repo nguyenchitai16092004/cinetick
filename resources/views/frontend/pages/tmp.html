@@ -1,254 +1,166 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <title>Liên hệ với chúng tôi</title>
-    <meta name="viewport" content="width=1200">
-    <link href="https://fonts.googleapis.com/css?family=Montserrat:700,500&display=swap" rel="stylesheet">
-    <style>
-        .contact-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            padding: 40px 0 0 0;
-            min-height: 90vh;
-        }
-        .left-col {
-            width: 46%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .contact-title {
-            font-size: 40px;
-            font-weight: 700;
-            margin-bottom: 50px;
-            text-align: center;
-        }
-        .social-box {
-            width: 420px;
-            height: 80px;
-            background: linear-gradient(90deg, #7b41d8 0%, #3b6fd8 100%);
-            border-radius: 14px;
-            margin-bottom: 44px;
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-            box-shadow: 0 6px 18px 0 rgba(0,0,0,0.13);
-            position: relative;
-        }
-        .social-box img {
-            height: 60px;
-            margin-left: 18px;
-            margin-right: 30px;
-        }
-        .social-box .social-label {
-            font-size: 32px;
-            font-weight: 700;
-            color: #fff;
-            letter-spacing: 2px;
-        }
-        .right-col {
-            width: 48%;
-            background: #3766bc;
-            border-radius: 12px;
-            padding: 36px 36px 28px 36px;
-            min-height: 700px;
-            box-sizing: border-box;
-            box-shadow: 0 10px 32px 0 rgba(0,0,0,0.14);
-        }
-        .contact-info-title {
-            font-size: 26px;
-            font-weight: 700;
-            letter-spacing: 1px;
-            margin-bottom: 22px;
-        }
-        .info-list {
-            margin-bottom: 32px;
-        }
-        .info-list li {
-            list-style: none;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            font-size: 18px;
-        }
-        .info-list li img {
-            width: 22px;
-            height: 22px;
-            margin-right: 11px;
-            vertical-align: middle;
-        }
-        /* Form styles with new padding */
-        .contact-form {
-            display: flex;
-            flex-direction: column;
-            padding: 0 28px 28px 28px;
-        }
-        .contact-form input,
-        .contact-form textarea {
-            width: 100%;
-            border: none;
-            border-radius: 7px;
-            font-size: 18px;
-            padding: 13px 18px;
-            margin-bottom: 20px;
-            font-family: inherit;
-            background: #fff;
-            color: #222;
-            transition: box-shadow .2s;
-        }
-        .contact-form input:focus,
-        .contact-form textarea:focus {
-            outline: none;
-            box-shadow: 0 0 0 2px #6186e2;
-        }
-        .contact-form textarea {
-            height: 160px;
-            resize: vertical;
-        }
-        .contact-form label {
-            font-size: 16px;
-            margin-bottom: 7px;
-            font-weight: 500;
-            color: #fff;
-        }
-        .upload-preview {
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-        }
-        #uploadedImage {
-            max-width: 150px;
-            max-height: 100px;
-            border-radius: 7px;
-            margin-top: 2px;
-            border: 2px solid #fff;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.09);
-            display: none;
-        }
-
-        /* Gradient button with effect */
-        .submit-btn {
-            position: relative;
-            background: #ffe829;
-            color: #fff;
-            border: none;
-            border-radius: 10px;
-            font-size: 24px;
-            font-weight: bold;
-            padding: 18px 0;
-            margin-top: 8px;
-            cursor: pointer;
-            letter-spacing: 2px;
-            overflow: hidden;
-            transition: background .2s, color .2s;
-            width: 100%;
-            z-index: 1;
-        }
-        .submit-btn span {
-            position: relative;
-            z-index: 2;
-        }
-        .submit-btn::after {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; bottom: 0; /* Đổi right: 0 thành left: 0 */
-    width: 0;
-    background: linear-gradient(90deg, #8133a6 0%, #406be0 100%);
-    border-top-left-radius: 10px;
-    border-bottom-left-radius: 10px;
-    border-top-right-radius: 10px;
-    border-bottom-right-radius: 10px;
-    transition: width 1.4s cubic-bezier(0.22, 1, 0.36, 1);
-    z-index: 1;
-}
-        .submit-btn:hover::after {
-            width: 100%; /* yellow bar width */
-        }
-        .submit-btn:hover span {
-            color: #222;
-            transition: color .2s;
-        }
-
-        @media (max-width: 1100px) {
-            .contact-container { flex-direction: column; align-items: center; }
-            .left-col, .right-col { width: 98%; margin-bottom: 40px; }
-            .right-col { padding: 20px 8px; }
-            .contact-form { padding: 0 6px 20px 6px; }
-        }
-    </style>
-</head>
-<body>
-    <div class="contact-container">
-        <!-- Left: Social & Title -->
-        <div class="left-col">
-            <div class="contact-title">
-                LIÊN HỆ VỚI CHÚNG TÔI
-            </div>
-            <div class="social-box">
-                <img src="facebook-icon.png" alt="Facebook" />
-                <span class="social-label">FACEBOOK</span>
-            </div>
-        </div>
-        <!-- Right: Info & Form -->
-        <div class="right-col">
-            <div class="contact-info-title">THÔNG TIN LIÊN HỆ</div>
-            <ul class="info-list">
-                <li>
-                    <img src="email-icon.png" alt="Mail"> cskh@cinestar.com.vn
-                </li>
-                <li>
-                    <img src="phone-icon.png" alt="Phone"> 1900.0085
-                </li>
-                <li>
-                    <img src="location-icon.png" alt="Location"> 135 Hai Bà Trưng, phường Bến Nghé, Quận 1, TP.HCM
-                </li>
-            </ul>
-            <form class="contact-form" id="contactForm" autocomplete="off">
-                <input type="text" name="name" placeholder="Họ và tên" required>
-                <input type="email" name="email" placeholder="Điền email" required>
-                <input type="tel" name="phone" placeholder="Số điện thoại" pattern="[0-9]{8,15}" required>
-                <textarea name="message" placeholder="Thông tin liên hệ hoặc phản ánh" required></textarea>
-                <div class="upload-preview">
-                    <label for="imageUpload" style="font-weight:500;color:#fff;font-size:16px;margin-bottom:0;">
-                        Ảnh minh họa:
-                    </label>
-                    <input type="file" id="imageUpload" accept="image/*" style="margin-left:14px;">
-                </div>
-                <img id="uploadedImage" alt="Ảnh đã upload" />
-                <button type="submit" class="submit-btn"><span>GỬI NGAY</span></button>
-            </form>
-        </div>
+@extends('frontend.layouts.master')
+@section('title', 'Quên mật khẩu')
+@section('main')
+<style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+    }
+    body {
+      font-family: 'Oswald', Arial, sans-serif;
+      min-height: 100vh;
+      width: 100vw;
+      margin: 0;
+      background: radial-gradient(ellipse at bottom, #4a408c 0%, #10182b 80%);
+      color: #fff;
+      overflow-x: hidden;
+    }
+    .forgot-outer {
+      min-height: 100vh;
+      width: 100vw;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+    .forgot-center-box {
+      margin-top: 60px;
+      width: 600px;
+      max-width: 95vw;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .forgot-title {
+      margin: 0;
+      margin-bottom: 24px;
+      text-align: center;
+      font-family: 'Oswald', Arial, sans-serif;
+      font-size: 3rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      line-height: 1.1;
+      text-transform: uppercase;
+    }
+    .forgot-desc {
+      text-align: center;
+      font-size: 1.3rem;
+      font-family: 'Oswald', Arial, sans-serif;
+      font-weight: 400;
+      margin-bottom: 38px;
+      color: #fff;
+      line-height: 1.5;
+    }
+    .forgot-form {
+      width: 100%;
+      max-width: 600px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 30px;
+    }
+    .forgot-form input[type="email"] {
+      width: 100%;
+      max-width: 600px;
+      padding: 18px 20px;
+      border-radius: 0;
+      border: none;
+      font-size: 1.22rem;
+      font-family: inherit;
+      background: #fff;
+      color: #242424;
+      outline: none;
+      box-sizing: border-box;
+      margin-bottom: 0;
+      transition: box-shadow 0.15s;
+      font-weight: 400;
+      letter-spacing: 1.2px;
+    }
+    .forgot-form input[type="email"]:focus {
+      box-shadow: 0 0 0 2px #f8e14299;
+    }
+    .forgot-form button, .forgot-form .btnRegister {
+      width: 100%;
+      max-width: 600px;
+      padding: 18px 0;
+      margin: 0;
+      background: #f8e12f;
+      color: #181818;
+      font-size: 1.32rem;
+      font-family: 'Oswald', Arial, sans-serif;
+      font-weight: 700;
+      border: none;
+      border-radius: 0;
+      cursor: pointer;
+      letter-spacing: 2px;
+      transition: filter 0.18s, background 0.18s;
+      box-shadow: none;
+      text-transform: uppercase;
+      text-align: center;
+    }
+    .forgot-form button:active, .forgot-form .btnRegister:active {
+      filter: brightness(0.97);
+    }
+    @media (max-width:700px) {
+      .forgot-center-box { width: 98vw; }
+      .forgot-form input, .forgot-form button { max-width: 99vw; }
+      .forgot-title { font-size: 2.1rem; }
+      .forgot-desc { font-size: 1.05rem;}
+    }
+</style>
+<div class="forgot-outer">
+    <div class="forgot-center-box">
+      <h1 class="forgot-title">QUÊN MẬT KHẨU</h1>
+      <div class="forgot-desc">
+        Nhập địa chỉ email của bạn và chúng tôi sẽ gửi cho bạn<br>
+        hướng dẫn để tạo mật khẩu mới
+      </div>
+      <form class="forgot-form" id="forgotForm" autocomplete="off" onsubmit="return false;">
+        <input type="email" id="fgEmail" placeholder="Email" required>
+        <button type="button" class="btnRegister" onclick="forgotPass()">GỬI MÃ XÁC MINH</button>
+      </form>
+      <div id="message" style="margin-top:22px;font-family:Oswald,sans-serif;font-size:1.1rem;font-weight:600;"></div>
     </div>
-    <script>
-    // Xử lý upload ảnh và hiện ảnh preview
-    document.getElementById('imageUpload').addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        const img = document.getElementById('uploadedImage');
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(evt) {
-                img.src = evt.target.result;
-                img.style.display = 'block';
-            };
-            reader.readAsDataURL(file);
-        } else {
-            img.src = '';
-            img.style.display = 'none';
+</div>
+<script>
+    function forgotPass() {
+        var email = $("#fgEmail").val().trim();
+        var msg = $("#message");
+        msg.css("color", "#f8e12f").text('');
+        if(email === "" || !/^[^@]+@[^@]+\.[^@]+$/.test(email)){
+            msg.css("color", "#ff6060").text('Vui lòng nhập địa chỉ email hợp lệ!');
+            return false;
         }
-    });
-
-    // Demo ngăn reload, show alert khi gửi form
-    document.getElementById('contactForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        alert('Thông tin của bạn đã được gửi! (Demo)');
-        this.reset();
-        document.getElementById('uploadedImage').src = '';
-        document.getElementById('uploadedImage').style.display = 'none';
-    });
-    </script>
-</body>
-</html>
+        msg.text('Đang gửi mã xác minh...');
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        var data = JSON.stringify({
+            email: email,
+            _token: $('meta[name="csrf-token"]').attr('content')
+        });
+        $.ajax({
+            url: "{{ route('quen-mat-khau.post') }}",
+            type: "POST",
+            data: data,
+            traditional: true,
+            datatype: "json",
+            contentType: 'application/json; charset=utf-8',
+            success: function(result) {
+                if (result === "true" || result === true) {
+                    msg.css("color", "#6aff97");
+                    msg.html('Vui lòng kiểm tra email để nhận mật khẩu mới.<br>Và đăng nhập <a href="{{ route('login.form') }}" style="color:#ffe440;">tại đây</a>');
+                } else {
+                    msg.css("color", "#ff6060").text(result);
+                }
+            },
+            error: function(xhr) {
+                msg.css("color", "#ff6060").text(xhr.responseText || 'Có lỗi xảy ra!');
+            }
+        });
+    }
+</script>
+@endsection

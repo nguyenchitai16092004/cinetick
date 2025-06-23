@@ -4,7 +4,7 @@
         <div class="footer-section">
             <h3>GIỚI THIỆU</h3>
             <ul>
-                @foreach($footerGioiThieu as $item)
+                @foreach ($footerGioiThieu as $item)
                     <li>
                         <a href="{{ route('thongtincinetick.static', ['slug' => $item->Slug]) }}">
                             {{ $item->TieuDe }}
@@ -16,7 +16,7 @@
         <div class="footer-section">
             <h3>CHÍNH SÁCH</h3>
             <ul>
-                @foreach($footerChinhSach as $item)
+                @foreach ($footerChinhSach as $item)
                     <li>
                         <a href="{{ route('thongtincinetick.static', ['slug' => $item->Slug]) }}">
                             {{ $item->TieuDe }}
@@ -36,8 +36,7 @@
         <div class="footer-brand">
             <div class="footer-logo">
                 <img src="{{ $thongTinTrangWeb->Logo ? asset('storage/' . $thongTinTrangWeb->Logo) : asset('images/no-image.jpg') }}"
-                                alt="{{ $thongTinTrangWeb->TenWebsite }}" alt="Logo" />
-                <span>CineTick</span>
+                    alt="{{ $thongTinTrangWeb->TenWebsite }}" alt="Logo" />
             </div>
             <div class="footer-social">
                 <a href="{{ $thongTinTrangWeb->Facebook }}"><i class="fab fa-facebook-f"></i></a>
@@ -54,8 +53,7 @@
     <div class="footer-bottom">
         <div class="footer-bottom-logo">
             <img src="{{ $thongTinTrangWeb->Logo ? asset('storage/' . $thongTinTrangWeb->Logo) : asset('images/no-image.jpg') }}"
-                                alt="{{ $thongTinTrangWeb->TenWebsite }}" alt="Logo" />
-            <span>{{ $thongTinTrangWeb->TenWebsite }}</span>
+                alt="{{ $thongTinTrangWeb->TenWebsite }}" alt="Logo" />
         </div>
         <div class="footer-bottom-info">
             <div>

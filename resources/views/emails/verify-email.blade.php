@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <title>Xác nhận tài khoản - CineTick</title>
     <style>
         body {
-            font-family: 'Segoe UI', Arial, sans-serif;
+            font-family: "Josefin Sans", sans-serif;
             background: #f5f7fa;
             margin: 0;
             padding: 0;
         }
+
         .mail-container {
             max-width: 420px;
             margin: 40px auto;
@@ -19,10 +21,12 @@
             padding: 36px 34px 26px 34px;
             border: 1.5px solid #e74c3c33;
         }
+
         .mail-header {
             text-align: center;
             margin-bottom: 18px;
         }
+
         .mail-header h2 {
             color: #e74c3c;
             margin: 0;
@@ -30,11 +34,13 @@
             font-weight: 800;
             letter-spacing: 0.5px;
         }
+
         .mail-content p {
             margin: 14px 0;
             color: #222;
             font-size: 15px;
         }
+
         .verify-btn {
             display: inline-block;
             margin: 16px 0 12px 0;
@@ -46,12 +52,14 @@
             border-radius: 7px;
             text-decoration: none;
             letter-spacing: 1px;
-            box-shadow: 0 2px 8px rgba(231,76,60,0.07);
+            box-shadow: 0 2px 8px rgba(231, 76, 60, 0.07);
             transition: background 0.2s;
         }
+
         .verify-btn:hover {
             background: linear-gradient(90deg, #ff5e57 50%, #ffbe76 100%);
         }
+
         .mail-footer {
             border-top: 1px solid #f1d5d5;
             margin-top: 24px;
@@ -60,11 +68,15 @@
             font-size: 13px;
             text-align: center;
         }
+
         @media (max-width: 500px) {
-            .mail-container { padding: 10px 3vw 16px 3vw; }
+            .mail-container {
+                padding: 10px 3vw 16px 3vw;
+            }
         }
     </style>
 </head>
+
 <body>
     <div class="mail-container">
         <div class="mail-header">
@@ -93,4 +105,5 @@
         </div>
     </div>
 </body>
+
 </html>

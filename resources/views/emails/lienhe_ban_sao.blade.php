@@ -5,7 +5,7 @@
     <title>Liên hệ CineTick</title>
     <style>
         body {
-            font-family: Arial, Tahoma, sans-serif;
+            font-family: "Josefin Sans", sans-serif;
             background: #f7f7f7;
             margin: 0;
             padding: 0;
