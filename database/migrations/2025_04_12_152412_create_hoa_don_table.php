@@ -24,9 +24,9 @@ return new class extends Migration
             $table->tinyInteger('TrangThaiXacNhanHoaDon')->nullable()->comment('0: Chưa xác nhận 1: Đã xác nhận 2: Đã hủy');
             $table->tinyInteger('TrangThaiXacNhanThanhToan')->nullable()->comment('0: Chưa thanh toán 1: Đã thanh toán');
             $table->string('order_code', 20)->nullable()->charset('utf8mb4')->collation('utf8mb4_unicode_ci');
-            $table->string('SoTaiKhoan')->nullable()->after('TenTaiKhoan');
-            $table->string('TenTaiKhoan')->nullable()->after('SoTaiKhoan');
-            $table->string('TenNganHang')->nullable()->after('TenTaiKhoan');
+            $table->string('SoTaiKhoan')->nullable();
+            $table->string('TenTaiKhoan')->nullable();
+            $table->string('TenNganHang')->nullable();
             $table->timestamps();
         });
     }

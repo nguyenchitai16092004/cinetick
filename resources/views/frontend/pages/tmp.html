@@ -1,166 +1,144 @@
-@extends('frontend.layouts.master')
-@section('title', 'Quên mật khẩu')
-@section('main')
-<style>
-    html, body {
-      height: 100%;
-      margin: 0;
-      padding: 0;
-      min-height: 100vh;
-    }
-    body {
-      font-family: 'Oswald', Arial, sans-serif;
-      min-height: 100vh;
-      width: 100vw;
-      margin: 0;
-      background: radial-gradient(ellipse at bottom, #4a408c 0%, #10182b 80%);
-      color: #fff;
-      overflow-x: hidden;
-    }
-    .forgot-outer {
-      min-height: 100vh;
-      width: 100vw;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-    }
-    .forgot-center-box {
-      margin-top: 60px;
-      width: 600px;
-      max-width: 95vw;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .forgot-title {
-      margin: 0;
-      margin-bottom: 24px;
-      text-align: center;
-      font-family: 'Oswald', Arial, sans-serif;
-      font-size: 3rem;
-      font-weight: 700;
-      letter-spacing: 2px;
-      line-height: 1.1;
-      text-transform: uppercase;
-    }
-    .forgot-desc {
-      text-align: center;
-      font-size: 1.3rem;
-      font-family: 'Oswald', Arial, sans-serif;
-      font-weight: 400;
-      margin-bottom: 38px;
-      color: #fff;
-      line-height: 1.5;
-    }
-    .forgot-form {
-      width: 100%;
-      max-width: 600px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 30px;
-    }
-    .forgot-form input[type="email"] {
-      width: 100%;
-      max-width: 600px;
-      padding: 18px 20px;
-      border-radius: 0;
-      border: none;
-      font-size: 1.22rem;
-      font-family: inherit;
-      background: #fff;
-      color: #242424;
-      outline: none;
-      box-sizing: border-box;
-      margin-bottom: 0;
-      transition: box-shadow 0.15s;
-      font-weight: 400;
-      letter-spacing: 1.2px;
-    }
-    .forgot-form input[type="email"]:focus {
-      box-shadow: 0 0 0 2px #f8e14299;
-    }
-    .forgot-form button, .forgot-form .btnRegister {
-      width: 100%;
-      max-width: 600px;
-      padding: 18px 0;
-      margin: 0;
-      background: #f8e12f;
-      color: #181818;
-      font-size: 1.32rem;
-      font-family: 'Oswald', Arial, sans-serif;
-      font-weight: 700;
-      border: none;
-      border-radius: 0;
-      cursor: pointer;
-      letter-spacing: 2px;
-      transition: filter 0.18s, background 0.18s;
-      box-shadow: none;
-      text-transform: uppercase;
-      text-align: center;
-    }
-    .forgot-form button:active, .forgot-form .btnRegister:active {
-      filter: brightness(0.97);
-    }
-    @media (max-width:700px) {
-      .forgot-center-box { width: 98vw; }
-      .forgot-form input, .forgot-form button { max-width: 99vw; }
-      .forgot-title { font-size: 2.1rem; }
-      .forgot-desc { font-size: 1.05rem;}
-    }
-</style>
-<div class="forgot-outer">
-    <div class="forgot-center-box">
-      <h1 class="forgot-title">QUÊN MẬT KHẨU</h1>
-      <div class="forgot-desc">
-        Nhập địa chỉ email của bạn và chúng tôi sẽ gửi cho bạn<br>
-        hướng dẫn để tạo mật khẩu mới
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Cinestar Card - UI Clone</title>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    body, html {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.cinetick-bg {
+  min-height: 100vh;
+  background: radial-gradient(ellipse at bottom left, #23272f 40%, #181e2a 100%);
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding: 24px 0 0 200px;
+  box-sizing: border-box;
+}
+
+.cinetick-card {
+  width: 480px;
+  border-radius: 6px;
+  overflow: hidden;
+  background: transparent;
+  box-shadow: 0 10px 32px 0 rgba(0,0,0,0.28);
+  position: relative;
+}
+
+.cinetick-card__image img {
+  display: block;
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+}
+
+.cinetick-card__overlay {
+  background: linear-gradient(180deg, rgba(41,67,169,0.8) 55%, rgba(56,78,168,0.95) 100%);
+  padding: 30px 26px 36px 26px;
+  color: #fff;
+  font-family: 'Roboto', Arial, sans-serif;
+  position: relative;
+}
+
+.cinetick-card__title {
+  font-family: 'Oswald', Arial, sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0 0 18px 0;
+  letter-spacing: 0.5px;
+  line-height: 1.15;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.12);
+}
+
+.cinetick-card__list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 24px 0;
+}
+
+.cinetick-card__list li {
+  display: flex;
+  align-items: center;
+  font-size: 1.25rem;
+  margin-bottom: 8px;
+  line-height: 1.4;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cinetick-card__icon {
+  display: inline-flex;
+  margin-right: 10px;
+  vertical-align: middle;
+}
+
+.cinetick-card__button {
+  display: block;
+  width: 200px;
+  background-color: #FFD600;
+  color: #222;
+  border: none;
+  border-radius: 6px;
+  font-family: 'Oswald', Arial, sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  padding: 13px 0;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  margin-top: 12px;
+  box-shadow: 0 3px 0 #cbb900;
+  letter-spacing: 1px;
+}
+
+.cinetick-card__button:hover,
+.cinetick-card__button:focus {
+  background: #ffe44d;
+  color: #000;
+}
+
+@media (max-width: 700px) {
+  .cinetick-bg {
+    justify-content: center;
+    padding-left: 0;
+  }
+  .cinetick-card {
+    width: 100vw;
+    max-width: 98vw;
+  }
+}
+  </style>
+</head>
+<body>
+  <div class="cinetick-bg">
+    <div class="cinetick-card">
+      <div class="cinetick-card__image">
+        <img src="https://cdn.cinetick.com.vn/Media/CH/2020/10/14/cinetick-hai-ba-trung_1602670009.jpg" alt="Cinestar HBT">
       </div>
-      <form class="forgot-form" id="forgotForm" autocomplete="off" onsubmit="return false;">
-        <input type="email" id="fgEmail" placeholder="Email" required>
-        <button type="button" class="btnRegister" onclick="forgotPass()">GỬI MÃ XÁC MINH</button>
-      </form>
-      <div id="message" style="margin-top:22px;font-family:Oswald,sans-serif;font-size:1.1rem;font-weight:600;"></div>
+      <div class="cinetick-card__overlay">
+        <h2 class="cinetick-card__title">CINESTAR HAI BÀ TRƯNG (TP.HCM)</h2>
+        <ul class="cinetick-card__list">
+          <li>
+            <span class="cinetick-card__icon">
+              <svg width="18" height="18" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="9" cy="9" r="8" stroke="#FFD600" stroke-width="2"/><circle cx="9" cy="9" r="3" fill="#FFD600"/></svg>
+            </span>
+            5 phòng chiếu với 725 ghế.
+          </li>
+          <li>
+            <span class="cinetick-card__icon">
+              <svg width="18" height="18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 17c4-4.571 6-7.238 6-10A6 6 0 0 0 3 7c0 2.762 2 5.429 6 10ZM9 9a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" stroke="#FFD600" stroke-width="2" fill="none"/></svg>
+            </span>
+            135 Hai Bà Trưng, Phường Bến Nghé, Quận 1
+          </li>
+        </ul>
+        <button class="cinetick-card__button">ĐẶT VÉ</button>
+      </div>
     </div>
-</div>
-<script>
-    function forgotPass() {
-        var email = $("#fgEmail").val().trim();
-        var msg = $("#message");
-        msg.css("color", "#f8e12f").text('');
-        if(email === "" || !/^[^@]+@[^@]+\.[^@]+$/.test(email)){
-            msg.css("color", "#ff6060").text('Vui lòng nhập địa chỉ email hợp lệ!');
-            return false;
-        }
-        msg.text('Đang gửi mã xác minh...');
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
-        var data = JSON.stringify({
-            email: email,
-            _token: $('meta[name="csrf-token"]').attr('content')
-        });
-        $.ajax({
-            url: "{{ route('quen-mat-khau.post') }}",
-            type: "POST",
-            data: data,
-            traditional: true,
-            datatype: "json",
-            contentType: 'application/json; charset=utf-8',
-            success: function(result) {
-                if (result === "true" || result === true) {
-                    msg.css("color", "#6aff97");
-                    msg.html('Vui lòng kiểm tra email để nhận mật khẩu mới.<br>Và đăng nhập <a href="{{ route('login.form') }}" style="color:#ffe440;">tại đây</a>');
-                } else {
-                    msg.css("color", "#ff6060").text(result);
-                }
-            },
-            error: function(xhr) {
-                msg.css("color", "#ff6060").text(xhr.responseText || 'Có lỗi xảy ra!');
-            }
-        });
-    }
-</script>
-@endsection
+  </div>
+</body>
+</html>

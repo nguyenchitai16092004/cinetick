@@ -18,7 +18,7 @@ class TaiKhoan extends Authenticatable
         'TenDN',
         'MatKhau',
         'TrangThai',
-        'ID_CCCD',
+        'ID_ThongTin',
         'VaiTro',
         'token_xac_nhan', 
     ];
@@ -40,7 +40,7 @@ class TaiKhoan extends Authenticatable
 
     public function thongTin()
     {
-        return $this->belongsTo(ThongTin::class, 'ID_CCCD', 'ID_CCCD');
+        return $this->belongsTo(ThongTin::class, 'ID_ThongTin', 'ID_ThongTin');
     }
 
     public function getVaiTroTextAttribute()
@@ -49,9 +49,11 @@ class TaiKhoan extends Authenticatable
             case 0:
                 return 'Người dùng';
             case 1:
+                return 'Nhân viên';
+            case 2:
                 return 'Quản trị viên';
             default:
-                return 'Không xác định';
+                return 'Người dùng';
         }
     }
 

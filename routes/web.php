@@ -29,12 +29,11 @@ use App\Http\Controllers\Apps\ThanhToanController;
 use App\Http\Controllers\Apps\RapChiTietController;
 use App\Http\Controllers\Apps\TinTucChiTietController;
 use App\Http\Controllers\Apps\LienHeChiTietController;
-
 use App\Events\GheDuocGiu;
 
 //==============================Frontend=====================================//
 Route::get('/', [PhimController::class, 'Index'])->name('home');
-
+Route::get('/tim-kiem', [PhimController::class, 'timKiem'])->name('tim-kiem');
 // --- Auth ---
 Route::prefix('auth')->group(function () {
     Route::get('/dang-ky', [AuthController::class, 'DangKy'])->name('register.form.get');
@@ -135,19 +134,8 @@ Route::prefix('lien-he')->group(function () {
 });
 
 // --- Các trang tĩnh ---
-Route::view('/cau-hoi-thuong-gap', 'frontend.pages.cau-hoi-thuong-gap')->name('cau-hoi-thuong-gap');
 Route::view('/thanh-cong', 'frontend.pages.thanh-cong')->name('thanh-toan-thanh-cong');
 Route::view('/that-bai', 'frontend.pages.that-bai')->name('thanh-toan-that-bai');
-
-
-// --- Chính sách ---
-Route::prefix('chinh-sach')->group(function () {
-    Route::view('/bao-mat-thong-tin', 'frontend.pages.chinh-sach.bao-mat-thong-tin')->name('chinh-sach.bao-mat-thong-tin');
-    Route::view('/chinh-sach-giao-nhan', 'frontend.pages.chinh-sach.chinh-sach-giao-nhan')->name('chinh-sach.giao-nhan');
-    Route::view('/chinh-sach-thanh-toan', 'frontend.pages.chinh-sach.chinh-sach-thanh-toan')->name('chinh-sach.thanh-toan');
-    Route::view('/dieu-khoan-chung', 'frontend.pages.chinh-sach.dieu-khoan-chung')->name('chinh-sach.dieu-khoan-chung');
-    Route::view('/kiem-hang-doi-tra-hoan-tien', 'frontend.pages.chinh-sach.kiem-hang-doi-tra-hoan-tien')->name('chinh-sach.kiem-hang-doi-tra-hoan-tien');
-});
 
 //===============================Admin=====================================//
 Route::get('/admin', [AutController::class, 'index']);

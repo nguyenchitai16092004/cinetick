@@ -153,19 +153,3 @@
         </div>
     </div>
 @endsection
-@section('js')
-    <script>
-        $(document).ready(function() {
-            // Hiển thị tên file khi chọn ảnh
-            $('.custom-file-input').on('change', function() {
-                let fileName = $(this).val().split('\\').pop();
-                $(this).next('.custom-file-label').addClass("selected").html(fileName);
-            });
-
-            // Thêm CKEDITOR cho phần mô tả phim
-            if (typeof CKEDITOR !== 'undefined') {
-                CKEDITOR.replace('MoTaPhim');
-            }
-        });
-    </script>
-@endsection

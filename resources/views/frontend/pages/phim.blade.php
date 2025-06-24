@@ -1,5 +1,5 @@
 @extends('frontend.layouts.master')
-@section('title', $title)
+@section('title', 'CineTick - ' . $title)
 @section('main')
 
     <link rel="stylesheet" href="{{ asset('frontend/Content/css/phim.css') }}">

@@ -1,5 +1,5 @@
 @extends('frontend.layouts.master')
-@section('title', $rap->TenRap ?? 'Thông tin rạp')
+@section('title', 'CineTick - ' . ($rap->TenRap ?? 'Thông tin rạp'))
 @section('main')
     <link rel="stylesheet" href="{{ asset('frontend/Content/css/home.css') }}">
     <link rel="stylesheet" href="{{ asset('frontend/Content/css/rap.css') }}">

@@ -1,5 +1,5 @@
 @extends('frontend.layouts.master')
-@section('title', 'Liên hệ')
+@section('title', 'CineTick - Liên hệ')
 @section('main')
     <link rel="stylesheet" href="{{ asset('frontend/Content/css/lien-he.css') }}">
 

@@ -4,9 +4,13 @@
     display: flex;
     justify-content: center;
     align-items: flex-start;
+    background: linear-gradient(rgba(16,24,43,0.7), rgba(16,24,43,0.7)), url("/frontend/Content/img/bg-cinetick.jpg") no-repeat center center fixed;
+    background-size: cover;
+    background-blend-mode: overlay;
+
 }
 .forgot-center-box {
-    margin-top: 60px;
+    margin-top: 220px;
     width: 600px;
     max-width: 95vw;
     display: flex;

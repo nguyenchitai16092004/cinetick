@@ -1,5 +1,5 @@
 @extends('frontend.layouts.master')
-@section('title', 'Quên mật khẩu')
+@section('title', 'CineTick - Quên mật khẩu')
 @section('main')
 <link rel="stylesheet" href="{{ asset('frontend/Content/css/quen-mat-khau.css') }}">
 <div class="forgot-outer">
@@ -25,7 +25,7 @@
             msg.css("color", "#ff6060").text('Vui lòng nhập địa chỉ email hợp lệ!');
             return false;
         }
-        msg.text('Đang gửi mã xác minh...');
+        msg.text('Đang kiểm tra...');
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

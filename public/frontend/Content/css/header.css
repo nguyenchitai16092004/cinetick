@@ -37,15 +37,16 @@
     border-radius: 12px;
     border: 1px solid rgba(255, 255, 255, 0.1);
     padding: 4px 10px 4px 18px;
-    min-width: 390px;
+    min-width: 400px;
     max-width: 500px;
-    width: 40vw;
     box-sizing: border-box;
     color: #fff;
     margin-left: 20px;
 }
 .fa-magnifying-glass {
     color: #fff;
+    float: right;
+    padding-top: 10px;
 }
 
 .header__search input {
@@ -319,6 +320,10 @@ a {
 }
 .user-menu__dropdown-list li {
     width: 100%;
+}
+
+.header__search-input{
+    width: 300px;
 }
 .user-menu__dropdown-list a {
     color: #fff;

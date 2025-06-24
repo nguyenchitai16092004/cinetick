@@ -18,7 +18,7 @@ class TaiKhoanController extends Controller
         $sortBy = $request->input('sort_by', 'VaiTro');
         $sortOrder = $request->input('sort_order', 'desc');
 
-        $query = TaiKhoan::join('thong_tin', 'tai_khoan.ID_CCCD', '=', 'thong_tin.ID_CCCD')
+        $query = TaiKhoan::join('thong_tin', 'tai_khoan.ID_ThongTin', '=', 'thong_tin.ID_ThongTin')
             ->select('tai_khoan.*', 'thong_tin.HoTen', 'thong_tin.Email', 'thong_tin.SDT');
 
         // Tìm kiếm
@@ -54,7 +54,7 @@ class TaiKhoanController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'ID_CCCD' => 'required|numeric|unique:thong_tin,ID_CCCD',
+            'ID_ThongTin' => 'required|numeric|unique:thong_tin,ID_ThongTin',
             'HoTen' => 'required|string|max:100',
             'GioiTinh' => 'required|boolean',
             'NgaySinh' => 'required|date',
@@ -78,7 +78,7 @@ class TaiKhoanController extends Controller
         try {
             // Tạo thông tin người dùng
             $thongTin = new ThongTin();
-            $thongTin->ID_CCCD = $request->ID_CCCD;
+            $thongTin->ID_ThongTin = $request->ID_ThongTin;
             $thongTin->HoTen = $request->HoTen;
             $thongTin->GioiTinh = $request->GioiTinh;
             $thongTin->NgaySinh = $request->NgaySinh;
@@ -92,7 +92,7 @@ class TaiKhoanController extends Controller
             $taiKhoan->MatKhau = Hash::make($request->MatKhau);
             $taiKhoan->VaiTro = $request->VaiTro;
             $taiKhoan->TrangThai = $request->TrangThai;
-            $taiKhoan->ID_CCCD = $request->ID_CCCD;
+            $taiKhoan->ID_ThongTin = $request->ID_ThongTin;
             $taiKhoan->save();
 
             DB::commit();
@@ -116,7 +116,7 @@ class TaiKhoanController extends Controller
      */
     public function edit($id)
     {
-        $taiKhoan = TaiKhoan::join('thong_tin', 'tai_khoan.ID_CCCD', '=', 'thong_tin.ID_CCCD')
+        $taiKhoan = TaiKhoan::join('thong_tin', 'tai_khoan.ID_ThongTin', '=', 'thong_tin.ID_ThongTin')
             ->select('tai_khoan.*', 'thong_tin.*')
             ->where('tai_khoan.ID_TaiKhoan', $id)
             ->firstOrFail();
@@ -153,7 +153,7 @@ class TaiKhoanController extends Controller
 
         try {
             // Cập nhật thông tin người dùng
-            $thongTin = ThongTin::where('ID_CCCD', $taiKhoan->ID_CCCD)->firstOrFail();
+            $thongTin = ThongTin::where('ID_ThongTin', $taiKhoan->ID_ThongTin)->firstOrFail();
             $thongTin->HoTen = $request->HoTen;
             $thongTin->GioiTinh = $request->GioiTinh;
             $thongTin->NgaySinh = $request->NgaySinh;
@@ -187,7 +187,7 @@ class TaiKhoanController extends Controller
      */
     public function Delete($id)
     {
-        $taiKhoan = TaiKhoan::join('thong_tin', 'tai_khoan.ID_CCCD', '=', 'thong_tin.ID_CCCD')
+        $taiKhoan = TaiKhoan::join('thong_tin', 'tai_khoan.ID_ThongTin', '=', 'thong_tin.ID_ThongTin')
             ->select('tai_khoan.ID_TaiKhoan', 'thong_tin.HoTen', 'tai_khoan.TenDN')
             ->where('tai_khoan.ID_TaiKhoan', $id)
             ->firstOrFail();
@@ -201,7 +201,7 @@ class TaiKhoanController extends Controller
     public function destroy($id)
     {
         $taiKhoan = TaiKhoan::findOrFail($id);
-        $idCCCD = $taiKhoan->ID_CCCD;
+        $idCCCD = $taiKhoan->ID_ThongTin;
 
         DB::beginTransaction();
 

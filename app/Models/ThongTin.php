@@ -10,12 +10,11 @@ class ThongTin extends Model
     use HasFactory;
 
     protected $table = 'thong_tin';
-    protected $primaryKey = 'ID_CCCD';
-    public $incrementing = false;
+    protected $primaryKey = 'ID_ThongTin';
+    public $incrementing = true;
     protected $keyType = 'int';
 
     protected $fillable = [
-        'ID_CCCD',
         'HoTen',
         'GioiTinh',
         'NgaySinh',
@@ -26,7 +25,7 @@ class ThongTin extends Model
     // Quan hệ: Thông tin có nhiều tài khoản
     public function taiKhoans()
     {
-        return $this->hasMany(TaiKhoan::class, 'ID_CCCD', 'ID_CCCD');
+        return $this->hasMany(TaiKhoan::class, 'ID_ThongTin', 'ID_ThongTin');
     }
 
     public function getGioiTinhTextAttribute()

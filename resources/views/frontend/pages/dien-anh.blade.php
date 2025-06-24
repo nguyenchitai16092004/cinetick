@@ -1,5 +1,5 @@
 @extends('frontend.layouts.master')
-@section('title', 'Danh sách bài viết điện ảnh')
+@section('title', 'CineTick - Danh sách bài viết điện ảnh')
 @section('main')
     <script>
         window.Laravel = {
@@ -7,6 +7,7 @@
         };
     </script>
     <link rel="stylesheet" href="{{ asset('frontend/Content/css/dien-anh.css') }}">
+    <link rel="stylesheet" href="{{ asset('frontend/Content/css/home.css') }}">
 
     <div class="bg-gradient"></div>
     <div class="floating-elements">

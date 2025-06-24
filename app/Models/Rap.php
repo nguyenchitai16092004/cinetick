@@ -14,7 +14,13 @@ class Rap extends Model
     protected $primaryKey = 'ID_Rap';
 
     protected $fillable = [
-        'TenRap', 'Slug', 'DiaChi', 'TrangThai', 'MoTa', 'Hotline'
+        'TenRap',
+        'HinhAnh',
+        'Slug',
+        'DiaChi',
+        'TrangThai',
+        'MoTa',
+        'Hotline'
     ];
 
 
@@ -27,4 +33,3 @@ class Rap extends Model
         return $this->belongsTo(Rap::class, 'ID_Rap', 'ID_Rap');
     }
 }
-

@@ -46,7 +46,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
     <script src="{{ asset('frontend/Scripts/Style88a8.js') }}"></script>
     <script src="{{ asset('frontend/Content/js/booking-release-global.js') }}"></script>
-
 </body>
 
 

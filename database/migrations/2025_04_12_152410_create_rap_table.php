@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('rap', function (Blueprint $table) {
             $table->id('ID_Rap');
             $table->string('TenRap', 100);
+            $table->string('HinhAnh', 255)->nullable();
             $table->string('Slug', 100);
             $table->string('DiaChi', 255);
             $table->boolean('TrangThai')->comment('0: Đang bảo trì, 1: Hoạt động');;
