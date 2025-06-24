@@ -14,7 +14,7 @@
                         </div>
                         <div class="card-body p-4 p-md-5">
                             <form action="{{ isset($rap[0]) ? route('rap.update', $rap[0]->ID_Rap) : route('rap.store') }}"
-                                method="POST">
+                                method="POST" enctype="multipart/form-data">
                                 @csrf
                                 @if (isset($rap[0]))
                                     @method('PUT')
@@ -28,20 +28,39 @@
                                 </div>
 
                                 <div class="mb-4">
+                                    <label for="HinhAnh" class="form-label fw-medium">Hình ảnh <span class="text-danger">*</span></label>
+                                    <div class="custom-file">
+                                        <input type="file" class="custom-file-input" id="HinhAnh" name="HinhAnh" accept="image/*">
+                                        <label class="custom-file-label" for="HinhAnh">Chọn ảnh</label>
+                                    </div>
+                                    @if ($errors->has('HinhAnh'))
+                                        <span class="text-danger">{{ $errors->first('HinhAnh') }}</span>
+                                    @endif
+                                    @if (isset($rap[0]) && $rap[0]->HinhAnh)
+                                    <div class="mt-2">
+                                        <label class="form-label">Ảnh đang lưu:</label><br>
+                                        <img src="{{ asset('storage/' . $rap[0]->HinhAnh) }}" alt="Ảnh rạp hiện tại" style="max-width: 250px; max-height: 150px; border-radius: 8px;">
+                                    </div>
+                                @endif
+                                </div>
+
+                                <div class="mb-4">
                                     <label for="DiaChi" class="form-label fw-medium">Địa Chỉ <span
                                             class="text-danger">*</span></label>
                                     <input type="text" class="form-control form-control-lg rounded-3" id="DiaChi"
                                         name="DiaChi" value="{{ old('DiaChi', $rap[0]->DiaChi ?? '') }}" required>
                                 </div>
                                 <div class="mb-4">
-                                    <label for="MoTa" class="form-label fw-medium">Mô tả <span class="text-danger">*</span></label>
+                                    <label for="MoTa" class="form-label fw-medium">Mô tả <span
+                                            class="text-danger">*</span></label>
                                     <input type="text" class="form-control form-control-lg rounded-3" id="MoTa"
                                         name="MoTa" value="{{ old('MoTa', $rap[0]->MoTa ?? '') }}" required>
                                 </div>
                                 <div class="mb-4">
-                                    <label for="Hotline" class="form-label fw-medium">Hotline <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control form-control-lg rounded-3" name="Hotline" id="Hotline"
-                                        value="{{ old('Hotline', $rap[0]->Hotline ?? '') }}">
+                                    <label for="Hotline" class="form-label fw-medium">Hotline <span
+                                            class="text-danger">*</span></label>
+                                    <input type="text" class="form-control form-control-lg rounded-3" name="Hotline"
+                                        id="Hotline" value="{{ old('Hotline', $rap[0]->Hotline ?? '') }}">
                                     @error('Hotline')
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror

@@ -1,5 +1,5 @@
 @extends('frontend.layouts.master')
-@section('title', 'Trang chủ')
+@section('title', 'CineTick - Trang chủ')
 @section('main')
     <link rel="stylesheet" href="{{ asset('frontend/Content/css/home.css') }}">
     <script>

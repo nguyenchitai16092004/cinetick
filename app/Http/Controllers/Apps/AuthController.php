@@ -23,24 +23,28 @@ class AuthController extends Controller
 
     public function dang_ky(Request $request)
     {
+        $thongTinEmail = ThongTin::where('Email', $request->Email)->first();
+        if ($thongTinEmail) {
+            $taiKhoan = TaiKhoan::where('ID_ThongTin', $thongTinEmail->ID_ThongTin)->where('TrangThai', 1)->first();
+            if ($taiKhoan) {
+                return back()->withErrors(['Email' => 'Email này đã được đăng ký trên hệ thống.'])->withInput();
+            }
+        }
+
         $request->validate([
-            'ID_CCCD' => 'required|unique:thong_tin,ID_CCCD',
             'HoTen' => 'required|string|max:255',
             'GioiTinh' => 'required|in:1,0',
             'NgaySinh' => 'required|date',
-            'Email' => 'required|email|unique:thong_tin,Email',
             'SDT' => 'required|digits:10',
             'TenDN' => 'required|string|unique:tai_khoan,TenDN',
             'MatKhau' => 'required|min:6|confirmed',
         ], [
-            'ID_CCCD.unique' => 'Số CCCD này đã được sử dụng. Vui lòng nhập số CCCD khác.',
             'Email.unique' => 'Email này đã được đăng ký tài khoản. Vui lòng sử dụng email khác.',
             'TenDN.unique' => 'Tên đăng nhập đã tồn tại. Vui lòng chọn tên khác.',
             'MatKhau.confirmed' => 'Xác nhận mật khẩu không khớp.',
         ]);
 
-        ThongTin::create([
-            'ID_CCCD' => $request->ID_CCCD,
+        $thongTin = ThongTin::create([
             'HoTen' => $request->HoTen,
             'GioiTinh' => $request->GioiTinh,
             'NgaySinh' => $request->NgaySinh,
@@ -54,7 +58,7 @@ class AuthController extends Controller
             'TenDN' => $request->TenDN,
             'MatKhau' => Hash::make($request->MatKhau),
             'TrangThai' => false, // chưa kích hoạt
-            'ID_CCCD' => $request->ID_CCCD,
+            'ID_ThongTin' => $thongTin->ID_ThongTin,
             'VaiTro' => 0,
             'token_xac_nhan' => $token,
         ]);
@@ -75,7 +79,6 @@ class AuthController extends Controller
 
         return redirect()->route('register.form.get')->with('success', 'Vui lòng xác nhận tài khoản đăng ký thông qua liên kết mà chúng tôi đã gửi đến email của bạn!');
     }
-
     public function verifyAccount($token)
     {
         $taiKhoan = TaiKhoan::where('token_xac_nhan', $token)->first();
@@ -88,7 +91,7 @@ class AuthController extends Controller
         $taiKhoan->token_xac_nhan = null;
         $taiKhoan->save();
 
-        return redirect()->route('login.form')->with('success', 'Tài khoản đã được xác nhận. Bạn có thể đăng nhập!');
+        return redirect()->route('login.form')->with('success', 'Tài khoản đã được xác nhận. Bạn có thể đăng nhập lại!');
     }
 
     public function DangNhap()
@@ -105,7 +108,7 @@ class AuthController extends Controller
                 'MatKhau' => 'required',
             ],
             [
-                'TenDN.required' => 'Tên đăng nhập không được để trống',
+                'TenDN.required' => 'Tên đăng nhập hoặc Email không được để trống',
                 'MatKhau.required' => 'Mật khẩu không được để trống',
             ]
         );
@@ -114,29 +117,33 @@ class AuthController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        $credentials = [
-            'TenDN' => $request->TenDN,
-            'password' => $request->MatKhau,
-        ];
+        // Tìm tài khoản theo tên đăng nhập hoặc email
+        $user = TaiKhoan::where('TenDN', $request->TenDN)
+            ->orWhereHas('thongTin', function ($query) use ($request) {
+                $query->where('Email', $request->TenDN);
+            })
+            ->first();
 
-        if (!Auth::attempt($credentials)) {
+        if (!$user || !Hash::check($request->MatKhau, $user->MatKhau)) {
             if ($request->ajax()) {
                 return response()->json(['success' => false, 'message' => 'Sai tài khoản hoặc mật khẩu'], 401);
             }
             return back()->withErrors(['login' => 'Sai tài khoản hoặc mật khẩu']);
         }
 
-        $user = Auth::user();
-
         if ($user->TrangThai == 0) {
             Auth::logout();
             return back()->withErrors(['login' => 'Tài khoản chưa được xác nhận. Vui lòng kiểm tra Email và xác nhận tài khoản trước khi đăng nhập!']);
         }
+
+        // Đăng nhập user
+        Auth::login($user);
+
         // Lưu session
         session([
             'user_id' => $user->ID_TaiKhoan,
             'user_name' => $user->TenDN,
-            'cccd_id' => $user->thongTin->ID_CCCD,
+            'thongtin_id' => $user->thongTin->ID_ThongTin,
             'user_role' => $user->VaiTro,
             'user_fullname' => $user->thongTin->HoTen ?? 'Người dùng',
             'user_email' => $user->thongTin->Email ?? 'Chưa cập nhật',
@@ -153,7 +160,6 @@ class AuthController extends Controller
 
         return redirect()->route('home')->with('success', 'Đăng nhập thành công!');
     }
-
 
     public function dang_xuat()
     {
@@ -174,6 +180,11 @@ class AuthController extends Controller
             return response("2"); // Mật khẩu cũ không đúng
         }
 
+        // Kiểm tra độ dài mật khẩu mới
+        if (strlen($data['NewPass']) < 6) {
+            return response("4"); // Mật khẩu mới quá ngắn
+        }
+
         if ($data['NewPass'] !== $data['ReNewPass']) {
             return response("3"); // Mật khẩu nhập lại không khớp
         }
@@ -183,7 +194,6 @@ class AuthController extends Controller
 
         return response("true");
     }
-
     public function quen_mat_khau(Request $request)
     {
         $data = json_decode($request->getContent(), true);
@@ -199,7 +209,7 @@ class AuthController extends Controller
             return response('Email không tồn tại trong hệ thống.', 404);
         }
 
-        $taiKhoan = TaiKhoan::where('ID_CCCD', $thongTin->ID_CCCD)->first();
+        $taiKhoan = TaiKhoan::where('ID_ThongTin', $thongTin->ID_ThongTin)->first();
         if (!$taiKhoan) {
             return response('Không tìm thấy tài khoản cho email này.', 404);
         }
@@ -243,7 +253,7 @@ class AuthController extends Controller
         if (!$userId) {
             return redirect()->route('login.form');
         }
-        $taiKhoan = \App\Models\TaiKhoan::find($userId);
+        $taiKhoan = TaiKhoan::find($userId);
         $thongTin = $taiKhoan->thongTin ?? null;
 
         $request->validate([
@@ -274,5 +284,4 @@ class AuthController extends Controller
 
         return view('frontend.pages.thong-tin-tai-khoan.info', compact('hoaDons', 'thongTin'));
     }
-    
 }

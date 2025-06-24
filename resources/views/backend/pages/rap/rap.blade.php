@@ -21,6 +21,7 @@
                             <tr
                                 class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:bg-gray-800">
                                 <th class="px-4 py-3">Tên Rạp</th>
+                                <th class="px-4 py-3">Hình ảnh</th>
                                 <th class="px-4 py-3">Hotline</th>
                                 <th class="px-4 py-3">Địa Chỉ</th>
                                 <th class="px-4 py-3">Trạng Thái</th>
@@ -31,6 +32,9 @@
                             @forelse ($raps as $rap)
                                 <tr>
                                     <td class="px-4 py-3 text-sm text-gray-700 dark:text-gray-200">{{ $rap->TenRap }}</td>
+                                    <td class="px-4 py-3 text-sm text-gray-700 dark:text-gray-200"><img
+                                            src="{{ $rap->HinhAnh ? asset('storage/' . $rap->HinhAnh) : asset('images/no-image.jpg') }}"
+                                            width="80" class="img-thumbnail" alt="{{ $rap->TenRap }}"></td>
                                     <td class="px-4 py-3 text-sm text-gray-700 dark:text-gray-200">{{ $rap->Hotline }}</td>
                                     <td class="px-4 py-3 text-sm text-gray-700 dark:text-gray-200">{{ $rap->DiaChi }}</td>
                                     <td class="px-4 py-3 text-sm text-gray-700 dark:text-gray-200">

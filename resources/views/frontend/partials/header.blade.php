@@ -8,8 +8,19 @@
             </a>
         </div>
         <div class="header__search">
-            <input type="text" placeholder="Tìm phim, rạp, thể loại phim...">
-            <button><i class="fa-solid fa-magnifying-glass"></i></button>
+            <form action="{{ route('tim-kiem') }}" method="GET" class="header__search-form">
+                <input 
+                    type="text" 
+                    name="keyword" 
+                    placeholder="Tìm phim, rạp, thể loại phim..." 
+                    value="{{ request('keyword') ?? '' }}"
+                    autocomplete="off"
+                    class="header__search-input"
+                >
+                <button type="submit">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+            </form>
         </div>
         <div class="header__right">
             <div class="header__center" id="goToBooking">
@@ -110,15 +121,39 @@
     });
 }
 
-//hướng người dùng đến phần đặt vé nhanh
 document.addEventListener('DOMContentLoaded', function () {
     var bookingBtn = document.querySelector('.header__center img');
-    var bookingSection = document.getElementById('bookingSection');
-    if (bookingBtn && bookingSection) {
+
+    if (bookingBtn) {
         bookingBtn.style.cursor = 'pointer';
         bookingBtn.addEventListener('click', function () {
-            bookingSection.scrollIntoView({ behavior: 'smooth' });
+            var bookingSection = document.getElementById('bookingSection');
+            if (bookingSection) {
+                // Đang ở trang home, có section => scroll luôn
+                bookingSection.scrollIntoView({ behavior: 'smooth' });
+            } else {
+                // Không phải trang home hoặc chưa có section => chuyển về home kèm hash
+                if (window.location.pathname !== '/') {
+                    window.location.href = '/#scrollToBooking';
+                } else {
+                    setTimeout(function () {
+                        var section = document.getElementById('bookingSection');
+                        if (section) section.scrollIntoView({ behavior: 'smooth' });
+                    }, 300);
+                }
+            }
         });
     }
-});
-</script>
+
+    // Nếu đã về home với hash thì tự động scroll đến bookingSection
+    if (window.location.hash === '#scrollToBooking') {
+        setTimeout(function () {
+            var section = document.getElementById('bookingSection');
+            if (section) {
+                section.scrollIntoView({ behavior: 'smooth' });
+                // Xóa hash để không scroll lại khi reload
+                history.replaceState(null, '', window.location.pathname);
+            }
+        }, 300);
+    }
+});</script>

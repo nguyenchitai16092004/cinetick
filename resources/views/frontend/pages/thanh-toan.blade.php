@@ -1,5 +1,5 @@
 @extends('frontend.layouts.master')
-@section('title', 'Thanh toán vé xem phim')
+@section('title', 'CineTick - Thanh toán vé xem phim')
 @section('main')
 
     <link rel="stylesheet" href="{{ asset('frontend/Content/css/thanh-toan.css') }}">

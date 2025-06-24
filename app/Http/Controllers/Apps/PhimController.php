@@ -15,6 +15,7 @@ use App\Models\VeXemPhim;
 use App\Models\TinTuc;
 use App\Models\ThongTinTrangWeb;
 use App\Models\Banner;
+use Illuminate\Support\Str;
 
 
 class PhimController extends Controller
@@ -298,5 +299,48 @@ class PhimController extends Controller
         }
 
         return response()->json(['avg' => $avgStr, 'count' => $count]);
+    }
+
+    public function timKiem(Request $request)
+    {
+        $keyword = trim($request->input('keyword', '')); // Dùng cho hiển thị
+        $phims = collect();
+        $raps = collect();
+
+        if ($keyword !== '') {
+            $keywordLower = mb_strtolower($keyword); // Dùng cho so sánh chữ thường
+            $slugKeyword = Str::slug($keyword);      // Dùng cho so sánh slug
+
+            // Tìm phim
+            $phims = Phim::with('theLoai')
+                ->whereRaw('LOWER(TenPhim) LIKE ?', ["%{$keywordLower}%"])
+                ->orWhereRaw('LOWER(Slug) LIKE ?', ["%{$slugKeyword}%"])
+                ->orWhereHas('theLoai', function ($q) use ($keywordLower) {
+                    $q->whereRaw('LOWER(TenTheLoai) LIKE ?', ["%{$keywordLower}%"]);
+                })
+                ->distinct()
+                ->paginate(12);
+
+            foreach ($phims as $phim) {
+                $phim->avg_rating = round($phim->binhLuan()->avg('DiemDanhGia'), 1) ?: '0.0';
+            }
+
+            // Tìm rạp: CHỈ những rạp liên quan từ khóa hoặc slug
+            $rapsSearch = Rap::withCount('phongChieu')
+                ->where(function ($q) use ($keywordLower, $slugKeyword) {
+                    $q->whereRaw('LOWER(TenRap) LIKE ?', ["%{$keywordLower}%"])
+                        ->orWhereRaw('LOWER(Slug) LIKE ?', ["%{$slugKeyword}%"]);
+                })
+                ->where('TrangThai', 1)
+                ->get();
+        }
+
+        Log::info('KET QUA RAP:', [$rapsSearch]);
+
+        return view('frontend.pages.tim-kiem', [
+            'phims' => $phims,
+            'rapsSearch' => $rapsSearch,
+            'keyword' => $keyword, // Hiển thị đúng chữ gốc người dùng nhập
+        ]);
     }
 }

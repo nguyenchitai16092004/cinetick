@@ -1,5 +1,5 @@
 @extends('frontend.layouts.master')
-@section('title', 'Chi tiết bài viết')
+@section('title', 'CineTick - Chi tiết bài viết')
 @section('main')
     <script>
         window.Laravel = {

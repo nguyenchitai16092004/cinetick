@@ -1,5 +1,5 @@
 @extends('frontend.layouts.master')
-@section('title', 'Kiểm tra thanh toán')
+@section('title', 'CineTick - Kiểm tra thanh toán')
 @section('main')
     <style>
         .container-payment-status {

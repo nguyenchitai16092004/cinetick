@@ -45,9 +45,9 @@
                                 </div>
                                 <div class="card-body">
                                     <div class="form-group">
-                                        <label for="ID_CCCD">Số CCCD/CMND</label>
-                                        <input type="text" class="form-control-plaintext" id="ID_CCCD"
-                                            value="{{ $taiKhoan->ID_CCCD }}" readonly>
+                                        <label for="ID_ThongTin">Số CCCD/CMND</label>
+                                        <input type="text" class="form-control-plaintext" id="ID_ThongTin"
+                                            value="{{ $taiKhoan->ID_ThongTin }}" readonly>
                                     </div>
 
                                     <div class="form-group">

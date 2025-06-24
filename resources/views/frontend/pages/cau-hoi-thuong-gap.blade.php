@@ -1,5 +1,5 @@
 @extends('frontend.layouts.master')
-@section('title', 'Câu hỏi thường gặp')
+@section('title', 'CineTick - Câu hỏi thường gặp')
 @section('main')
 <section class="filmoja-blog-page section_15 container bg-main" style="background: #e6e7e9; max-width: 100% !important; border-top: 1px solid;">
     <div class="container">

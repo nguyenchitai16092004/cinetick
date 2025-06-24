@@ -406,7 +406,7 @@ function resetProgressBar() {
     if (progressBar) {
         progressBar.style.animation = "none";
         progressBar.offsetHeight; // Trigger reflow
-        progressBar.style.animation = "progressSlide 5s linear";
+        progressBar.style.animation = "progressSlide 4s linear";
     }
 }
 
@@ -803,7 +803,6 @@ document.addEventListener("DOMContentLoaded", function () {
  * Hiệu ứng click nhỏ cho card Góc điện ảnh, blog, tab
  */
 document.addEventListener("DOMContentLoaded", function () {
-    // Tab switching animation
     const tabs = document.querySelectorAll(".nav-tab");
     tabs.forEach((tab) => {
         tab.addEventListener("click", function (e) {
@@ -813,7 +812,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    // Parallax cho floating elements
     document.addEventListener("mousemove", function (e) {
         const circles = document.querySelectorAll(".floating-circle");
         const x = e.clientX / window.innerWidth;
@@ -825,7 +823,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    // Intersection Observer cho hiệu ứng vào viewport
     const observerOptions = { threshold: 0.1, rootMargin: "0px 0px -50px 0px" };
     const observer = new IntersectionObserver(function (entries) {
         entries.forEach((entry) => {
@@ -835,9 +832,6 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     }, observerOptions);
-    articles.forEach((article) => {
-        observer.observe(article);
-    });
 
     // Thêm hiệu ứng slideInUp
     const style = document.createElement("style");

@@ -28,7 +28,7 @@
         <div class="footer-section">
             <h3>HỖ TRỢ</h3>
             <ul>
-                <li><a href="#">Liên hệ</a></li>
+                <li><a href="{{ route('lien-he') }}">Liên hệ</a></li>
 
                 </li>
             </ul>

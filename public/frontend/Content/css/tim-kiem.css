@@ -1,0 +1,124 @@
+.result-search {
+    text-align: center;
+}
+.search-keyword {
+    color: #fd7f00;
+    font-style: italic;
+}
+
+
+.cinema-card {
+    min-width: 0;
+    max-width: 100%;
+    background: #22243a;
+    border-radius: 18px;
+    box-shadow: 0 4px 24px 0 rgba(0,0,0,0.18);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.18s, box-shadow 0.18s;
+    position: relative;
+}
+
+.cinema-thumb {
+    position: relative;
+    width: 100%;
+    height: 170px;
+    background: #18192a;
+    overflow: hidden;
+}
+.cinema-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.25s;
+}
+.cinema-card:hover .cinema-thumb img {
+    transform: scale(1.07);
+}
+
+.cinema-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 24px 18px 18px 18px;
+}
+.cinema-title {
+    color: #fff;
+    font-family: 'Oswald', Arial, sans-serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    line-height: 1.2;
+    letter-spacing: 0.5px;
+}
+.cinema-address {
+    display: flex;
+    align-items: center;
+    color: #FFD600;
+    font-size: 1rem;
+    margin-bottom: 6px;
+    gap: 7px;
+}
+.cinema-desc {
+    color: #d6d7e7;
+    font-size: 0.98rem;
+    margin-bottom: 8px;
+    min-height: 38px;
+}
+.cinema-hotline {
+    color: #02b875;
+    font-size: 0.97rem;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 12px;
+}
+.cinema-ticket-btn {
+    margin-top: auto;
+    display: inline-block;
+    background: linear-gradient(90deg, #FFD600 0%, #fd7f00 100%);
+    color: #24253e;
+    font-family: 'Oswald', Arial, sans-serif;
+    font-weight: 700;
+    font-size: 1.11rem;
+    border: none;
+    border-radius: 7px;
+    padding: 10px 0;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 2px 0 #cbb900;
+    letter-spacing: 1px;
+    transition: background 0.2s, color 0.2s;
+    text-decoration: none !important;
+}
+.cinema-list-wrapper {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 32px;
+    margin-bottom: 32px;
+}
+.cinema-ticket-btn:hover {
+    background: linear-gradient(90deg, #ffe44d 0%, #fd7f00 100%);
+    color: #000;
+}
+@media (max-width: 1200px) {
+    .cinema-card {
+        width: calc((100% - 64px) / 3);
+    }
+}
+@media (max-width: 900px) {
+    .cinema-card {
+        width: calc((100% - 32px) / 2);
+    }
+}
+@media (max-width: 600px) {
+    .cinema-card {
+        width: 100%;
+        min-width: 0;
+    }
+    .cinema-list-wrapper {
+        gap: 16px;
+    }
+}
