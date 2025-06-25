@@ -41,6 +41,6 @@ class RapChiTietController extends Controller
             }
             $phimsByDay[$date] = $phims;
         }
-        return view('frontend.pages.rap', compact('rap', 'days', 'phimsByDay'));
+        return view('user.pages.rap', compact('rap', 'days', 'phimsByDay'));
     }
 }

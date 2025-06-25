@@ -31,7 +31,7 @@ use App\Http\Controllers\Apps\TinTucChiTietController;
 use App\Http\Controllers\Apps\LienHeChiTietController;
 use App\Events\GheDuocGiu;
 
-//==============================Frontend=====================================//
+//==============================user=====================================//
 Route::get('/', [PhimController::class, 'Index'])->name('home');
 Route::get('/tim-kiem', [PhimController::class, 'timKiem'])->name('tim-kiem');
 // --- Auth ---
@@ -42,9 +42,9 @@ Route::prefix('auth')->group(function () {
     Route::get('/dang-nhap', [AuthController::class, 'DangNhap'])->name('login.form');
     Route::post('/dang-nhap-tai-khoan', [AuthController::class, 'dang_nhap'])->name('login');
     Route::post('/dang-xuat', [AuthController::class, 'dang_xuat'])->name('logout');
-    Route::get('/doi-mat-khau', fn() => view('frontend.pages.thong-tin-tai-khoan.doi-mat-khau'))->name('doi-mat-khau.get');
+    Route::get('/doi-mat-khau', fn() => view('user.pages.thong-tin-tai-khoan.doi-mat-khau'))->name('doi-mat-khau.get');
     Route::post('/doi-mat-khau', [AuthController::class, 'doi_mat_khau'])->name('doi-mat-khau.post');
-    Route::get('/quen-mat-khau', fn() => view('frontend.pages.quen-mat-khau'))->name('quen-mat-khau.get');
+    Route::get('/quen-mat-khau', fn() => view('user.pages.quen-mat-khau'))->name('quen-mat-khau.get');
     Route::post('/quen-mat-khau', [AuthController::class, 'quen_mat_khau'])->name('quen-mat-khau.post');
 });
 
@@ -134,8 +134,8 @@ Route::prefix('lien-he')->group(function () {
 });
 
 // --- Các trang tĩnh ---
-Route::view('/thanh-cong', 'frontend.pages.thanh-cong')->name('thanh-toan-thanh-cong');
-Route::view('/that-bai', 'frontend.pages.that-bai')->name('thanh-toan-that-bai');
+Route::view('/thanh-cong', 'user.pages.thanh-cong')->name('thanh-toan-thanh-cong');
+Route::view('/that-bai', 'user.pages.that-bai')->name('thanh-toan-that-bai');
 
 //===============================Admin=====================================//
 Route::get('/admin', [AutController::class, 'index']);

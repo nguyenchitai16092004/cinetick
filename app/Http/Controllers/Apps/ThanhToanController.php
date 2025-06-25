@@ -258,7 +258,7 @@ class ThanhToanController extends Controller
             'error_message' => session('error_message', null),
         ];
 
-        return view('frontend.pages.kiem-tra-thanh-toan', $viewData)->with('status', $status);
+        return view('user.pages.kiem-tra-thanh-toan', $viewData)->with('status', $status);
     }
     public function kiemTraKhuyenMai(Request $request)
     {

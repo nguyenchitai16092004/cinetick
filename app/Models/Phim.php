@@ -28,9 +28,6 @@ class Phim extends Model
         'DoHoa',
         'QuocGia'
     ];
-    protected $casts = [
-        'QuocGia' => 'array',  // <-- thêm dòng này
-    ];
 
     // Quan hệ với bảng thể loại phim
     public function theLoai()

@@ -13,7 +13,7 @@ class LienHeChiTietController extends Controller
 {
     public function index()
     {
-        return view('frontend.pages.lien-he');
+        return view('user.pages.lien-he');
     }
 
 
@@ -64,19 +64,17 @@ class LienHeChiTietController extends Controller
         Log::info("userEmail: $userEmail, userName: $userName");
         Log::info('userEmail: ' . print_r($userEmail, true));
         Log::info('userName: ' . print_r($userName, true));
-        
+
         try {
-            
+
             Mail::send('emails.lienhe_ban_sao', $mailData, function ($message) use ($userEmail, $userName, $subject) {
                 $message->to([$userEmail => $userName])
                     ->subject($subject);
             });
-            
         } catch (\Exception $e) {
-            
+
             Log::error('Mail error: ' . $e->getMessage());
             return back()->with('email_error', 'Chúng tôi không thể xác định được email bạn vừa nhập. Có vẻ Email bạn nhập chưa đúng? Vui lòng kiểm tra lại!')->withInput();
-            
         }
 
         // Nếu tới đây nghĩa là gửi mail OK, mới lưu vào CSDL

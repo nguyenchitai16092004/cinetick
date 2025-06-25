@@ -1,72 +1,96 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <title>Liên hệ CineTick</title>
     <style>
         body {
-            font-family: "Josefin Sans", sans-serif;
-            background: #f7f7f7;
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
             margin: 0;
             padding: 0;
+            color: #333;
         }
-        .mail-container {
-            max-width: 540px;
-            margin: 30px auto;
-            background: #fff;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            padding: 32px 36px 24px 36px;
+
+        .email-wrapper {
+            max-width: 600px;
+            margin: 40px auto;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
+            padding: 30px 36px;
         }
-        .mail-title {
-            color: #2c3e50;
-            font-size: 20px;
+
+        .email-header {
+            font-size: 22px;
             font-weight: bold;
+            color: #2c3e50;
             margin-bottom: 18px;
-            letter-spacing: 0.5px;
+            text-align: left;
         }
-        .mail-content p {
-            margin: 8px 0;
-            color: #303030;
+
+        .email-body p {
             font-size: 15px;
+            margin: 6px 0 14px;
         }
-        .mail-table {
+
+        .email-body table {
             width: 100%;
             border-collapse: collapse;
-            margin: 18px 0;
-        }
-        .mail-table td {
-            padding: 7px 4px;
+            margin-top: 12px;
             font-size: 15px;
+        }
+
+        .email-body td {
+            padding: 8px 4px;
             vertical-align: top;
-            color: #222;
         }
-        .mail-table tr td:first-child {
-            color: #888;
+
+        .email-body td:first-child {
             font-weight: bold;
+            color: #666;
             width: 120px;
+            padding-right: 12px;
         }
-        .mail-footer {
-            margin-top: 34px;
-            padding-top: 15px;
+
+        .highlight {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        .email-footer {
+            margin-top: 30px;
+            padding-top: 16px;
             font-size: 13px;
             color: #888;
             border-top: 1px dotted #ccc;
             text-align: center;
         }
-        .highlight {
-            color: #e74c3c;
-            font-weight: bold;
+
+        @media (max-width: 600px) {
+            .email-wrapper {
+                padding: 20px 18px;
+            }
+
+            .email-body td:first-child {
+                width: 100px;
+            }
         }
     </style>
 </head>
+
 <body>
-    <div class="mail-container">
-        <div class="mail-title">Cảm ơn bạn đã liên hệ với CineTick!</div>
-        <div class="mail-content">
-            <p>Xin chào <strong class="highlight">{{ $name }}</strong>,</p>
-            <p>Đây là bản sao thông tin liên hệ bạn đã gửi tới <b>CineTick</b>:</p>
-            <table class="mail-table">
+    <div class="email-wrapper">
+        <div class="email-header">
+            Cảm ơn bạn đã liên hệ với CineTick!
+        </div>
+
+        <div class="email-body">
+            <p>Xin chào <span class="highlight">{{ $name }}</span>,</p>
+            <p>Chúng tôi đã nhận được thông tin liên hệ của bạn. Dưới đây là chi tiết:</p>
+
+            <table>
                 <tr>
                     <td>Họ và tên:</td>
                     <td>{{ $name }}</td>
@@ -89,11 +113,13 @@
                 </tr>
             </table>
         </div>
-        <div class="mail-footer">
+
+        <div class="email-footer">
             Vui lòng không trả lời email này.<br>
-            Đội ngũ <b>CineTick</b> sẽ liên hệ lại với bạn trong thời gian sớm nhất!<br>
+            Đội ngũ <strong>CineTick</strong> sẽ phản hồi bạn sớm nhất có thể.<br>
             &copy; {{ date('Y') }} CineTick
         </div>
     </div>
 </body>
+
 </html>

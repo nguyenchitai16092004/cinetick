@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>404 - Trang Không Tìm Thấy</title>
-    <link rel="stylesheet" href="{{ asset('frontend/Content/css/404.css') }}">
+    <link rel="stylesheet" href="{{ asset('user/Content/css/404.css') }}">
 </head>
 
 <body>
@@ -13,7 +13,7 @@
 
     <div class="brand"> 
         <a href="{{ asset('/') }}">
-            <img width="120px" src="{{ asset('frontend/Content/img/logoCineTick.png') }}" alt="filmoja" />
+            <img width="120px" src="{{ asset('user/Content/img/logoCineTick.png') }}" alt="filmoja" />
         </a>
     </div>
 
@@ -58,7 +58,7 @@
             </a>
         </div>
     </div>
-    <script src="{{ asset('frontend/Content/js/404.js') }}">
+    <script src="{{ asset('user/Content/js/404.js') }}">
         >
     </script>
 </body>
