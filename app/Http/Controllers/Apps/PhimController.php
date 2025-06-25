@@ -70,7 +70,7 @@ class PhimController extends Controller
 
         $banners = Banner::all();
 
-        return view('frontend.pages.home', [
+        return view('user.pages.home', [
             'dsPhimDangChieu' => $dsPhimDangChieu,
             'dsPhimSapChieu'  => $dsPhimSapChieu,
             'raps'            => $raps,
@@ -92,7 +92,7 @@ class PhimController extends Controller
             ->paginate(12);
 
         $title = 'Phim đang chiếu';
-        return view('frontend.pages.phim', compact('danhSachPhim', 'title'));
+        return view('user.pages.phim', compact('danhSachPhim', 'title'));
     }
 
     public function phimSapChieu()
@@ -102,7 +102,7 @@ class PhimController extends Controller
             ->paginate(12);
 
         $title = 'Phim sắp chiếu';
-        return view('frontend.pages.phim', compact('danhSachPhim', 'title'));
+        return view('user.pages.phim', compact('danhSachPhim', 'title'));
     }
 
     public function chiTiet($slug)
@@ -126,7 +126,7 @@ class PhimController extends Controller
                 return $item->NgayChieu . '|' . $item->rap->DiaChi;
             });
 
-        return view('frontend.pages.chi-tiet-phim', compact('phim', 'suatChieu'));
+        return view('user.pages.chi-tiet-phim', compact('phim', 'suatChieu'));
     }
     public function ajaxPhimTheoRap(Request $request)
     {
@@ -337,7 +337,7 @@ class PhimController extends Controller
 
         Log::info('KET QUA RAP:', [$rapsSearch]);
 
-        return view('frontend.pages.tim-kiem', [
+        return view('user.pages.tim-kiem', [
             'phims' => $phims,
             'rapsSearch' => $rapsSearch,
             'keyword' => $keyword, // Hiển thị đúng chữ gốc người dùng nhập

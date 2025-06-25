@@ -18,7 +18,7 @@ class AuthController extends Controller
 {
     public function DangKy()
     {
-        return view('frontend.pages.dang-nhap-dang-ky', ['tab' => 'register']);
+        return view('user.pages.dang-nhap-dang-ky', ['tab' => 'register']);
     }
 
     public function dang_ky(Request $request)
@@ -96,7 +96,7 @@ class AuthController extends Controller
 
     public function DangNhap()
     {
-        return view('frontend.pages.dang-nhap-dang-ky', ['tab' => 'login']);
+        return view('user.pages.dang-nhap-dang-ky', ['tab' => 'login']);
     }
 
     public function dang_nhap(Request $request)
@@ -244,7 +244,7 @@ class AuthController extends Controller
         $taiKhoan = TaiKhoan::find($userId);
         $thongTin = $taiKhoan->thongTin ?? null;
 
-        return view('frontend.pages.thong-tin-tai-khoan.cap-nhat-thong-tin', compact('taiKhoan', 'thongTin'));
+        return view('user.pages.thong-tin-tai-khoan.cap-nhat-thong-tin', compact('taiKhoan', 'thongTin'));
     }
 
     public function updateInfo(Request $request)
@@ -282,6 +282,6 @@ class AuthController extends Controller
         $taiKhoan = TaiKhoan::find($userId);
         $thongTin = $taiKhoan->thongTin ?? null;
 
-        return view('frontend.pages.thong-tin-tai-khoan.info', compact('hoaDons', 'thongTin'));
+        return view('user.pages.thong-tin-tai-khoan.info', compact('hoaDons', 'thongTin'));
     }
 }

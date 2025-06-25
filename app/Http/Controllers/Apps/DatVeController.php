@@ -106,12 +106,12 @@ class DatVeController extends Controller
                 ->where('hold_until', '>', now())
                 ->pluck('ID_Ghe')
                 ->toArray();
-                
+
             Log::info('ShowBySlug', [
                 'session_user' => session('user_id'),
                 'myHeldSeats' => $myHeldSeats
             ]);
-            
+
             // Get same-day showtimes
             $suatChieuCungNgay = SuatChieu::where('NgayChieu', $suatChieu->NgayChieu)
                 ->where('ID_Rap', $suatChieu->ID_Rap)
@@ -119,7 +119,7 @@ class DatVeController extends Controller
                 ->orderBy('GioChieu', 'asc')
                 ->get(['ID_SuatChieu', 'GioChieu']);
 
-            return view('frontend.pages.dat-ve', compact(
+            return view('user.pages.dat-ve', compact(
                 'suatChieu',
                 'suatChieuCungNgay',
                 'phongChieu',
@@ -218,7 +218,7 @@ class DatVeController extends Controller
             $now = now();
             $timePassed = $now->diffInSeconds($holdStart, false);
             $bookingTimeLeft = max(0, $holdSeconds - $timePassed);
-            return view('frontend.pages.thanh-toan', [
+            return view('user.pages.thanh-toan', [
                 // Truyền xuống view là TenGhe chứ không phải ID_Ghe
                 'selectedSeats' => $selectedSeatNames,
                 'suatChieu' => $suatChieu,
@@ -273,7 +273,7 @@ class DatVeController extends Controller
                 ];
             }
         }
-        return view('frontend.pages.thanh-toan', [
+        return view('user.pages.thanh-toan', [
             'suatChieu' => $suatChieu,
             'selectedSeats' => $selectedSeatNames,
             'seatDetails' => $seatDetails,
@@ -311,7 +311,7 @@ class DatVeController extends Controller
             return response()->json(['success' => false, 'message' => 'Server error']);
         }
     }
-/*
+    /*
     public function changeShowtime(Request $request)
     {
         try {

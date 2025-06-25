@@ -28,7 +28,7 @@ class GheDuocGiu implements ShouldBroadcast
         return new PresenceChannel('ghe.' . $this->suat_chieu_id);
     }
 
-    // Nếu muốn đặt tên event rõ ràng ở frontend:
+    // Nếu muốn đặt tên event rõ ràng ở user:
     public function broadcastAs()
     {
         return 'GheDuocGiu';

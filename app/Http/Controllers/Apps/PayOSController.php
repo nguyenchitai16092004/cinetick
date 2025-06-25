@@ -184,7 +184,7 @@ class PayOSController extends Controller
         $tenNganHang = null;
         if (!empty($paymentInfo['transactions'][0])) {
             $tran = $paymentInfo['transactions'][0];
-            $soTaiKhoan    = $tran['accountNumber'] ?? null;
+            $soTaiKhoan    = $tran['counterAccountNumber'] ?? null;
             $tenTaiKhoan   = $tran['counterAccountName'] ?? null;
             $tenNganHang   = $tran['counterAccountBankName'] ?? null;
             if (!$tenNganHang && !empty($tran['counterAccountBankId'])) {
@@ -211,7 +211,7 @@ class PayOSController extends Controller
             $hoaDon = HoaDon::create([
                 'ID_HoaDon'   => $maHoaDon,
                 'TongTien'    => isset($orderData['tong_tien']) ? $orderData['tong_tien'] : 0,
-                'PTTT'        => 'PayOS',
+                'PTTT'        => 'Chuyển khoản',
                 'ID_TaiKhoan' => session('user_id'),
                 'order_code'  => $orderCode,
                 'SoTaiKhoan'  => $soTaiKhoan,         

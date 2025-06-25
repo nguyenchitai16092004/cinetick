@@ -19,7 +19,7 @@ class TinTucChiTietController extends Controller
             ->where('TrangThai', 1)
             ->firstOrFail();
         $userLikedThis = false;
-        return view('frontend.pages.chi-tiet-bai-viet', compact('tinTuc', 'userLikedThis'));
+        return view('user.pages.chi-tiet-bai-viet', compact('tinTuc', 'userLikedThis'));
     }
     public function like($slug)
     {
@@ -50,7 +50,7 @@ class TinTucChiTietController extends Controller
             ->orderByDesc('created_at')
             ->paginate(12);
 
-        return view('frontend.pages.dien-anh', compact('dienAnhs'));
+        return view('user.pages.dien-anh', compact('dienAnhs'));
     }
     public function listKhuyenMai()
     {
@@ -59,14 +59,14 @@ class TinTucChiTietController extends Controller
             ->orderByDesc('created_at')
             ->paginate(12);
 
-        return view('frontend.pages.khuyen-mai', compact('khuyenMais'));
+        return view('user.pages.khuyen-mai', compact('khuyenMais'));
     }
     public function thongTinCineTickStatic($slug)
     {
         $tinTuc = TinTuc::where('Slug', $slug)
             ->where('TrangThai', 1)
             ->firstOrFail();
-        $userLikedThis = false; 
-        return view('frontend.pages.chi-tiet-bai-viet', compact('tinTuc', 'userLikedThis'));
+        $userLikedThis = false;
+        return view('user.pages.chi-tiet-bai-viet', compact('tinTuc', 'userLikedThis'));
     }
 }
