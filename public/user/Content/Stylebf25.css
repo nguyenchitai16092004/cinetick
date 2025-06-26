@@ -23323,9 +23323,7 @@ h3.no-underline {
     background-color: #1c1e23;
     background-image: url(img/close_light.svg);
 }
-.sweet-modal-overlay.dark .sweet-modal-close a.sweet-modal-close-link:hover {
-    background-color: #09c;
-}
+
 .sweet-modal-overlay.dark .sweet-modal-box {
     background: #25272e;
     color: #fff;
@@ -23524,22 +23522,18 @@ h3.no-underline {
 }
 .sweet-modal-close a.sweet-modal-close-link {
     display: block;
-    width: 36px;
-    height: 36px;
+    width: 30px;
+    height: 30px;
     border-radius: 100%;
-    background-color: transparent;
     background-image: url(../404c1ed.html);
     background-size: 26px;
     background-position: center;
     transition: all 0.2s;
+    position: relative;
+    bottom: 20px;
+    left: 20px;
 }
-.sweet-modal-close a.sweet-modal-close-link:hover {
-    background-color: #09c;
-    background-image: url(img/close_light.svg);
-}
-.sweet-modal-close a.sweet-modal-close-link:active {
-    background-color: #09c;
-}
+
 .sweet-modal-overlay.tabbed .sweet-modal-close {
     top: 6px;
     right: 12px;
@@ -24679,13 +24673,7 @@ h3.no-underline {
 .sweet-modal-overlay {
     background: rgba(28, 30, 35, 0.55);
 }
-.sweet-modal-overlay .sweet-modal-close a.sweet-modal-close-link {
-    background-color: #1c1e23;
-    background-image: url(img/close_light.svg);
-}
-.sweet-modal-overlay .sweet-modal-close a.sweet-modal-close-link:hover {
-    background-color: #09c;
-}
+
 .sweet-modal-overlay .sweet-modal-box {
     background: #25272e;
     color: #fff;

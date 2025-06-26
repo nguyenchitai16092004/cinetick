@@ -11,19 +11,36 @@
         <div class="floating-circle"></div>
     </div>
     <div class="boking-container">
-        <!-- Booking Steps -->
-        <div class="booking-steps">
-            <div class="step active">Chọn phim / Rạp / Suất</div>
-            <div class="step active">Chọn ghế</div>
-            <div class="step">Thanh toán</div>
-            <div class="step">Xác nhận</div>
+        <div class="steps-indicator">
+            <div class="step active" id="step-1">
+                <div class="step-number">1</div>
+                <div class="step-label">Chọn phim/Chọn suất</div>
+            </div>
+            <div class="step-separator active" id="separator-1"></div>
+            <div class="step active" id="step-2">
+                <div class="step-number">2</div>
+                <div class="step-label">Chọn ghế</div>
+            </div>
+            <div class="step-separator active" id="separator-2"></div>
+            <div class="step" id="step-3">
+                <div class="step-number">3</div>
+                <div class="step-label">Thanh toán</div>
+            </div>
+            <div class="step-separator" id="separator-3"></div>
+            <div class="step" id="step-4">
+                <div class="step-number">4</div>
+                <div class="step-label">Xác nhận</div>
+            </div>
         </div>
-        <div class="bg-gradient"></div>
+        <div id="seat-hold-timer">
+            <span>GHẾ GIỮ TRONG: </span>
+            <span id="seat-hold-timer-text"></span>
+        </div>
         <!-- Main Content -->
         <div class="content">
             <!-- Left Panel - Seating -->
             <div class="left-panel">
-                <div class="booking-note-pro" style="display: flex; align-items: center; gap: 10px;">
+                <div class="booking-note-pro">
                     <div class="booking-note-icon-tooltip" style="position: relative;">
                         <i class="fa-solid fa-circle-info" style="font-size: 1.5rem; color: #1976d2; cursor: pointer;"></i>
                         <div class="booking-note-tooltip">
@@ -63,38 +80,36 @@
                     </div>
                 </div>
             </div>
-  
+
             <!-- Right Panel - Movie Info & Summary -->
             <div class="right-panel">
                 <div class="movie-info">
                     <div class="movie-poster">
                         <img src="{{ $suatChieu->phim->HinhAnh ? asset('storage/' . $suatChieu->phim->HinhAnh) : asset('images/no-image.jpg') }}"
                             alt="{{ $suatChieu->phim->TenPhim }}">
-                        <div class="movie-badge">{{ $suatChieu->phim->DoTuoi }}</div>
                     </div>
                     <div class="movie-name">
                         <h3 class="movie-title">{{ $suatChieu->phim->TenPhim }} - {{ $suatChieu->phim->DoHoa }} </h3><span
                             class="age-rating">{{ $suatChieu->phim->DoTuoi }}</span>
                     </div>
-                    <p class="cinema-info"> <strong>{{ $suatChieu->rap->TenRap }}</strong> - {{ $suatChieu->rap->DiaChi }}</p>
+                    <p class="cinema-info"> <strong>{{ $suatChieu->rap->TenRap }}</strong> - {{ $suatChieu->rap->DiaChi }}
+                    </p>
                     <p class="cinema-info"><strong>{{ $suatChieu->phongChieu->TenPhongChieu }}</strong></p>
-                    
+
                     <p class="showtime-info">
                         <span>Suất: {{ substr($suatChieu->GioChieu, 0, 5) }} -
                             {{ ucfirst(\Carbon\Carbon::parse($suatChieu->NgayChieu)->translatedFormat('l, d/m/Y')) }}</span>
                     </p>
                 </div>
-               
+
                 <div class="ticket-summary">
-                    <div id="seat-hold-timer" style="margin-bottom:10px; color:#1976d2; font-weight:bold; display:none;">
-                        <i class="fa-regular fa-clock"></i>
-                        <span id="seat-hold-timer-text" >06:00</span>
-                    </div>
+
                     <div class="ticket-item">
                         <div class="ticket-info">
-                            <div class="seat-summary" style="margin-top: 5px; font-weight: bold; color: #000"></div>
+                            <div class="seat-summary"></div>
                             <div style="display: flex; align-items: center;">
-                                Ghế: <div class="seat-numbers" style="margin-left: 5px;"></div>
+                                <span>Ghế:</span>
+                                <div class="seat-numbers" style="margin-left: 5px;"></div>
                             </div>
                         </div>
                         <div class="ticket-price"></div>
@@ -106,9 +121,10 @@
                     </div>
 
                     <div class="button-group">
-                        <a href="{{ route('phim.chiTiet', ['slug' => $suatChieu->phim->Slug]) }}" id="btn-back-link" class="btn btn-back">Quay
+                        <a href="{{ route('phim.chiTiet', ['slug' => $suatChieu->phim->Slug]) }}" id="btn-back-link"
+                            class="btn btn-back">Quay
                             lại</a>
-                        <button id="btn-continue" class="btn btn-continue" >Tiếp tục</button>
+                        <button id="btn-continue" class="btn btn-continue">Tiếp tục</button>
                     </div>
                 </div>
             </div>
@@ -128,7 +144,8 @@
             bookedSeats: @json($bookedSeats),
             suatChieuId: {{ $suatChieu->ID_SuatChieu }},
             ticketPrice: {{ $suatChieu->GiaVe }},
-            vipSurcharge: 20000
+            vipSurcharge: 20000,
+            heldSeatsByOthers: @json($heldSeatsByOthers ?? [])
         };
         window.myHeldSeats = @json($myHeldSeats ?? []);
         window.currentUserId = {{ Session::has('user_id') ? Session::get('user_id') : 'null' }};
@@ -141,7 +158,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pusher/8.2.0/pusher.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/laravel-echo/dist/echo.iife.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/laravel-echo/1.11.3/echo.iife.js"></script>
-    
+
 
     {{-- SweetModal for notifications --}}
     <script>
@@ -163,8 +180,8 @@
             }
         }
         window.showBookingNotification = showBookingNotification;
-    </script>
-    <script>
-         var age = @json($suatChieu->phim->DoTuoi);
+        var age = @json($suatChieu->phim->DoTuoi);
+        console.log('heldSeatsByOthers:', window.bookingData.heldSeatsByOthers);
+        console.log('seatLayout:', window.bookingData.seatLayout);
     </script>
 @stop

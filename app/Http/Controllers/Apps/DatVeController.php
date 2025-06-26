@@ -101,11 +101,11 @@ class DatVeController extends Controller
             // Parse aisle information
             $rowAisles = array_map('intval', json_decode($phongChieu->HangLoiDi ?? '[]', true) ?: []);
             $colAisles = array_map('intval', json_decode($phongChieu->CotLoiDi ?? '[]', true) ?: []);
-            $myHeldSeats = GheDangGiu::where('ID_TaiKhoan', session('user_id'))
+            $myHeldSeats = array_map('strval', GheDangGiu::where('ID_TaiKhoan', session('user_id'))
                 ->where('ID_SuatChieu', $suatChieu->ID_SuatChieu)
                 ->where('hold_until', '>', now())
                 ->pluck('ID_Ghe')
-                ->toArray();
+                ->toArray());
 
             Log::info('ShowBySlug', [
                 'session_user' => session('user_id'),
@@ -118,6 +118,14 @@ class DatVeController extends Controller
                 ->where('ID_Phim', $suatChieu->ID_Phim)
                 ->orderBy('GioChieu', 'asc')
                 ->get(['ID_SuatChieu', 'GioChieu']);
+            $allHeldSeats = GheDangGiu::where('ID_SuatChieu', $suatChieu->ID_SuatChieu)
+                ->where('hold_until', '>', now())
+                ->pluck('ID_Ghe')
+                ->map(function ($id) {
+                    return (string)$id;
+                })
+                ->toArray();
+            $heldSeatsByOthers = array_values(array_diff($allHeldSeats, $myHeldSeats));
 
             return view('user.pages.dat-ve', compact(
                 'suatChieu',
@@ -131,7 +139,8 @@ class DatVeController extends Controller
                 'rowAisles',
                 'colAisles',
                 'bookedSeats',
-                'myHeldSeats'
+                'myHeldSeats',
+                'heldSeatsByOthers'
             ));
         } catch (\Exception $e) {
             // Log the error for debugging
@@ -158,8 +167,15 @@ class DatVeController extends Controller
             $myHeldSeats = GheDangGiu::where('ID_TaiKhoan', $userId)
                 ->where('ID_SuatChieu', $suatChieuId)
                 ->where('hold_until', '>', now())
-                ->pluck('ID_Ghe')
-                ->toArray();
+                ->get();
+
+            if ($myHeldSeats->count() > 0) {
+                $maxHoldUntil = $myHeldSeats->max('hold_until');
+                $maxHoldUntilTimestamp = is_numeric($maxHoldUntil) ? $maxHoldUntil : strtotime($maxHoldUntil);
+                $bookingTimeLeft = max(0, $maxHoldUntilTimestamp - time());
+            } else {
+                $bookingTimeLeft = 0;
+            }
             // selectedSeats đang là ID_Ghe, convert sang TenGhe:
             $gheNgoi = GheNgoi::whereIn('ID_Ghe', $selectedSeats)->get();
             $selectedSeatNames = $gheNgoi->pluck('TenGhe')->toArray();
@@ -216,8 +232,10 @@ class DatVeController extends Controller
             }
             $holdStart = session('hold_start');
             $now = now();
-            $timePassed = $now->diffInSeconds($holdStart, false);
-            $bookingTimeLeft = max(0, $holdSeconds - $timePassed);
+            $myHeldSeats = GheDangGiu::where('ID_TaiKhoan', session('user_id'))
+                ->where('ID_SuatChieu', $suatChieuId)
+                ->get();
+
             return view('user.pages.thanh-toan', [
                 // Truyền xuống view là TenGhe chứ không phải ID_Ghe
                 'selectedSeats' => $selectedSeatNames,
@@ -250,10 +268,17 @@ class DatVeController extends Controller
             ->get();
 
         $myHeldSeats = GheDangGiu::where('ID_TaiKhoan', session('user_id'))
-            ->where('ID_SuatChieu', $suatChieu->ID_SuatChieu)
+            ->where('ID_SuatChieu', $suatChieuId)
             ->where('hold_until', '>', now())
-            ->pluck('ID_Ghe')
-            ->toArray();
+            ->get();
+
+        if ($myHeldSeats->count() > 0) {
+            $maxHoldUntil = $myHeldSeats->max('hold_until');
+            $maxHoldUntilTimestamp = is_numeric($maxHoldUntil) ? $maxHoldUntil : strtotime($maxHoldUntil);
+            $bookingTimeLeft = max(0, $maxHoldUntilTimestamp - time());
+        } else {
+            $bookingTimeLeft = 0;
+        }
 
         $seatDetails = [];
         $totalPrice = 0;
@@ -278,7 +303,8 @@ class DatVeController extends Controller
             'selectedSeats' => $selectedSeatNames,
             'seatDetails' => $seatDetails,
             'totalPrice' => $totalPrice,
-            'myHeldSeats' => $myHeldSeats, // THÊM DÒNG NÀY
+            'myHeldSeats' => $myHeldSeats, 
+            'bookingTimeLeft' => $bookingTimeLeft,
         ]);
     }
 
