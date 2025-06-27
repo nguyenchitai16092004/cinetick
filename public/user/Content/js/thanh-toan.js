@@ -1,3 +1,4 @@
+
 // ====== Popup xác nhận thanh toán ======
 function showPaymentPopup() {
     updatePopupDiscountAndTotal(finalTotal, appliedDiscount);
@@ -78,37 +79,7 @@ window.addEventListener("beforeunload", releaseAllHeldSeats);
 window.addEventListener("visibilitychange", function () {
     if (document.visibilityState === "hidden") releaseAllHeldSeats();
 });
-document.querySelectorAll("a, .back-button").forEach(function (el) {
-    el.addEventListener("click", function (e) {
-        // Lấy href (nếu là nút .back-button không có href thì dùng window.history.back)
-        const href = el.getAttribute("href") || "";
 
-        // Xác định nếu chuyển tới flow đặt vé/thanh toán thì KHÔNG hủy ghế
-        const isBookingFlow =
-            href.startsWith("/dat-ve") ||
-            href.startsWith("/thanh-toan") ||
-            // Có thể bổ sung thêm nếu dùng route tên khác
-            href === ""; // nút back-button dùng window.history.back thì cũng không hủy ghế
-
-        // Nếu KHÔNG phải flow đặt vé/thanh toán (tức là về trang chủ, phim, v.v.) thì mới hủy giữ ghế
-        if (!isBookingFlow) {
-            e.preventDefault();
-
-            // Tiến hành gọi API hủy giữ ghế
-            releaseAllHeldSeats();
-
-            // Sau khi gọi xong thì chuyển trang (hoặc back)
-            setTimeout(function () {
-                if (href) {
-                    window.location.href = href;
-                } else {
-                    window.history.back();
-                }
-            }, 100);
-        }
-        // Nếu là quay lại flow đặt vé/thanh toán thì không làm gì, cho chuyển trang bình thường
-    });
-});
 // ====== ĐỒNG HỒ GIỮ GHẾ ======
 let timeLeft = window.bookingTimeLeft || 360;
 
@@ -272,36 +243,6 @@ function releaseAllHeldSeats() {
     }
 }
 function setupReleaseSeatEvents() {
-    // Hủy giữ ghế khi click link hoặc nút quay lại, nếu đi ra khỏi flow đặt vé/thanh toán
-    document.querySelectorAll("a, .back-button").forEach(function (el) {
-        el.addEventListener("click", function (e) {
-            // Lấy href (nếu là nút .back-button không có href thì dùng window.history.back)
-            const href = el.getAttribute("href") || "";
-
-            // Nếu chuyển sang ngoài flow đặt vé/thanh toán thì mới hủy giữ ghế
-            const isFlow =
-                href.startsWith("/dat-ve") ||
-                href.startsWith("/thanh-toan") ||
-                href === ""; // nút quay lại dùng window.history.back
-
-            if (!isFlow) {
-                e.preventDefault();
-
-                // Gọi release ghế
-                releaseAllHeldSeats();
-
-                // Sau khi gọi xong thì chuyển trang (hoặc back)
-                setTimeout(function () {
-                    if (href) {
-                        window.location.href = href;
-                    } else {
-                        window.history.back();
-                    }
-                }, 100);
-            }
-            // Nếu là quay lại flow đặt vé/thanh toán thì cho chuyển trang bình thường (không release)
-        });
-    });
 
     // Hủy giữ ghế khi reload, đóng tab, chuyển tab
     window.addEventListener("beforeunload", function (e) {
@@ -321,3 +262,4 @@ function setupReleaseSeatEvents() {
     });
 }
 document.addEventListener("DOMContentLoaded", setupReleaseSeatEvents);
+

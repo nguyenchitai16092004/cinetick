@@ -10,11 +10,11 @@ function releaseHeldSeats() {
     )
         return;
     if (window.selectedSeats.length === 0) return;
-    console.log(
-        "RELEASE SEATS",
-        window.selectedSeats,
-        window.bookingData.suatChieuId
-    );
+    // console.log(
+    //     "RELEASE SEATS",
+    //     window.selectedSeats,
+    //     window.bookingData.suatChieuId
+    // );
 
     // Tạo JSON string - KHÔNG dùng FormData!
     const data = JSON.stringify({

@@ -143,8 +143,9 @@
                 <div class="total-price" id="totalPrice">{{ number_format($totalPrice, 0, ',', '.') }} đ</div>
             </div>
             <div class="action-buttons">
-                <button type="button" class="back-button" onclick="window.history.back()">Quay lại</button>
-                <button type="button" class="confirm-button" id="payos-submit-btn">Thanh Toán</button>
+                <button type="button" class="back-button"
+                    onclick="window.location.href='/dat-ve/{{ $suatChieu->phim->Slug }}/{{ $suatChieu->NgayChieu }}/{{ $suatChieu->GioChieu }}'">Quay
+                    lại</button> <button type="button" class="confirm-button" id="payos-submit-btn">Thanh Toán</button>
             </div>
         </div>
     </div>
@@ -253,6 +254,30 @@
         window.totalPrice = Number({{ $totalPrice ?? 0 }});
         window.seatDetails = @json($seatDetails ?? []);
         window.bookingTimeLeft = {{ $bookingTimeLeft }};
+
+        @if (!empty($showPopup) && !empty($popupMessage))
+            document.addEventListener('DOMContentLoaded', function() {
+                if (typeof $ !== 'undefined' && $.sweetModal) {
+                    $.sweetModal({
+                        title: "Thông báo",
+                        content: "{{ $popupMessage }}",
+                        icon: $.sweetModal.ICON_WARNING,
+                        theme: $.sweetModal.THEME_DARK,
+                        buttons: {
+                            'OK': {
+                                classes: 'redB',
+                                action: function() {
+                                    window.location.href = "/";
+                                }
+                            }
+                        }
+                    });
+                } else {
+                    alert("{{ $popupMessage }}");
+                    window.location.href = "/";
+                }
+            });
+        @endif
     </script>
-        <script src="{{ asset('user/Content/js/thanh-toan.js') }}"></script>
+    <script src="{{ asset('user/Content/js/thanh-toan.js') }}"></script>
 @stop

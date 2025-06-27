@@ -2,7 +2,6 @@
 @section('title', 'CineTick - Đặt vé xem phim')
 @section('main')
     <link rel="stylesheet" href="{{ asset('user/Content/css/dat-ve.css') }}">
-
     <div class="bg-gradient"></div>
     <div class="floating-elements">
         <div class="floating-circle"></div>
@@ -183,5 +182,32 @@
         var age = @json($suatChieu->phim->DoTuoi);
         console.log('heldSeatsByOthers:', window.bookingData.heldSeatsByOthers);
         console.log('seatLayout:', window.bookingData.seatLayout);
+        window.myHeldSeats = @json($myHeldSeats ?? []);
+        window.holdUntilMap = @json($holdUntilMap ?? []);
+        
+        @if (!empty($showPopup) && !empty($popupMessage))
+            document.addEventListener('DOMContentLoaded', function() {
+                if (typeof $ !== 'undefined' && $.sweetModal) {
+                    $.sweetModal({
+                        title: "Thông báo",
+                        content: "{{ $popupMessage }}",
+                        icon: $.sweetModal.ICON_WARNING,
+                        theme: $.sweetModal.THEME_DARK,
+                        buttons: {
+                            'OK': {
+                                classes: 'redB',
+                                action: function() {
+                                    window.location.href = "/";
+                                }
+                            }
+                        }
+                    });
+                } else {
+                    alert("{{ $popupMessage }}");
+                    window.location.href = "/";
+                }
+            });
+        @endif
     </script>
+
 @stop

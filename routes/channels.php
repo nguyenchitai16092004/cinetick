@@ -1,7 +1,10 @@
 <?php
+
 use Illuminate\Support\Facades\Broadcast;
 
-// Ví dụ channel public (có thể để trống nếu chưa dùng private channel)
-Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
-    return (int) $user->id === (int) $id;
+Broadcast::channel('ghe.{suatChieuId}', function ($user, $suatChieuId) {
+    return [
+        'user_id' => $user->ID_TaiKhoan,
+        'user_name' => $user->TenDN,
+    ];
 });

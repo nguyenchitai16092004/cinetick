@@ -2,7 +2,6 @@
 // Specifically designed for ticket booking page
 
 document.addEventListener("DOMContentLoaded", function () {
-    console.log("Booking seat script initialized");
 
     // Initialize booking data from server
     const bookingData = window.bookingData || {};
@@ -29,20 +28,20 @@ document.addEventListener("DOMContentLoaded", function () {
     const maxSeats = 8;
     let isProcessing = false;
 
-    console.log("Initialized with data:", {
-        seats: seats.length,
-        rowAisles,
-        colAisles,
-        bookedSeats,
-        suatChieuId,
-        ticketPrice,
-    });
+    // console.log("Initialized with data:", {
+    //     seats: seats.length,
+    //     rowAisles,
+    //     colAisles,
+    //     bookedSeats,
+    //     suatChieuId,
+    //     ticketPrice,
+    // });
 
     // Seat availability check function
     function checkSeatAvailability() {
         // Implementation for periodic seat availability check
         // This would typically make an AJAX call to check seat status
-        console.log("Checking seat availability...");
+        // console.log("Checking seat availability...");
     }
 
     // Seat validation functions
@@ -205,9 +204,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Render seat layout
     function renderSeatLayout() {
-        console.log("Starting renderSeatLayout with seats:", seats);
-        console.log("Column aisles:", colAisles);
-        console.log("Row aisles:", rowAisles);
 
         if (!seats || seats.length === 0) {
             seatContainer.innerHTML =
@@ -221,7 +217,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const rowCount = seats.length;
         const colCount = seats[0] ? seats[0].length : 0;
 
-        console.log("Grid dimensions:", { rowCount, colCount });
+        // console.log("Grid dimensions:", { rowCount, colCount });
 
         // Calculate grid template columns
         let gridTemplateColumns = "auto"; // Row label column
@@ -232,14 +228,12 @@ document.addEventListener("DOMContentLoaded", function () {
             if (colAisles.includes(j)) {
                 gridTemplateColumns += " 15px"; // Aisle width
                 totalCols++;
-                console.log(`Adding column aisle before column ${j}`);
+                // console.log(`Adding column aisle before column ${j}`);
             }
             gridTemplateColumns += " 35px"; // Seat width
             totalCols++;
         }
 
-        console.log("Grid template columns:", gridTemplateColumns);
-        console.log("Total columns:", totalCols);
         seatContainer.style.gridTemplateColumns = gridTemplateColumns;
 
         // Create seat rows
@@ -258,16 +252,14 @@ document.addEventListener("DOMContentLoaded", function () {
                     aisle.className = "aisle aisle-col";
                     aisle.style.width = "15px";
                     aisle.style.height = "35px";
-                    console.log(
-                        `Creating column aisle before seat [${i}][${j}]`
-                    );
+
                     seatContainer.appendChild(aisle);
                 }
 
                 // Create seat
                 const seatData = seats[i][j];
                 if (!seatData) {
-                    console.warn(`Missing seat data at position [${i}][${j}]`);
+                    // console.warn(`Missing seat data at position [${i}][${j}]`);
                     // Create empty placeholder
                     const emptySeat = document.createElement("div");
                     emptySeat.className = "seat empty";
@@ -283,11 +275,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 seat.dataset.row = i;
                 seat.dataset.col = j;
                 seat.dataset.seatId = seatId;
-
-                console.log(
-                    `Creating seat ${seatId} with status:`,
-                    seatData.TrangThaiGhe
-                );
 
                 // Set seat status
                 if (seatData.TrangThaiGhe === 0) {
@@ -322,12 +309,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 aisleRow.style.gridColumn = `1 / span ${totalCols}`;
                 aisleRow.style.height = "15px";
                 aisleRow.style.backgroundColor = "transparent";
-                console.log(`Creating row aisle after row ${i + 1}`);
+                // console.log(`Creating row aisle after row ${i + 1}`);
                 seatContainer.appendChild(aisleRow);
             }
         }
 
-        console.log("Seat layout rendered successfully");
+        // console.log("Seat layout rendered successfully");
     }
 
     // Handle seat click
@@ -441,7 +428,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // Cập nhật biến toàn cục để form gửi đúng ghế đã chọn
         window.selectedSeats = seatArray;
 
-        console.log("Updated selectedSeats:", window.selectedSeats);
+        // console.log("Updated selectedSeats:", window.selectedSeats);
     }
 
     // Handle showtime change
@@ -484,7 +471,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Notification function
     function showNotification(title, message, type = "info") {
-        console.log("Showing notification:", { title, message, type });
+        // console.log("Showing notification:", { title, message, type });
 
         // Try to use SweetModal if available
         if (typeof $ !== "undefined" && $.sweetModal) {
@@ -513,7 +500,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Initialize everything
     function init() {
-        console.log("Initializing booking app...");
+        // console.log("Initializing booking app...");
         renderSeatLayout();
         handleShowtimeChange();
         updateBookingSummary();
@@ -536,5 +523,5 @@ document.addEventListener("DOMContentLoaded", function () {
     // Start the application
     init();
 
-    console.log("Booking app initialized successfully");
+    // console.log("Booking app initialized successfully");
 });

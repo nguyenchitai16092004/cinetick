@@ -16,7 +16,6 @@ return [
     */
 
     'default' => env('BROADCAST_DRIVER', 'null'),
-    'middleware' => ['web', 'auth'],
 
     /*
     |--------------------------------------------------------------------------

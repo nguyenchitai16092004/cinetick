@@ -8,11 +8,15 @@ use Illuminate\Support\Facades\Http;
 use App\Models\LienHe;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
+use App\Models\GheDangGiu;
 
 class LienHeChiTietController extends Controller
 {
     public function index()
     {
+        if (session()->has('user_id')) {
+            GheDangGiu::where('ID_TaiKhoan', session('user_id'))->delete();
+        }
         return view('user.pages.lien-he');
     }
 

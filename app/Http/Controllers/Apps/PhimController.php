@@ -16,12 +16,16 @@ use App\Models\TinTuc;
 use App\Models\ThongTinTrangWeb;
 use App\Models\Banner;
 use Illuminate\Support\Str;
+use App\Models\GheDangGiu;
 
 
 class PhimController extends Controller
 {
     public function index()
     {
+        if (session()->has('user_id')) {
+            GheDangGiu::where('ID_TaiKhoan', session('user_id'))->delete();
+        }
         $today = now()->toDateString();
 
         $raps = Rap::where('TrangThai', 1)->get();
@@ -86,6 +90,10 @@ class PhimController extends Controller
     }
     public function phimDangChieu()
     {
+        if (session()->has('user_id')) {
+            GheDangGiu::where('ID_TaiKhoan', session('user_id'))->delete();
+        }
+
         $today = now()->toDateString();
         $danhSachPhim = Phim::whereDate('NgayKhoiChieu', '<=', $today)
             ->whereDate('NgayKetThuc', '>=', $today)
@@ -97,6 +105,10 @@ class PhimController extends Controller
 
     public function phimSapChieu()
     {
+        if (session()->has('user_id')) {
+            GheDangGiu::where('ID_TaiKhoan', session('user_id'))->delete();
+        }
+
         $today = now()->toDateString();
         $danhSachPhim = Phim::whereDate('NgayKhoiChieu', '>=', $today)
             ->paginate(12);
@@ -116,7 +128,7 @@ class PhimController extends Controller
             ->filter(function ($suat) use ($now) {
                 $gioChieu = strlen($suat->GioChieu) === 5 ? $suat->GioChieu . ':00' : $suat->GioChieu;
                 $suatDateTime = Carbon::createFromFormat('Y-m-d H:i:s', $suat->NgayChieu . ' ' . $gioChieu);
-                return $suatDateTime->greaterThan($now);
+                return $suatDateTime->greaterThan($now->copy()->addMinutes(15));
             })
             ->sortBy([
                 ['NgayChieu', 'asc'],
@@ -130,6 +142,7 @@ class PhimController extends Controller
     }
     public function ajaxPhimTheoRap(Request $request)
     {
+
         $id_rap = $request->input('id_rap');
         // Chỉ lấy rạp có TrangThai == 1
         $rap = Rap::where('ID_Rap', $id_rap)->where('TrangThai', 1)->first();
@@ -303,6 +316,10 @@ class PhimController extends Controller
 
     public function timKiem(Request $request)
     {
+        if (session()->has('user_id')) {
+            GheDangGiu::where('ID_TaiKhoan', session('user_id'))->delete();
+        }
+
         $keyword = trim($request->input('keyword', '')); // Dùng cho hiển thị
         $phims = collect();
         $raps = collect();
