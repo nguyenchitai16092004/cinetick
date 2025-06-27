@@ -2,6 +2,13 @@
 @section('title', 'CineTick - Đăng nhập / Đăng ký')
 @section('main')
     <link rel="stylesheet" href="{{ asset('user/Content/css/dang-nhap.css') }}">
+    <link rel="stylesheet" href="{{ asset('user/Content/css/phim.css') }}">
+    <div class="bg-gradient"></div>
+    <div class="floating-elements">
+        <div class="floating-circle"></div>
+        <div class="floating-circle"></div>
+        <div class="floating-circle"></div>
+    </div>
     <div class="auth-container">
         <div class="auth-card">
             <div class="auth-tabs">
@@ -16,7 +23,7 @@
                     <div class="form-group">
                         <label class="form-label required">Email / Tên đăng nhập</label>
                         <input type="text" class="form-input" name="TenDN" placeholder="Email / Tên đăng nhập" required
-                            autocomplete="username" value="{{ old('TenDN') }}">
+                            autocomplete="off" value="{{ old('TenDN') }}">
                         @error('TenDN')
                             <div class="alert">{{ $message }}</div>
                         @enderror
@@ -24,7 +31,7 @@
                     <div class="form-group" style="position:relative;">
                         <label class="form-label required">Mật khẩu</label>
                         <input type="password" class="form-input" id="login-password" name="MatKhau" placeholder="Mật khẩu"
-                            required minlength="6" autocomplete="current-password">
+                            required minlength="6" autocomplete="new-password">
                         <span class="input-icon" id="toggle-login-pw"><i class="fa-regular fa-eye"></i></span>
                         @error('MatKhau')
                             <div class="alert">{{ $message }}</div>
@@ -43,6 +50,7 @@
                 <form class="auth-form" id="register-form" autocomplete="off" action="{{ route('register.form.post') }}"
                     method="POST">
                     @csrf
+                    <input type="hidden" name="form_type" value="register">
                     <div class="form-title">Đăng ký tài khoản thành viên và nhận ngay ưu đãi!</div>
                     <div class="form-group">
                         <label class="form-label required">Họ &amp; tên</label>
@@ -72,7 +80,8 @@
                     <div class="form-group" style="position:relative;">
                         <label class="form-label required">Ngày sinh</label>
                         <input type="date" id="rgBirthDay" name="NgaySinh" class="form-input"
-                            value="{{ old('NgaySinh') }}" required>
+                            value="{{ old('NgaySinh') }}" required max="{{ date('Y-m-d', strtotime('-13 years')) }}"
+                            min="1900-01-01">
                         @error('NgaySinh')
                             <div class="alert">{{ $message }}</div>
                         @enderror
@@ -181,7 +190,7 @@
             const loginForm = document.getElementById('login-form');
             const registerForm = document.getElementById('register-form');
             const formWrapper = document.getElementById('form-wrapper');
-            let active = '{{ old('form_type') == 'register' ? 'register' : 'login' }}';
+            let active = '{{ session('form_type', old('form_type', 'login')) == 'register' ? 'register' : 'login' }}';
 
             function showForm(form) {
                 if (form === 'login') {
@@ -273,5 +282,35 @@
             resizeObserver.observe(loginForm);
             resizeObserver.observe(registerForm);
         })();
+
+        document.getElementById('rgBirthDay').addEventListener('change', function() {
+            const input = this;
+            const dateValue = new Date(input.value);
+            const today = new Date();
+            const minAgeDate = new Date();
+            minAgeDate.setFullYear(today.getFullYear() - 13);
+
+            let error = '';
+            if (dateValue > minAgeDate) {
+                error = 'Bạn phải đủ 13 tuổi để đăng ký tài khoản.';
+            } else if (dateValue > today) {
+                error = 'Ngày sinh không được lớn hơn ngày hiện tại.';
+            }
+
+            if (error) {
+                $.sweetModal({
+                    content: error,
+                    title: 'Thông báo',
+                    icon: $.sweetModal.ICON_WARNING,
+                    theme: $.sweetModal.THEME_DARK,
+                    buttons: {
+                        'OK': {
+                            classes: 'redB'
+                        }
+                    }
+                });
+                input.value = '';
+            }
+        });
     </script>
 @endsection

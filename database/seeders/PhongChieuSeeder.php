@@ -65,7 +65,7 @@ class PhongChieuSeeder extends Seeder
             [
                 'ID_PhongChieu'   => 5,
                 'ID_Rap'          => 3,
-                'TenPhongChieu'   => 'Phong Chiếu 1',
+                'TenPhongChieu'   => 'Phòng Chiếu 1',
                 'LoaiPhong'       => 0,
                 'TrangThai'       => 1,
                 'SoLuongGhe'      => 99,
@@ -89,7 +89,7 @@ class PhongChieuSeeder extends Seeder
             [
                 'ID_PhongChieu'   => 7,
                 'ID_Rap'          => 4,
-                'TenPhongChieu'   => 'Phong Chiếu 3',
+                'TenPhongChieu'   => 'Phòng Chiếu 3',
                 'LoaiPhong'       => 0,
                 'TrangThai'       => 1,
                 'SoLuongGhe'      => 84,
@@ -101,7 +101,7 @@ class PhongChieuSeeder extends Seeder
             [
                 'ID_PhongChieu'   => 8,
                 'ID_Rap'          => 4,
-                'TenPhongChieu'   => 'Phong Chiếu 4',
+                'TenPhongChieu'   => 'Phòng Chiếu 4',
                 'LoaiPhong'       => 0,
                 'TrangThai'       => 1,
                 'SoLuongGhe'      => 84,

@@ -8,11 +8,16 @@ use App\Models\Rap;
 use App\Models\Phim;
 use App\Models\SuatChieu;
 use Carbon\Carbon;
+use App\Models\GheDangGiu;
 
 class RapChiTietController extends Controller
 {
     public function chiTiet($slug)
     {
+        
+        if (session()->has('user_id')) {
+            GheDangGiu::where('ID_TaiKhoan', session('user_id'))->delete();
+        }
         $rap = Rap::where('TrangThai', 1)->where('Slug', $slug)->firstOrFail();
 
         $days = [];

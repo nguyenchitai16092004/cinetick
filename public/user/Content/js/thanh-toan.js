@@ -1,6 +1,7 @@
+
 // ====== Popup xác nhận thanh toán ======
 function showPaymentPopup() {
-    updatePopupDiscountAndTotal(finalTotal, appliedDiscount); 
+    updatePopupDiscountAndTotal(finalTotal, appliedDiscount);
     document.getElementById("paymentConfirmPopup").style.display = "flex";
 }
 
@@ -15,7 +16,7 @@ function proceedToPayment() {
         window.seatDetails || []
     );
     document.getElementById("maKhuyenMaiInput").value = appliedCode || "";
-    document.getElementById( "soTienGiamInput" ).value = appliedDiscount || 0;
+    document.getElementById("soTienGiamInput").value = appliedDiscount || 0;
     let tongTienSauGiam =
         typeof finalTotal === "number" ? finalTotal : Number(finalTotal);
     // Đảm bảo truyền tổng tiền sau giảm giá nếu có
@@ -74,98 +75,28 @@ function getAllHeldSeats() {
         : window.selectedSeats || [];
 }
 
-function releaseAllHeldSeats() {
-    var heldSeats = getAllHeldSeats();
-    if (!heldSeats || heldSeats.length === 0) return;
-    if (!window.bookingData || !window.bookingData.suatChieuId) return;
-    if (!window.userId) return;
-    fetch("/dat-ve/bo-giu-ghe-nhieu", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            danh_sach_ghe: heldSeats,
-            suat_chieu_id: window.bookingData.suatChieuId,
-            user_id: window.userId,
-        }),
-        keepalive: true,
-        credentials: "same-origin",
-    });
-}
 window.addEventListener("beforeunload", releaseAllHeldSeats);
 window.addEventListener("visibilitychange", function () {
     if (document.visibilityState === "hidden") releaseAllHeldSeats();
 });
-document.querySelectorAll("a, .back-button").forEach(function (el) {
-    el.addEventListener("click", function (e) {
-        const href = el.getAttribute("href") || "";
-        if (
-            href === "/" ||
-            el.classList.contains("back-button") ||
-            href ===
-                (typeof window.routeHome !== "undefined"
-                    ? window.routeHome
-                    : "/")
-        ) {
-            e.preventDefault();
-
-            var heldSeats =
-                window.myHeldSeats && window.myHeldSeats.length
-                    ? window.myHeldSeats
-                    : window.selectedSeats || [];
-            if (
-                heldSeats &&
-                heldSeats.length &&
-                window.bookingData &&
-                window.bookingData.suatChieuId
-            ) {
-                fetch("/dat-ve/bo-giu-ghe-nhieu", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "X-CSRF-TOKEN": document.querySelector(
-                            'input[name="_token"]'
-                        ).value,
-                    },
-                    body: JSON.stringify({
-                        danh_sach_ghe: heldSeats,
-                        suat_chieu_id: window.bookingData.suatChieuId,
-                        user_id: window.userId,
-                    }),
-                    keepalive: true,
-                    credentials: "same-origin",
-                }).finally(() => {
-                    if (href) {
-                        window.location.href = href;
-                    } else {
-                        window.history.back();
-                    }
-                });
-            } else {
-                if (href) {
-                    window.location.href = href;
-                } else {
-                    window.history.back();
-                }
-            }
-        }
-    });
-});
 
 // ====== ĐỒNG HỒ GIỮ GHẾ ======
 let timeLeft = window.bookingTimeLeft || 360;
+
 function updateTimer() {
     const minutes = Math.floor(timeLeft / 60);
     const seconds = timeLeft % 60;
-    document.querySelector(".timer").textContent = `${minutes
-        .toString()
-        .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+    // Sửa selector để lấy đúng phần tử timer
+    const timerEls = document.querySelectorAll(".timer");
+    timerEls.forEach((el) => {
+        el.textContent = `${minutes.toString().padStart(2, "0")}:${seconds
+            .toString()
+            .padStart(2, "0")}`;
+    });
     if (timeLeft > 0) {
         timeLeft--;
         setTimeout(updateTimer, 1000);
     } else {
-        // KHÔNG alert nữa, chỉ chuyển trang
         if (typeof window.routeHome !== "undefined") {
             window.location.href = window.routeHome;
         } else {
@@ -234,7 +165,7 @@ document.getElementById("promoApplyBtn").addEventListener("click", function () {
                 .value,
             Accept: "application/json",
         },
-        body: JSON.stringify({ ma_khuyen_mai: code, tong_tien: tongTien ,  }),
+        body: JSON.stringify({ ma_khuyen_mai: code, tong_tien: tongTien }),
     })
         .then((res) => res.json())
         .then((data) => {
@@ -282,3 +213,53 @@ function updatePopupDiscountAndTotal(newTotal, discount) {
     document.getElementById("totalPricePopup").textContent =
         newTotal.toLocaleString("vi-VN") + " đ";
 }
+function isBookingOrPaymentRoute() {
+    const path = window.location.pathname;
+    // Có thể bổ sung thêm các route thuộc flow của bạn nếu có nhiều step hơn
+    return path.startsWith("/dat-ve") || path.startsWith("/thanh-toan");
+}
+function releaseAllHeldSeats() {
+    var heldSeats = getAllHeldSeats();
+    if (!heldSeats || heldSeats.length === 0) return;
+    if (!window.bookingData || !window.bookingData.suatChieuId) return;
+    if (!window.userId) return;
+
+    const payload = JSON.stringify({
+        danh_sach_ghe: heldSeats,
+        suat_chieu_id: window.bookingData.suatChieuId,
+        user_id: window.userId,
+    });
+
+    if (navigator.sendBeacon) {
+        navigator.sendBeacon("/dat-ve/bo-giu-ghe-nhieu", payload);
+    } else {
+        fetch("/dat-ve/bo-giu-ghe-nhieu", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: payload,
+            keepalive: true,
+            credentials: "same-origin",
+        });
+    }
+}
+function setupReleaseSeatEvents() {
+
+    // Hủy giữ ghế khi reload, đóng tab, chuyển tab
+    window.addEventListener("beforeunload", function (e) {
+        // Chỉ release nếu đi ra khỏi flow
+        if (!isBookingOrPaymentRoute()) {
+            releaseAllHeldSeats();
+        }
+    });
+    // Khi tab ẩn đi hoặc chuyển tab khác cũng release
+    window.addEventListener("visibilitychange", function () {
+        if (
+            document.visibilityState === "hidden" &&
+            !isBookingOrPaymentRoute()
+        ) {
+            releaseAllHeldSeats();
+        }
+    });
+}
+document.addEventListener("DOMContentLoaded", setupReleaseSeatEvents);
+

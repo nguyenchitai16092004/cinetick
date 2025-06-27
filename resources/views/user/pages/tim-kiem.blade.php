@@ -91,27 +91,28 @@
                 </div>
                 <div class="cinema-list-wrapper">
                     @foreach ($rapsSearch as $rap)
-                        <div class="cinema-card">
-                            <div class="cinema-thumb">
-                                <img src="{{ $rap->HinhAnh ? asset('storage/' . $rap->HinhAnh) : asset('images/no-image.jpg') }}"
-                                    alt="{{ $rap->TenRap }}">
-
-                            </div>
-                            <div class="cinema-body">
-                                <h3 class="cinema-title">{{ $rap->TenRap }}</h3>
-                                <div class="cinema-address">
-                                    <i class="fa-solid fa-location-dot"></i>
-                                    <span>{{ $rap->DiaChi }}</span>
+                            <div class="cinema-card">
+                                <div class="cinema-thumb">
+                                    <a href="{{ route('rap.chiTiet', ['slug' => $rap->Slug]) }}">
+                                    <img src="{{ $rap->HinhAnh ? asset('storage/' . $rap->HinhAnh) : asset('images/no-image.jpg') }}"
+                                        alt="{{ $rap->TenRap }}">
+                                    </a>
                                 </div>
-                                <div class="cinema-hotline">
-                                    <i class="fa-solid fa-phone-volume"></i>
-                                    <span>{{ $rap->Hotline ?: 'Đang cập nhật' }}</span>
+                                <div class="cinema-body">
+                                    <h3 class="cinema-title">{{ $rap->TenRap }}</h3>
+                                    <div class="cinema-address">
+                                        <i class="fa-solid fa-location-dot"></i>
+                                        <span>{{ $rap->DiaChi }}</span>
+                                    </div>
+                                    <div class="cinema-hotline">
+                                        <i class="fa-solid fa-phone-volume"></i>
+                                        <span>{{ $rap->Hotline ?: 'Đang cập nhật' }}</span>
+                                    </div>
+                                    <a href="{{ route('rap.chiTiet', ['slug' => $rap->Slug]) }}"
+                                        class="cinema-ticket-btn submit-btn">Đặt
+                                        vé ngay</a>
                                 </div>
-                                <a href="{{ route('rap.chiTiet', ['slug' => $rap->Slug]) }}"
-                                    class="cinema-ticket-btn submit-btn">Đặt
-                                    vé ngay</a>
                             </div>
-                        </div>
                     @endforeach
                 </div>
             @endif

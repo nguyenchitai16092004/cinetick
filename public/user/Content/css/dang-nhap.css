@@ -1,12 +1,4 @@
-@import url("https://fonts.googleapis.com/css?family=Oswald:500,400&display=swap");
-body {
-    font-family: "Josefin Sans", sans-serif;
-    background: #10182b;
-    min-height: 100vh;
-    margin: 0;
-    position: relative;
-    overflow-x: hidden;
-}
+
 .auth-container {
     position: relative;
     z-index: 10;

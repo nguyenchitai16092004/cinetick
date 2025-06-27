@@ -3,71 +3,35 @@
 @section('main')
 
     <link rel="stylesheet" href="{{ asset('user/Content/css/thanh-toan.css') }}">
-
+    <link rel="stylesheet" href="{{ asset('user/Content/css/phim.css') }}">
+    <div class="bg-gradient"></div>
+    <div class="floating-elements">
+        <div class="floating-circle"></div>
+        <div class="floating-circle"></div>
+        <div class="floating-circle"></div>
+    </div>
     <div class="ctn-thanh-toan">
         <div class="left-column">
-            <div class="booking-timer">
-                Thời gian giữ ghế: <span class="timer"></span>
-            </div>
-
-            <div class="movie-details">
-                <div class="movie-poster">
-                    <img src="{{ $suatChieu->phim->HinhAnh ? asset('storage/' . $suatChieu->phim->HinhAnh) : asset('images/no-image.jpg') }}"
-                        alt="{{ $suatChieu->phim->TenPhim }}">
+            <div class="steps-indicator">
+                <div class="step active" id="step-1">
+                    <div class="step-number">1</div>
+                    <div class="step-label">Chọn phim/Chọn suất</div>
                 </div>
-                <div class="movie-info">
-                    <h3>{{ $suatChieu->phim->TenPhim }}</h3>
-                    <div class="movie-meta">{{ $suatChieu->phim->DoHoa }}
-                        <span class="age-rating">{{ $suatChieu->phim->DoTuoi }}</span>
-                    </div>
+                <div class="step-separator active" id="separator-1"></div>
+                <div class="step active" id="step-2">
+                    <div class="step-number">2</div>
+                    <div class="step-label">Chọn ghế</div>
                 </div>
-            </div>
-
-            <div class="ticket-details">
-                <div>
-                    <div>{{ $suatChieu->rap->TenRap }} - {{ $suatChieu->rap->DiaChi }}</div>
-                    <div> Suất:
-                        <strong>{{ substr($suatChieu->GioChieu, 0, 5) }} -
-                            {{ ucfirst(\Carbon\Carbon::parse($suatChieu->NgayChieu)->translatedFormat('l, d/m/Y')) }}</strong>
-                    </div>
-                    <strong>
-                        <div>{{ $suatChieu->phongChieu->TenPhongChieu ?? '' }}</div>
-                    </strong>
+                <div class="step-separator active" id="separator-2"></div>
+                <div class="step active" id="step-3">
+                    <div class="step-number">3</div>
+                    <div class="step-label">Thanh toán</div>
                 </div>
-            </div>
-
-            <div class="ticket-details">
-                <div class="ticket-row" style="display: flex; justify-content: space-between;">
-                    <div><strong><span>{{ count($selectedSeats) }}x Vé {{ $suatChieu->phim->DoHoa }}</span></strong></div>
-                    <div><strong> {{ number_format($totalPrice, 0, ',', '.') }} đ</strong></div>
+                <div class="step-separator active" id="separator-3"></div>
+                <div class="step" id="step-4">
+                    <div class="step-number">4</div>
+                    <div class="step-label">Suất</div>
                 </div>
-                <div style="margin-top: 2px;">
-                    <br>
-                    Ghế:
-                    <strong>
-                        @foreach ($seatDetails as $detail)
-                            {{ $detail['TenGhe'] }} ({{ $detail['LoaiGhe'] }}){{ !$loop->last ? ', ' : '' }}
-                        @endforeach
-                    </strong>
-                </div>
-            </div>
-
-            <div class="total-row" style="display: flex; justify-content: space-between;">
-                <div>Giảm giá</div>
-                <div class="discount-amount" id="discountAmount">0 đ</div>
-            </div>
-            <div class="total-row" style="display: flex; justify-content: space-between;">
-                <div>Tổng cộng</div>
-                <div class="total-price" id="totalPrice">{{ number_format($totalPrice, 0, ',', '.') }} đ</div>
-            </div>
-        </div>
-
-        <div class="right-column">
-            <div class="steps">
-                <div class="step active">Chọn phim / Rạp / Suất</div>
-                <div class="step active">Chọn ghế</div>
-                <div class="step active">Thanh toán</div>
-                <div class="step">Xác nhận</div>
             </div>
 
             <div class="promotion-section">
@@ -107,9 +71,6 @@
                 <input type="hidden" name="so_tien_giam" id="soTienGiamInput">
                 <input type="hidden" name="tong_tien_sau_giam" id="tongTienSauGiamInput">
             </form>
-            <script>
-                window.seatDetails = @json($seatDetails ?? []);
-            </script>
 
             @if ($errors->any())
                 <div class="alert alert-danger">
@@ -121,9 +82,70 @@
                 </div>
             @endif
 
+
+
+        </div>
+
+        <div class="right-column">
+            <div class="seat-hold-timer">
+                <span>GIỮ GHẾ TRONG: </span>
+                <span class="timer pay-hold-timer-text"></span>
+            </div>
+            <div class="movie-details">
+                <div class="movie-poster">
+                    <img src="{{ $suatChieu->phim->HinhAnh ? asset('storage/' . $suatChieu->phim->HinhAnh) : asset('images/no-image.jpg') }}"
+                        alt="{{ $suatChieu->phim->TenPhim }}">
+                </div>
+                <div class="movie-info">
+                    <h3>{{ $suatChieu->phim->TenPhim }}</h3>
+                    <div class="movie-meta">{{ $suatChieu->phim->DoHoa }}
+                        <span class="age-rating">{{ $suatChieu->phim->DoTuoi }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ticket-details">
+                <div>
+                    <div class="ticket-details-local">{{ $suatChieu->rap->TenRap }} - {{ $suatChieu->rap->DiaChi }}</div>
+                    <div class="ticket-details-date"> Suất:
+                        <strong>{{ substr($suatChieu->GioChieu, 0, 5) }} -
+                            {{ ucfirst(\Carbon\Carbon::parse($suatChieu->NgayChieu)->translatedFormat('l, d/m/Y')) }}</strong>
+                    </div>
+                    <strong>
+                        <div>{{ $suatChieu->phongChieu->TenPhongChieu ?? '' }}</div>
+                    </strong>
+                </div>
+            </div>
+
+            <div class="ticket-details">
+                <div class="ticket-row">
+                    <div class="ticket-row-seated"><strong><span>{{ count($selectedSeats) }}x Vé
+                                {{ $suatChieu->phim->DoHoa }}</span></strong></div>
+                    <div><strong> {{ number_format($totalPrice, 0, ',', '.') }} đ</strong></div>
+                </div>
+                <div class="ticket-row-title">
+                    <br>
+                    Ghế:
+                    <strong>
+                        @foreach ($seatDetails as $detail)
+                            {{ $detail['TenGhe'] }} ({{ $detail['LoaiGhe'] }}){{ !$loop->last ? ', ' : '' }}
+                        @endforeach
+                    </strong>
+                </div>
+            </div>
+
+            <div class="total-row" style="display: flex; justify-content: space-between;">
+                <div>Giảm giá</div>
+                <div class="discount-amount" id="discountAmount">0 đ</div>
+            </div>
+            <div class="total-row" style="display: flex; justify-content: space-between;">
+                <div>Tổng cộng</div>
+                <div class="total-price" id="totalPrice">{{ number_format($totalPrice, 0, ',', '.') }} đ</div>
+            </div>
             <div class="action-buttons">
-                <button type="button" class="back-button" onclick="window.history.back()">Quay lại</button>
-                <button type="button" class="confirm-button" id="payos-submit-btn">Thanh Toán</button>
+                <button type="button" class="back-button"
+                    onclick="window.location.href='/dat-ve/{{ $suatChieu->phim->Slug }}/{{ $suatChieu->NgayChieu }}/{{ $suatChieu->GioChieu }}'">Quay
+                    lại</button> <button type="button" class="confirm-button" id="payos-submit-btn">Thanh Toán</button>
             </div>
         </div>
     </div>
@@ -223,7 +245,6 @@
     </div>
 
     <script src="https://cdn.payos.vn/payos-checkout/v1/stable/payos-initialize.js"></script>
-    <script src="{{ asset('user/Content/js/thanh-toan.js') }}"></script>
     <script>
         window.userId = @json(session('user_id'));
         window.selectedSeats = @json(explode(',', request('selectedSeats') ?? ''));
@@ -231,7 +252,32 @@
         window.bookingData = window.bookingData || {};
         window.bookingData.suatChieuId = {{ $suatChieu->ID_SuatChieu }};
         window.totalPrice = Number({{ $totalPrice ?? 0 }});
-        window.bookingTimeLeft = {{ $bookingTimeLeft ?? 360 }};
+        window.seatDetails = @json($seatDetails ?? []);
+        window.bookingTimeLeft = {{ $bookingTimeLeft }};
+
+        @if (!empty($showPopup) && !empty($popupMessage))
+            document.addEventListener('DOMContentLoaded', function() {
+                if (typeof $ !== 'undefined' && $.sweetModal) {
+                    $.sweetModal({
+                        title: "Thông báo",
+                        content: "{{ $popupMessage }}",
+                        icon: $.sweetModal.ICON_WARNING,
+                        theme: $.sweetModal.THEME_DARK,
+                        buttons: {
+                            'OK': {
+                                classes: 'redB',
+                                action: function() {
+                                    window.location.href = "/";
+                                }
+                            }
+                        }
+                    });
+                } else {
+                    alert("{{ $popupMessage }}");
+                    window.location.href = "/";
+                }
+            });
+        @endif
     </script>
+    <script src="{{ asset('user/Content/js/thanh-toan.js') }}"></script>
 @stop
-    

@@ -225,10 +225,6 @@
                         value="{{ $thongTin->HoTen ?? '' }}" placeholder="Họ & tên(*)">
                 </div>
                 <div class="form-group">
-                    <input type="text" class="form-control" id="modalCMND" name="ID_ThongTin"
-                        value="{{ $thongTin->ID_ThongTin ?? '' }}" placeholder="CMND(*)" readonly>
-                </div>
-                <div class="form-group">
                     <input type="text" class="form-control" id="modalEmail" name="Email" placeholder="Email (*)"
                         value="{{ $thongTin->Email ?? '' }}" readonly>
                 </div>

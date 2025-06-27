@@ -27,14 +27,22 @@ class AuthController extends Controller
         if ($thongTinEmail) {
             $taiKhoan = TaiKhoan::where('ID_ThongTin', $thongTinEmail->ID_ThongTin)->where('TrangThai', 1)->first();
             if ($taiKhoan) {
-                return back()->withErrors(['Email' => 'Email này đã được đăng ký trên hệ thống.'])->withInput();
+                return back()
+                    ->withErrors(['Email' => 'Email này đã được đăng ký trên hệ thống.'])
+                    ->withInput()
+                    ->with(['form_type' => 'register']);;
             }
         }
 
         $request->validate([
             'HoTen' => 'required|string|max:255',
             'GioiTinh' => 'required|in:1,0',
-            'NgaySinh' => 'required|date',
+            'NgaySinh' => [
+                'required',
+                'date',
+                'before_or_equal:today',
+                'before_or_equal:' . now()->subYears(13)->format('Y-m-d'), 
+            ],
             'SDT' => 'required|digits:10',
             'TenDN' => 'required|string|unique:tai_khoan,TenDN',
             'MatKhau' => 'required|min:6|confirmed',
@@ -42,6 +50,7 @@ class AuthController extends Controller
             'Email.unique' => 'Email này đã được đăng ký tài khoản. Vui lòng sử dụng email khác.',
             'TenDN.unique' => 'Tên đăng nhập đã tồn tại. Vui lòng chọn tên khác.',
             'MatKhau.confirmed' => 'Xác nhận mật khẩu không khớp.',
+            'NgaySinh.before_or_equal' => 'Ngày sinh không hợp lệ hoặc bạn chưa đủ 13 tuổi.',
         ]);
 
         $thongTin = ThongTin::create([
@@ -74,7 +83,10 @@ class AuthController extends Controller
             });
         } catch (\Exception $e) {
             Log::error($e->getMessage());
-            return back()->withErrors(['email' => 'Không gửi được email xác nhận.']);
+            return back()
+            ->withErrors(['email' => 'Không gửi được email xác nhận.'])
+            ->withInput()
+            ->with(['form_type' =>'register']);
         }
 
         return redirect()->route('register.form.get')->with('success', 'Vui lòng xác nhận tài khoản đăng ký thông qua liên kết mà chúng tôi đã gửi đến email của bạn!');
@@ -258,14 +270,12 @@ class AuthController extends Controller
 
         $request->validate([
             'HoTen' => 'required|string|max:255',
-            'NgaySinh' => 'required|date_format:d/m/Y',
             'SDT' => 'required|digits:10',
             'GioiTinh' => 'required|in:1,0',
         ]);
 
         // Chỉ cập nhật các trường cho phép
         $thongTin->HoTen = $request->HoTen;
-        $thongTin->NgaySinh = \Carbon\Carbon::createFromFormat('d/m/Y', $request->NgaySinh)->format('Y-m-d');
         $thongTin->SDT = $request->SDT;
         $thongTin->GioiTinh = $request->GioiTinh;
         $thongTin->save();

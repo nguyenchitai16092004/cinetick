@@ -39,6 +39,7 @@
 
     @include('user.partials.header')
     @yield('main')
+    
     @include('user.partials.footer')
     <script src="https://cdn.jsdelivr.net/npm/sweetmodal/dist/min/jquery.sweet-modal.min.js"></script>
 

@@ -3,16 +3,97 @@
     padding: 15px 0;
     margin-bottom: 20px;
 }
+.bg-gradient {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+    z-index: -2;
+}
+
+.bg-gradient::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(
+            circle at 20% 80%,
+            rgba(20, 20, 34, 0.3) 0%,
+            transparent 50%
+        ),
+        radial-gradient(
+            circle at 80% 20%,
+            rgba(255, 119, 198, 0.3) 0%,
+            transparent 50%
+        );
+    animation: gradientShift 8s ease-in-out infinite alternate;
+}
+.floating-elements {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.floating-circle {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 107, 53, 0.1), transparent);
+    animation: float 6s ease-in-out infinite;
+}
+
+.floating-circle:nth-child(1) {
+    width: 100px;
+    height: 100px;
+    top: 10%;
+    left: 10%;
+    animation-delay: 0s;
+}
+
+.floating-circle:nth-child(2) {
+    width: 150px;
+    height: 150px;
+    top: 60%;
+    right: 10%;
+    animation-delay: 2s;
+}
+
+.floating-circle:nth-child(3) {
+    width: 80px;
+    height: 80px;
+    bottom: 20%;
+    left: 20%;
+    animation-delay: 4s;
+}
+
+@keyframes float {
+    0% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-100px) rotate(360deg);
+        opacity: 0;
+    }
+}
 
 .step {
     padding: 10px 15px;
     cursor: pointer;
     color: #888;
-}
-
-.step.active {
-    color: #0066cc;
-    border-bottom: 2px solid #0066cc;
 }
 
 /* Main Content */
@@ -51,9 +132,7 @@
 }
 
 .time-btn.active {
-    background-color: #0066cc;
     color: white;
-    border-color: #0066cc;
 }
 
 /* Seating Chart */
@@ -75,7 +154,6 @@
     font-weight: bold;
     color: #777;
 }
-
 
 .seat.sold {
     background-color: #ccc;
@@ -125,7 +203,6 @@
 
 .legend-double {
     background-color: #fff;
-    border: 1px solid #0066cc;
 }
 
 .legend-special {
@@ -135,7 +212,7 @@
 
 /* Movie Info Panel */
 .movie-info {
-    background-color: #fff;
+    background-color: rgba(173, 170, 170, 0.174);
     border-radius: 4px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     padding: 15px;
@@ -144,35 +221,36 @@
 }
 
 .movie-poster {
-    width: 100%;
-    height: 350px;
+    width: 50%;
+    height: 280px;
     overflow: hidden;
     margin-bottom: 15px;
     position: relative;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    display: flex;
+    margin-left: 110px;
 }
 
 .movie-poster img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
     transition: all 0.4s ease;
-    filter: brightness(0.95);
-    backface-visibility: hidden;
-    transform: translateZ(0);
-    will-change: transform;
 }
 
 .movie-poster:hover img {
     transform: scale(1.05);
 }
-
+.movie-poster-info {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
 .movie-title {
     font-size: 16px;
     font-weight: bold;
-    margin-bottom: 5px;
-    color: #000;
+    color: #fff;
+    
 }
 .movie-name {
     display: flex;
@@ -205,34 +283,42 @@
 
 .cinema-info {
     font-size: 14px;
-    color: #555;
+    color: #fff;
     margin-bottom: 5px;
 }
-
+.cinema-info strong {
+    color: #fff;
+}
+.seat-summary {
+    margin-top: 5px;
+    font-weight: bold;
+    color: #fff;
+}
 .showtime-info {
     font-size: 14px;
     margin-bottom: 15px;
-    color: #333;
+    color: #fff;
 }
 
 .showtime-info span {
     font-weight: bold;
-    color: #000;
+    color: #fff;
 }
-span, small{
-    color: #fff
+span,
+small {
+    color: #fff;
 }
 /* Ticket Summary */
 .ticket-summary {
-    background-color: #fff;
+    background-color: rgba(173, 170, 170, 0.174);
     border-radius: 4px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     padding: 15px;
 }
-.booking-note{
+.booking-note {
     float: right;
 }
-.screen-image{
+.screen-image {
     width: 580px;
     margin-left: 350px;
     display: block;
@@ -265,7 +351,7 @@ span, small{
 
 .seat-numbers {
     font-size: 13px;
-    color: #333;
+    color: #fff;
     font-weight: bold;
 }
 
@@ -312,7 +398,7 @@ span, small{
     color: #fff;
 }
 .total-title {
-    color: #333;
+    color: #fff;
 }
 
 .total-price {
@@ -337,7 +423,7 @@ span, small{
 .btn-back {
     flex: 1;
     background-color: #fff;
-    color: #ff8c00;
+    color: #000 !important;
     border: 1px solid #ff8c00;
 }
 
@@ -373,10 +459,7 @@ span, small{
     padding: 20px;
     border-radius: 12px;
     flex: 2;
-
 }
-
-
 
 .time-selection {
     margin-bottom: 20px;
@@ -433,7 +516,6 @@ span, small{
     box-sizing: border-box;
 }
 
-
 .legend-vip {
     background-color: #fff;
     border: 2px solid var(--color-vip);
@@ -451,8 +533,6 @@ span, small{
     border: 1px solid var(--color-text-secondary);
 }
 
-
-
 .legend-disabled {
     background-color: var(--color-disabled);
     border: 1px solid var(--color-text-secondary);
@@ -467,7 +547,7 @@ span, small{
     color: #ff2222;
     font-size: 1.2em;
     position: static; /* bỏ absolute */
-    transform: none;  /* bỏ translate */
+    transform: none; /* bỏ translate */
     pointer-events: none;
     line-height: 1;
 }
@@ -518,7 +598,8 @@ span, small{
     border: 1px solid var(--color-text-secondary);
 }
 
-.seat.selected, .seat.held {
+.seat.selected,
+.seat.held {
     background-color: var(--color-primary);
     color: #000;
 }
@@ -585,42 +666,6 @@ span, small{
     background: transparent;
 }
 
-.bg-gradient {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
-    z-index: -2;
-}
-.bg-gradient::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: radial-gradient(
-            circle at 20% 80%,
-            rgba(120, 119, 198, 0.3) 0%,
-            transparent 50%
-        ),
-        radial-gradient(
-            circle at 80% 20%,
-            rgba(255, 119, 198, 0.3) 0%,
-            transparent 50%
-        );
-    animation: gradientShift 8s ease-in-out infinite alternate;
-}
-@keyframes gradientShift {
-    0% {
-        opacity: 0.3;
-    }
-    100% {
-        opacity: 0.8;
-    }
-}
 .booking-note-icon-tooltip {
     position: relative;
     display: inline-block;
@@ -656,68 +701,115 @@ span, small{
         font-size: 0.97rem;
     }
 }
-.floating-elements {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: -1;
+#seat-hold-timer {
+    font-weight: bold;
+    display: none;
+    position: relative;
+    left: 400px;
 }
-.floating-circle {
-    position: absolute;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(255, 107, 53, 0.1), transparent);
-    animation: float 6s ease-in-out infinite;
-}
-
-.floating-circle:nth-child(1) {
-    width: 100px;
-    height: 100px;
-    top: 10%;
-    left: 10%;
-    animation-delay: 0s;
-}
-
-.floating-circle:nth-child(2) {
-    width: 150px;
-    height: 150px;
-    top: 60%;
-    right: 10%;
-    animation-delay: 2s;
-}
-
-.floating-circle:nth-child(3) {
-    width: 80px;
-    height: 80px;
-    bottom: 20%;
-    left: 20%;
-    animation-delay: 4s;
-}
-@keyframes float {
-    0% {
-        transform: translateY(100vh) rotate(0deg);
-        opacity: 0;
-    }
-    10% {
-        opacity: 1;
-    }
-    90% {
-        opacity: 1;
-    }
-    100% {
-        transform: translateY(-100px) rotate(360deg);
-        opacity: 0;
-    }
-}
-
-#seat-hold-timer-text{
-    color: #000 !important;
+#seat-hold-timer-text {
+    color: #fff !important;
     font-size: 30px;
 }
-
+.booking-note-pro {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
 .seat.booked {
     background-color: #ff0000;
     cursor: not-allowed;
+}
+.steps-indicator {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+.step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 60px;
+    transition: all 0.3s ease;
+}
+.step.active .step-number {
+    background: #ffe500;
+    color: #1a1a1a;
+    box-shadow: 0 0 15px rgba(255, 229, 0, 0.5);
+}
+.step-label {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.5);
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.step.active .step-label {
+    color: #ffe500;
+}
+.step-number {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.6);
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 5px;
+    transition: all 0.3s ease;
+}
+.step-separator {
+    flex-grow: 1;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.1);
+    margin: 0 5px;
+    margin-top: 25px;
+    max-width: 50px;
+    transition: all 0.3s ease;
+}
+
+.step-separator.active {
+    background: #ffe500;
+    box-shadow: 0 0 10px rgba(255, 229, 0, 0.3);
+}
+
+
+.seat.waiting {
+    background: #fff;
+    animation: seat-waiting-blink 1s infinite alternate;
+    position: relative;
+    color: #333;
+}
+/* @keyframes seat-waiting-blink {
+    0% { box-shadow: 0 0 0 0 #ffd70070; }
+    100% { box-shadow: 0 0 10px 6px #ffd700cc; }
+} */
+
+.seat-waiting-dots {
+    display: inline-block;
+    margin-left: 3px;
+    font-size: 1.2em;
+    letter-spacing: 1px;
+    vertical-align: middle;
+    animation: seat-waiting-dots-blink 1.2s steps(3, end) infinite;
+}
+
+.seat-waiting-dots span {
+    opacity: 0.2;
+    animation: seat-dot-fade 1.2s infinite;
+    animation-delay: calc(0.2s * var(--i));
+    color: #000;
+
+}
+.seat-waiting-dots span:nth-child(1) { --i: 1; }
+.seat-waiting-dots span:nth-child(2) { --i: 2; }
+.seat-waiting-dots span:nth-child(3) { --i: 3; }
+
+@keyframes seat-dot-fade {
+    0% { opacity: 0.2; }
+    20% { opacity: 1; }
+    100% { opacity: 0.2; }
 }

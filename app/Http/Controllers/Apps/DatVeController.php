@@ -24,54 +24,70 @@ class DatVeController extends Controller
     {
         Log::info('ShowBySlug', ['session_user' => session('user_id')]);
         try {
-            // Validate input parameters
+            // 1. Kiểm tra tham số truyền vào
             if (empty($phimSlug) || empty($ngay) || empty($gio)) {
-                abort(400, 'Missing required parameters');
+                abort(400, 'Thiếu tham số bắt buộc');
             }
 
+            // 2. Kiểm tra đăng nhập, nếu chưa thì chuyển về trang đăng nhập
             if (!session()->has('user_id')) {
-                // Redirect về trang đăng nhập, có thể truyền kèm return url
                 return redirect()->route('login.form')->with('error', 'Vui lòng đăng nhập để đặt vé!');
             }
-            // Get movie by slug
+
+            // 3. Lấy thông tin phim theo slug
             $phim = Phim::where('Slug', $phimSlug)->firstOrFail();
 
-            // Get showtime with related data
+            // 4. Lấy thông tin suất chiếu theo phim, ngày, giờ
             $suatChieu = SuatChieu::with(['phim', 'rap', 'phongChieu'])
                 ->where('ID_Phim', $phim->ID_Phim)
                 ->where('NgayChieu', $ngay)
                 ->where('GioChieu', $gio)
                 ->firstOrFail();
 
-            // Get cinema room and related cinema
+            // ===== 5. Kiểm tra ẩn suất chiếu trước 15 phút =====
+            $gioChieu = strlen($suatChieu->GioChieu) === 5 ? $suatChieu->GioChieu . ':00' : $suatChieu->GioChieu;
+            $suatDateTime = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $suatChieu->NgayChieu . ' ' . $gioChieu);
+            $now = now();
+            // Nếu đã vào khoảng 15 phút trước giờ chiếu thì không cho đặt vé online
+            if ($now->greaterThanOrEqualTo($suatDateTime->subMinutes(15))) {
+                return view('user.pages.dat-ve', [
+                    'showPopup' => true,
+                    'popupMessage' => 'Vé online dành cho suất chiếu này đã hết!'
+                ]);
+            }
+            // ===== Kết thúc kiểm tra ẩn suất chiếu =====
+
+            // 6. Lấy thông tin phòng chiếu và rạp
             $phongChieu = PhongChieu::with('rap')->findOrFail($suatChieu->ID_PhongChieu);
 
-            // Get all cinemas
+            // 7. Lấy danh sách rạp đang hoạt động
             $raps = Rap::where('TrangThai', 1)->get();
 
-            // Get seats for the room
+            // 8. Lấy danh sách ghế trong phòng chiếu
             $ghengoi = GheNgoi::where('ID_PhongChieu', $phongChieu->ID_PhongChieu)
                 ->get(['ID_Ghe', 'TenGhe', 'LoaiTrangThaiGhe']);
 
-            // Get booked seats for this showtime
+            // 9. Lấy danh sách ghế đã được đặt cho suất chiếu này
             $bookedSeats = VeXemPhim::where('ID_SuatChieu', $suatChieu->ID_SuatChieu)
                 ->pluck('TenGhe')
                 ->toArray();
 
-            // Calculate seat layout dimensions
+            // 10. Tính số hàng, số cột của sơ đồ ghế
             $rowCount = 0;
             $colCount = 0;
-
             foreach ($ghengoi as $ghe) {
                 if (preg_match('/([A-Z])(\d+)/', $ghe->TenGhe, $matches)) {
-                    $row = ord(strtoupper($matches[1])) - 64; // Convert A->1, B->2, etc.
+                    $row = ord(strtoupper($matches[1])) - 64; // A->1, B->2,...
                     $col = (int)$matches[2];
                     $rowCount = max($rowCount, $row);
                     $colCount = max($colCount, $col);
                 }
             }
+
+            // 11. Xóa các ghế giữ đã hết hạn
             GheDangGiu::where('hold_until', '<', now())->delete();
-            // Generate seat layout array with booking status
+
+            // 12. Tạo mảng sơ đồ ghế với trạng thái từng ghế
             $seatLayout = [];
             for ($i = 0; $i < $rowCount; $i++) {
                 $row = [];
@@ -79,13 +95,13 @@ class DatVeController extends Controller
                     $tenGhe = chr(65 + $i) . ($j + 1);
                     $ghe = $ghengoi->firstWhere('TenGhe', $tenGhe);
 
-                    // Determine seat status
-                    $trangThaiGhe = 0; // Default: disabled
+                    // Xác định trạng thái ghế
+                    $trangThaiGhe = 0; // Mặc định: ghế bị vô hiệu hóa
                     if ($ghe) {
                         if (in_array($tenGhe, $bookedSeats)) {
-                            $trangThaiGhe = 3; // Booked
+                            $trangThaiGhe = 3; // Đã đặt
                         } else {
-                            $trangThaiGhe = $ghe->LoaiTrangThaiGhe ?? 1; // Use seat type or default normal
+                            $trangThaiGhe = $ghe->LoaiTrangThaiGhe ?? 1; // Loại ghế hoặc thường
                         }
                     }
                     $row[] = [
@@ -98,30 +114,45 @@ class DatVeController extends Controller
                 $seatLayout[] = $row;
             }
 
-            // Parse aisle information
+            // 13. Lấy thông tin lối đi giữa các hàng/cột
             $rowAisles = array_map('intval', json_decode($phongChieu->HangLoiDi ?? '[]', true) ?: []);
             $colAisles = array_map('intval', json_decode($phongChieu->CotLoiDi ?? '[]', true) ?: []);
-            $myHeldSeats = GheDangGiu::where('ID_TaiKhoan', session('user_id'))
+
+            // 14. Lấy danh sách ghế đang được giữ bởi user hiện tại
+            $myHeldSeats = array_map('strval', GheDangGiu::where('ID_TaiKhoan', session('user_id'))
                 ->where('ID_SuatChieu', $suatChieu->ID_SuatChieu)
                 ->where('hold_until', '>', now())
                 ->pluck('ID_Ghe')
-                ->toArray();
+                ->toArray());
 
             Log::info('ShowBySlug', [
                 'session_user' => session('user_id'),
                 'myHeldSeats' => $myHeldSeats
             ]);
 
-            // Get same-day showtimes
-            $suatChieuCungNgay = SuatChieu::where('NgayChieu', $suatChieu->NgayChieu)
-                ->where('ID_Rap', $suatChieu->ID_Rap)
-                ->where('ID_Phim', $suatChieu->ID_Phim)
-                ->orderBy('GioChieu', 'asc')
-                ->get(['ID_SuatChieu', 'GioChieu']);
+            // 15. Lấy danh sách ghế đang được giữ bởi người khác
+            $allHeldSeats = GheDangGiu::where('ID_SuatChieu', $suatChieu->ID_SuatChieu)
+                ->where('hold_until', '>', now())
+                ->pluck('ID_Ghe')
+                ->map(function ($id) {
+                    return (string)$id;
+                })
+                ->toArray();
+            $heldSeatsByOthers = array_values(array_diff($allHeldSeats, $myHeldSeats));
 
+            // 16. Lấy thời gian giữ ghế của user hiện tại (nếu có)
+            $holdUntilMap = GheDangGiu::where('ID_TaiKhoan', session('user_id'))
+                ->where('ID_SuatChieu', $suatChieu->ID_SuatChieu)
+                ->where('hold_until', '>', now())
+                ->get(['ID_Ghe', 'hold_until'])
+                ->pluck('hold_until', 'ID_Ghe')
+                ->map(function ($hold_until) {
+                    return \Carbon\Carbon::parse($hold_until)->timestamp;
+                })->toArray();
+
+            // 17. Trả về view đặt vé với đầy đủ dữ liệu
             return view('user.pages.dat-ve', compact(
                 'suatChieu',
-                'suatChieuCungNgay',
                 'phongChieu',
                 'raps',
                 'ghengoi',
@@ -131,39 +162,78 @@ class DatVeController extends Controller
                 'rowAisles',
                 'colAisles',
                 'bookedSeats',
-                'myHeldSeats'
+                'myHeldSeats',
+                'heldSeatsByOthers',
+                'holdUntilMap'
             ));
         } catch (\Exception $e) {
-            // Log the error for debugging
+            // Ghi log lỗi để debug
             Log::error('Error in showBySlug: ' . $e->getMessage());
-            abort(404, 'Resource not found');
+            abort(404, 'Không tìm thấy tài nguyên');
         }
     }
 
     public function thanhToan(Request $request)
     {
         try {
+            // 1. Validate dữ liệu đầu vào
             $request->validate([
                 'selectedSeats' => 'required|string',
                 'suatChieuId' => 'required|integer|exists:suatchieus,ID_SuatChieu'
             ]);
             $selectedSeats = array_filter(explode(',', $request->input('selectedSeats', '')));
-            $suatChieuId = $request->input('ID_SuatChieu');
+            $suatChieuId = $request->input('suatChieuId'); // Sửa lại đúng tên biến
             $userId = session('user_id');
 
+            // 2. Nếu selectedSeats là TenGhe thì chuyển sang ID_Ghe
             if (!empty($selectedSeats) && !is_numeric($selectedSeats[0])) {
-                // Nếu là TenGhe, convert sang ID_Ghe
                 $selectedSeats = GheNgoi::whereIn('TenGhe', $selectedSeats)->pluck('ID_Ghe')->toArray();
             }
+
+            // 3. Lấy thông tin suất chiếu
+            $suatChieu = SuatChieu::with(['phim', 'rap', 'phongChieu'])
+                ->findOrFail($suatChieuId);
+
+            // ===== 4. Kiểm tra thời gian suất chiếu, nếu đã vào 15 phút trước giờ chiếu thì hiện popup =====
+            $gioChieu = strlen($suatChieu->GioChieu) === 5 ? $suatChieu->GioChieu . ':00' : $suatChieu->GioChieu;
+            $suatDateTime = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $suatChieu->NgayChieu . ' ' . $gioChieu);
+            $now = now();
+            if ($now->greaterThanOrEqualTo($suatDateTime->subMinutes(15))) {
+                // Trả về view thanh toán với popup thông báo
+                return view('user.pages.thanh-toan', [
+                    'showPopup' => true,
+                    'popupMessage' => 'Vé online dành cho suất chiếu này đã hết!',
+                    // Truyền các biến khác nếu cần cho view không lỗi
+                    'selectedSeats' => [],
+                    'suatChieu' => $suatChieu,
+                    'seatDetails' => [],
+                    'totalPrice' => 0,
+                    'myHeldSeats' => [],
+                    'bookingTimeLeft' => 0,
+                ]);
+            }
+            // ===== Kết thúc kiểm tra thời gian =====
+
+            // 5. Lấy danh sách ghế đang được giữ bởi user hiện tại
             $myHeldSeats = GheDangGiu::where('ID_TaiKhoan', $userId)
                 ->where('ID_SuatChieu', $suatChieuId)
                 ->where('hold_until', '>', now())
-                ->pluck('ID_Ghe')
-                ->toArray();
-            // selectedSeats đang là ID_Ghe, convert sang TenGhe:
+                ->get();
+
+            // 6. Tính thời gian giữ ghế còn lại
+            if ($myHeldSeats->count() > 0) {
+                $maxHoldUntil = $myHeldSeats->max('hold_until');
+                $maxHoldUntilTimestamp = is_numeric($maxHoldUntil) ? $maxHoldUntil : strtotime($maxHoldUntil);
+                $bookingTimeLeft = max(0, $maxHoldUntilTimestamp - time());
+            } else {
+                $bookingTimeLeft = 0;
+            }
+
+            // 7. Chuyển selectedSeats (ID_Ghe) sang TenGhe
             $gheNgoi = GheNgoi::whereIn('ID_Ghe', $selectedSeats)->get();
             $selectedSeatNames = $gheNgoi->pluck('TenGhe')->toArray();
 
+            // 8. Kiểm tra các ghế có còn được giữ bởi user không
             $danhSachGheDangGiu = GheDangGiu::whereIn('ID_Ghe', $selectedSeats)
                 ->where('ID_TaiKhoan', $userId)
                 ->where('ID_SuatChieu', $suatChieuId)
@@ -172,10 +242,8 @@ class DatVeController extends Controller
             if ($danhSachGheDangGiu->count() !== count($selectedSeats)) {
                 return redirect()->back()->with('error', 'Một số ghế bạn chọn đã bị mất quyền giữ, vui lòng chọn lại!');
             }
-            $suatChieu = SuatChieu::with(['phim', 'rap', 'phongChieu'])
-                ->findOrFail($request->input('suatChieuId'));
 
-            // Check if seats are still available
+            // 9. Kiểm tra các ghế đã bị đặt chưa
             $bookedSeats = VeXemPhim::where('ID_SuatChieu', $suatChieu->ID_SuatChieu)
                 ->whereIn('TenGhe', $selectedSeatNames)
                 ->pluck('TenGhe')
@@ -185,7 +253,7 @@ class DatVeController extends Controller
                 return redirect()->back()->with('error', 'Một số ghế đã được đặt: ' . implode(', ', $bookedSeats));
             }
 
-            // Lấy lại danh sách ghế theo tên để build seatDetails
+            // 10. Lấy lại danh sách ghế theo tên để build seatDetails
             $gheNgoiTheoTen = GheNgoi::where('ID_PhongChieu', $suatChieu->ID_PhongChieu)
                 ->whereIn('TenGhe', $selectedSeatNames)
                 ->get();
@@ -208,18 +276,21 @@ class DatVeController extends Controller
                     ];
                 }
             }
-            // Thời gian giữ ghế (giây)
-            $holdSeconds = 360;
-            // Nếu chưa có session hold_start thì set luôn (đề phòng user vô trực tiếp)
+
+            // 11. Lưu thời gian bắt đầu giữ ghế vào session nếu chưa có
             if (!session()->has('hold_start')) {
                 session(['hold_start' => now()]);
             }
-            $holdStart = session('hold_start');
-            $now = now();
-            $timePassed = $now->diffInSeconds($holdStart, false);
-            $bookingTimeLeft = max(0, $holdSeconds - $timePassed);
+
+            // 12. Lấy lại danh sách ghế đang giữ (dạng mảng ID_Ghe dạng chuỗi)
+            $myHeldSeats = array_map('strval', GheDangGiu::where('ID_TaiKhoan', session('user_id'))
+                ->where('ID_SuatChieu', $suatChieu->ID_SuatChieu)
+                ->where('hold_until', '>', now())
+                ->pluck('ID_Ghe')
+                ->toArray());
+
+            // 13. Trả về view thanh toán với đầy đủ dữ liệu
             return view('user.pages.thanh-toan', [
-                // Truyền xuống view là TenGhe chứ không phải ID_Ghe
                 'selectedSeats' => $selectedSeatNames,
                 'suatChieu' => $suatChieu,
                 'seatDetails' => $seatDetails,
@@ -232,7 +303,6 @@ class DatVeController extends Controller
             return redirect()->back()->with('error', 'Có lỗi xảy ra, vui lòng thử lại');
         }
     }
-
     public function showThanhToan(Request $request)
     {
         $suatChieuId = $request->input('ID_SuatChieu');
@@ -250,10 +320,17 @@ class DatVeController extends Controller
             ->get();
 
         $myHeldSeats = GheDangGiu::where('ID_TaiKhoan', session('user_id'))
-            ->where('ID_SuatChieu', $suatChieu->ID_SuatChieu)
+            ->where('ID_SuatChieu', $suatChieuId)
             ->where('hold_until', '>', now())
-            ->pluck('ID_Ghe')
-            ->toArray();
+            ->get();
+
+        if ($myHeldSeats->count() > 0) {
+            $maxHoldUntil = $myHeldSeats->max('hold_until');
+            $maxHoldUntilTimestamp = is_numeric($maxHoldUntil) ? $maxHoldUntil : strtotime($maxHoldUntil);
+            $bookingTimeLeft = max(0, $maxHoldUntilTimestamp - time());
+        } else {
+            $bookingTimeLeft = 0;
+        }
 
         $seatDetails = [];
         $totalPrice = 0;
@@ -278,7 +355,8 @@ class DatVeController extends Controller
             'selectedSeats' => $selectedSeatNames,
             'seatDetails' => $seatDetails,
             'totalPrice' => $totalPrice,
-            'myHeldSeats' => $myHeldSeats, // THÊM DÒNG NÀY
+            'myHeldSeats' => $myHeldSeats, 
+            'bookingTimeLeft' => $bookingTimeLeft,
         ]);
     }
 
@@ -311,57 +389,6 @@ class DatVeController extends Controller
             return response()->json(['success' => false, 'message' => 'Server error']);
         }
     }
-    /*
-    public function changeShowtime(Request $request)
-    {
-        try {
-            $suatChieuId = $request->input('suatChieuId');
-            $phimSlug = $request->input('phimSlug');
-
-            $suatChieu = SuatChieu::with(['phim'])->findOrFail($suatChieuId);
-
-            $ngay = $suatChieu->NgayChieu;
-            $gio = substr($suatChieu->GioChieu, 0, 5);
-
-            return redirect()->route('dat-ve.show', [
-                'phimSlug' => $phimSlug,
-                'ngay' => $ngay,
-                'gio' => $gio
-            ]);
-        } catch (\Exception $e) {
-            Log::error('Error changing showtime: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Có lỗi xảy ra');
-        }
-    }
-    public function ajaxNgayChieu(Request $request)
-    {
-        $idRap = $request->id_rap;
-        $idPhim = $request->id_phim;
-        $ngays = \App\Models\SuatChieu::where('ID_Rap', $idRap)
-            ->where('ID_Phim', $idPhim)
-            ->pluck('NgayChieu')->unique()->values();
-        return response()->json($ngays);
-    }
-
-    public function ajaxSuatChieu(Request $request)
-    {
-        $idRap = $request->id_rap;
-        $idPhim = $request->id_phim;
-        $ngay = $request->ngay;
-        $suats = \App\Models\SuatChieu::where('ID_Rap', $idRap)
-            ->where('ID_Phim', $idPhim)
-            ->where('NgayChieu', $ngay)
-            ->get(['GioChieu', 'ID_SuatChieu', 'DinhDang']);
-        $result = $suats->map(function ($s) {
-            return [
-                'gio' => $s->GioChieu,
-                'id' => $s->ID_SuatChieu,
-                'dinh_dang' => $s->DinhDang ?? '2D'
-            ];
-        });
-        return response()->json($result);
-    }
-        */
     public function giuGhe(Request $request)
     {
         Log::info('giuGhe request: ', $request->all());
@@ -399,7 +426,11 @@ class DatVeController extends Controller
         );
 
         broadcast(new GheDuocGiu($ma_ghe, $suat_chieu_id, $user_id, $hold_until->timestamp, 'hold'))->toOthers();
-
+        Log::info('Đã broadcast GheDuocGiu', [
+            'ma_ghe' => $ma_ghe,
+            'suat_chieu_id' => $suat_chieu_id,
+            'user_id' => $user_id,
+        ]);
         return response()->json(['success' => true, 'hold_until' => $hold_until->timestamp]);
     }
     public function boGiuGhe(Request $request)
@@ -419,6 +450,9 @@ class DatVeController extends Controller
             ->where('ID_SuatChieu', $suat_chieu_id)
             ->where('ID_TaiKhoan', $user_id)
             ->delete();
+
+        // Thêm dòng này để broadcast realtime event "release"
+        broadcast(new GheDuocGiu($ma_ghe, $suat_chieu_id, $user_id, null, 'release'))->toOthers();
 
         Log::info('Số bản ghi đã xóa:', ['deleted' => $deleted]);
 

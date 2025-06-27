@@ -923,6 +923,7 @@
     background-clip: text;
     margin-bottom: 10px;
     letter-spacing: -0.02em;
+    font-family: "Montserrat", "Josefin Sans", sans-serif;
 }
 
 .header p {
@@ -1634,9 +1635,8 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    text-transform: uppercase;
     letter-spacing: 1px;
-    font-family: "Montserrat", "Josefin Sans", sans-serif;
+    font-family: "Josefin Sans", sans-serif;
 }
 
 .promotions-grid {

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\TinTuc;
 use Illuminate\Support\Facades\DB;
+use App\Models\GheDangGiu;
 
 
 class TinTucChiTietController extends Controller
@@ -15,6 +16,10 @@ class TinTucChiTietController extends Controller
     // Chi tiết bài viết theo slug
     public function chiTiet($slug)
     {
+        if (session()->has('user_id')) {
+            GheDangGiu::where('ID_TaiKhoan', session('user_id'))->delete();
+        }
+        
         $tinTuc = TinTuc::where('Slug', $slug)
             ->where('TrangThai', 1)
             ->firstOrFail();
@@ -54,6 +59,10 @@ class TinTucChiTietController extends Controller
     }
     public function listKhuyenMai()
     {
+        if (session()->has('user_id')) {
+            GheDangGiu::where('ID_TaiKhoan', session('user_id'))->delete();
+        }
+        
         $khuyenMais = TinTuc::where('LoaiBaiViet', 1)
             ->where('TrangThai', 1)
             ->orderByDesc('created_at')
@@ -63,6 +72,10 @@ class TinTucChiTietController extends Controller
     }
     public function thongTinCineTickStatic($slug)
     {
+        if (session()->has('user_id')) {
+            GheDangGiu::where('ID_TaiKhoan', session('user_id'))->delete();
+        }
+        
         $tinTuc = TinTuc::where('Slug', $slug)
             ->where('TrangThai', 1)
             ->firstOrFail();
