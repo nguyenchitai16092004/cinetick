@@ -139,6 +139,13 @@ Route::view('/that-bai', 'user.pages.that-bai')->name('thanh-toan-that-bai');
 
 
 //===============================Routes cho tất cả admin (Vai trò 1 và 2)=====================================//
+
+Route::get('/admin', [AutController::class, 'index']);
+Route::get('/admin/login', fn() => view('backend.login'));
+Route::post('/dang-nhap-quan-ly', [AutController::class, 'dang_nhap'])->name('login_admin');
+Route::post('/admin/dang-xuat', [AutController::class, 'dang_xuat'])->name('logout_admin');
+Route::get('/admin/404', fn() => view('backend.pages.404'));
+
 Route::prefix('admin')->middleware(['admin'])->group(function () {
     // Home - Tất cả admin đều truy cập được
     Route::get('/home', [HomeController::class, 'index'])->name('cap-nhat-thong-tin.index');
@@ -200,7 +207,7 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
 });
 
 //===============================Routes chỉ dành cho Admin cấp cao (Vai trò 2)=====================================//
-Route::prefix('admin')->middleware(['admin', \App\Http\Middleware\RoleMiddleware::class.':2'])->group(function () {
+Route::prefix('admin')->middleware(['admin', \App\Http\Middleware\RoleMiddleware::class . ':2'])->group(function () {
     // Cập nhật thông tin trang web
     Route::post('/cap-nhat-thong-tin-trang', [HomeController::class, 'update'])->name('thong-tin-trang-web.update');
 
