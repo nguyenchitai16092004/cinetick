@@ -119,8 +119,9 @@ class AdminPhimController extends Controller
         $hinhAnhPath = $phim->HinhAnh;
         if ($request->hasFile('HinhAnh')) {
             if ($phim->HinhAnh) {
-                Storage::delete('public/' . $phim->HinhAnh);
+                Storage::disk('public')->delete($phim->HinhAnh);
             }
+
             $file = $request->file('HinhAnh');
             $fileName = time() . '_' . $file->getClientOriginalName();
             $file->storeAs('phim', $fileName, 'public');
@@ -154,7 +155,7 @@ class AdminPhimController extends Controller
     {
         $phim = Phim::findOrFail($id);
         if ($phim->HinhAnh) {
-            Storage::delete('public/' . $phim->HinhAnh);
+            Storage::disk('public')->delete($phim->HinhAnh);
         }
         $phim->theLoai()->detach();
         $phim->delete();
