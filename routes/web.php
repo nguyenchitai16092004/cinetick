@@ -137,20 +137,75 @@ Route::prefix('lien-he')->group(function () {
 Route::view('/thanh-cong', 'user.pages.thanh-cong')->name('thanh-toan-thanh-cong');
 Route::view('/that-bai', 'user.pages.that-bai')->name('thanh-toan-that-bai');
 
-//===============================Admin=====================================//
-Route::get('/admin', [AutController::class, 'index']);
-Route::get('/admin/login', fn() => view('backend.login'));
-Route::post('/dang-nhap-quan-ly', [AutController::class, 'dang_nhap'])->name('login_admin');
-Route::post('/admin/dang-xuat', [AutController::class, 'dang_xuat'])->name('logout_admin');
-Route::get('/admin/404', fn() => view('backend.pages.404'));
-Route::get('/admin/charts', fn() => view('backend.pages.charts'));
+
+//===============================Routes cho tất cả admin (Vai trò 1 và 2)=====================================//
 Route::prefix('admin')->middleware(['admin'])->group(function () {
+    // Home - Tất cả admin đều truy cập được
     Route::get('/home', [HomeController::class, 'index'])->name('cap-nhat-thong-tin.index');
+
+    // Chức năng cơ bản cho tất cả admin
+    // Hóa đơn - Tất cả admin có thể xem và tạo
+    Route::prefix('hoa-don')->name('hoa-don.')->group(function () {
+        Route::get('/', [HoaDonController::class, 'index'])->name('index');
+        Route::get('/create', [HoaDonController::class, 'create'])->name('create');
+        Route::post('/store', [HoaDonController::class, 'store'])->name('store');
+        Route::get('/show/{id}', [HoaDonController::class, 'show'])->name('show');
+        Route::post('suat-chieu/loc-phim', [HoaDonController::class, 'filterMovieByDate'])->name('suat-chieu.loc-phim-theo-ngay');
+        Route::post('/lay-phong-chieu-theo-id', [HoaDonController::class, 'layTheoId'])->name('suat-chieu.lay-phong');
+        Route::post('/kiem-tra-khuyen-mai', [HoaDonController::class, 'kiemTra'])->name('khuyen-mai.kiem-tra');
+        Route::post('/hoa-don/payos/create-payment', [HoaDonController::class, 'payment'])->name('payment');
+        Route::post('/hoa-don/payos/check-payment', [HoaDonController::class, 'processCODTicket'])->name('payos.check-payment');
+        Route::post('/hoa-don/tao-hoa-don', [HoaDonController::class, 'taoHoaDon'])->name('hoa-don.tao-hoa-don');
+        Route::get('/payos-return', [\App\Http\Controllers\Admin\AdminPayOSController::class, 'payosReturn'])->name('payos.return');
+        Route::get('/payos-cancel', [\App\Http\Controllers\Admin\AdminPayOSController::class, 'payosCancel'])->name('payos.cancel');
+    });
+
+    // Vé xem phim - Tất cả admin có thể quản lý
+    Route::prefix('ve-xem-phim')->name('ve-xem-phim.')->group(function () {
+        Route::get('/{hoaDonId}', [VeXemPhimController::class, 'index'])->name('index');
+        Route::get('/{hoaDonId}/show/{veId}', [VeXemPhimController::class, 'show'])->name('show');
+        Route::patch('/{hoaDonId}/change-status/{veId}', [VeXemPhimController::class, 'changeStatus'])->name('change-status');
+    });
+
+    // Phim - Tất cả admin có thể xem
+    Route::prefix('phim')->name('phim.')->group(function () {
+        Route::get('/', [AdminPhimController::class, 'index'])->name('index');
+        Route::get('/show/{id}', [AdminPhimController::class, 'show'])->name('show');
+    });
+
+    // Suất chiếu - Tất cả admin có thể xem
+    Route::prefix('suat-chieu')->name('suat-chieu.')->group(function () {
+        Route::get('/', [SuatChieuController::class, 'index'])->name('index');
+        Route::get('/filter/date', [SuatChieuController::class, 'filterByDate'])->name('filter.date');
+        Route::get('/filter/phim', [SuatChieuController::class, 'filterByPhim'])->name('filter.phim');
+        Route::post('/loc-phim-theo-ngay', [SuatChieuController::class, 'filterMovieByDate'])->name('loc-phim-theo-ngay');
+        Route::post('/loc-phong', [SuatChieuController::class, 'filterPhong'])->name('loc-phong');
+    });
+
+    // Thống kê cơ bản - Tất cả admin có thể xem
+    Route::prefix('thong-ke')->name('thong-ke.')->group(function () {
+        Route::get('/', [ThongKeController::class, 'index'])->name('index');
+    });
+
+    // Rạp - Chỉ xem
+    Route::prefix('rap')->name('rap.')->group(function () {
+        Route::get('/', [RapController::class, 'index'])->name('index');
+    });
+
+    // Phòng chiếu - Chỉ xem
+    Route::prefix('phong-chieu')->name('phong-chieu.')->group(function () {
+        Route::get('/', [PhongChieuController::class, 'index'])->name('index');
+        Route::get('/show/{id}', [PhongChieuController::class, 'show'])->name('show');
+    });
+});
+
+//===============================Routes chỉ dành cho Admin cấp cao (Vai trò 2)=====================================//
+Route::prefix('admin')->middleware(['admin', \App\Http\Middleware\RoleMiddleware::class.':2'])->group(function () {
+    // Cập nhật thông tin trang web
     Route::post('/cap-nhat-thong-tin-trang', [HomeController::class, 'update'])->name('thong-tin-trang-web.update');
 
     // Banner
     Route::prefix('banner')->name('banner.')->group(function () {
-        Route::get('/', [BannerController::class, 'index'])->name('index');
         Route::get('/create', [BannerController::class, 'create'])->name('create');
         Route::post('/store', [BannerController::class, 'store'])->name('store');
         Route::get('/edit/{id}', [BannerController::class, 'edit'])->name('edit');
@@ -159,9 +214,8 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
         Route::post('/get-data-by-type', [BannerController::class, 'layDuLieuBangType'])->name('get-data-by-type');
     });
 
-    // Rap
+    // Rap - Quản lý đầy đủ
     Route::prefix('rap')->name('rap.')->group(function () {
-        Route::get('/', [RapController::class, 'index'])->name('index');
         Route::get('/create', [RapController::class, 'create'])->name('create');
         Route::post('/store', [RapController::class, 'store'])->name('store');
         Route::get('/edit/{id}', [RapController::class, 'edit'])->name('edit');
@@ -169,47 +223,32 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
         Route::delete('/destroy/{id}', [RapController::class, 'destroy'])->name('destroy');
     });
 
-    // Phòng chiếu
+    // Phòng chiếu - Quản lý đầy đủ
     Route::prefix('phong-chieu')->name('phong-chieu.')->group(function () {
-        Route::get('/', [PhongChieuController::class, 'index'])->name('index');
         Route::get('/create', [PhongChieuController::class, 'create'])->name('create');
         Route::post('/store', [PhongChieuController::class, 'store'])->name('store');
-        Route::get('/show/{id}', [PhongChieuController::class, 'show'])->name('show');
         Route::put('/update/{id}', [PhongChieuController::class, 'update'])->name('update');
         Route::delete('/{id}', [PhongChieuController::class, 'destroy'])->name('destroy');
     });
 
-    // Phim
+    // Phim - Quản lý đầy đủ
     Route::prefix('phim')->name('phim.')->group(function () {
-        Route::get('/', [AdminPhimController::class, 'index'])->name('index');
         Route::get('/create', [AdminPhimController::class, 'create'])->name('create');
         Route::post('/store', [AdminPhimController::class, 'store'])->name('store');
-        Route::get('/show/{id}', [AdminPhimController::class, 'show'])->name('show');
         Route::put('/update/{id}', [AdminPhimController::class, 'update'])->name('update');
         Route::delete('/{id}', [AdminPhimController::class, 'destroy'])->name('destroy');
         Route::get('phim/change-status/{id}', [AdminPhimController::class, 'changeStatus'])->name('change-status');
     });
 
-    // Gom nhóm tất cả route liên quan đến suất chiếu
+    // Suất chiếu - Quản lý đầy đủ
     Route::prefix('suat-chieu')->name('suat-chieu.')->group(function () {
-        // CRUD routes
-        Route::get('/', [SuatChieuController::class, 'index'])->name('index');
         Route::get('/create', [SuatChieuController::class, 'create'])->name('create');
         Route::post('/store', [SuatChieuController::class, 'store'])->name('store');
         Route::get('/{id}/edit', [SuatChieuController::class, 'edit'])->name('edit');
         Route::put('/{id}', [SuatChieuController::class, 'update'])->name('update');
         Route::delete('/{id}', [SuatChieuController::class, 'destroy'])->name('destroy');
-
-        // Filter routes
-        Route::get('/filter/date', [SuatChieuController::class, 'filterByDate'])->name('filter.date');
-        Route::get('/filter/phim', [SuatChieuController::class, 'filterByPhim'])->name('filter.phim');
-
-        // AJAX routes
-        Route::post('/loc-phim-theo-ngay', [SuatChieuController::class, 'filterMovieByDate'])->name('loc-phim-theo-ngay');
-        Route::post('/loc-phong', [SuatChieuController::class, 'filterPhong'])->name('loc-phong');
         Route::post('/check-conflict', [SuatChieuController::class, 'checkLoi'])->name('check-conflict');
     });
-
 
     // Thể loại
     Route::prefix('the-loai')->name('the-loai.')->group(function () {
@@ -243,42 +282,35 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
         Route::get('/export', [TaiKhoanController::class, 'export'])->name('export');
     });
 
-    // Routes quản lý hóa đơn
+    // Hóa đơn - Chức năng nâng cao
     Route::prefix('hoa-don')->name('hoa-don.')->group(function () {
-        Route::get('/', [HoaDonController::class, 'index'])->name('index');
-        Route::get('/create', [HoaDonController::class, 'create'])->name('create');
-        Route::post('/store', [HoaDonController::class, 'store'])->name('store');
-        Route::get('/show/{id}', [HoaDonController::class, 'show'])->name('show');
         Route::get('/edit/{id}', [HoaDonController::class, 'edit'])->name('edit');
         Route::put('/update/{id}', [HoaDonController::class, 'update'])->name('update');
         Route::delete('/destroy/{id}', [HoaDonController::class, 'destroy'])->name('destroy');
         Route::get('/export-report', [HoaDonController::class, 'exportReport'])->name('export-report');
     });
 
-    // Routes quản lý vé xem phim trong hóa đơn
+    // Vé xem phim - Chức năng nâng cao
     Route::prefix('ve-xem-phim')->name('ve-xem-phim.')->group(function () {
-        Route::get('/{hoaDonId}', [VeXemPhimController::class, 'index'])->name('index');
         Route::get('/{hoaDonId}/create', [VeXemPhimController::class, 'create'])->name('create');
         Route::post('/{hoaDonId}/store', [VeXemPhimController::class, 'store'])->name('store');
-        Route::get('/{hoaDonId}/show/{veId}', [VeXemPhimController::class, 'show'])->name('show');
         Route::get('/{hoaDonId}/edit/{veId}', [VeXemPhimController::class, 'edit'])->name('edit');
         Route::put('/{hoaDonId}/update/{veId}', [VeXemPhimController::class, 'update'])->name('update');
         Route::delete('/{hoaDonId}/destroy/{veId}', [VeXemPhimController::class, 'destroy'])->name('destroy');
-        Route::patch('/{hoaDonId}/change-status/{veId}', [VeXemPhimController::class, 'changeStatus'])->name('change-status');
     });
 
-    // Routes quản lý tin tức
+    // Tin tức
     Route::prefix('tin-tuc')->name('tin_tuc.')->group(function () {
         Route::get('/', [TinTucController::class, 'index'])->name('index');
         Route::get('/create', [TinTucController::class, 'create'])->name('create');
         Route::post('/store', [TinTucController::class, 'store'])->name('store');
         Route::get('/edit/{id}', [TinTucController::class, 'edit'])->name('edit');
-        Route::put('/update/{id}', [TinTucController::class, 'update'])->name('update'); // dùng PUT
-        Route::delete('/delete/{id}', [TinTucController::class, 'destroy'])->name('destroy'); // dùng DELETE
+        Route::put('/update/{id}', [TinTucController::class, 'update'])->name('update');
+        Route::delete('/delete/{id}', [TinTucController::class, 'destroy'])->name('destroy');
         Route::post('/upload-image', [TinTucController::class, 'uploadImage'])->name('upload_image');
     });
 
-    // Routes quản lý bình luận (cập nhật)
+    // Bình luận
     Route::prefix('binh-luan')->name('binh-luan.')->group(function () {
         Route::get('/', [BinhLuanController::class, 'index'])->name('index');
         Route::get('/show/{id}', [BinhLuanController::class, 'show'])->name('show');
@@ -288,14 +320,10 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
         Route::get('/export', [BinhLuanController::class, 'export'])->name('export');
     });
 
-    // Routes liên hệ
+    // Liên hệ
     Route::prefix('lien-he')->name('lien-he.')->group(function () {
         Route::get('/', [LienHeController::class, 'index'])->name('index');
         Route::post('/xuly/{id}', [LienHeController::class, 'xuly'])->name('xuly');
         Route::delete('/destroy/{id}', [LienHeController::class, 'destroy'])->name('destroy');
-    });
-
-    Route::prefix('thong-ke')->name('thong-ke.')->group(function () {
-        Route::get('/', [ThongKeController::class, 'index'])->name('index');
     });
 });
