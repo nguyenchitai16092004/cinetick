@@ -23,13 +23,13 @@ class TinTucController extends Controller
 
         $tinTucs = $query->paginate(5)->appends(request()->query());
 
-        return view('backend.pages.tin_tuc.tin-tuc', compact('tinTucs'));
+        return view('admin.pages.tin_tuc.tin-tuc', compact('tinTucs'));
     }
 
     // Hiển thị form tạo mới
     public function create()
     {
-        return view('backend.pages.tin_tuc.create-tin-tuc');
+        return view('admin.pages.tin_tuc.create-tin-tuc');
     }
 
     // Lưu tin tức mới
@@ -83,7 +83,7 @@ class TinTucController extends Controller
     public function edit($id)
     {
         $tinTuc = TinTuc::findOrFail($id);
-        return view('backend.pages.tin_tuc.detail-tin-tuc', compact('tinTuc'));
+        return view('admin.pages.tin_tuc.detail-tin-tuc', compact('tinTuc'));
     }
 
     // Cập nhật tin tức

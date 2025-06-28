@@ -18,14 +18,14 @@ class SuatChieuController extends Controller
     {
         $suatChieus = SuatChieu::with(['phim', 'phongChieu.rap'])->latest()->paginate(10);
         $phims = Phim::all();
-        return view('backend.pages.suat_chieu.suat-chieu', compact('suatChieus', 'phims'));
+        return view('admin.pages.suat_chieu.suat-chieu', compact('suatChieus', 'phims'));
     }
 
     public function create()
     {
         $raps = Rap::all();
         $phims = Phim::all();
-        return view('backend.pages.suat_chieu.create-suat-chieu', compact('raps' , 'phims'));
+        return view('admin.pages.suat_chieu.create-suat-chieu', compact('raps' , 'phims'));
     }
 
 
@@ -49,7 +49,7 @@ class SuatChieuController extends Controller
         $phongChieus = PhongChieu::join('rap', 'phong_chieu.ID_Rap', '=', 'rap.ID_Rap')
             ->select('phong_chieu.TenPhongChieu', 'phong_chieu.ID_PhongChieu', 'rap.DiaChi', 'rap.TenRap', 'phong_chieu.ID_Rap')
             ->get();
-        return view('backend.pages.suat_chieu.detail-suat-chieu', compact('suatChieu', 'phims', 'phongChieus'));
+        return view('admin.pages.suat_chieu.detail-suat-chieu', compact('suatChieu', 'phims', 'phongChieus'));
     }
 
     public function destroy($id)
@@ -73,7 +73,7 @@ class SuatChieuController extends Controller
             ->latest()
             ->paginate(10);
         $phims = Phim::all();
-        return view('backend.pages.suat_chieu.suat-chieu', compact('suatChieus', 'date', 'phims'));
+        return view('admin.pages.suat_chieu.suat-chieu', compact('suatChieus', 'date', 'phims'));
     }
 
 
@@ -90,7 +90,7 @@ class SuatChieuController extends Controller
 
         $selectedPhim = Phim::find($phimId);
         $phims = Phim::all();
-        return view('backend.pages.suat_chieu.suat-chieu', compact('suatChieus', 'selectedPhim', 'phims'));
+        return view('admin.pages.suat_chieu.suat-chieu', compact('suatChieus', 'selectedPhim', 'phims'));
     }
 
     public function filterMovieByDate(Request $request)

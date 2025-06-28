@@ -13,7 +13,7 @@ class BannerController extends Controller
 {
     public function create()
     {
-        return view('backend.pages.banner.create-banner');
+        return view('admin.pages.banner.create-banner');
     }
 
     public function store(Request $request)
@@ -86,7 +86,7 @@ class BannerController extends Controller
             abort(404);
         }
 
-        return view('backend.pages.banner.detail-banner', compact('banner'));
+        return view('admin.pages.banner.detail-banner', compact('banner'));
     }
 
     public function update(Request $request, $id)

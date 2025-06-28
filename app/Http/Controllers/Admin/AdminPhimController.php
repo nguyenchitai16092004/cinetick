@@ -18,13 +18,13 @@ class AdminPhimController extends Controller
             ->orderBy('updated_at', 'desc')
             ->paginate(10);
 
-        return view('backend.pages.phim.phim', compact('phims'));
+        return view('admin.pages.phim.phim', compact('phims'));
     }
 
     public function create()
     {
         $theLoais = TheLoaiPhim::all();
-        return view('backend.pages.phim.create_phim', compact('theLoais'));
+        return view('admin.pages.phim.create_phim', compact('theLoais'));
     }
 
     public function store(Request $request)
@@ -87,7 +87,7 @@ class AdminPhimController extends Controller
     {
         $phim = Phim::with('theLoai')->findOrFail($id);
         $theLoais = TheLoaiPhim::all();
-        return view('backend.pages.phim.detail_phim', compact('phim', 'theLoais'));
+        return view('admin.pages.phim.detail_phim', compact('phim', 'theLoais'));
     }
 
     public function update(Request $request, $id)

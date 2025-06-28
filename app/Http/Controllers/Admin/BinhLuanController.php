@@ -29,7 +29,7 @@ class BinhLuanController extends Controller
         $binhLuans = $query->orderByDesc('binh_luan.created_at')->paginate(15);
         $binhLuans->appends($request->query());
 
-        return view('backend.pages.binh_luan.binh-luan', compact('binhLuans', 'phims'));
+        return view('admin.pages.binh_luan.binh-luan', compact('binhLuans', 'phims'));
     }
 
     public function show($id)
@@ -46,7 +46,7 @@ class BinhLuanController extends Controller
                 ->with('error', 'Không tìm thấy bình luận nào hết');
         }
 
-        return view('backend.pages.binh_luan.detail-binh-luan', compact('binhLuan'));
+        return view('admin.pages.binh_luan.detail-binh-luan', compact('binhLuan'));
     }
 
 

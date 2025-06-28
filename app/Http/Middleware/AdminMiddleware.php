@@ -32,16 +32,25 @@ class AdminMiddleware
         }
 
         $vaiTro = Auth::user()->VaiTro;
-        // Cũng có thể lấy từ session: $vaiTro = session('user_role');
 
-        // Nếu là người dùng bình thường
+        // Nếu là người dùng bình thường (vai trò 0)
         if ($vaiTro == 0) {
             return redirect('/')->with('error', 'Bạn không có quyền truy cập khu vực quản trị!');
         }
 
-        // Nếu là nhân viên và đang cố gắng truy cập khu vực không được phép
-        if ($vaiTro == 1 && $request->is('admin/khach-hang*')) {
-            return redirect('/admin')->with('error', 'Bạn không có quyền truy cập thông tin khách hàng!');
+        // Kiểm tra trạng thái tài khoản
+        if (!Auth::user()->TrangThai) {
+            Auth::logout();
+            session()->forget([
+                'user_id',
+                'user_name',
+                'user_role',
+                'user_fullname',
+                'user_email',
+                'login_time',
+                'is_logged_in'
+            ]);
+            return redirect('/admin')->with('error', 'Tài khoản đã bị vô hiệu hóa!');
         }
 
         // Cập nhật thời gian hoạt động cuối cùng

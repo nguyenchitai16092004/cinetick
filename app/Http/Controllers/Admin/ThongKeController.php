@@ -63,7 +63,7 @@ class ThongKeController extends Controller
             $revenueData = [];
         }
 
-        return view('backend.pages.thong_ke.thong-ke-doanh-thu', [
+        return view('admin.pages.thong_ke.thong-ke-doanh-thu', [
             'phims' => $phims,
             'selectedPhimId' => $selectedPhimId,
             'ticketLabels' => $ticketLabels,
