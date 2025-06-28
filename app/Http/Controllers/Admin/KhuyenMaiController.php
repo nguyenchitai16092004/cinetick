@@ -12,12 +12,12 @@ class KhuyenMaiController extends Controller
     public function index()
     {
         $dsKhuyenMai = KhuyenMai::all();
-        return view('backend.pages.phieu_giam_gia.phieu-giam-gia', compact('dsKhuyenMai'));
+        return view('admin.pages.phieu_giam_gia.phieu-giam-gia', compact('dsKhuyenMai'));
     }
 
     public function create()
     {
-        return view('backend.pages.phieu_giam_gia.create-phieu-giam-gia');
+        return view('admin.pages.phieu_giam_gia.create-phieu-giam-gia');
     }
 
     public function store(Request $request)
@@ -56,7 +56,7 @@ class KhuyenMaiController extends Controller
     public function edit($id)
     {
         $khuyenMai = KhuyenMai::findOrFail($id);
-        return view('backend.pages.phieu_giam_gia.detail-phieu-giam-gia', compact('khuyenMai'));
+        return view('admin.pages.phieu_giam_gia.detail-phieu-giam-gia', compact('khuyenMai'));
     }
 
     public function update(Request $request, $id)

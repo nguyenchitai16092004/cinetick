@@ -37,7 +37,7 @@ class TaiKhoanController extends Controller
 
         $taiKhoans = $query->paginate(10)->appends($request->query());
 
-        return view('backend.pages.tai_khoan.tai-khoan', compact('taiKhoans', 'search', 'sortBy', 'sortOrder'));
+        return view('admin.pages.tai_khoan.tai-khoan', compact('taiKhoans', 'search', 'sortBy', 'sortOrder'));
     }
 
     /**
@@ -45,7 +45,7 @@ class TaiKhoanController extends Controller
      */
     public function create()
     {
-        return view('backend.pages.tai_khoan.create-tai-khoan');
+        return view('admin.pages.tai_khoan.create-tai-khoan');
     }
 
     /**
@@ -121,7 +121,7 @@ class TaiKhoanController extends Controller
             ->where('tai_khoan.ID_TaiKhoan', $id)
             ->firstOrFail();
 
-        return view('backend.pages.tai_khoan.detail-tai-khoan', compact('taiKhoan'));
+        return view('admin.pages.tai_khoan.detail-tai-khoan', compact('taiKhoan'));
     }
 
     /**
@@ -192,7 +192,7 @@ class TaiKhoanController extends Controller
             ->where('tai_khoan.ID_TaiKhoan', $id)
             ->firstOrFail();
 
-        return view('backend.pages.tai-khoan.confirm-delete', compact('taiKhoan'));
+        return view('admin.pages.tai-khoan.confirm-delete', compact('taiKhoan'));
     }
 
     /**

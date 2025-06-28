@@ -1,0 +1,636 @@
+/* Seat Layout CSS for Cinema Management System */
+
+.seat-container {
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    box-shadow: inset 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.cinema-screen {
+    background: linear-gradient(135deg, #333, #666);
+    color: white;
+    text-align: center;
+    padding: 12px;
+    margin-bottom: 30px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 14px;
+    letter-spacing: 2px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    position: relative;
+}
+
+.cinema-screen::before {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 10%;
+    right: 10%;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #333, transparent);
+    border-radius: 2px;
+}
+
+/* Container chính cho sơ đồ ghế - sử dụng grid layout trực tiếp */
+#seatLayout {
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    box-shadow: inset 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* Deprecated - không sử dụng nữa */
+.seat-grid, .seat-grid-detail {
+    display: grid;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+}
+
+.seat-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    justify-content: center;
+}
+
+.row-label {
+    font-weight: bold;
+    font-size: 14px;
+    color: #495057;
+    width: 25px;
+    text-align: center;
+    background: #e9ecef;
+    border-radius: 6px;
+    padding: 8px 0;
+    border: 1px solid #dee2e6;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 35px;
+}
+
+.seats-in-row {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.seat {
+    width: 35px;
+    height: 35px;
+    border: 2px solid #dee2e6;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    user-select: none;
+    background: #ffffff;
+    color: #495057;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.seat:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* Trạng thái ghế */
+.seat-normal {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border-color: #adb5bd;
+    color: #495057;
+}
+
+.seat-normal:hover {
+    background: linear-gradient(135deg, #e9ecef, #dee2e6);
+    border-color: #6c757d;
+}
+
+.seat-vip {
+    background: linear-gradient(135deg, #fff3cd, #ffc107);
+    border-color: #ffb300;
+    color: #856404;
+}
+
+.seat-vip:hover {
+    background: linear-gradient(135deg, #ffc107, #ffb300);
+    border-color: #ff8f00;
+}
+
+.seat-disabled {
+    background: linear-gradient(135deg, #6c757d, #495057);
+    border-color: #343a40;
+    color: #fff;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.seat-disabled:hover {
+    transform: none;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+/* Ghế đã được chọn (cho trang đặt vé) */
+.seat-selected {
+    background: linear-gradient(135deg, #007bff, #0056b3) !important;
+    border-color: #004085 !important;
+    color: white !important;
+    transform: scale(1.1);
+    z-index: 10;
+}
+
+/* Ghế đã được đặt (cho trang chi tiết hóa đơn) */
+.seat-booked {
+    background: linear-gradient(135deg, #dc3545, #c82333) !important;
+    border-color: #bd2130 !important;
+    color: white !important;
+    position: relative;
+    cursor: default;
+}
+
+.seat-booked::after {
+    content: '✓';
+    position: absolute;
+    top: -3px;
+    right: -3px;
+    background: #28a745;
+    color: white;
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.seat-booked:hover {
+    transform: none;
+}
+
+/* Legend */
+.seat-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 20px;
+    padding: 15px;
+    background: white;
+    border-radius: 10px;
+    border: 1px solid #e9ecef;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+.legend-box::after {
+    content: "✕"; /* Dấu X */
+    color: red;
+    font-weight: bold;
+    font-size: 14px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #495057;
+}
+
+.legend-box {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    border: 1px solid #dee2e6;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.legend-normal {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border-color: #adb5bd;
+}
+
+.legend-vip {
+    background: linear-gradient(135deg, #fff3cd, #ffc107);
+    border-color: #ffb300;
+}
+
+.legend-disabled {
+    background: linear-gradient(135deg, #6c757d, #495057);
+    border-color: #343a40;
+}
+
+.legend-selected {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    border-color: #004085;
+}
+
+.legend-booked {
+    background: linear-gradient(135deg, #dc3545, #c82333);
+    border-color: #bd2130;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .seat-container {
+        padding: 15px;
+    }
+    
+    .seat {
+        width: 30px;
+        height: 30px;
+        font-size: 10px;
+    }
+    
+    .row-label {
+        width: 20px;
+        height: 30px;
+        font-size: 12px;
+        padding: 6px 0;
+    }
+    
+    .seats-in-row {
+        gap: 4px;
+    }
+    
+    .seat-row {
+        gap: 6px;
+    }
+    
+    .cinema-screen {
+        font-size: 12px;
+        padding: 10px;
+        margin-bottom: 20px;
+    }
+    
+    .seat-legend {
+        gap: 10px;
+        padding: 12px;
+    }
+    
+    .legend-item {
+        font-size: 12px;
+    }
+    
+    .legend-box {
+        width: 16px;
+        height: 16px;
+    }
+}
+
+@media (max-width: 576px) {
+    .seat {
+        width: 26px;
+        height: 26px;
+        font-size: 9px;
+    }
+    
+    .row-label {
+        width: 18px;
+        height: 26px;
+        font-size: 11px;
+    }
+    
+    .seats-in-row {
+        gap: 3px;
+    }
+    
+    .seat-row {
+        gap: 4px;
+    }
+
+}
+
+/* Animation effects */
+@keyframes seatSelect {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1.1); }
+}
+
+.seat-selected {
+    animation: seatSelect 0.3s ease-in-out;
+}
+
+@keyframes seatBooked {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.seat-booked {
+    animation: seatBooked 0.5s ease-in-out;
+}
+
+/* Loading state */
+.seat-loading {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.seat-loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 12px;
+    height: 12px;
+    margin: -6px 0 0 -6px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #007bff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Print styles */
+@media print {
+    .seat-container {
+        background: white;
+        box-shadow: none;
+    }
+    
+    .seat {
+        border: 1px solid #000;
+        box-shadow: none;
+    }
+    
+    .cinema-screen {
+        background: #333;
+        color: white;
+        box-shadow: none;
+    }
+    
+    .seat-legend {
+        border: 1px solid #000;
+        box-shadow: none;
+    }
+    
+    /* Hide buttons when printing */
+    .btn, button {
+        display: none !important;
+    }
+    
+    /* Optimize page layout for printing */
+    .container {
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    
+    .card {
+        border: 1px solid #000 !important;
+        box-shadow: none !important;
+        margin-bottom: 20px !important;
+    }
+}
+
+/* Ghế đã được đặt (cho trang chi tiết hóa đơn) */
+.seat-booked {
+    background: linear-gradient(135deg, #dc3545, #c82333) !important;
+    border-color: #bd2130 !important;
+    color: white !important;
+    position: relative;
+}
+
+.seat-booked::after {
+    content: '✓';
+    position: absolute;
+    top: -3px;
+    right: -3px;
+    background: #28a745;
+    color: white;
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}   
+
+/* Legend */
+.seat-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 20px;
+    padding: 15px;
+    background: white;
+    border-radius: 10px;
+    border: 1px solid #e9ecef;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #495057;
+}
+
+.legend-box {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    border: 1px solid #dee2e6;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.legend-normal {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border-color: #adb5bd;
+}
+
+.legend-vip {
+    background: linear-gradient(135deg, #fff3cd, #ffc107);
+    border-color: #ffb300;
+}
+
+.legend-disabled {
+    background: linear-gradient(135deg, #6c757d, #495057);
+    border-color: #343a40;
+}
+
+.legend-selected {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    border-color: #004085;
+}
+
+.legend-booked {
+    background: linear-gradient(135deg, #dc3545, #c82333);
+    border-color: #bd2130;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .seat-container {
+        padding: 15px;
+    }
+    
+    .seat {
+        width: 30px;
+        height: 30px;
+        font-size: 10px;
+    }
+    
+    .row-label {
+        width: 20px;
+        font-size: 12px;
+        padding: 6px 0;
+    }
+    
+    .seats-in-row {
+        gap: 4px;
+    }
+    
+    .seat-row {
+        gap: 6px;
+    }
+    
+    .cinema-screen {
+        font-size: 12px;
+        padding: 10px;
+        margin-bottom: 20px;
+    }
+    
+    .col-aisle {
+        width: 15px;
+        height: 30px;
+    }
+    
+    .seat-legend {
+        gap: 10px;
+        padding: 12px;
+    }
+    
+    .legend-item {
+        font-size: 12px;
+    }
+    
+    .legend-box {
+        width: 16px;
+        height: 16px;
+    }
+}
+
+@media (max-width: 576px) {
+    .seat {
+        width: 26px;
+        height: 26px;
+        font-size: 9px;
+    }
+    
+    .row-label {
+        width: 18px;
+        font-size: 11px;
+    }
+    
+    .seats-in-row {
+        gap: 3px;
+    }
+    
+    .seat-row {
+        gap: 4px;
+    }
+    
+    .col-aisle {
+        width: 12px;
+        height: 26px;
+    }
+}
+
+/* Animation effects */
+@keyframes seatSelect {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1.1); }
+}
+
+.seat-selected {
+    animation: seatSelect 0.3s ease-in-out;
+}
+
+@keyframes seatBooked {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+.seat-booked {
+    animation: seatBooked 0.5s ease-in-out;
+}
+
+/* Loading state */
+.seat-loading {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.seat-loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 12px;
+    height: 12px;
+    margin: -6px 0 0 -6px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #007bff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Print styles */
+@media print {
+    .seat-container {
+        background: white;
+        box-shadow: none;
+    }
+    
+    .seat {
+        border: 1px solid #000;
+        box-shadow: none;
+    }
+    
+    .cinema-screen {
+        background: #333;
+        color: white;
+        box-shadow: none;
+    }
+    
+    .seat-legend {
+        border: 1px solid #000;
+        box-shadow: none;
+    }
+}

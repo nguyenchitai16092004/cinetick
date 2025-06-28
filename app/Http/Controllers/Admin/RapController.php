@@ -14,12 +14,12 @@ class RapController extends Controller
     public function index()
     {
         $raps = Rap::all();
-        return view('backend.pages.rap.rap', compact('raps'));
+        return view('admin.pages.rap.rap', compact('raps'));
     }
 
     public function create()
     {
-        return view('backend.pages.rap.quan-ly-rap');
+        return view('admin.pages.rap.quan-ly-rap');
     }
 
     public function store(Request $request)
@@ -62,7 +62,7 @@ class RapController extends Controller
     public function edit($id)
     {
         $rap = Rap::where('ID_Rap', '=', $id)->get();
-        return view('backend.pages.rap.quan-ly-rap', compact('rap'));
+        return view('admin.pages.rap.quan-ly-rap', compact('rap'));
     }
 
     public function update(Request $request, $id)

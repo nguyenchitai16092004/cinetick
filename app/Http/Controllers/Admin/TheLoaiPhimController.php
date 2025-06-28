@@ -12,12 +12,12 @@ class TheLoaiPhimController extends Controller
     public function index()
     {
         $theloais = TheLoaiPhim::all();
-        return view('backend.pages.the_loai.the-loai', compact('theloais'));
+        return view('admin.pages.the_loai.the-loai', compact('theloais'));
     }
 
     public function create()
     {
-        return view('backend.pages.the_loai.create-the-loai');
+        return view('admin.pages.the_loai.create-the-loai');
     }
 
     public function store(Request $request)
@@ -43,7 +43,7 @@ class TheLoaiPhimController extends Controller
     public function edit($id)
     {
         $theloai = TheLoaiPhim::findOrFail($id);
-        return view('backend.pages.the_loai.detail-the-loai', compact('theloai'));
+        return view('admin.pages.the_loai.detail-the-loai', compact('theloai'));
     }
 
     public function update(Request $request, $id)

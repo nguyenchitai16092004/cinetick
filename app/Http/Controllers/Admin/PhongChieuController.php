@@ -15,13 +15,13 @@ class PhongChieuController extends Controller
     public function index()
     {
         $phongChieus = PhongChieu::all();
-        return view('backend.pages.phong_chieu.phong-chieu', compact('phongChieus'));
+        return view('admin.pages.phong_chieu.phong-chieu', compact('phongChieus'));
     }
 
     public function create()
     {
         $raps = Rap::all();
-        return view('backend.pages.phong_chieu.create_phong_chieu', compact('raps'));
+        return view('admin.pages.phong_chieu.create_phong_chieu', compact('raps'));
     }
 
     public function store(Request $request)
@@ -43,7 +43,7 @@ class PhongChieuController extends Controller
             'ID_Rap' => 'required|exists:rap,ID_Rap',
             'LoaiPhong' => 'required|integer|in:0,1',
             'rowCount' => 'required|integer|min:5|max:10',
-            'colCount' => 'required|integer|min:6|max:12',
+            'colCount' => 'required|integer|min:6|max:10',
             'seatLayout' => 'required|json',
             'rowAisles' => 'nullable|array',
             'rowAisles.*' => 'integer|min:1',
@@ -143,7 +143,7 @@ class PhongChieuController extends Controller
         $rowAisles = json_decode($phongChieu->HangLoiDi ?: '[]');
         $colAisles = json_decode($phongChieu->CotLoiDi ?: '[]');
 
-        return view('backend.pages.phong_chieu.detail_phong_chieu', compact(
+        return view('admin.pages.phong_chieu.detail_phong_chieu', compact(
             'phongChieu',
             'raps',
             'ghengoi',
@@ -170,7 +170,7 @@ class PhongChieuController extends Controller
             'ID_Rap' => 'required|exists:rap,ID_Rap',
             'LoaiPhong' => 'required|integer|in:0,1',
             'rowCount' => 'required|integer|min:5|max:10',
-            'colCount' => 'required|integer|min:6|max:12',
+            'colCount' => 'required|integer|min:6|max:10',
             'seatLayout' => 'required|json',
             'rowAisles' => 'nullable|array',
             'rowAisles.*' => 'integer|min:1',

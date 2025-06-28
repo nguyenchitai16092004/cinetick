@@ -11,7 +11,7 @@ class LienHeController extends Controller
     public function index()
     {
         $contacts = LienHe::orderByDesc('created_at')->paginate(20);
-        return view('backend.pages.lien_he.lien_he', compact('contacts'));
+        return view('admin.pages.lien_he.lien_he', compact('contacts'));
     }
 
     public function xuly($id)

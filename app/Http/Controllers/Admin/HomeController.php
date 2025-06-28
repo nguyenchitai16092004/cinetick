@@ -14,7 +14,7 @@ class HomeController extends Controller
     {
         $thongTin = ThongTinTrangWeb::first();
         $banners = Banner::all();
-        return view('backend.pages.home', compact('thongTin' , 'banners'));
+        return view('admin.pages.home', compact('thongTin' , 'banners'));
     }
 
     public function update(Request $request)
