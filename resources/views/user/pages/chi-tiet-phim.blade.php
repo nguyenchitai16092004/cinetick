@@ -22,9 +22,9 @@
                     <div class="movie-poster">
                         <img src="{{ $phim->HinhAnh ? asset('storage/' . $phim->HinhAnh) : asset('images/no-image.jpg') }}">
                         <div class="poster-overlay"></div>
-                        <a href="#" class="trailer-btn" id="trailerBtn">
+                        <button href="#" class="trailer-btn" id="trailerBtn">
                             <i class="fas fa-play"></i>
-                        </a>
+                        </button>
                         <span class="age-badge">{{ $phim->DoTuoi }}</span>
                         <span class="rating">
                             <span class="star"> <svg aria-hidden="true" focusable="false" data-prefix="fas"
@@ -290,6 +290,12 @@
             sendRatingUrl: "{{ route('ajax.send-rating') }}",
             getRatingUrl: "{{ route('ajax.get-rating') }}",
             csrf: "{{ csrf_token() }}"
+        });
+        window.addEventListener('DOMContentLoaded', function() {
+            document.querySelector('.loader-overlay').classList.add('hidden');
+        });
+        window.addEventListener('pageshow', function() {
+            document.querySelector('.loader-overlay').classList.add('hidden');
         });
     </script>
 

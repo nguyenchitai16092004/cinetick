@@ -13,7 +13,7 @@
                 @endforeach
             </ul>
         </div>
-        <div class="footer-section">
+        <div class="footer-section footer-section-policy">
             <h3>CHÍNH SÁCH</h3>
             <ul>
                 @foreach ($footerChinhSach as $item)

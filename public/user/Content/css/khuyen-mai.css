@@ -83,49 +83,81 @@
 .pagination-wrapper {
   display: flex;
   justify-content: center;
-  margin-bottom: 30px;
+  margin: 32px 0 16px 0;
 }
+
 .pagination {
   display: flex;
-  padding-left: 0;
   list-style: none;
-  border-radius: 0.5rem;
-  background: #fff;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  padding: 0;
+  background: rgba(24, 24, 40, 0.92);
+  border-radius: 12px;
+  box-shadow: 0 2px 12px 0 rgba(0,0,0,0.08);
+  overflow: hidden;
 }
+
 .pagination li {
-  margin: 0 3px;
+  margin: 0 2px;
 }
-.page-link {
-  color: #333 !important;
-  background-color: #f8f9fa;
-  border: 1px solid #dee2e6;
-  border-radius: 0.4rem;
-  padding: 0.5rem 1rem;
-  transition: all 0.2s;
+
+.pagination li a,
+.pagination li span {
+  display: block;
+  min-width: 38px;
+  height: 38px;
+  line-height: 38px;
+  padding: 0 12px;
+  color: #fff;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1em;
+  text-align: center;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  text-decoration: none;
+  cursor: pointer;
   font-weight: 500;
 }
-.page-link:hover,
-.page-link:focus {
-  background-color: #007bff;
-  border-color: #007bff;
-  box-shadow: 0 2px 8px rgba(0,123,255,0.08);
-  text-decoration: none;
+
+.pagination li.active span,
+.pagination li a:hover,
+.pagination li.active a {
+  background: radial-gradient(
+          circle at 20% 80%,
+          rgba(114, 114, 141, 0.3) 0%,
+          transparent 50%
+      ),
+      radial-gradient(
+          circle at 80% 20%,
+          rgba(255, 119, 198, 0.3) 0%,
+          transparent 50%
+      );
 }
-.pagination .active .page-link {
-  color: #fff;
-  background-color: #007bff;
-  border-color: #007bff;
-  pointer-events: none;
+
+.pagination li.disabled span,
+.pagination li.disabled a {
+  color: #888;
+  background: transparent;
+  cursor: not-allowed;
+  opacity: 0.5;
 }
-.pagination .disabled .page-link {
-  color: #6c757d;
-  background-color: #f8f9fa;
-  border-color: #dee2e6;
-  pointer-events: none;
-  opacity: 0.6;
+
+.pagination li:first-child a,
+.pagination li:first-child span,
+.pagination li:last-child a,
+.pagination li:last-child span {
+  border-radius: 12px;
 }
-.update-showtime {
+
+@media (max-width: 600px) {
+  .pagination li a, .pagination li span {
+      min-width: 32px;
+      height: 32px;
+      line-height: 32px;
+      font-size: 1em;
+      padding: 0 6px;
+  }
+}.update-showtime {
   justify-self: center;
   align-self: center;
   text-align: center;

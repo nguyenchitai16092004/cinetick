@@ -58,6 +58,9 @@ h1 {
   background: #125ecb;
   transform: scale(0.97);
 }
+.cinema-corner, .promotion-corner, .home{
+  color: #125ecb !important;
+}
 
 .action-btn.liked {
   background: #125ecb;
@@ -82,10 +85,15 @@ strong {
 }
 .intro {
   margin-top: 0;
-  font-size: 1.12em;
-  color: #fff;
+  font-size: 1.05em;
+  color: #000;
   line-height: 1.7;
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 10px 10px;
+
 }
+
 
 .intro a {
   color: #1877f2;
