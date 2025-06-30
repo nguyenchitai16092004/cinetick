@@ -1,4 +1,3 @@
-
 .auth-container {
     position: relative;
     z-index: 10;
@@ -14,6 +13,7 @@
         url("/user/Content/img/bg-cinetick.jpg") no-repeat center center fixed;
     background-size: cover;
     background-blend-mode: overlay;
+    border-radius: 12px;
 }
 .auth-card {
     background: #f8fafd;
@@ -240,27 +240,51 @@
     font-size: 0.99em;
     width: 100%;
 }
-@media (max-width: 600px) {
-    .auth-card {
-        width: 99vw;
-        padding-bottom: 18px;
-    }
-    .auth-tabs {
-        font-size: 0.98em;
-    }
-    .auth-form {
-        padding: 24px 8vw 0 8vw;
-    }
-}
-@media (max-width: 400px) {
-    .auth-form {
-        padding: 14px 2vw 0 2vw;
-    }
-}
+
 #goto-login,
 #goto-register {
     color: #333 !important;
 }
 .fa-regular {
     margin-top: 30px;
+}
+.form-radio-group {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+}
+.form-note {
+    color: #333;
+    margin-top: 10px;
+}
+.form-radio {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 400;
+}
+.form-radio input[type="radio"] {
+    accent-color: #000;
+}
+
+@media (max-width: 1200px) {
+    .auth-container {
+        margin-left: 0;
+        padding: 24px 6vw 24px 6vw;
+        min-height: 100vh;
+        margin-right: 5px;
+        border-radius: 12px;
+    }
+    .auth-card {
+        width: 80vw;
+        min-width: 0;
+        max-width: 99vw;
+        margin-top: 7px;
+    }
+    .auth-tabs {
+        font-size: 1em;
+    }
+    .auth-form {
+        padding: 22px 4vw 0 4vw;
+    }
 }

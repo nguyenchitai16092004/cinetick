@@ -98,7 +98,8 @@
                 </div>
                 <div class="movie-info">
                     <h3>{{ $suatChieu->phim->TenPhim }}</h3>
-                    <div class="movie-meta">{{ $suatChieu->phim->DoHoa }}
+                    <div class="movie-meta">
+                        <span class="badge badge-format">{{ $suatChieu->phim->DoHoa }}</span>
                         <span class="age-rating">{{ $suatChieu->phim->DoTuoi }}</span>
                     </div>
                 </div>

@@ -2,6 +2,7 @@
 @section('title', 'CineTick - Chi tiết phim')
 @section('main')
     <link rel="stylesheet" href="{{ asset('user/Content/css/chi-tiet-phim.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
     <div class="bg-gradient"></div>
     <div class="floating-elements">
@@ -155,7 +156,7 @@
             </div>
         </div>
     </section>
-    <!-- 2. Popup đánh giá (ẩn sẵn, chỉ khi click mới hiện) -->
+    <!-- Popup đánh giá (ẩn sẵn, chỉ khi click mới hiện) -->
     <div class="rating-modal-overlay" id="ratingModal" style="display:none;">
         <div class="rating-modal-box">
             <div style="position:relative;">
@@ -218,7 +219,7 @@
     <section class="showtime-section">
         <div class="container">
             <h2 class="section-title">
-                <i class="fas fa-calendar-days"></i> Lịch Chiếu
+                <i class="fa-solid fa-tachograph-digital"></i> Lịch Chiếu
             </h2>
             @if ($suatChieu->isEmpty())
                 <div class="showtime-empty text-center my-5">

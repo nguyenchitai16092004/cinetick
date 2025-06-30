@@ -180,6 +180,7 @@ strong{
 .movie-meta {
     font-size: 14px;
     margin-bottom: 5px;
+    color: #fff;
 }
 
 .age-rating {
@@ -191,6 +192,20 @@ strong{
     border-radius: 3px;
     margin-left: 5px;
 }
+.badge {
+    padding: 10px 20px;
+    border-radius: 25px;
+    font-weight: 500;
+    font-size: 14px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.badge-format {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+}
+
 
 .pay-hold-timer-text {
     font-size: 30px;

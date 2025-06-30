@@ -1781,7 +1781,7 @@
     .film-rating-crou{
         position: absolute;
         bottom: 48px;
-        left: 60px;
+        left: 75px;
         display: flex;
         align-items: center;
         gap: 5px;
@@ -1797,7 +1797,7 @@
     .film-rating-crou-2{
         position: absolute;
         bottom: 48px;
-        left: 120px;
+        left: 135px;
     }
     .movies-carousel{
         padding: 0 10px;

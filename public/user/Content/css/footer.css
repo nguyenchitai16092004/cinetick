@@ -1,5 +1,5 @@
 .custom-footer {
-    background: #393939;
+    background: #23233b;
     color: #fff;
     font-family: "Josefin Sans", sans-serif;
     padding: 40px 0 0 0;
@@ -166,12 +166,17 @@ hr {
     color: #fff;
     font-size: 19px;
 }
+.info-name-company{
+    margin-bottom: 8px;
+    line-height: 1.7 ;
+}
 
 .footer-icon {
     margin-right: 3px;
 }
 
 @media (max-width: 1200px) {
+
     .footer-main {
         flex-direction: column;
         padding: 0 18px;

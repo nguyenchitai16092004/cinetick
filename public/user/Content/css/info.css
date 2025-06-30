@@ -253,6 +253,7 @@
 
 .form-group {
     margin-bottom: 20px;
+    width: 370px;
 }
 
 .form-row {
@@ -268,9 +269,15 @@
     font-weight: 500;
     color: #374151;
 }
+.form-control{
+    width: 87%;
+}
+.radio  {
+    accent-color: #000;
+}
 
 .form-input {
-    width: 100%;
+    width: 80%;
     padding: 12px;
     border: 1px solid #d1d5db;
     border-radius: 8px;
@@ -396,8 +403,8 @@
     background: white;
     border-radius: 12px;
     padding: 24px;
-    max-width: 400px;
-    width: 90%;
+    max-width: 350px;
+    width: 85%;
     position: relative;
     animation: slideIn 0.3s ease;
 }

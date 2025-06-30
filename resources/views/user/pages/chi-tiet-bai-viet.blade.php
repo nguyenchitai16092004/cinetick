@@ -12,7 +12,7 @@
     <div class="bg-gradient"></div>
     <div class="floating-elements">
         <div class="floating-circle"></div>
-        <div class="floating-circle"></div>
+        <d class="floating-circle"></d    iv>
         <div class="floating-circle"></div>
     </div>
     

@@ -56,10 +56,10 @@
                 alt="{{ $thongTinTrangWeb->TenWebsite }}" alt="Logo" />
         </div>
         <div class="footer-bottom-info">
-            <div>
-                <strong>{{ $thongTinTrangWeb->TenDonVi }}</strong>
+            <div class="info-name-company">
+                <strong >{{ $thongTinTrangWeb->TenDonVi }}</strong>
             </div>
-            <div>
+            <div class="info-name-company">
                 {{ $thongTinTrangWeb->DiaChi }}
             </div>
             <div>

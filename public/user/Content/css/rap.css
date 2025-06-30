@@ -186,18 +186,7 @@
 
 }
 
-.film-age {
-    position: absolute;
-    bottom: 8px;
-    right: 11px;
-    font-size: 1rem;
-    background: #ffa500;
-    color: #fff;
-    padding: 1px 10px;
-    border-radius: 5px;
-    font-weight: 600;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
-}
+
 
 .film-title {
     margin-top: 6px;
@@ -261,10 +250,9 @@
 
 .detail-desc {
     font-size: 1.05em;
-    color: #000;
+    color: #fff;
     line-height: 1.6;
     margin-left: 2rem;
-    background-color: #fff;
     padding: 10px 10px;
     border-radius: 12px;
 }
@@ -274,36 +262,6 @@
     text-decoration: none;
 }
 
-@media (max-width: 1100px) {
-    .header-content,
-    .info-container {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .info-container > div {
-        width: 100%;
-        margin-bottom: 28px;
-    }
-
-    .film-box {
-        width: 98%;
-    }
-    .films-list {
-        grid-template-columns: repeat(3, 1fr); 
-    }
-}
-@media (max-width: 800px) {
-    .film-box,
-    .info-container {
-        width: 100%;
-    }
-
-    
-    .films-list {
-        grid-template-columns: repeat(2, 1fr); 
-    }
-}
 
 ::-webkit-scrollbar {
     width: 9px;
@@ -467,12 +425,88 @@
     border-radius: 12px;
 }
 
-@media (max-width: 600px) {
-    .pagination li a, .pagination li span {
-        min-width: 32px;
-        height: 32px;
-        line-height: 32px;
-        font-size: 1em;
-        padding: 0 6px;
+/* Responsive cho trang rạp */
+@media (max-width: 1200px) {
+    .films-list {
+        padding: 6px 0;
+        
     }
+    .film-card-link{
+        margin-top: 30px;
+    }
+    .film-card, .film-card-link {
+        max-width: 90%;
+        height: 320px;
+        border-radius: 10px;
+    }
+    .film-poster {
+        max-width: 180px;
+        height: 250px;
+    }
+    .header-content {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 14px 8px;
+        gap: 10px;
+        margin-bottom: 30px;
+    }
+    .film-box {
+        padding: 18px 4vw;
+    }
+    .films-list {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px 6px;
+        padding: 8px 0;
+    }
+   
+    .film-poster {
+        height: 220px;
+    }
+    .film-title {
+        font-size: 1.05rem;
+        min-height: 26px;
+    }
+    .film-genre {
+        font-size: 0.93rem;
+        padding-left: 6px;
+    }
+    .movie-genre {
+        font-size: 0.93rem;
+    }
+    .date-tabs {
+        flex-wrap: wrap;
+        gap: 6px;
+        justify-content: center;
+    }
+    .tab {
+        font-size: 0.98rem;
+        min-width: 70px;
+        padding: 6px 12px;
+    }
+    .info-container {
+        flex-direction: column;
+        gap: 18px;
+    }
+    .cinema-detail {
+        padding: 18px 8px 18px 8px;
+    }
+    .detail-address, .detail-desc {
+        font-size: 1em;
+        width: calc(100% - 35px);
+    }
+    .detail-desc {
+        padding: 8px 6px;
+    }
+    .film-rating-crou-3{
+        position: absolute;
+        bottom: 48px;
+        left: 35px;
+    }
+    .update-showtime { 
+        margin-right: 40px;
+    }
+
 }
+
+
+

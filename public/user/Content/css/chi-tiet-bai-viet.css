@@ -2,6 +2,8 @@
   font-size: 16px;
   color: #7a7a7a;
   width: 100%;
+  margin-top: 25px;
+  margin-left: 10px;
 }
 
 .breadcrumb a {
@@ -18,7 +20,7 @@
   margin: 30px auto 0;
   border-radius: 8px;
   box-shadow: 0 6px 28px rgba(0, 0, 0, 0.07);
-  padding: 0px 42px 32px 42px;
+  padding: 0px 10px 32px 10px;
 }
 
 h1 {
@@ -88,7 +90,6 @@ strong {
   font-size: 1.05em;
   color: #000;
   line-height: 1.7;
-  background-color: #fff;
   border-radius: 12px;
   padding: 10px 10px;
 
@@ -115,12 +116,3 @@ strong {
   object-fit: cover;
 }
 
-@media (max-width: 900px) {
-  .review-content {
-      padding: 22px 10px;
-  }
-
-  .breadcrumb {
-      margin-left: 10px;
-  }
-}
