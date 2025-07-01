@@ -641,9 +641,8 @@ document.addEventListener("DOMContentLoaded", function () {
             // Hợp lệ, hiện popup xác nhận tuổi
             $.sweetModal({
                 title: `<div style="margin-bottom:8px;display:flex;justify-content:center;">
-                            
                         </div>
-                        <span style="color: #333; text-align: center; display: block; font-weight: bold;">
+                        <span class="modal-title" >
                             Xác nhận mua vé cho người có độ tuổi phù hợp
                         </span>`,
                 content: `<div style="color:#4080FF;font-size:15px;margin-top:8px;font-style:italic;">

@@ -355,7 +355,7 @@ class PhimController extends Controller
         return view('user.pages.tim-kiem', [
             'phims' => $phims,
             'rapsSearch' => $rapsSearch,
-            'keyword' => $keyword, // Hiển thị đúng chữ gốc người dùng nhập
+            'keyword' => $keyword, 
         ]);
     }
 }

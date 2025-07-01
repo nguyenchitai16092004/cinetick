@@ -49,7 +49,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="screen-wrapper" style="display: flex; flex-direction: column; align-items: center;">
+                <div class="screen-wrapper">
                     <img src="{{ asset('user/Content/img/img-screen.png') }}" alt="Screen" class="screen-image">
                     <div class="screen-text">Màn hình</div>
                 </div>
@@ -84,12 +84,18 @@
             <div class="right-panel">
                 <div class="movie-info">
                     <div class="movie-poster">
-                        <img src="{{ $suatChieu->phim->HinhAnh ? asset('storage/' . $suatChieu->phim->HinhAnh) : asset('images/no-image.jpg') }}"
-                            alt="{{ $suatChieu->phim->TenPhim }}">
+                        <div class="movie-poster-wrapper">
+                            <img src="{{ $suatChieu->phim->HinhAnh ? asset('storage/' . $suatChieu->phim->HinhAnh) : asset('images/no-image.jpg') }}"
+                                alt="{{ $suatChieu->phim->TenPhim }}">
+                            <span class="age-rating">
+                                {{ $suatChieu->phim->DoTuoi }}
+                            </span>
+                        </div>
                     </div>
                     <div class="movie-name">
-                        <h3 class="movie-title">{{ $suatChieu->phim->TenPhim }} - {{ $suatChieu->phim->DoHoa }} </h3><span
-                            class="age-rating">{{ $suatChieu->phim->DoTuoi }}</span>
+                        <h3 class="movie-title">{{ $suatChieu->phim->TenPhim }}
+                        </h3>
+                        <span class="badge badge-format">{{ $suatChieu->phim->DoHoa }}</span>
                     </div>
                     <p class="cinema-info"> <strong>{{ $suatChieu->rap->TenRap }}</strong> - {{ $suatChieu->rap->DiaChi }}
                     </p>
@@ -184,7 +190,7 @@
         console.log('seatLayout:', window.bookingData.seatLayout);
         window.myHeldSeats = @json($myHeldSeats ?? []);
         window.holdUntilMap = @json($holdUntilMap ?? []);
-        
+
         @if (!empty($showPopup) && !empty($popupMessage))
             document.addEventListener('DOMContentLoaded', function() {
                 if (typeof $ !== 'undefined' && $.sweetModal) {

@@ -81,7 +81,7 @@ window.addEventListener("visibilitychange", function () {
 });
 
 // ====== ĐỒNG HỒ GIỮ GHẾ ======
-let timeLeft = window.bookingTimeLeft || 360;
+let timeLeft = window.bookingTimeLeft;
 
 function updateTimer() {
     const minutes = Math.floor(timeLeft / 60);

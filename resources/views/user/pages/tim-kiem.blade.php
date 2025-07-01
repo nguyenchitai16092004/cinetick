@@ -45,7 +45,7 @@
                                 <div class="film-poster">
                                     <img src="{{ $phim->HinhAnh ? asset('storage/' . $phim->HinhAnh) : asset('images/no-image.jpg') }}"
                                         alt="{{ $phim->TenPhim }}">
-                                    <div class="film-rating">
+                                    <div class="film-rating-crou film-rating-crou-3 ">
                                         <span class="star">
                                             <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="star"
                                                 class="svg-inline--fa fa-star text-yellow-400 mr-3 ml-4 text-[12px]"
@@ -58,7 +58,7 @@
                                         </span>
                                         <span>{{ $phim->avg_rating }}</span>
                                     </div>
-                                    <div class="film-age">{{ $phim->DoTuoi }}</div>
+                                    <div class="age-rating">{{ $phim->DoTuoi }}</div>
                                 </div>
                                 <div class="film-title">{{ $phim->TenPhim }}</div>
                                 <p class="movie-genre">
@@ -75,9 +75,8 @@
                 </div>
             @endif
 
-            {{-- RẠP LIÊN QUAN TỪ KHÓA --}}
-            @if ($hasRap)
-                <div class="header-2 mt-5">
+            @if (isset($rapsSearch) && $rapsSearch->count())
+                <div class="header-2 ">
                     <h1 class="twinkle-title-pro">
                         <span class="star-pro star-pro-1"></span>
                         <span class="star-pro star-pro-2"></span>
@@ -91,29 +90,33 @@
                 </div>
                 <div class="cinema-list-wrapper">
                     @foreach ($rapsSearch as $rap)
-                            <div class="cinema-card">
-                                <div class="cinema-thumb">
-                                    <a href="{{ route('rap.chiTiet', ['slug' => $rap->Slug]) }}">
+                        <div class="cinema-card">
+                            <div class="cinema-thumb">
+                                <a href="{{ route('rap.chiTiet', ['slug' => $rap->Slug]) }}">
                                     <img src="{{ $rap->HinhAnh ? asset('storage/' . $rap->HinhAnh) : asset('images/no-image.jpg') }}"
                                         alt="{{ $rap->TenRap }}">
-                                    </a>
-                                </div>
-                                <div class="cinema-body">
-                                    <h3 class="cinema-title">{{ $rap->TenRap }}</h3>
-                                    <div class="cinema-address">
-                                        <i class="fa-solid fa-location-dot"></i>
-                                        <span>{{ $rap->DiaChi }}</span>
-                                    </div>
-                                    <div class="cinema-hotline">
-                                        <i class="fa-solid fa-phone-volume"></i>
-                                        <span>{{ $rap->Hotline ?: 'Đang cập nhật' }}</span>
-                                    </div>
-                                    <a href="{{ route('rap.chiTiet', ['slug' => $rap->Slug]) }}"
-                                        class="cinema-ticket-btn submit-btn">Đặt
-                                        vé ngay</a>
-                                </div>
+                                </a>
                             </div>
+                            <div class="cinema-body">
+                                <h3 class="cinema-title">{{ $rap->TenRap }}</h3>
+                                <div class="cinema-address">
+                                    <i class="fa-solid fa-location-dot"></i>
+                                    <span>{{ $rap->DiaChi }}</span>
+                                </div>
+                                <div class="cinema-hotline">
+                                    <i class="fa-solid fa-phone-volume"></i>
+                                    <span>{{ $rap->Hotline ?: 'Đang cập nhật' }}</span>
+                                </div>
+                                <a href="{{ route('rap.chiTiet', ['slug' => $rap->Slug]) }}"
+                                    class="cinema-ticket-btn submit-btn">Đặt
+                                    vé ngay</a>
+                            </div>
+                        </div>
                     @endforeach
+                </div>
+            @elseif(request('keyword'))
+                <div class="no-result">
+                    <p>Không tìm thấy rạp phù hợp với từ khóa "<strong>{{ request('keyword') }}</strong>"</p>
                 </div>
             @endif
         @endif
