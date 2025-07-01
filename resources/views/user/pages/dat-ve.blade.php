@@ -43,7 +43,6 @@
                     <div class="booking-note-icon-tooltip" style="position: relative;">
                         <i class="fa-solid fa-circle-info" style="font-size: 1.5rem; color: #1976d2; cursor: pointer;"></i>
                         <div class="booking-note-tooltip">
-                            <div><b>Số ghế:</b> {{ $phongChieu->SoLuongGhe }} ghế/phòng</div>
                             <div><b>Tối đa:</b> 8 ghế/lần đặt</div>
                             <div><b>Ghế VIP:</b> +20% giá vé so với ghế thường</div>
                         </div>

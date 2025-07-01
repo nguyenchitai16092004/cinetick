@@ -49,14 +49,14 @@
                 <div class="payment-options">
                     <div class="payment-option">
                         <input type="radio" name="payment" id="payos" checked>
-                        <img id="payos-logo" src="/user/Content/img/payos.jpg" alt="payos">
+                        <img id="payos-logo" src="/user/Content/img/Casso-payOSLogo-1.svg" alt="payos">
                         <div class="payment-option-text payos-promo">PayOS</div>
                     </div>
                 </div>
-                {{-- <div class="disclaimer">
+                <div class="disclaimer">
                     (*) Bằng việc click vào THANH TOÁN bên phải, bạn đã xác nhận hiểu rõ các
-                    <a href="{{ route('chinh-sach.thanh-toan') }}">Chính sách thanh toán</a> của CineTick.
-                </div> --}}
+                    <a href="{{ url('thong-tin-cinetick/chinh-sach-thanh-toan') }}">Chính sách thanh toán</a> của CineTick.
+                </div>
             </div>
 
             <form id="paymentForm" method="POST" action="{{ route('payment') }}">
@@ -81,9 +81,6 @@
                     </ul>
                 </div>
             @endif
-
-
-
         </div>
 
         <div class="right-column">

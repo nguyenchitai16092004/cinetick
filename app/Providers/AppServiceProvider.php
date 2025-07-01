@@ -27,7 +27,7 @@ class AppServiceProvider extends ServiceProvider
     {
         
         Carbon::setLocale('vi');
-        /*
+        
         if (app()->environment('local') && request()->server('HTTP_HOST') && str_contains(request()->server('HTTP_HOST'), 'ngrok-free.app')) {
             URL::forceScheme('https');
         } else {
@@ -37,7 +37,7 @@ class AppServiceProvider extends ServiceProvider
             URL::forceScheme('https');
         } else {
         }
-        */
+        
         View::composer('*', function ($view) {
             $raps = Rap::where('TrangThai', 1)->get();
             $view->with('raps', $raps);
