@@ -6,7 +6,7 @@
     padding: 20px;
     background: #f8f9fa;
     border-radius: 12px;
-    box-shadow: inset 0 2px 8px rgba(0,0,0,0.1);
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .cinema-screen {
@@ -19,7 +19,7 @@
     font-weight: bold;
     font-size: 14px;
     letter-spacing: 2px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
     position: relative;
 }
 
@@ -41,11 +41,12 @@
     padding: 20px;
     background: #f8f9fa;
     border-radius: 12px;
-    box-shadow: inset 0 2px 8px rgba(0,0,0,0.1);
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* Deprecated - không sử dụng nữa */
-.seat-grid, .seat-grid-detail {
+.seat-grid,
+.seat-grid-detail {
     display: grid;
     gap: 8px;
     justify-content: center;
@@ -70,7 +71,7 @@
     border-radius: 6px;
     padding: 8px 0;
     border: 1px solid #dee2e6;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -99,12 +100,12 @@
     user-select: none;
     background: #ffffff;
     color: #495057;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 .seat:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 /* Trạng thái ghế */
@@ -140,7 +141,7 @@
 
 .seat-disabled:hover {
     transform: none;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 /* Ghế đã được chọn (cho trang đặt vé) */
@@ -176,7 +177,7 @@
     align-items: center;
     justify-content: center;
     border: 2px solid white;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .seat-booked:hover {
@@ -194,14 +195,13 @@
     background: white;
     border-radius: 10px;
     border: 1px solid #e9ecef;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
+
 .legend-box::after {
-    content: "✕"; /* Dấu X */
     color: red;
     font-weight: bold;
     font-size: 14px;
-    position: absolute;
     top: 50%;
     left: 50%;
 }
@@ -219,7 +219,7 @@
     height: 20px;
     border-radius: 4px;
     border: 1px solid #dee2e6;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .legend-normal {
@@ -233,9 +233,23 @@
 }
 
 .legend-disabled {
-    background: linear-gradient(135deg, #6c757d, #495057);
-    border-color: #343a40;
+    position: relative;
 }
+
+.legend-disabled::after {
+    content: "✕";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5em;
+    color: red;
+}
+
 
 .legend-selected {
     background: linear-gradient(135deg, #007bff, #0056b3);
@@ -252,43 +266,43 @@
     .seat-container {
         padding: 15px;
     }
-    
+
     .seat {
         width: 30px;
         height: 30px;
         font-size: 10px;
     }
-    
+
     .row-label {
         width: 20px;
         height: 30px;
         font-size: 12px;
         padding: 6px 0;
     }
-    
+
     .seats-in-row {
         gap: 4px;
     }
-    
+
     .seat-row {
         gap: 6px;
     }
-    
+
     .cinema-screen {
         font-size: 12px;
         padding: 10px;
         margin-bottom: 20px;
     }
-    
+
     .seat-legend {
         gap: 10px;
         padding: 12px;
     }
-    
+
     .legend-item {
         font-size: 12px;
     }
-    
+
     .legend-box {
         width: 16px;
         height: 16px;
@@ -301,17 +315,17 @@
         height: 26px;
         font-size: 9px;
     }
-    
+
     .row-label {
         width: 18px;
         height: 26px;
         font-size: 11px;
     }
-    
+
     .seats-in-row {
         gap: 3px;
     }
-    
+
     .seat-row {
         gap: 4px;
     }
@@ -320,9 +334,17 @@
 
 /* Animation effects */
 @keyframes seatSelect {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.2); }
-    100% { transform: scale(1.1); }
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.2);
+    }
+
+    100% {
+        transform: scale(1.1);
+    }
 }
 
 .seat-selected {
@@ -330,9 +352,17 @@
 }
 
 @keyframes seatBooked {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-    100% { transform: scale(1); }
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+
+    100% {
+        transform: scale(1);
+    }
 }
 
 .seat-booked {
@@ -360,8 +390,13 @@
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 /* Print styles */
@@ -370,35 +405,36 @@
         background: white;
         box-shadow: none;
     }
-    
+
     .seat {
         border: 1px solid #000;
         box-shadow: none;
     }
-    
+
     .cinema-screen {
         background: #333;
         color: white;
         box-shadow: none;
     }
-    
+
     .seat-legend {
         border: 1px solid #000;
         box-shadow: none;
     }
-    
+
     /* Hide buttons when printing */
-    .btn, button {
+    .btn,
+    button {
         display: none !important;
     }
-    
+
     /* Optimize page layout for printing */
     .container {
         max-width: 100% !important;
         margin: 0 !important;
         padding: 0 !important;
     }
-    
+
     .card {
         border: 1px solid #000 !important;
         box-shadow: none !important;
@@ -429,8 +465,8 @@
     align-items: center;
     justify-content: center;
     border: 2px solid white;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-}   
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
 
 /* Legend */
 .seat-legend {
@@ -443,7 +479,7 @@
     background: white;
     border-radius: 10px;
     border: 1px solid #e9ecef;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .legend-item {
@@ -459,7 +495,7 @@
     height: 20px;
     border-radius: 4px;
     border: 1px solid #dee2e6;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .legend-normal {
@@ -470,11 +506,6 @@
 .legend-vip {
     background: linear-gradient(135deg, #fff3cd, #ffc107);
     border-color: #ffb300;
-}
-
-.legend-disabled {
-    background: linear-gradient(135deg, #6c757d, #495057);
-    border-color: #343a40;
 }
 
 .legend-selected {
@@ -492,47 +523,47 @@
     .seat-container {
         padding: 15px;
     }
-    
+
     .seat {
         width: 30px;
         height: 30px;
         font-size: 10px;
     }
-    
+
     .row-label {
         width: 20px;
         font-size: 12px;
         padding: 6px 0;
     }
-    
+
     .seats-in-row {
         gap: 4px;
     }
-    
+
     .seat-row {
         gap: 6px;
     }
-    
+
     .cinema-screen {
         font-size: 12px;
         padding: 10px;
         margin-bottom: 20px;
     }
-    
+
     .col-aisle {
         width: 15px;
         height: 30px;
     }
-    
+
     .seat-legend {
         gap: 10px;
         padding: 12px;
     }
-    
+
     .legend-item {
         font-size: 12px;
     }
-    
+
     .legend-box {
         width: 16px;
         height: 16px;
@@ -545,20 +576,20 @@
         height: 26px;
         font-size: 9px;
     }
-    
+
     .row-label {
         width: 18px;
         font-size: 11px;
     }
-    
+
     .seats-in-row {
         gap: 3px;
     }
-    
+
     .seat-row {
         gap: 4px;
     }
-    
+
     .col-aisle {
         width: 12px;
         height: 26px;
@@ -567,9 +598,17 @@
 
 /* Animation effects */
 @keyframes seatSelect {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.2); }
-    100% { transform: scale(1.1); }
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.2);
+    }
+
+    100% {
+        transform: scale(1.1);
+    }
 }
 
 .seat-selected {
@@ -577,9 +616,17 @@
 }
 
 @keyframes seatBooked {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-    100% { transform: scale(1); }
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+
+    100% {
+        transform: scale(1);
+    }
 }
 
 .seat-booked {
@@ -607,8 +654,13 @@
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 /* Print styles */
@@ -617,18 +669,18 @@
         background: white;
         box-shadow: none;
     }
-    
+
     .seat {
         border: 1px solid #000;
         box-shadow: none;
     }
-    
+
     .cinema-screen {
         background: #333;
         color: white;
         box-shadow: none;
     }
-    
+
     .seat-legend {
         border: 1px solid #000;
         box-shadow: none;

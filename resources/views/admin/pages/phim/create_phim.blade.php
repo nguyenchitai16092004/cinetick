@@ -55,7 +55,7 @@
                                     <div class="form-group">
                                         <label for="NgayKetThuc">Ngày kết thúc</label>
                                         <input type="date" name="NgayKetThuc" id="NgayKetThuc" class="form-control"
-                                            value="{{ old('NgayKetThuc') }}">
+                                            value="{{ old('NgayKetThuc') }}" required>
                                     </div>
 
                                     <div class="form-group">

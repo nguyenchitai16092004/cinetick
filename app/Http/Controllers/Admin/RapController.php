@@ -81,7 +81,7 @@ class RapController extends Controller
         $hinhAnhPath = $rap->HinhAnh;
         if ($request->hasFile('HinhAnh')) {
             if ($rap->HinhAnh) {
-                Storage::delete('public/' . $rap->HinhAnh);
+                Storage::disk('public')->delete($rap->HinhAnh);
             }
             $file = $request->file('HinhAnh');
             $fileName = time() . '_' . $file->getClientOriginalName();
@@ -103,11 +103,21 @@ class RapController extends Controller
 
         return redirect()->route('rap.index')->with('success', 'Rạp đã sửa thành công');
     }
+
     public function destroy($id)
     {
-        $rap = Rap::where('ID_Rap', '=', $id);
-        $rap->delete();
+        $rap = Rap::where('ID_Rap', $id)->first();
 
-        return redirect()->route('rap.index')->with('success', 'Rạp đã được xóa thành công');
+        if ($rap) {
+            if ($rap->HinhAnh && Storage::disk('public')->exists($rap->HinhAnh)) {
+                Storage::disk('public')->delete($rap->HinhAnh);
+            }
+
+            $rap->delete();
+
+            return redirect()->route('rap.index')->with('success', 'Rạp đã được xóa thành công');
+        }
+
+        return redirect()->route('rap.index')->with('error', 'Không tìm thấy rạp để xóa');
     }
 }

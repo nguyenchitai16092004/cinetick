@@ -160,6 +160,8 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
         Route::post('suat-chieu/loc-phim', [HoaDonController::class, 'filterMovieByDate'])->name('suat-chieu.loc-phim-theo-ngay');
         Route::post('/lay-phong-chieu-theo-id', [HoaDonController::class, 'layTheoId'])->name('suat-chieu.lay-phong');
         Route::post('/kiem-tra-khuyen-mai', [HoaDonController::class, 'kiemTra'])->name('khuyen-mai.kiem-tra');
+        Route::post('/dat-ghe-tam', [HoaDonController::class, 'datGheTam'])->name('dat-ghe-tam');
+        Route::post('/huy-giu-ghe', [HoaDonController::class, 'huyGiuGhe'])->name('huy-ghe-tam');
         Route::post('/hoa-don/payos/create-payment', [HoaDonController::class, 'payment'])->name('payment');
         Route::post('/hoa-don/payos/check-payment', [HoaDonController::class, 'processCODTicket'])->name('payos.check-payment');
         Route::post('/hoa-don/tao-hoa-don', [HoaDonController::class, 'taoHoaDon'])->name('hoa-don.tao-hoa-don');
@@ -192,6 +194,7 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
     // Thống kê cơ bản - Tất cả admin có thể xem
     Route::prefix('thong-ke')->name('thong-ke.')->group(function () {
         Route::get('/', [ThongKeController::class, 'index'])->name('index');
+        Route::get('/export-excel', [ThongKeController::class, 'exportExcel'])->name('export');
     });
 
     // Rạp - Chỉ xem
