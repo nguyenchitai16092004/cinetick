@@ -100,6 +100,9 @@ Dự án được chạy trên **XAMPP** với phiên bản PHP **8.2.12**.
     ```bash
     php artisan storage:link
     ```
+7. Xuất file excel phải dùng các lệnh sau :
+    composer require phpoffice/phpspreadsheet
+
 ---
 
 Bây giờ bạn có thể chạy dự án trên XAMPP với cấu hình PHP 8.2.12.

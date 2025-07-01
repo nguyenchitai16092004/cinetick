@@ -31,6 +31,105 @@ document.addEventListener('DOMContentLoaded', function () {
     capNhatTienTrinh();
 });
 
+// ✅ THÊM HÀM GIỮ GHẾ TẠM THỜI
+function giuGheDaChon() {
+    const gheSelected = trangThaiDatVe.gheNgoi;
+
+    if (!gheSelected || gheSelected.length === 0) {
+        showGlobalNotification('Lỗi', 'Vui lòng chọn ít nhất một ghế', 'warning');
+        return false;
+    }
+
+    // Kiểm tra thông tin cần thiết
+    if (!trangThaiDatVe.ID_SuatChieu) {
+        showGlobalNotification('Lỗi', 'Không tìm thấy thông tin suất chiếu', 'error');
+        return false;
+    }
+
+    // Hiển thị loading trên nút
+    const btnNext3 = document.getElementById('btnNext3');
+    if (!btnNext3) return false;
+
+    const originalText = btnNext3.innerHTML;
+    btnNext3.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Đang giữ ghế...';
+    btnNext3.disabled = true;
+
+    // Tạo danh sách promises cho từng ghế
+    const promises = gheSelected.map(ghe => {
+        const gheId = ghe.idThucTe || ghe.id;
+
+        if (!gheId) {
+            console.warn('Ghế không có ID hợp lệ:', ghe);
+            return Promise.reject(new Error(`Ghế ${ghe.tenGhe || 'không rõ'} không có ID hợp lệ`));
+        }
+
+        return $.ajax({
+            url: '/admin/hoa-don/dat-ghe-tam',
+            method: 'POST',
+            data: {
+                _token: $('meta[name="csrf-token"]').attr('content'),
+                ID_Ghe: parseInt(gheId),
+                ID_SuatChieu: parseInt(trangThaiDatVe.ID_SuatChieu)
+            },
+            timeout: 10000 // Timeout sau 10 giây
+        });
+    });
+
+    Promise.all(promises)
+        .then(responses => {
+            console.log('Đã giữ tất cả ghế thành công:', responses);
+
+            // Hiển thị thông báo thành công
+            showGlobalNotification(
+                'Thành công',
+                `Đã giữ ${gheSelected.length} ghế trong 10 phút. Vui lòng hoàn tất thanh toán trong thời gian này.`,
+                'success'
+            );
+
+            // Chuyển sang bước tiếp theo
+            chuyenDenBuoc(4);
+        })
+        .catch(error => {
+            console.error('Lỗi khi giữ ghế:', error);
+            xuLyLoiGiuGhe(error);
+        })
+        .finally(() => {
+            // Khôi phục nút về trạng thái ban đầu
+            btnNext3.innerHTML = originalText;
+            btnNext3.disabled = false;
+        });
+}
+
+// ✅ THÊM HÀM KIỂM TRA TRẠNG THÁI GHẾ TRƯỚC KHI GIỮ
+function kiemTraTrangThaiGheTruocKhiGiu() {
+    const gheSelected = trangThaiDatVe.gheNgoi;
+
+    return $.ajax({
+        url: '/admin/hoa-don/lay-phong-chieu-theo-id',
+        method: 'POST',
+        data: {
+            id_phong: trangThaiDatVe.idPhongChieu,
+            ID_SuatChieu: trangThaiDatVe.ID_SuatChieu,
+            _token: $('meta[name="csrf-token"]').attr('content')
+        }
+    }).then(data => {
+        // Cập nhật danh sách ghế đã đặt mới nhất
+        danhSachGheDaDat = data.GheDaDat || [];
+
+        // Kiểm tra có ghế nào trong danh sách đã chọn bị đặt không
+        const gheConflict = gheSelected.filter(ghe =>
+            danhSachGheDaDat.includes(Number(ghe.idThucTe || ghe.id))
+        );
+
+        if (gheConflict.length > 0) {
+            const tenGheConflict = gheConflict.map(g => g.tenGhe).join(', ');
+            throw new Error(`Ghế ${tenGheConflict} đã được đặt. Vui lòng chọn ghế khác.`);
+        }
+
+        return true;
+    });
+}
+
 // Chọn rạp
 function chonRap(theRap) {
     // Xóa class selected khỏi tất cả thẻ rạp
@@ -257,7 +356,7 @@ function chonGheTheoData(phanTuGhe, duLieuGhe) {
         // Bỏ chọn ghế
         phanTuGhe.classList.remove('selected');
         trangThaiDatVe.gheNgoi = trangThaiDatVe.gheNgoi.filter(ghe => ghe.id !== idGhe);
-        
+
         // Thông báo nhẹ bằng console log thay vì popup
         console.log(`Đã bỏ chọn ghế ${duLieuGhe?.TenGhe || idGhe}`);
     } else {
@@ -272,7 +371,7 @@ function chonGheTheoData(phanTuGhe, duLieuGhe) {
             hang: parseInt(phanTuGhe.dataset.row),
             cot: parseInt(phanTuGhe.dataset.col)
         });
-        
+
         // Thông báo nhẹ bằng console log thay vì popup
         console.log(`Đã chọn ghế ${duLieuGhe?.TenGhe || idGhe} (${laGheVip ? 'VIP' : 'Thường'})`);
     }
@@ -397,14 +496,14 @@ function capNhatTomTatThanhToan() {
  */
 function taoSoDoGhe() {
     const containerGhe = document.getElementById('seatLayout');
-    
+
     // Xóa nội dung cũ
     containerGhe.innerHTML = '';
     containerGhe.className = 'seat-container';
-    
+
     // Tính toán tổng số cột (bao gồm lối đi)
     const soCot = cacHang[0]?.length || 0;
-    
+
     // Tính toán grid columns với lối đi
     let gridColumns = 'auto'; // Cột đầu cho label hàng
     for (let j = 0; j < soCot; j++) {
@@ -414,14 +513,14 @@ function taoSoDoGhe() {
         }
         gridColumns += ' 35px'; // Ghế
     }
-    
+
     // Thiết lập grid layout cho container
     containerGhe.style.display = 'grid';
     containerGhe.style.gridTemplateColumns = gridColumns;
     containerGhe.style.gap = '8px';
     containerGhe.style.justifyContent = 'center';
     containerGhe.style.alignItems = 'center';
-    
+
     // Tạo sơ đồ ghế theo từng hàng
     cacHang.forEach((hang, indexHang) => {
         // Label hàng
@@ -429,7 +528,7 @@ function taoSoDoGhe() {
         labelHang.className = 'row-label';
         labelHang.textContent = String.fromCharCode(65 + indexHang);
         containerGhe.appendChild(labelHang);
-        
+
         hang.forEach((duLieuGhe, indexCot) => {
             // Thêm lối đi dọc TRƯỚC ghế (nếu cần)
             if (colAisles && colAisles.includes(indexCot) && indexCot > 0) {
@@ -439,25 +538,25 @@ function taoSoDoGhe() {
                 loiDi.style.height = '35px';
                 containerGhe.appendChild(loiDi);
             }
-            
+
             // Tạo ghế  
             const phanTuGhe = document.createElement('div');
-            
+
             // Lấy ID_Ghe và TenGhe từ dữ liệu ghế hiện tại
             const idGhe = duLieuGhe?.ID_Ghe || duLieuGhe?.id_ghe || '';
             const tenGhe = duLieuGhe?.TenGhe || duLieuGhe?.ten_ghe || '';
-            
+
             phanTuGhe.className = 'seat';
             phanTuGhe.dataset.seatId = idGhe;
             phanTuGhe.dataset.row = indexHang;
             phanTuGhe.dataset.col = indexCot;
             phanTuGhe.textContent = tenGhe;
-            
+
             // Xử lý trạng thái ghế dựa vào dữ liệu từ server
             if (duLieuGhe && typeof duLieuGhe === 'object') {
                 // Ghế có dữ liệu từ database
                 const trangThai = duLieuGhe.TrangThaiGhe;
-                
+
                 // Thiết lập class dựa vào trạng thái
                 if (trangThai === 0) {
                     phanTuGhe.classList.add('disabled');
@@ -472,7 +571,7 @@ function taoSoDoGhe() {
                     phanTuGhe.classList.add('normal', 'available');
                     phanTuGhe.title = `${tenGhe} - Ghế thường`;
                 }
-                
+
                 // Gắn dữ liệu ghế vào element
                 phanTuGhe.dataset.gheData = JSON.stringify(duLieuGhe);
             } else if (duLieuGhe === 0 || duLieuGhe === null) {
@@ -484,21 +583,21 @@ function taoSoDoGhe() {
                 phanTuGhe.classList.add('normal', 'available');
                 phanTuGhe.title = `${tenGhe} - Ghế thường`;
             }
-            
+
             // Sự kiện click chỉ cho ghế available
             if (phanTuGhe.classList.contains('available')) {
                 phanTuGhe.addEventListener('click', function () {
                     chonGheTheoData(this, duLieuGhe);
                 });
             }
-            
+
             containerGhe.appendChild(phanTuGhe);
         });
-        
+
         // Thêm lối đi ngang SAU khi hoàn thành một hàng (nếu cần)
         if (rowAisles && rowAisles.includes(indexHang)) {
             const tongCotGrid = 1 + soCot + (colAisles ? colAisles.filter(col => col > 0 && col < soCot).length : 0);
-            
+
             const loiDiNgang = document.createElement('div');
             loiDiNgang.className = 'aisle aisle-row';
             loiDiNgang.style.gridColumn = `1 / span ${tongCotGrid}`;
@@ -507,12 +606,12 @@ function taoSoDoGhe() {
             containerGhe.appendChild(loiDiNgang);
         }
     });
-    
+
     // Khôi phục trạng thái ghế đã chọn sau khi render (nếu có)
     if (typeof khoiPhucTrangThaiGheDaChon === 'function') {
         khoiPhucTrangThaiGheDaChon();
     }
-    
+
     console.log('Đã render sơ đồ ghế thành công');
 }
 
@@ -535,20 +634,55 @@ function khoiPhucTrangThaiGheDaChon() {
 }
 
 /**
- * Hàm kiểm tra ghế chỉ khi ấn nút "Tiếp theo"
+ * ✅ SỬA LẠI HÀM KIỂM TRA GHẾ - THÊM LOGIC GIỮ GHẾ
  */
 function kiemTraGheNgoi(seatArray) {
+    // Kiểm tra tính hợp lệ của việc chọn ghế
     const kiemTra = kiemTraGheHopLe(seatArray);
-    
-    if (kiemTra.valid) {
-        // Nếu hợp lệ, chuyển đến bước tiếp theo
-        console.log('Ghế hợp lệ, chuyển sang bước 4');
-        return chuyenDenBuoc(4);
-    } else {
-        // Nếu không hợp lệ, hiển thị thông báo bằng hệ thống global
+
+    if (!kiemTra.valid) {
+        // Nếu không hợp lệ, hiển thị thông báo
         showGlobalNotification('Quy định chọn ghế', kiemTra.message, 'error');
         return false;
     }
+
+    // Nếu hợp lệ, kiểm tra trạng thái ghế trước khi giữ
+    console.log('Ghế hợp lệ, bắt đầu kiểm tra và giữ ghế...');
+
+    // Hiển thị loading ngay lập tức
+    const btnNext3 = document.getElementById('btnNext3');
+    if (btnNext3) {
+        btnNext3.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Đang kiểm tra...';
+        btnNext3.disabled = true;
+    }
+
+    // Kiểm tra trạng thái ghế một lần nữa trước khi giữ
+    kiemTraTrangThaiGheTruocKhiGiu()
+        .then(() => {
+            // Nếu không có xung đột, tiến hành giữ ghế
+            giuGheDaChon();
+        })
+        .catch(error => {
+            // Nếu có xung đột, hiển thị thông báo
+            console.error('Lỗi khi kiểm tra trạng thái ghế:', error);
+
+            const errorMessage = error.message || 'Có lỗi khi kiểm tra trạng thái ghế';
+            showGlobalNotification('Lỗi', errorMessage, 'error');
+
+            // Làm mới sơ đồ ghế để cập nhật trạng thái
+            setTimeout(() => {
+                xuatPhong();
+            }, 1000);
+        })
+        .finally(() => {
+            // Khôi phục nút nếu có lỗi
+            if (btnNext3 && btnNext3.innerHTML.includes('Đang kiểm tra')) {
+                btnNext3.innerHTML = 'Tiếp Theo <i class="fas fa-arrow-right ms-1"></i>';
+                btnNext3.disabled = trangThaiDatVe.gheNgoi.length === 0;
+            }
+        });
+
+    return true;
 }
 
 /**
@@ -714,23 +848,21 @@ function hoanTatDatVe() {
     showGlobalNotification('Thành công', 'Đặt vé thành công! Hóa đơn sẽ được in ra.', 'success');
 }
 
-// Khởi tạo các sự kiện
 function khoiTaoSuKien() {
-    // Gán hàm showNotification vào window để có thể sử dụng global
     if (typeof showNotification !== 'undefined') {
         window.showNotification = showNotification;
     }
 
     // Sự kiện bước 1
     document.querySelectorAll('.cinema-card').forEach(theRap => {
-        theRap.addEventListener('click', function() {
+        theRap.addEventListener('click', function () {
             chonRap(this);
         });
     });
 
     const inputNgay = document.getElementById('selectedDate');
     if (inputNgay) {
-        inputNgay.addEventListener('change', function() {
+        inputNgay.addEventListener('change', function () {
             trangThaiDatVe.ngay = this.value;
             capNhatTomTatBuoc1();
             capNhatNutTiepTheo(1);
@@ -753,13 +885,18 @@ function khoiTaoSuKien() {
 
     const nutQuayLai3 = document.getElementById('btnBack3');
     if (nutQuayLai3) nutQuayLai3.addEventListener('click', () => chuyenDenBuoc(2));
-
     const nutTiepTheo3 = document.getElementById('btnNext3');
-    if (nutTiepTheo3) nutTiepTheo3.addEventListener('click', () => {
-        // Kiểm tra quy định ghế trước khi chuyển bước
-        const selectedSeatIds = trangThaiDatVe.gheNgoi.map(ghe => ghe.id);
-        kiemTraGheNgoi(selectedSeatIds);
-    });
+    if (nutTiepTheo3) {
+        nutTiepTheo3.addEventListener('click', () => {
+            // Kiểm tra có ghế được chọn không
+            if (trangThaiDatVe.gheNgoi.length === 0) {
+                showGlobalNotification('Lỗi', 'Vui lòng chọn ít nhất một ghế', 'warning');
+                return;
+            }
+            const selectedSeatIds = trangThaiDatVe.gheNgoi.map(ghe => ghe.idThucTe || ghe.id);
+            kiemTraGheNgoi(selectedSeatIds);
+        });
+    }
 
     const nutQuayLai4 = document.getElementById('btnBack4');
     if (nutQuayLai4) nutQuayLai4.addEventListener('click', () => chuyenDenBuoc(3));
@@ -770,7 +907,6 @@ function khoiTaoSuKien() {
             const selectedMethod = document.querySelector('input[name="paymentMethod"]:checked');
 
             if (!selectedMethod) {
-                // Sử dụng thông báo global thay vì alert
                 if (typeof showGlobalNotification === 'function') {
                     showGlobalNotification('Lỗi', 'Vui lòng chọn phương thức thanh toán.', 'warning');
                 } else {
@@ -783,14 +919,12 @@ function khoiTaoSuKien() {
             trangThaiDatVe.phuongThucThanhToan = value;
 
             if (value === "Tiền mặt") {
-                // Sử dụng confirm hoặc modal tùy theo có hệ thống global không
                 let xacNhan;
                 if (typeof showConfirmation === 'function') {
                     showConfirmation(
                         'Xác nhận thanh toán',
                         'Bạn có chắc chắn đã thu tiền từ khách hàng?',
-                        function() {
-                            // Callback khi xác nhận
+                        function () {
                             xuLyThanhToanTienMat();
                         }
                     );
@@ -801,10 +935,8 @@ function khoiTaoSuKien() {
                     xuLyThanhToanTienMat();
                 }
 
-                return; // Dừng lại ở đây nếu là tiền mặt
+                return;
             }
-
-            // ✅ Nếu là chuyển khoản → mở popup modal
             const summaryContent = document.getElementById('finalSummary').innerHTML;
             document.getElementById('paymentSummaryModal').innerHTML = summaryContent;
 
@@ -826,9 +958,7 @@ function khoiTaoSuKien() {
     if (nutHoanTat) nutHoanTat.addEventListener('click', hoanTatDatVe);
 }
 
-// Hàm xử lý thanh toán tiền mặt riêng biệt
 function xuLyThanhToanTienMat() {
-    // ✅ Gửi AJAX tạo hóa đơn
     $.ajax({
         url: '/admin/hoa-don/store',
         method: "POST",
@@ -845,24 +975,88 @@ function xuLyThanhToanTienMat() {
             DanhSachGhe: trangThaiDatVe.gheNgoi,
             DiaChi: trangThaiDatVe.rap.diaChi,
         },
-        success: function(res) {
+        success: function (res) {
             if (typeof showGlobalNotification === 'function') {
                 showGlobalNotification('Thành công', 'Tạo hóa đơn thành công!', 'success');
             }
-            
-            // Chuyển hướng sau 1.5 giây
             setTimeout(() => {
                 window.location.href = res.redirect_url || '/admin/hoa-don';
             }, 1500);
         },
-        error: function(xhr) {
+        error: function (xhr) {
             console.error('Lỗi AJAX:', xhr.responseText);
-            
+
             if (typeof showGlobalNotification === 'function') {
                 showGlobalNotification('Lỗi', 'Lỗi khi tạo hóa đơn. Vui lòng kiểm tra lại.', 'error');
             } else {
                 alert("Lỗi khi tạo hóa đơn. Vui lòng kiểm tra lại.");
             }
         }
+    });
+}
+
+function xuLyLoiGiuGhe(error) {
+    let errorMessage = 'Có lỗi khi giữ ghế, vui lòng thử lại';
+    let shouldRefreshLayout = false;
+
+    // Xử lý lỗi cụ thể từ server
+    if (error.responseJSON && error.responseJSON.message) {
+        errorMessage = error.responseJSON.message;
+    } else if (error.status === 409) {
+        errorMessage = 'Một số ghế đã được người khác giữ. Vui lòng chọn ghế khác.';
+        shouldRefreshLayout = true;
+    } else if (error.status === 401) {
+        errorMessage = 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.';
+    } else if (error.status === 422) {
+        errorMessage = 'Dữ liệu ghế không hợp lệ. Vui lòng thử lại.';
+    } else if (error.timeout) {
+        errorMessage = 'Kết nối quá chậm. Vui lòng kiểm tra mạng và thử lại.';
+    } else if (error.message) {
+        errorMessage = error.message;
+    }
+
+    // Hiển thị thông báo lỗi
+    showGlobalNotification('Lỗi', errorMessage, 'error');
+
+    // Làm mới sơ đồ ghế nếu cần
+    if (shouldRefreshLayout) {
+        setTimeout(() => {
+            xuatPhong();
+        }, 1000);
+    }
+}
+
+function kiemTraTrangThaiGheTruocKhiGiu() {
+    const gheSelected = trangThaiDatVe.gheNgoi;
+
+    if (!gheSelected || gheSelected.length === 0) {
+        return Promise.resolve(true);
+    }
+
+    return $.ajax({
+        url: '/admin/hoa-don/lay-phong-chieu-theo-id',
+        method: 'POST',
+        data: {
+            id_phong: trangThaiDatVe.idPhongChieu,
+            ID_SuatChieu: trangThaiDatVe.ID_SuatChieu,
+            _token: $('meta[name="csrf-token"]').attr('content')
+        },
+        timeout: 8000
+    }).then(data => {
+        // Cập nhật danh sách ghế đã đặt mới nhất
+        danhSachGheDaDat = data.GheDaDat || [];
+
+        // Kiểm tra có ghế nào trong danh sách đã chọn bị đặt không
+        const gheConflict = gheSelected.filter(ghe => {
+            const gheId = parseInt(ghe.idThucTe || ghe.id);
+            return danhSachGheDaDat.includes(gheId);
+        });
+
+        if (gheConflict.length > 0) {
+            const tenGheConflict = gheConflict.map(g => g.tenGhe || g.id).join(', ');
+            throw new Error(`Ghế ${tenGheConflict} đã được đặt. Vui lòng chọn ghế khác.`);
+        }
+
+        return true;
     });
 }

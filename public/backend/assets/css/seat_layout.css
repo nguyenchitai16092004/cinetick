@@ -137,10 +137,6 @@
     border: 1px solid #ffb347;
 }
 
-.legend-disabled {
-    background-color: #e9ecef;
-    border: 1px solid #ced4da;
-}
 
 /* Responsive */
 @media (max-width: 768px) {
@@ -294,17 +290,24 @@
 
 .seat-disabled,
 .seat.disabled {
-    background: linear-gradient(135deg, #6c757d, #495057);
     border-color: #343a40;
     color: #fff;
     cursor: not-allowed;
     opacity: 0.6;
+    position: relative;
 }
 
-.seat-disabled:hover,
-.seat.disabled:hover {
-    transform: none;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+.seat-disabled::after,
+.seat.disabled::after {
+    content: "✕";
+    color: red;
+    font-size: 30px;
+    font-weight: bold;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
 }
 
 /* Ghế đã được chọn (cho trang đặt vé) */
@@ -402,10 +405,6 @@
     border-color: #ffb300;
 }
 
-.legend-disabled {
-    background: linear-gradient(135deg, #6c757d, #495057);
-    border-color: #343a40;
-}
 
 .legend-selected,
 .choosing {
@@ -684,8 +683,21 @@
 }
 
 .legend-disabled {
-    background: linear-gradient(135deg, #6c757d, #495057);
-    border-color: #343a40;
+    position: relative;
+}
+
+.legend-disabled::after {
+    content: "✕";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5em;
+    color: red;
 }
 
 .legend-selected {
@@ -853,7 +865,7 @@
     .seat {
         border: 1px solid #000;
         box-shadow: none;
-    } 
+    }
 
     .cinema-screen {
         background: #333;

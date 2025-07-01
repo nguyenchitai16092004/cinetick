@@ -28,11 +28,11 @@ class HoaDonController extends Controller
 
         // Lọc theo ngày tạo
         if ($request->has('start_date') && $request->start_date) {
-            $query->whereDate('NgayTao', '>=', $request->start_date);
+            $query->whereDate('create_at', '>=', $request->start_date);
         }
 
         if ($request->has('end_date') && $request->end_date) {
-            $query->whereDate('NgayTao', '<=', $request->end_date);
+            $query->whereDate('create_at', '<=', $request->end_date);
         }
 
         // Lọc theo ID tài khoản
@@ -82,7 +82,7 @@ class HoaDonController extends Controller
                 'SoLuongVe' => 'required|integer|min:1',
                 'TrangThaiXacNhanHoaDon' => 'required|in:0,1,2',
                 'TrangThaiXacNhanThanhToan' => 'required|in:0,1',
-                'DanhSachGhe' => 'required|array|min:1', // danh sách ghế được gửi lên từ client
+                'DanhSachGhe' => 'required|array|min:1',
                 'DiaChi' => 'required|string|max:255',
                 'TenPhim' => 'required|string|max:255',
             ]);
@@ -97,10 +97,11 @@ class HoaDonController extends Controller
 
             DB::beginTransaction();
 
-            // Tạo mã hóa đơn ngẫu nhiên
-            $maHoaDon = 'HD' . mt_rand(10000, 99999);
+            do {
+                $maHoaDon = 'HD' . mt_rand(10000, 99999);
+                $exists = HoaDon::where('ID_HoaDon', $maHoaDon)->exists();
+            } while ($exists);
 
-            // Tạo hóa đơn
             $hoaDon = new HoaDon();
             $hoaDon->ID_HoaDon = $maHoaDon;
             $hoaDon->TongTien = $request->TongTien;
@@ -112,7 +113,6 @@ class HoaDonController extends Controller
             $hoaDon->TrangThaiXacNhanThanhToan = $request->TrangThaiXacNhanThanhToan;
             $hoaDon->save();
 
-            // Duyệt từng ghế để tạo vé xem phim
             foreach ($request->DanhSachGhe as $ghe) {
                 DB::table('ve_xem_phim')->insert([
                     'TenGhe'        => $ghe['tenGhe'] ?? 'Không rõ',
@@ -127,6 +127,11 @@ class HoaDonController extends Controller
                     'created_at'    => now(),
                     'updated_at'    => now()
                 ]);
+                DB::table('ghe_dang_giu')
+                    ->where('ID_Ghe', $ghe['id'])
+                    ->where('ID_SuatChieu', (int) $request->ID_SuatChieu)
+                    ->where('ID_TaiKhoan', $idTaiKhoan)
+                    ->delete();
             }
             DB::commit();
 
@@ -344,7 +349,7 @@ class HoaDonController extends Controller
     {
         $query = HoaDon::query()->with('taiKhoan');
 
-        $hoaDons = $query->orderBy('NgayTao', 'desc')->get();
+        $hoaDons = $query->orderBy('create_at', 'desc')->get();
 
         return redirect()->route('admin.hoadon.index')
             ->with('success', 'Báo cáo đã được xuất thành công!');
@@ -359,14 +364,25 @@ class HoaDonController extends Controller
             $phims = Phim::join('suat_chieu', 'phim.ID_Phim', '=', 'suat_chieu.ID_Phim')
                 ->where('ID_Rap', $ID_Rap)
                 ->where('suat_chieu.NgayChieu', $date)
-                ->select('phim.*', 'suat_chieu.GioChieu', 'suat_chieu.ID_PhongChieu', 'suat_chieu.ID_SuatChieu', 'suat_chieu.GiaVe')
+                ->select(
+                    'phim.*',
+                    'suat_chieu.GioChieu',
+                    'suat_chieu.ID_PhongChieu',
+                    'suat_chieu.ID_SuatChieu',
+                    'suat_chieu.GiaVe',
+                    'suat_chieu.NgayChieu'
+                )
                 ->get()
                 ->groupBy('ID_Phim')
                 ->map(function ($group) {
                     $phim = $group->first();
 
-                    // Tạo danh sách suất chiếu gồm giờ và phòng
-                    $suatChieus = $group->map(function ($item) {
+                    // Lọc các suất chiếu có giờ lớn hơn hiện tại
+                    $suatChieus = $group->filter(function ($item) {
+                        // Tạo đối tượng datetime từ ngày và giờ chiếu
+                        $datetime = Carbon::parse($item->NgayChieu . ' ' . $item->GioChieu);
+                        return $datetime->greaterThan(Carbon::now());
+                    })->map(function ($item) {
                         return [
                             'gio' => Carbon::parse($item->GioChieu)->format('H:i'),
                             'phong' => $item->ID_PhongChieu,
@@ -374,7 +390,7 @@ class HoaDonController extends Controller
                             'gia_ve' => (int)$item->GiaVe,
                         ];
                     })
-                        ->unique(fn($item) => $item['gio'] . '-' . $item['phong']) // Tránh trùng giờ+phòng
+                        ->unique(fn($item) => $item['gio'] . '-' . $item['phong'])
                         ->values();
 
                     return [
@@ -386,6 +402,7 @@ class HoaDonController extends Controller
                         'SuatChieu'     => $suatChieus,
                     ];
                 })
+                ->filter(fn($phim) => $phim['SuatChieu']->isNotEmpty()) // Loại bỏ phim không còn suất nào hợp lệ
                 ->values();
 
             return response()->json($phims);
@@ -396,68 +413,90 @@ class HoaDonController extends Controller
 
     public function layTheoId(Request $request)
     {
-        $id = $request->id_phong;
-        $idSuatChieu = $request->ID_SuatChieu;
+        try {
+            $id = $request->id_phong;
+            $idSuatChieu = $request->ID_SuatChieu;
 
-        $gheList = PhongChieu::where('phong_chieu.ID_PhongChieu', $id)
-            ->join('ghe_ngoi', 'ghe_ngoi.ID_PhongChieu', '=', 'phong_chieu.ID_PhongChieu')
-            ->select('phong_chieu.*', 'ghe_ngoi.*')
-            ->get();
+            $gheList = PhongChieu::where('phong_chieu.ID_PhongChieu', $id)
+                ->join('ghe_ngoi', 'ghe_ngoi.ID_PhongChieu', '=', 'phong_chieu.ID_PhongChieu')
+                ->select('phong_chieu.*', 'ghe_ngoi.*')
+                ->get();
 
-        $gheDaDat = SuatChieu::join("ve_xem_phim", 've_xem_phim.ID_SuatChieu', '=', 'suat_chieu.ID_SuatChieu')
-            ->where('ve_xem_phim.ID_SuatChieu', $idSuatChieu)
-            ->select('ve_xem_phim.ID_Ghe')
-            ->get();
+            // Lấy ghế đã đặt vé
+            $gheDaDat = SuatChieu::join("ve_xem_phim", 've_xem_phim.ID_SuatChieu', '=', 'suat_chieu.ID_SuatChieu')
+                ->where('ve_xem_phim.ID_SuatChieu', $idSuatChieu)
+                ->where('ve_xem_phim.TrangThai', '!=', 2) // Không tính vé đã hủy
+                ->select('ve_xem_phim.ID_Ghe')
+                ->get();
 
+            // ✅ THÊM: Lấy ghế đang được giữ bởi người khác
+            $ID_TaiKhoan = session('user_id');
+            $gheDangGiu = DB::table('ghe_dang_giu')
+                ->where('ID_SuatChieu', $idSuatChieu)
+                ->where('hold_until', '>', now())
+                ->where('ID_TaiKhoan', '!=', $ID_TaiKhoan) // Không tính ghế mình đang giữ
+                ->select('ID_Ghe')
+                ->get();
 
-        if ($gheList->isEmpty()) {
-            return response()->json(['error' => 'Không tìm thấy phòng chiếu hoặc ghế ngồi'], 404);
-        }
-
-        // Lấy thông tin phòng từ 1 dòng bất kỳ
-        $phongInfo = $gheList->first();
-
-        // Tính số hàng và cột
-        $rowCount = 0;
-        $colCount = 0;
-
-        foreach ($gheList as $ghe) {
-            if (preg_match('/([A-Z])(\d+)/', $ghe->TenGhe, $matches)) {
-                $row = ord($matches[1]) - 64;
-                $col = (int)$matches[2];
-                $rowCount = max($rowCount, $row);
-                $colCount = max($colCount, $col);
+            if ($gheList->isEmpty()) {
+                return response()->json(['error' => 'Không tìm thấy phòng chiếu hoặc ghế ngồi'], 404);
             }
-        }
 
-        // Tạo sơ đồ ghế
-        $seatLayout = [];
-        for ($i = 0; $i < $rowCount; $i++) {
-            $row = [];
-            for ($j = 0; $j < $colCount; $j++) {
-                $tenGhe = chr(65 + $i) . ($j + 1);
-                $ghe = $gheList->firstWhere('TenGhe', $tenGhe);
+            // Lấy thông tin phòng từ 1 dòng bất kỳ
+            $phongInfo = $gheList->first();
 
-                $row[] = [
-                    'TenGhe'       => $tenGhe,
-                    'ID_Ghe'   => $ghe->ID_Ghe ?? null,
-                    'TrangThaiGhe' => $ghe->LoaiTrangThaiGhe ?? 0
-                ];
+            // Tính số hàng và cột
+            $rowCount = 0;
+            $colCount = 0;
+
+            foreach ($gheList as $ghe) {
+                if (preg_match('/([A-Z])(\d+)/', $ghe->TenGhe, $matches)) {
+                    $row = ord($matches[1]) - 64;
+                    $col = (int)$matches[2];
+                    $rowCount = max($rowCount, $row);
+                    $colCount = max($colCount, $col);
+                }
             }
-            $seatLayout[] = $row;
+
+            // Tạo sơ đồ ghế
+            $seatLayout = [];
+            for ($i = 0; $i < $rowCount; $i++) {
+                $row = [];
+                for ($j = 0; $j < $colCount; $j++) {
+                    $tenGhe = chr(65 + $i) . ($j + 1);
+                    $ghe = $gheList->firstWhere('TenGhe', $tenGhe);
+
+                    $row[] = [
+                        'TenGhe'       => $tenGhe,
+                        'ID_Ghe'       => $ghe->ID_Ghe ?? null,
+                        'TrangThaiGhe' => $ghe->LoaiTrangThaiGhe ?? 0
+                    ];
+                }
+                $seatLayout[] = $row;
+            }
+
+            $rowAisles = json_decode($phongInfo->HangLoiDi ?? '[]');
+            $colAisles = json_decode($phongInfo->CotLoiDi ?? '[]');
+
+            // ✅ THÊM: Hợp nhất ghế đã đặt và ghế đang giữ
+            $allUnavailableSeats = $gheDaDat->pluck('ID_Ghe')
+                ->merge($gheDangGiu->pluck('ID_Ghe'))
+                ->unique()
+                ->values();
+
+            return response()->json([
+                'GheDaDat'      => $allUnavailableSeats, // Bao gồm cả ghế đã đặt và đang giữ
+                'ID_PhongChieu' => $phongInfo->ID_PhongChieu,
+                'TenPhong'      => $phongInfo->TenPhong,
+                'SoLuongGhe'    => $gheList->count(),
+                'seatLayout'    => $seatLayout,
+                'rowAisles'     => $rowAisles,
+                'colAisles'     => $colAisles
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Lỗi khi lấy thông tin phòng chiếu: ' . $e->getMessage());
+            return response()->json(['error' => 'Có lỗi xảy ra khi lấy thông tin phòng chiếu'], 500);
         }
-
-        $rowAisles = json_decode($phongInfo->HangLoiDi ?? '[]');
-        $colAisles = json_decode($phongInfo->CotLoiDi ?? '[]');
-
-        return response()->json([
-            'GheDaDat'      => $gheDaDat->pluck('ID_Ghe'),
-            'ID_PhongChieu' => $phongInfo->ID_PhongChieu,
-            'TenPhong'   => $phongInfo->TenPhong,
-            'seatLayout' => $seatLayout,
-            'rowAisles'  => $rowAisles,
-            'colAisles'  => $colAisles
-        ]);
     }
 
     public function kiemTra(Request $request)
@@ -642,6 +681,195 @@ class HoaDonController extends Controller
             DB::rollBack();
             Log::error('Error processing COD ticket: ' . $e->getMessage());
             throw $e;
+        }
+    }
+
+    public function datGheTam(Request $request)
+    {
+        try {
+            $request->validate([
+                'ID_Ghe' => 'required|integer',
+                'ID_SuatChieu' => 'required|integer',
+            ]);
+
+            $ID_TaiKhoan = session('user_id');
+            if (!$ID_TaiKhoan) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.'
+                ], 401);
+            }
+
+            $now = now();
+            $holdMinutes = 10;
+            $ID_Ghe = (int)$request->ID_Ghe;
+            $ID_SuatChieu = (int)$request->ID_SuatChieu;
+
+            // Kiểm tra ghế có tồn tại không
+            $gheExists = GheNgoi::find($ID_Ghe);
+            if (!$gheExists) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Ghế không tồn tại trong hệ thống'
+                ], 404);
+            }
+
+            // Kiểm tra suất chiếu có tồn tại không
+            $suatChieuExists = SuatChieu::find($ID_SuatChieu);
+            if (!$suatChieuExists) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Suất chiếu không tồn tại'
+                ], 404);
+            }
+
+            // Kiểm tra ghế đã được đặt vé chưa
+            $isBooked = VeXemPhim::where('ID_Ghe', $ID_Ghe)
+                ->where('ID_SuatChieu', $ID_SuatChieu)
+                ->where('TrangThai', '!=', 2) // Không phải vé đã hủy
+                ->exists();
+
+            if ($isBooked) {
+                return response()->json([
+                    'success' => false,
+                    'message' => "Ghế {$gheExists->TenGhe} đã được đặt vé"
+                ], 409);
+            }
+
+            // Kiểm tra ghế có đang được giữ bởi người khác không
+            $isHeldByOther = DB::table('ghe_dang_giu')
+                ->where('ID_Ghe', $ID_Ghe)
+                ->where('ID_SuatChieu', $ID_SuatChieu)
+                ->where('ID_TaiKhoan', '!=', $ID_TaiKhoan)
+                ->where('hold_until', '>', $now)
+                ->exists();
+
+            if ($isHeldByOther) {
+                return response()->json([
+                    'success' => false,
+                    'message' => "Ghế {$gheExists->TenGhe} đang được giữ bởi người khác"
+                ], 409);
+            }
+
+            // Xóa bản ghi giữ ghế cũ của người dùng hiện tại (nếu có)
+            DB::table('ghe_dang_giu')
+                ->where('ID_Ghe', $ID_Ghe)
+                ->where('ID_SuatChieu', $ID_SuatChieu)
+                ->where('ID_TaiKhoan', $ID_TaiKhoan)
+                ->delete();
+
+            // Tạo bản ghi giữ ghế mới
+            $inserted = DB::table('ghe_dang_giu')->insert([
+                'ID_Ghe' => $ID_Ghe,
+                'ID_SuatChieu' => $ID_SuatChieu,
+                'ID_TaiKhoan' => $ID_TaiKhoan,
+                'hold_until' => $now->addMinutes($holdMinutes),
+                'created_at' => $now,
+                'updated_at' => $now
+            ]);
+
+            if (!$inserted) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Không thể giữ ghế, vui lòng thử lại'
+                ], 500);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => "Đã giữ ghế {$gheExists->TenGhe} thành công",
+                'data' => [
+                    'ID_Ghe' => $ID_Ghe,
+                    'TenGhe' => $gheExists->TenGhe,
+                    'hold_until' => $now->addMinutes($holdMinutes)->toISOString()
+                ]
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Dữ liệu không hợp lệ: ' . implode(', ', $e->validator->errors()->all())
+            ], 422);
+        } catch (\Exception $e) {
+            Log::error('Lỗi khi đặt ghế tạm thời: ' . $e->getMessage(), [
+                'ID_Ghe' => $request->ID_Ghe ?? null,
+                'ID_SuatChieu' => $request->ID_SuatChieu ?? null,
+                'ID_TaiKhoan' => $ID_TaiKhoan ?? null,
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Có lỗi xảy ra khi giữ ghế, vui lòng thử lại'
+            ], 500);
+        }
+    }
+
+    public function huyGiuGhe(Request $request)
+    {
+        try {
+            $request->validate([
+                'ID_Ghe' => 'required|integer',
+                'ID_SuatChieu' => 'required|integer',
+            ]);
+
+            $ID_TaiKhoan = session('user_id');
+            if (!$ID_TaiKhoan) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Phiên đăng nhập đã hết hạn'
+                ], 401);
+            }
+
+            $ID_Ghe = (int)$request->ID_Ghe;
+            $ID_SuatChieu = (int)$request->ID_SuatChieu;
+
+            // Kiểm tra ghế có tồn tại không
+            $ghe = GheNgoi::find($ID_Ghe);
+            if (!$ghe) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Ghế không tồn tại'
+                ], 404);
+            }
+
+            // Xóa bản ghi giữ ghế nếu đúng người dùng
+            $deleted = DB::table('ghe_dang_giu')
+                ->where('ID_Ghe', $ID_Ghe)
+                ->where('ID_SuatChieu', $ID_SuatChieu)
+                ->where('ID_TaiKhoan', $ID_TaiKhoan)
+                ->delete();
+
+            if ($deleted) {
+                return response()->json([
+                    'success' => true,
+                    'message' => "Đã hủy giữ ghế {$ghe->TenGhe}",
+                    'data' => [
+                        'ID_Ghe' => $ID_Ghe,
+                        'TenGhe' => $ghe->TenGhe
+                    ]
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Không tìm thấy ghế đang giữ hoặc bạn không có quyền hủy'
+                ], 404);
+            }
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Dữ liệu không hợp lệ: ' . implode(', ', $e->validator->errors()->all())
+            ], 422);
+        } catch (\Exception $e) {
+            Log::error('Lỗi khi hủy giữ ghế: ' . $e->getMessage(), [
+                'ID_Ghe' => $request->ID_Ghe ?? null,
+                'ID_SuatChieu' => $request->ID_SuatChieu ?? null,
+                'ID_TaiKhoan' => $ID_TaiKhoan ?? null
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Có lỗi xảy ra khi hủy giữ ghế'
+            ], 500);
         }
     }
 }

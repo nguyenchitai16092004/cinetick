@@ -25,7 +25,7 @@ class SuatChieuController extends Controller
     {
         $raps = Rap::all();
         $phims = Phim::all();
-        return view('admin.pages.suat_chieu.create-suat-chieu', compact('raps' , 'phims'));
+        return view('admin.pages.suat_chieu.create-suat-chieu', compact('raps', 'phims'));
     }
 
 
@@ -101,7 +101,8 @@ class SuatChieuController extends Controller
         return response()->json($Phim);
     }
 
-    public function filterPhong(Request $request){
+    public function filterPhong(Request $request)
+    {
         $id = $request->ID_Rap;
         $phongs = PhongChieu::where('ID_Rap', $id)->get();
         return $phongs;
@@ -185,7 +186,10 @@ class SuatChieuController extends Controller
 
         try {
             $phim = Phim::find($request->ID_Phim);
-
+            $now = Carbon::now();
+            if ($phim->NgayKetThuc < $now) {
+                return redirect()->back()->with('error', 'Cập nhật suất chiếu thành công');
+            }
             foreach ($request->schedule as $date => $timesString) {
                 $times = array_filter(explode(',', $timesString));
 

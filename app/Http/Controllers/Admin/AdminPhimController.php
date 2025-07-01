@@ -36,7 +36,7 @@ class AdminPhimController extends Controller
             'DienVien' => 'required|max:255',
             'ThoiLuong' => 'required|integer|min:1|max:180',
             'NgayKhoiChieu' => 'required|date',
-            'NgayKetThuc' => 'nullable|date|after_or_equal:NgayKhoiChieu',
+            'NgayKetThuc' => 'required|date|after_or_equal:NgayKhoiChieu',
             'MoTaPhim' => 'required',
             'Trailer' => 'nullable|url|max:255',
             'HinhAnh' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
@@ -46,7 +46,6 @@ class AdminPhimController extends Controller
             'ID_TheLoaiPhim' => 'required|array|min:1',
             'ID_TheLoaiPhim.*' => 'exists:the_loai_phim,ID_TheLoaiPhim',
         ]);
-
 
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();

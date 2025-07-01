@@ -85,7 +85,6 @@ class BannerController extends Controller
         if (!$banner) {
             abort(404);
         }
-
         return view('admin.pages.banner.detail-banner', compact('banner'));
     }
 
