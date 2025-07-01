@@ -215,6 +215,7 @@ strong {
 }
 .seat-hold-timer span {
     color: #fff !important;
+   font-weight: 700;
 }
 .ticket-details {
     margin-bottom: 15px;

@@ -567,7 +567,7 @@ small {
 }
 
 .legend-disabled::after {
-    content: "✖";
+    content: "x";
     color: #ff2222;
     font-size: 1.2em;
     position: static; /* bỏ absolute */
@@ -634,7 +634,7 @@ small {
     pointer-events: none;
 }
 .seat.disabled::after {
-    content: "✖";
+    content: "x";
     color: #ff2222;
     font-size: 1.6em;
     position: absolute;
@@ -720,7 +720,7 @@ small {
     font-weight: bold;
     display: none;
     position: relative;
-    left: 400px;
+    left: 450px;
 }
 #seat-hold-timer-text {
     color: #fff !important;
@@ -884,17 +884,17 @@ small {
         color: #fff;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
     }
-    .sweet-modal-buttons {
-        padding-right: 20px;
-        margin-left: 5px;
-    }
+
     .sweet-modal-box {
         width: 90% !important;
-        left: 6% !important;
+        height: 50% !important;
+        top: 20% !important;
+        left: 5% !important;
     }
     .alert {
-        width: 90% !important;
-        left: 10% !important;
+        width: 100% !important;
+        left: 1% !important;
+        height: 500px !important;
         position: fixed;
         top: 10%;
         transform: translateY(-50%);
@@ -907,13 +907,14 @@ small {
         position: relative;
         right: 30px;
     }
+
     .sweet-modal-buttons {
         width: 100% !important;
-        position: relative;
-        right: 27px;
+        height: 30% !important;
     }
     .sweet-modal-content {
         width: 100% !important;
+        height: 300px !important;
     }
 
     .movie-poster {

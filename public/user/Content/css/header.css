@@ -362,6 +362,8 @@ a {
 .sub-menu-rap a:hover {
     background: -webkit-linear-gradient(left, #171e38, rgba(44, 1, 26, 0.3)) !important;
     color: #fff;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
 }
 .user-menu__caret {
     display: none;
@@ -395,8 +397,6 @@ a {
 .user-menu__dropdown-list li {
     width: 100%;
 }
-
-
 
 .user-menu__dropdown-list a {
     color: #fff;

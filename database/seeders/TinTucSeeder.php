@@ -20,7 +20,7 @@ class TinTucSeeder extends Seeder
                 'TieuDe' => 'Bùi Thạc Chuyên Và 11 Năm Tâm Huyết Với Địa Đạo: Mặt Trời Trong Bóng Tối',
                 'Slug' => 'bui-thac-chuyen-va-11-nam-tam-huyet-voi-dia-dao-mat-troi-trong-bong-toi',
                 'NoiDung' => 'Nội dung chi tiết cho ưu đãi đặc biệt tháng 6...',
-                'LoaiBaiViet' => 4, // 1: Khuyến mãi
+                'LoaiBaiViet' => 4, 
                 'LuotThich' => 0,
                 'LuotXem' => 1,
                 'AnhDaiDien' => 'tin-tuc/1750324767_1135-1_1741937896730.jpg',
