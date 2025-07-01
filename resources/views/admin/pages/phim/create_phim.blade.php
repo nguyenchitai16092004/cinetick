@@ -108,6 +108,7 @@
                                         <option value="Trung Quốc">Trung Quốc</option>
                                         <option value="Nga">Nga</option>
                                         <option value="Mỹ">Mỹ</option>
+                                        <option value="Thái Lan">Thái Lan</option>
                                     </select>
 
                                     <div class="form-group">

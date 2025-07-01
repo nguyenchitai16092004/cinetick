@@ -25,7 +25,6 @@
         </div>
 
         <div class="carousel-wrapper">
-
             @if ($banners->isEmpty())
                 <div class="carousel-track" id="carouselTrack">
                     <div class="carousel-slide active">
@@ -73,7 +72,6 @@
         <header class="section-header">
             <h1 class="section-title">Đặt vé nhanh</h1>
         </header>
-
 
         <div class="steps-indicator">
             <div class="step active" id="step-1">
@@ -262,7 +260,7 @@
                                 <div class="play-button" data-trailer="{{ $phim->Trailer }}">
                                     <div class="play-icon"></div>
                                 </div>
-                                <div class="film-rating-crou">
+                                <div class="film-rating-crou film-rating-crou-2">
                                     <span class="star">
                                         <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="star"
                                             class="svg-inline--fa fa-star text-yellow-400 mr-3 ml-4 text-[12px]"
@@ -317,10 +315,10 @@
     <div class="container">
         <header class="header">
             <h1 class="main-title">Góc điện ảnh</h1>
-            <nav class="nav-tabs">
-                {{-- <a href="#" class="nav-tab">Bình luận phim</a> --}}
+            {{-- <nav class="nav-tabs">
+                <a href="#" class="nav-tab">Bình luận phim</a>
                 <a href="#" class="nav-tab active">Blog điện ảnh</a>
-            </nav>
+            </nav> --}}
         </header>
 
         <main class="content-grid">
@@ -393,9 +391,7 @@
                         </div>
                         <div class="promotion-content">
                             <h3 class="promotion-title">{{ $khuyenMai->TieuDe }}</h3>
-                            <div class="promotion-meta">
-                            </div>
-                            <div class="article-meta">
+                            <div class="article-meta-actions">
                                 <button class="action-btn" data-slug="{{ $khuyenMai->Slug }}">
                                     <i class="fa-regular fa-thumbs-up"></i> Thích
                                     <span>{{ $khuyenMai->LuotThich }}</span>
@@ -405,14 +401,13 @@
                                     <span>{{ $khuyenMai->LuotXem }}</span>
                                 </div>
                             </div>
-
                         </div>
                     </div>
                 </a>
             @endforeach
         </div>
-        <div class="view-all-section">
-            <a href="{{ route('ds-bai-viet-khuyen-mai') }}" class="view-all-btn">Xem Tất Cả Khuyến Mãi</a>
+        <div class="view-more">
+            <a href="{{ route('ds-bai-viet-khuyen-mai') }}" class="view-more-btn">Xem thêm</a>
         </div>
     </div>
     <script src=" {{ asset('user/Content/js/home.js') }}"></script>

@@ -99,6 +99,10 @@
     gap: 32px;
     margin-bottom: 32px;
 }
+.no-result{
+    margin-bottom: 10px;
+    text-align: center;
+}
 .cinema-ticket-btn:hover {
     background: linear-gradient(90deg, #ffe44d 0%, #fd7f00 100%);
     color: #000;
@@ -107,18 +111,15 @@
     .cinema-card {
         width: calc((100% - 64px) / 3);
     }
-}
-@media (max-width: 900px) {
-    .cinema-card {
-        width: calc((100% - 32px) / 2);
+    .film-rating-crou{
+        position: absolute;
+        left: 28px !important;
     }
-}
-@media (max-width: 600px) {
-    .cinema-card {
-        width: 100%;
-        min-width: 0;
+    .no-result{
+        margin-bottom: 10px;
+        text-align: center;
     }
-    .cinema-list-wrapper {
-        gap: 16px;
+    .result-search{
+        margin-top: 20px;
     }
 }

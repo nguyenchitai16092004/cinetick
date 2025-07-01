@@ -98,7 +98,8 @@
                 </div>
                 <div class="movie-info">
                     <h3>{{ $suatChieu->phim->TenPhim }}</h3>
-                    <div class="movie-meta">{{ $suatChieu->phim->DoHoa }}
+                    <div class="movie-meta">
+                        <span class="badge badge-format">{{ $suatChieu->phim->DoHoa }}</span>
                         <span class="age-rating">{{ $suatChieu->phim->DoTuoi }}</span>
                     </div>
                 </div>
@@ -119,7 +120,8 @@
 
             <div class="ticket-details">
                 <div class="ticket-row">
-                    <div class="ticket-row-seated"><strong><span>{{ count($selectedSeats) }}x Vé
+                    <div class="ticket-row-seated"><strong>
+                        <span>{{ count($selectedSeats) }}x Vé
                                 {{ $suatChieu->phim->DoHoa }}</span></strong></div>
                     <div><strong> {{ number_format($totalPrice, 0, ',', '.') }} đ</strong></div>
                 </div>

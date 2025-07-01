@@ -116,15 +116,17 @@
                     </div>
                     <div class="form-group">
                         <label class="form-label required">Giới tính</label>
-                        <div style="display: flex; gap: 24px; align-items: center;">
-                            <label style="display: flex; align-items: center; gap: 6px; font-weight: 400;">
+                        <div class="form-radio-group" >
+                            <label class="form-radio">
                                 <input type="radio" name="GioiTinh" value="1"
                                     {{ old('GioiTinh', '1') == '1' ? 'checked' : '' }}>
+                                <span></span>
                                 Nam
                             </label>
-                            <label style="display: flex; align-items: center; gap: 6px; font-weight: 400;">
+                            <label class="form-radio">
                                 <input type="radio" name="GioiTinh" value="0"
                                     {{ old('GioiTinh') == '0' ? 'checked' : '' }}>
+                                <span></span>
                                 Nữ
                             </label>
                         </div>
@@ -136,7 +138,7 @@
                     <div class="form-note">
                         Bạn đã có tài khoản? <a href="#" id="goto-login">Đăng nhập</a>
                     </div>
-                    <p style="color: #333; margin-top: 10px;">Vui lòng nhập đầy đủ thông tin vào các trường có đánh dấu <b
+                    <p class="form-note" >Vui lòng nhập đầy đủ thông tin vào các trường có đánh dấu <b
                             style="color: red;">(*)</b></p>
                 </form>
             </div>

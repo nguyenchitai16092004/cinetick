@@ -9,7 +9,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title')</title>
-    <link rel="icon" href="{{ $thongTinTrangWeb->Icon ? asset('storage/' . $thongTinTrangWeb->Icon) : asset('images/no-image.jpg') }}" type="image/png">
+    <link rel="icon"
+        href="{{ $thongTinTrangWeb->Icon ? asset('storage/' . $thongTinTrangWeb->Icon) : asset('images/no-image.jpg') }}"
+        type="image/png">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,6 +20,8 @@
         rel="stylesheet">
     <!-- External CSS -->
     <link href="Content/Stylebf25.css" rel="stylesheet" />
+    <link href="Content/css/main.css" rel="stylesheet" />
+
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Owl Carousel CSS -->
@@ -35,19 +39,18 @@
 </head>
 
 <body>
-
+    <div class="loader-overlay">
+        <div class="loader"></div>
+    </div>
 
     @include('user.partials.header')
     @yield('main')
-    
     @include('user.partials.footer')
-    <script src="https://cdn.jsdelivr.net/npm/sweetmodal/dist/min/jquery.sweet-modal.min.js"></script>
 
-    <!-- Owl Carousel JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetmodal/dist/min/jquery.sweet-modal.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
     <script src="{{ asset('user/Scripts/Style88a8.js') }}"></script>
     <script src="{{ asset('user/Content/js/booking-release-global.js') }}"></script>
+    <script src="Content/js/main.js"></script>
 </body>
-
-
 </html>

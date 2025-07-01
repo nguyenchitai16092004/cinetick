@@ -1,4 +1,5 @@
 <link rel="stylesheet" href="{{ asset('user/Content/css/header.css') }}">
+
 <header class="header-menu">
     <div class="header__top">
         <div class="header__left">
@@ -7,18 +8,30 @@
                     alt="{{ $thongTinTrangWeb->TenWebsite }}" alt="filmoja" />
             </a>
         </div>
-        <div class="header__search">
+        <div class="header__icons-mobile">
+            <!-- Icon search -->
+            <button class="header__search-toggle" id="searchToggle" aria-label="Tìm kiếm" type="button">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+          
+            <!-- Avatar user -->
+            @if (session()->has('user_id'))
+                <a href="{{ route('user.info') }}" class="header__user-mobile" aria-label="Tài khoản">
+                    <img src="{{ asset('user/Content/img/user.svg') }}" alt="user-login-svg" class="user-menu__avatar"
+                        style="width:32px;height:32px;">
+                </a>
+            @endif
+              <!-- Nút menu hamburger -->
+              <button class="header__menu-toggle" id="menuToggle" aria-label="Mở menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+        <div class="header__search" id="headerSearch">
             <form action="{{ route('tim-kiem') }}" method="GET" class="header__search-form">
-                <input 
-                    type="text" 
-                    name="keyword" 
-                    placeholder="Tìm phim, rạp, thể loại phim..." 
-                    value="{{ request('keyword') ?? '' }}"
-                    autocomplete="off"
-                    class="header__search-input"
-                >
+                <input type="text" name="keyword" placeholder="Tìm phim, rạp, thể loại phim..."
+                    value="{{ request('keyword') ?? '' }}" autocomplete="off" class="header__search-input">
                 <button type="submit">
-                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <i  class="fa-solid fa-magnifying-glass"></i>
                 </button>
             </form>
         </div>
@@ -99,61 +112,78 @@
             </nav>
         </div>
     </div>
+    <div class="header__nav-mobile" id="mobileMenu">
+        <!-- Icon đóng menu -->
+        <button class="header__menu-close" id="menuClose" aria-label="Đóng menu" type="button" style="display:none;">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+        <nav>
+            <ul>
+                <li>
+                    <form action="{{ route('tim-kiem') }}" method="GET" class="header__search-form header__search-form--mobile">
+                        <input type="text" name="keyword" placeholder="Tìm phim, rạp, thể loại phim..."
+                            value="{{ request('keyword') ?? '' }}" autocomplete="off" class="header__search-input">
+                        <button type="submit">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </button>
+                    </form>
+                </li>
+                <li><a href="{{ asset('/') }}">Trang chủ</a></li>
+                <li class="dropdown-mobile">
+                    <a href="javascript:void(0)" class="dropdown-toggle-mobile">
+                        Phim <i class="fa-solid fa-chevron-down"></i>
+                    </a>
+                    <ul class="dropdown-content-mobile">
+                        <li><a href="{{ route('phim.dangChieu') }}">Phim đang chiếu</a></li>
+                        <li><a href="{{ route('phim.sapChieu') }}">Phim sắp chiếu</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown-mobile">
+                    <a href="javascript:void(0)" class="dropdown-toggle-mobile">
+                        Rạp chiếu <i class="fa-solid fa-chevron-down"></i>
+                    </a>
+                    <ul class="dropdown-content-mobile">
+                        @foreach ($raps as $rap)
+                            @if ($rap->TrangThai == 1)
+                                <li>
+                                    <a href="{{ route('rap.chiTiet', ['slug' => $rap->Slug]) }}">{{ $rap->TenRap }}</a>
+                                </li>
+                            @endif
+                        @endforeach
+                    </ul>
+                </li>
+                <li><a href="{{ route('ds-bai-viet-khuyen-mai') }}">Khuyến mãi</a></li>
+                <li><a href="{{ route('ds-bai-viet-dien-anh') }}">Điện ảnh</a></li>
+                <li><a href="{{ asset('/lien-he') }}">Liên hệ</a></li>
+                @if (session()->has('user_id'))
+                    <li><a href="{{ route('user.info') }}">Thông tin cá nhân</a></li>
+                    <li><a href="{{ asset('/') }}" onclick="logOut()">Đăng xuất</a></li>
+                @else
+                    <li><a href="{{ route('login.form') }}">Đăng nhập / Đăng ký</a></li>
+                @endif
+            </ul>
+        </nav>
+    </div>
+    <div class="header__overlay" id="menuOverlay"></div>
 </header>
 <script src="{{ asset('user/Content/js/header.js') }}"></script>
 <script>
     function logOut() {
-    $.ajaxSetup({
-        headers: {
-            "X-CSRF-TOKEN": "{{ csrf_token() }}",
-        },
-    });
+        $.ajaxSetup({
+            headers: {
+                "X-CSRF-TOKEN": "{{ csrf_token() }}",
+            },
+        });
 
-    $.ajax({
-        url: "{{ route('logout') }}",
-        type: "POST",
-        success: function (result) {
-            window.location.href = "{{ url('/') }}";
-        },
-        error: function (xhr) {
-            console.error("Lỗi đăng xuất:", xhr.responseText);
-        },
-    });
-}
-
-document.addEventListener('DOMContentLoaded', function () {
-    var bookingBtn = document.querySelector('.header__center img');
-
-    if (bookingBtn) {
-        bookingBtn.style.cursor = 'pointer';
-        bookingBtn.addEventListener('click', function () {
-            var bookingSection = document.getElementById('bookingSection');
-            if (bookingSection) {
-                // Đang ở trang home, có section => scroll luôn
-                bookingSection.scrollIntoView({ behavior: 'smooth' });
-            } else {
-                // Không phải trang home hoặc chưa có section => chuyển về home kèm hash
-                if (window.location.pathname !== '/') {
-                    window.location.href = '/#scrollToBooking';
-                } else {
-                    setTimeout(function () {
-                        var section = document.getElementById('bookingSection');
-                        if (section) section.scrollIntoView({ behavior: 'smooth' });
-                    }, 300);
-                }
-            }
+        $.ajax({
+            url: "{{ route('logout') }}",
+            type: "POST",
+            success: function(result) {
+                window.location.href = "{{ url('/') }}";
+            },
+            error: function(xhr) {
+                console.error("Lỗi đăng xuất:", xhr.responseText);
+            },
         });
     }
-
-    // Nếu đã về home với hash thì tự động scroll đến bookingSection
-    if (window.location.hash === '#scrollToBooking') {
-        setTimeout(function () {
-            var section = document.getElementById('bookingSection');
-            if (section) {
-                section.scrollIntoView({ behavior: 'smooth' });
-                // Xóa hash để không scroll lại khi reload
-                history.replaceState(null, '', window.location.pathname);
-            }
-        }, 300);
-    }
-});</script>
+</script>

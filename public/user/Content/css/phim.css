@@ -111,3 +111,8 @@
     0%   { transform: translateX(0); }
     100% { transform: translateX(-100%); }
 }
+@media (max-width: 1200px) {
+    .films-list{
+        margin-left: 10px !important;
+    }
+}

@@ -33,6 +33,7 @@ class RapChiTietController extends Controller
                 ->pluck('ID_Phim')
                 ->unique();
             $phims = Phim::whereIn('ID_Phim', $phimIds)->get();
+            
             // Gán avg_rating cho từng phim
             foreach ($phims as $phim) {
                 $avg = $phim->binhLuan()->avg('DiemDanhGia');

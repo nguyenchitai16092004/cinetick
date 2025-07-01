@@ -1,5 +1,3 @@
-
-
 .ctn-thanh-toan {
     max-width: 100%;
     display: flex;
@@ -12,10 +10,11 @@
     border-radius: 20px;
     padding: 20px;
 }
-.ticket-details-date, .ticket-details-local{
+.ticket-details-date,
+.ticket-details-local {
     color: #fff;
 }
-strong{
+strong {
     color: #fff;
 }
 .right-column {
@@ -44,7 +43,7 @@ strong{
 }
 
 .step.active::after {
-    content: '';
+    content: "";
     position: absolute;
     bottom: -11px;
     left: 0;
@@ -52,16 +51,19 @@ strong{
     height: 2px;
 }
 
-.promotion-section h2, 
+.promotion-section h2,
 .payment-method-section h2 {
     font-size: 20px;
     margin-bottom: 15px;
     color: #fff;
     font-weight: 600;
 }
-.payos-promo{
+.payos-promo {
     color: #fff;
     font-size: 18px;
+}
+#payos {
+    accent-color: #000;
 }
 .promo-code {
     display: flex;
@@ -124,9 +126,6 @@ strong{
     border-radius: 4px;
 }
 
-
-
-
 .payment-option input[type="radio"] {
     margin-right: 15px;
 }
@@ -141,7 +140,6 @@ strong{
 .payment-option-text {
     flex: 1;
 }
-
 
 .disclaimer {
     font-size: 12px;
@@ -180,6 +178,7 @@ strong{
 .movie-meta {
     font-size: 14px;
     margin-bottom: 5px;
+    color: #fff;
 }
 
 .age-rating {
@@ -191,18 +190,30 @@ strong{
     border-radius: 3px;
     margin-left: 5px;
 }
+.badge {
+    padding: 5px 5px;
+    font-weight: 500;
+    font-size: 14px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.badge-format {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+}
 
 .pay-hold-timer-text {
     font-size: 30px;
     font-weight: 700;
     font-family: "Josefin Sans", sans-serif;
 }
-.seat-hold-timer{
+.seat-hold-timer {
     margin-bottom: 20px;
     text-align: center;
     font-family: "Josefin Sans", sans-serif;
 }
-.seat-hold-timer span{
+.seat-hold-timer span {
     color: #fff !important;
 }
 .ticket-details {
@@ -216,10 +227,10 @@ strong{
     justify-content: space-between;
     margin-bottom: 10px;
 }
-.ticket-row-seated{
+.ticket-row-seated {
     color: #fff;
 }
-.ticket-row-title{
+.ticket-row-title {
     margin-top: 2px;
     color: #fff;
 }
@@ -265,7 +276,6 @@ strong{
     width: 20px;
     height: 20px;
 }
-
 
 #hsbc-logo {
     border: 1px solid #e0e0e0;
@@ -470,3 +480,38 @@ strong{
     background: #ffe500;
     box-shadow: 0 0 10px rgba(255, 229, 0, 0.3);
 }
+@media (max-width: 1200px) {
+    .ctn-thanh-toan {
+        flex-direction: column;
+        gap: 24px;
+        padding: 0 2vw;
+    }
+    .left-column, .right-column {
+        width: 100%;
+        min-width: 0;
+        margin-bottom: 18px;
+        padding: 16px 2vw;
+    }
+    .movie-details {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+    .movie-poster {
+        width: 90px;
+        height: 120px;
+        margin: 0 0 10px 0;
+    }
+    .movie-info h3 {
+        font-size: 1.1rem;
+        text-align: center;
+    }
+    .movie-meta {
+        font-size: 13px;
+        text-align: center;
+    }
+    .steps-indicator {
+        margin-bottom: 18px;
+    }
+}
+

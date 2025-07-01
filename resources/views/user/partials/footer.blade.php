@@ -13,7 +13,7 @@
                 @endforeach
             </ul>
         </div>
-        <div class="footer-section">
+        <div class="footer-section footer-section-policy">
             <h3>CHÍNH SÁCH</h3>
             <ul>
                 @foreach ($footerChinhSach as $item)
@@ -56,10 +56,10 @@
                 alt="{{ $thongTinTrangWeb->TenWebsite }}" alt="Logo" />
         </div>
         <div class="footer-bottom-info">
-            <div>
-                <strong>{{ $thongTinTrangWeb->TenDonVi }}</strong>
+            <div class="info-name-company">
+                <strong >{{ $thongTinTrangWeb->TenDonVi }}</strong>
             </div>
-            <div>
+            <div class="info-name-company">
                 {{ $thongTinTrangWeb->DiaChi }}
             </div>
             <div>

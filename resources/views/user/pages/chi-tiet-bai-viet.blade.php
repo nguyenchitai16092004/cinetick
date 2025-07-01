@@ -12,19 +12,19 @@
     <div class="bg-gradient"></div>
     <div class="floating-elements">
         <div class="floating-circle"></div>
-        <div class="floating-circle"></div>
+        <d class="floating-circle"></d    iv>
         <div class="floating-circle"></div>
     </div>
     
     <nav class="breadcrumb">
-        <a href="{{ route('home') }}">Trang chủ</a> /
+        <a class="home" href="{{ route('home') }}">Trang chủ</a> /
         @php
             $prefix = request()->route()->getPrefix();
         @endphp
         @if($prefix === '/goc-dien-anh')
-            <a href="{{ route('ds-bai-viet-dien-anh') }}">Góc điện ảnh</a> /
+            <a class="cinema-corner" href="{{ route('ds-bai-viet-dien-anh') }}">Góc điện ảnh</a> /
         @elseif($prefix === '/tin-khuyen-mai')
-            <a href="{{ route('ds-bai-viet-khuyen-mai') }}">Tin khuyến mãi</a> /
+            <a class="promotion-corner" href="{{ route('ds-bai-viet-khuyen-mai') }}">Tin khuyến mãi</a> /
         @endif
         <span>{{ $tinTuc->TieuDe }}</span>
     </nav>

@@ -56,7 +56,7 @@
                                         <div class="film-poster">
                                             <img src="{{ $phim->HinhAnh ? asset('storage/' . $phim->HinhAnh) : asset('images/no-image.jpg') }}"
                                                 alt="{{ $phim->TenPhim }}">
-                                            <div class="film-rating">
+                                            <div class="film-rating-crou film-rating-crou-3">
                                                 <span class="star"><svg aria-hidden="true" focusable="false"
                                                         data-prefix="fas" data-icon="star"
                                                         class="svg-inline--fa fa-star text-yellow-400 mr-3 ml-4 text-[12px]"
@@ -69,7 +69,7 @@
                                                 </span>
                                                 <span>{{ $phim->avg_rating }}</span>
                                             </div>
-                                            <div class="film-age">{{ $phim->DoTuoi }}</div>
+                                            <div class="age-rating">{{ $phim->DoTuoi }}</div>
                                         </div>
                                         <div class="film-title">{{ $phim->TenPhim }}</div>
                                         <p class="movie-genre">

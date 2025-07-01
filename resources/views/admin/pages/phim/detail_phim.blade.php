@@ -87,7 +87,8 @@
                                         {{-- Cột phải của form --}}
                                         <div class="col-md-4">
                                             <div class="form-group">
-                                                <label for="NhaSanXuat">Nhà sản xuất <span class="text-danger">*</span></label>
+                                                <label for="NhaSanXuat">Nhà sản xuất <span
+                                                        class="text-danger">*</span></label>
                                                 <input type="text" name="NhaSanXuat" id="NhaSanXuat" class="form-control"
                                                     value="{{ old('NhaSanXuat', $phim->NhaSanXuat) }}" required>
                                             </div>
@@ -148,6 +149,8 @@
                                                     Nga</option>
                                                 <option value="Mỹ" {{ $phim->QuocGia == 'Mỹ' ? 'selected' : '' }}>
                                                     Mỹ</option>
+                                                <option value="Thái Lan" {{ $phim->QuocGia == 'Thái Lan' ? 'selected' : '' }}>
+                                                    Thái Lan</option>
                                             </select>
 
 

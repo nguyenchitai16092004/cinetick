@@ -57,7 +57,7 @@ class RapSeeder extends Seeder
                 'ID_Rap'          => 4,
                 'TenRap'    => 'CineTick Bến Tre',
                 'HinhAnh'   => 'rap/cinetick-ben-tre.jpg',
-                'Slug'      => 'cinetick-huynh-tan-phat',
+                'Slug'      => 'cinetick-ben-tre',
                 'DiaChi'    => 'Lầu 1, TTTM Sense City 26A Trần Quốc Tuấn, Phường An Hội, TP. Bến Tre',
                 'TrangThai' => true,
                 'MoTa'      =>
