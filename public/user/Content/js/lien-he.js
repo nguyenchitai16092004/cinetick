@@ -1,17 +1,17 @@
 // Xử lý upload ảnh và hiện ảnh preview
-document.getElementById('imageUpload').addEventListener('change', function(e) {
+document.getElementById("imageUpload").addEventListener("change", function (e) {
     const file = e.target.files[0];
-    const img = document.getElementById('uploadedImage');
+    const img = document.getElementById("uploadedImage");
     if (file) {
         const reader = new FileReader();
-        reader.onload = function(evt) {
+        reader.onload = function (evt) {
             img.src = evt.target.result;
-            img.style.display = 'block';
+            img.style.display = "block";
         };
         reader.readAsDataURL(file);
     } else {
-        img.src = '';
-        img.style.display = 'none';
+        img.src = "";
+        img.style.display = "none";
     }
 });
 
@@ -31,8 +31,11 @@ document.getElementById("imageUpload").addEventListener("change", function (e) {
     }
 });
 
-// Kiểm tra reCAPTCHA trước khi submit (có thể dùng hoặc bỏ, Google đã kiểm phía server)
+let isContactSubmitting = false;
+
 document.getElementById("contactForm").addEventListener("submit", function (e) {
+    if (isContactSubmitting) return;
+
     var recaptcha = grecaptcha.getResponse();
     if (recaptcha.length === 0) {
         e.preventDefault();
@@ -44,18 +47,6 @@ document.getElementById("contactForm").addEventListener("submit", function (e) {
         return;
     }
 
-    e.preventDefault(); 
-
-    Swal.fire({
-        icon: "question",
-        title: "Xác nhận gửi liên hệ",
-        text: "Khi bạn xác nhận gửi liên hệ này, bạn sẽ nhận được một bản sao email với nội dung bạn đã gửi. Vui lòng không trả lời email này! Chúng tôi sẽ liên hệ lại với bạn trong thời gian sớm nhất. Đội ngũ CineTick xin cảm ơn!",
-        showCancelButton: true,
-        confirmButtonText: "Xác nhận gửi",
-        cancelButtonText: "Hủy",
-    }).then((result) => {
-        if (result.isConfirmed) {
-            e.target.submit(); // Gửi form nếu xác nhận
-        }
-    });
+    isContactSubmitting = true;
+    if (typeof showLoading === "function") showLoading();
 });
