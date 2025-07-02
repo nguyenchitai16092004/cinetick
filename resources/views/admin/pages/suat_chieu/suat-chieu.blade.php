@@ -39,7 +39,7 @@
         .filter-card .form-select {
             border: 2px solid rgba(255, 255, 255, 0.3);
             background: rgba(255, 255, 255, 0.1);
-            color: white;
+            color: dark;
         }
 
         .filter-card .form-control::placeholder {
@@ -69,7 +69,7 @@
                         {{-- Bộ lọc --}}
                         <div class="filter-card">
                             <div class="row g-3 align-items-end">
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <form action="{{ route('suat-chieu.filter.date') }}" method="GET">
                                         <label for="date" class="form-label">Lọc theo ngày:</label>
                                         <div class="input-group">
@@ -85,7 +85,7 @@
                                     </form>
                                 </div>
 
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <form action="{{ route('suat-chieu.filter.phim') }}" method="GET">
                                         <label for="phim_id" class="form-label">Lọc theo phim:</label>
                                         <div class="input-group">
@@ -96,6 +96,25 @@
                                                 <option value="">-- Chọn phim --</option>
                                                 @foreach ($phims as $phim)
                                                     <option value="{{ $phim->ID_Phim }}">{{ $phim->TenPhim }}</option>
+                                                @endforeach
+                                            </select>
+                                            <button type="submit" class="btn btn-light">
+                                                <i class="fas fa-filter"></i>
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="col-md-4">
+                                    <form action="{{ route('suat-chieu.filter.rap') }}" method="GET">
+                                        <label for="rap_id" class="form-label">Lọc theo rạp:</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-secondary text-white">
+                                                <i class="fas fa-building"></i>
+                                            </span>
+                                            <select name="rap_id" class="form-select">
+                                                <option value="">-- Chọn rạp --</option>
+                                                @foreach ($raps as $rap)
+                                                    <option value="{{ $rap->ID_Rap }}">{{ $rap->TenRap }}</option>
                                                 @endforeach
                                             </select>
                                             <button type="submit" class="btn btn-light">
@@ -127,8 +146,10 @@
                                             <td><strong>#{{ $suatChieu->ID_SuatChieu }}</strong></td>
                                             <td class="text-start fw-bold">{{ $suatChieu->phim->TenPhim ?? 'N/A' }}</td>
                                             <td class="text-start" style="max-width: 250px;">
-                                                <div class="fw-bold">{{ $suatChieu->phongChieu->TenPhongChieu ?? 'N/A' }}</div>
-                                                <small class="text-muted">{{ $suatChieu->phongChieu->rap->DiaChi ?? 'N/A' }}</small>
+                                                <div class="fw-bold">{{ $suatChieu->phongChieu->TenPhongChieu ?? 'N/A' }}
+                                                </div>
+                                                <small
+                                                    class="text-muted">{{ $suatChieu->phongChieu->rap->DiaChi ?? 'N/A' }}</small>
                                             </td>
                                             <td>
                                                 <span class="badge text-dark">
@@ -151,7 +172,8 @@
                                                         class="btn btn-warning btn-sm" title="Chỉnh sửa">
                                                         <i class="fas fa-edit"></i>
                                                     </a>
-                                                    <form action="{{ route('suat-chieu.destroy', $suatChieu->ID_SuatChieu) }}"
+                                                    <form
+                                                        action="{{ route('suat-chieu.destroy', $suatChieu->ID_SuatChieu) }}"
                                                         method="POST"
                                                         onsubmit="return confirm('Bạn có chắc muốn xóa suất chiếu này?');"
                                                         class="d-inline">

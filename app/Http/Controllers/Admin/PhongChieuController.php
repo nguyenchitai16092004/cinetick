@@ -9,14 +9,17 @@ use Illuminate\Validation\Rule;
 use App\Models\PhongChieu;
 use App\Models\GheNgoi;
 use App\Models\Rap;
+use App\Models\SuatChieu;
+use Carbon\Carbon;
 
 class PhongChieuController extends Controller
 {
     public function index()
     {
-        $phongChieus = PhongChieu::all();
+        $phongChieus = PhongChieu::orderBy('ID_Rap')->paginate(5);
         return view('admin.pages.phong_chieu.phong-chieu', compact('phongChieus'));
     }
+
 
     public function create()
     {
@@ -262,14 +265,26 @@ class PhongChieuController extends Controller
     public function destroy($id)
     {
         try {
+            $id = (int)$id;
             $phongChieu = PhongChieu::findOrFail($id);
+
+            $suatChieuChuaChieu = SuatChieu::where('ID_PhongChieu', $id)
+                ->whereDate('NgayChieu', '>', Carbon::now()->toDateString())
+                ->exists();
+
+            if ($suatChieuChuaChieu) {
+                return redirect()->route('phong-chieu.index')->with('error', 'Không thể xóa phòng vì còn suất chiếu chưa chiếu trong phòng này.');
+            }
+            SuatChieu::where('ID_PhongChieu', $id)->delete();
             GheNgoi::where('ID_PhongChieu', $id)->delete();
             $phongChieu->delete();
+
             return redirect()->route('phong-chieu.index')->with('success', 'Xóa phòng chiếu thành công!');
         } catch (\Exception $e) {
             return redirect()->route('phong-chieu.index')->with('error', 'Xóa phòng chiếu thất bại: ' . $e->getMessage());
         }
     }
+
 
     public function saveGhe(Request $request, $id)
     {

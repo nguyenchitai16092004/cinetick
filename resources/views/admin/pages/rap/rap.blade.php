@@ -3,6 +3,9 @@
 
 @section('main')
     <style>
+        tr td{
+            padding: 20px !important;
+        }
         .btn-purple {
             background-color: #6f42c1;
             color: white;
@@ -55,7 +58,7 @@
                                         <tr>
                                             <td class="fw-bold text-start">{{ $rap->TenRap }}</td>
                                             <td>{{ $rap->Hotline }}</td>
-                                            <td class="text-start">{{ $rap->DiaChi }}</td>
+                                            <td class="text-start col-5">{{ \Illuminate\Support\Str::limit($rap->DiaChi, 200) }}</td>
                                             <td>
                                                 @if($rap->TrangThai == 1)
                                                     <span class="badge bg-success">Hoạt động</span>

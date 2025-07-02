@@ -11,19 +11,13 @@
     <link rel="stylesheet" href="{{ asset('backend/assets/css/tailwind.output.css') }}" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
-    <link rel="stylesheet" href="{{ asset('backend/assets/css/tailwind.output.css') }}" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <link rel="stylesheet" href="{{ asset('backend/assets/css/layout.css') }}" />
     @yield('css')
 </head>
 
 <body>
-    <!-- Modal notification (giữ nguyên) -->
-    <div class="modal fade" id="globalNotificationModal" tabindex="-1" aria-labelledby="globalNotificationModalLabel"
-        aria-hidden="true">
-        <!-- ... modal content giữ nguyên ... -->
-    </div>
+    <!-- Include Notification Component -->
+    @include('admin.partials.notification')
 
     <!-- Overlay cho mobile -->
     <div class="mobile-overlay" id="mobileOverlay" onclick="closeMobileSidebar()"></div>
@@ -45,13 +39,12 @@
         </div>
     </div>
 
-    <!-- Scripts giữ nguyên -->
+    <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
-    <!-- ... các script khác ... -->
 
-    <!-- Thêm script cho mobile -->
+    <!-- Mobile script -->
     <script>
         function toggleMobileSidebar() {
             const sidebar = document.querySelector('aside');
@@ -71,7 +64,6 @@
             overlay.classList.remove('show');
         }
 
-        // Cập nhật button hamburger trong header
         document.addEventListener('DOMContentLoaded', function() {
             const hamburgerButton = document.querySelector('button[aria-label="Menu"]');
             if (hamburgerButton) {
@@ -79,8 +71,7 @@
             }
         });
     </script>
+    @yield('js')
 </body>
-
-@yield('js')
 
 </html>

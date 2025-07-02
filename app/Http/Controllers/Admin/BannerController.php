@@ -96,8 +96,8 @@ class BannerController extends Controller
                 'TieuDePhu' => 'required|string|max:100',
                 'MoTa' => 'required|string|max:255',
                 'HinhAnh' => 'nullable|image|mimes:jpg,png,jpeg|max:2048',
-                'DuongDan' => 'required|string',
-                'link' => 'required|string',
+                'DuongDan' => 'nullable|string',
+                'link' => 'nullable|string',
             ]);
 
             $banner = DB::table('banners')->where('id', $id)->first();

@@ -101,6 +101,22 @@ class SuatChieuController extends Controller
         return response()->json($Phim);
     }
 
+    public function filterByRap(Request $request)
+    {
+        $rap_id = $request->rap_id;
+
+        $suatChieus = SuatChieu::whereHas('phongChieu', function ($query) use ($rap_id) {
+            $query->where('ID_Rap', $rap_id);
+        })
+            ->with(['phim', 'phongChieu'])
+            ->paginate(10)
+            ->withQueryString();
+        $phims = Phim::all();
+        $raps = Rap::all();
+
+        return view('admin.pages.suat_chieu.suat-chieu', compact('suatChieus', 'phims', 'raps', 'rap_id'));
+    }
+
     public function filterPhong(Request $request)
     {
         $id = $request->ID_Rap;

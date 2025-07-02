@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('TenDN', 50);
             $table->string('MatKhau', 100);
             $table->integer('VaiTro');
+            $table->string('token_xac_nhan',255);
             $table->boolean('TrangThai')->comment('0: Tạm dừng hoạt động, 1: Hoạt động');
             $table->unsignedBigInteger('ID_ThongTin'); 
 
