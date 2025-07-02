@@ -1,6 +1,38 @@
 @extends('admin.layouts.master')
 @section('title', 'Tạo Phim')
 
+@section('css')
+    <style>
+        .btn-primary {
+            background-color: rgb(111, 66, 193);
+            border-color: rgb(111, 66, 193);
+        }
+
+        .btn-primary:hover {
+            background-color: rgb(95, 56, 165);
+            border-color: rgb(95, 56, 165);
+        }
+
+        .card-header {
+            background-color: rgb(111, 66, 193);
+            color: white;
+        }
+
+        .card-title {
+            color: white;
+        }
+
+        label {
+            margin-top: 10px;
+        }
+
+        .form-control:focus {
+            border-color: rgb(111, 66, 193);
+            box-shadow: 0 0 0 0.2rem rgba(111, 66, 193, 0.25);
+        }
+    </style>
+@endsection
+
 @section('main')
     <div class="container-fluid">
         <div class="row">
@@ -27,19 +59,6 @@
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="ID_TheLoaiPhim">Thể loại phim <span class="text-danger">*</span></label>
-                                        <select name="ID_TheLoaiPhim[]" id="ID_TheLoaiPhim" class="form-control" multiple
-                                            required>
-                                            @foreach ($theLoais as $theLoai)
-                                                <option value="{{ $theLoai->ID_TheLoaiPhim }}"
-                                                    {{ collect(old('ID_TheLoaiPhim'))->contains($theLoai->ID_TheLoaiPhim) ? 'selected' : '' }}>
-                                                    {{ $theLoai->TenTheLoai }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-
-                                    <div class="form-group">
                                         <label for="ThoiLuong">Thời lượng (phút) <span class="text-danger">*</span></label>
                                         <input type="number" name="ThoiLuong" id="ThoiLuong" class="form-control"
                                             value="{{ old('ThoiLuong') }}" required min="1">
@@ -53,7 +72,7 @@
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="NgayKetThuc">Ngày kết thúc</label>
+                                        <label for="NgayKetThuc">Ngày kết thúc <span class="text-danger">*</span></label>
                                         <input type="date" name="NgayKetThuc" id="NgayKetThuc" class="form-control"
                                             value="{{ old('NgayKetThuc') }}" required>
                                     </div>
@@ -62,6 +81,19 @@
                                         <label for="Trailer">Trailer URL</label>
                                         <input type="url" name="Trailer" id="Trailer" class="form-control"
                                             value="{{ old('Trailer') }}">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="ID_TheLoaiPhim">Thể loại phim <span class="text-danger">*</span></label>
+                                        <select name="ID_TheLoaiPhim[]" id="ID_TheLoaiPhim" class="form-control" multiple
+                                            required>
+                                            @foreach ($theLoais as $theLoai)
+                                                <option value="{{ $theLoai->ID_TheLoaiPhim }}"
+                                                    {{ collect(old('ID_TheLoaiPhim'))->contains($theLoai->ID_TheLoaiPhim) ? 'selected' : '' }}>
+                                                    {{ $theLoai->TenTheLoai }}
+                                                </option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                 </div>
 
@@ -87,8 +119,8 @@
 
                                     <div class="form-group">
                                         <label for="DoHoa">Đồ họa</label>
-                                        <select name="DoHoa" id="DoHoa" class="form-control">
-                                            <option value="">-- Chọn đồ họa --</option>
+                                        <select name="DoHoa" id="DoHoa" class="form-control" required>
+                                            <option value="" disabled selected hidden>-- Chọn đồ họa --</option>
                                             <option value="2D" {{ old('DoHoa') == '2D' ? 'selected' : '' }}>2D</option>
                                             <option value="3D" {{ old('DoHoa') == '3D' ? 'selected' : '' }}>3D</option>
                                         </select>
@@ -96,7 +128,7 @@
 
                                     <label for="QuocGia">Quốc gia <span class="text-danger">*</span></label>
                                     <select name="QuocGia" id="QuocGia" class="form-control" required>
-                                        <option value="">-- Chọn quốc gia --</option>
+                                        <option value="" disabled selected hidden>-- Chọn quốc gia --</option>
                                         <option value="Việt Nam">Việt Nam</option>
                                         <option value="Hoa Kỳ">Hoa Kỳ</option>
                                         <option value="Tây Ban Nha">Tây Ban Nha</option>
@@ -140,7 +172,7 @@
                                     </div>
 
                                     <div class="form-group text-right">
-                                        <button type="submit" class="btn btn-primary">
+                                        <button type="submit" class="btn btn-primary" style="margin: 10px">
                                             <i class="fas fa-save"></i> Lưu phim
                                         </button>
                                     </div>

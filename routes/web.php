@@ -187,6 +187,7 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
         Route::get('/', [SuatChieuController::class, 'index'])->name('index');
         Route::get('/filter/date', [SuatChieuController::class, 'filterByDate'])->name('filter.date');
         Route::get('/filter/phim', [SuatChieuController::class, 'filterByPhim'])->name('filter.phim');
+        Route::get('/filter/rap', [SuatChieuController::class, 'filterByRap'])->name('filter.rap');
         Route::post('/loc-phim-theo-ngay', [SuatChieuController::class, 'filterMovieByDate'])->name('loc-phim-theo-ngay');
         Route::post('/loc-phong', [SuatChieuController::class, 'filterPhong'])->name('loc-phong');
     });

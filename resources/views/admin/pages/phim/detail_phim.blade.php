@@ -1,6 +1,38 @@
 @extends('admin.layouts.master')
 @section('title', 'Chi tiết Phim')
 
+@section('css')
+    <style>
+        .btn-primary {
+            background-color: rgb(111, 66, 193);
+            border-color: rgb(111, 66, 193);
+        }
+
+        .btn-primary:hover {
+            background-color: rgb(95, 56, 165);
+            border-color: rgb(95, 56, 165);
+        }
+
+        .card-header {
+            background-color: rgb(111, 66, 193);
+            color: white;
+        }
+
+        .card-title {
+            color: white;
+        }
+
+        label {
+            margin-top: 10px;
+        }
+
+        .form-control:focus {
+            border-color: rgb(111, 66, 193);
+            box-shadow: 0 0 0 0.2rem rgba(111, 66, 193, 0.25);
+        }
+    </style>
+@endsection
+
 @section('main')
     <div class="container-fluid">
         <div class="row">
@@ -21,7 +53,7 @@
                                                 <div class="mb-2 d-flex justify-content-center" style="height: 100%;">
                                                     <img src="{{ asset('storage/' . $phim->HinhAnh) }}"
                                                         alt="{{ $phim->TenPhim }}"
-                                                        style="width: auto; height: 400px; object-fit: cover;">
+                                                        style="width: auto; height: 500px; object-fit: cover;">
                                                 </div>
                                             @else
                                                 <div class="mb-2"
@@ -36,22 +68,6 @@
                                                 <label for="TenPhim">Tên phim <span class="text-danger">*</span></label>
                                                 <input type="text" name="TenPhim" id="TenPhim" class="form-control"
                                                     value="{{ old('TenPhim', $phim->TenPhim) }}" required>
-                                            </div>
-
-                                            <div class="form-group">
-                                                <label for="ID_TheLoaiPhim">Thể loại phim <span
-                                                        class="text-danger">*</span></label>
-                                                <select name="ID_TheLoaiPhim[]" id="ID_TheLoaiPhim" class="form-control"
-                                                    required multiple>
-                                                    @foreach ($theLoais as $theLoai)
-                                                        <option value="{{ $theLoai->ID_TheLoaiPhim }}"
-                                                            {{ collect(old('ID_TheLoaiPhim', $phim->theLoai->pluck('ID_TheLoaiPhim') ?? []))->contains($theLoai->ID_TheLoaiPhim) ? 'selected' : '' }}>
-                                                            {{ $theLoai->TenTheLoai }}
-                                                        </option>
-                                                    @endforeach
-                                                    <option value="create_new">+ Thêm thể loại mới</option>
-                                                </select>
-
                                             </div>
 
                                             <div class="form-group">
@@ -82,6 +98,22 @@
                                                 <input type="url" name="Trailer" id="Trailer" class="form-control"
                                                     value="{{ old('Trailer', $phim->Trailer) }}">
                                             </div>
+
+                                            <div class="form-group">
+                                                <label for="ID_TheLoaiPhim">Thể loại phim <span
+                                                        class="text-danger">*</span></label>
+                                                <select name="ID_TheLoaiPhim[]" id="ID_TheLoaiPhim" class="form-control"
+                                                    required multiple>
+                                                    @foreach ($theLoais as $theLoai)
+                                                        <option value="{{ $theLoai->ID_TheLoaiPhim }}"
+                                                            {{ collect(old('ID_TheLoaiPhim', $phim->theLoai->pluck('ID_TheLoaiPhim') ?? []))->contains($theLoai->ID_TheLoaiPhim) ? 'selected' : '' }}>
+                                                            {{ $theLoai->TenTheLoai }}
+                                                        </option>
+                                                    @endforeach
+                                                    <option value="create_new">+ Thêm thể loại mới</option>
+                                                </select>
+                                            </div>
+
                                         </div>
 
                                         {{-- Cột phải của form --}}
@@ -107,8 +139,9 @@
 
                                             <div class="form-group">
                                                 <label for="DoHoa">Đồ họa <span class="text-danger">*</span></label>
-                                                <select name="DoHoa" id="DoHoa" class="form-control">
-                                                    <option value="">-- Chọn đồ họa --</option>
+                                                <select name="DoHoa" id="DoHoa" class="form-control" required>
+                                                    <option value="" disabled selected hidden>-- Chọn đồ họa --
+                                                    </option>
                                                     <option value="2D"
                                                         {{ old('DoHoa', $phim->DoHoa) == '2D' ? 'selected' : '' }}>2D
                                                     </option>
@@ -120,7 +153,8 @@
 
                                             <label for="QuocGia">Quốc gia <span class="text-danger">*</span></label>
                                             <select name="QuocGia" id="QuocGia" class="form-control" required>
-                                                <option value="">-- Chọn quốc gia --</option>
+                                                <option value="" disabled selected hidden>-- Chọn quốc gia --
+                                                </option>
 
                                                 <option value="Việt Nam"
                                                     {{ $phim->QuocGia == 'Việt Nam' ? 'selected' : '' }}>Việt Nam
@@ -149,7 +183,8 @@
                                                     Nga</option>
                                                 <option value="Mỹ" {{ $phim->QuocGia == 'Mỹ' ? 'selected' : '' }}>
                                                     Mỹ</option>
-                                                <option value="Thái Lan" {{ $phim->QuocGia == 'Thái Lan' ? 'selected' : '' }}>
+                                                <option value="Thái Lan"
+                                                    {{ $phim->QuocGia == 'Thái Lan' ? 'selected' : '' }}>
                                                     Thái Lan</option>
                                             </select>
 
@@ -180,12 +215,10 @@
                                             </div>
 
                                             <div class="form-group">
-                                                <label for="HinhAnh">Hình ảnh</label>
+                                                <label for="HinhAnh">Hình ảnh (để trống nếu không thay đổi)</label>
                                                 <div class="custom-file">
                                                     <input type="file" class="custom-file-input" id="HinhAnh"
                                                         name="HinhAnh" accept="image/*">
-                                                    <label class="custom-file-label" for="HinhAnh">Chọn file mới
-                                                        (để trống nếu không thay đổi)</label>
                                                 </div>
                                             </div>
                                         </div>
