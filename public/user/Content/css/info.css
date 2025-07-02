@@ -270,7 +270,7 @@
     color: #374151;
 }
 .form-control{
-    width: 87%;
+    width: 80%;
 }
 .radio  {
     accent-color: #000;
@@ -305,7 +305,7 @@
 
 .password-toggle {
     position: absolute;
-    right: 12px;
+    left: 320px;
     top: 50%;
     transform: translateY(-50%);
     background: none;
