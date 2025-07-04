@@ -108,7 +108,7 @@
                                                     class="btn btn-info btn-sm">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
-                                                <form action="{{ route('phim.destroy', $phim->ID_Phim) }}" method="POST"
+                                                {{-- <form action="{{ route('phim.destroy', $phim->ID_Phim) }}" method="POST"
                                                     class="d-inline"
                                                     onsubmit="return confirm('Bạn có chắc chắn muốn xóa phim này?')">
                                                     @csrf
@@ -116,7 +116,7 @@
                                                     <button type="submit" class="btn btn-danger btn-sm">
                                                         <i class="fas fa-trash"></i>
                                                     </button>
-                                                </form>
+                                                </form> --}}
                                             </td>
                                         </tr>
                                     @empty

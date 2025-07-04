@@ -16,7 +16,7 @@ class PhongChieuController extends Controller
 {
     public function index()
     {
-        $phongChieus = PhongChieu::orderBy('ID_Rap')->paginate(5);
+        $phongChieus = PhongChieu::orderBy('TrangThai','desc')->paginate(5);
         return view('admin.pages.phong_chieu.phong-chieu', compact('phongChieus'));
     }
 
@@ -168,7 +168,7 @@ class PhongChieuController extends Controller
                     ->where(function ($query) use ($request) {
                         return $query->where('ID_Rap', $request->ID_Rap);
                     })
-                    ->ignore($id, 'ID_PhongChieu'), // bỏ qua chính phòng hiện tại
+                    ->ignore($id, 'ID_PhongChieu'),
             ],
             'ID_Rap' => 'required|exists:rap,ID_Rap',
             'LoaiPhong' => 'required|integer|in:0,1',
@@ -179,6 +179,7 @@ class PhongChieuController extends Controller
             'rowAisles.*' => 'integer|min:1',
             'colAisles' => 'nullable|array',
             'colAisles.*' => 'integer|min:1',
+            'TrangThai' => 'required|int',
         ]);
 
         try {
@@ -203,10 +204,11 @@ class PhongChieuController extends Controller
                 'TenPhongChieu' => $validated['roomName'],
                 'ID_Rap' => $validated['ID_Rap'],
                 'LoaiPhong' => $validated['LoaiPhong'],
-                'TrangThai' => $phongChieu->TrangThai, // giữ nguyên trạng thái nếu không chỉnh sửa
+                'TrangThai' => $request->TrangThai,
                 'SoLuongGhe' => $soLuongGhe,
                 'HangLoiDi' => json_encode($validated['rowAisles'] ?? []),
                 'CotLoiDi' => json_encode($validated['colAisles'] ?? []),
+
             ]);
 
             // Lấy danh sách ghế cũ

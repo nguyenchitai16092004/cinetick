@@ -112,15 +112,15 @@
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="DienVien">Diễn viên <span class="text-danger">*</span></label>
+                                        <label for="DienVien">Diễn viên</label>
                                         <input type="text" name="DienVien" id="DienVien" class="form-control"
                                             value="{{ old('DienVien') }}" required>
                                     </div>
 
                                     <div class="form-group">
                                         <label for="DoHoa">Đồ họa</label>
-                                        <select name="DoHoa" id="DoHoa" class="form-control" required>
-                                            <option value="" disabled selected hidden>-- Chọn đồ họa --</option>
+                                        <select name="DoHoa" id="DoHoa" class="form-control" >
+                                            <option value="">-- Chọn đồ họa --</option>
                                             <option value="2D" {{ old('DoHoa') == '2D' ? 'selected' : '' }}>2D</option>
                                             <option value="3D" {{ old('DoHoa') == '3D' ? 'selected' : '' }}>3D</option>
                                         </select>

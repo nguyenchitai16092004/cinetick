@@ -41,7 +41,7 @@ class AuthController extends Controller
                 'required',
                 'date',
                 'before_or_equal:today',
-                'before_or_equal:' . now()->subYears(13)->format('Y-m-d'), 
+                'before_or_equal:' . now()->subYears(13)->format('Y-m-d'),
             ],
             'SDT' => 'required|digits:10',
             'TenDN' => 'required|string|unique:tai_khoan,TenDN',
@@ -84,9 +84,9 @@ class AuthController extends Controller
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             return back()
-            ->withErrors(['email' => 'Không gửi được email xác nhận.'])
-            ->withInput()
-            ->with(['form_type' =>'register']);
+                ->withErrors(['email' => 'Không gửi được email xác nhận.'])
+                ->withInput()
+                ->with(['form_type' => 'register']);
         }
 
         return redirect()->route('register.form.get')->with('success', 'Vui lòng xác nhận tài khoản đăng ký thông qua liên kết mà chúng tôi đã gửi đến email của bạn!');
@@ -145,7 +145,7 @@ class AuthController extends Controller
 
         if ($user->TrangThai == 0) {
             Auth::logout();
-            return back()->withErrors(['login' => 'Tài khoản chưa được xác nhận. Vui lòng kiểm tra Email và xác nhận tài khoản trước khi đăng nhập!']);
+            return back()->withErrors(['login' => 'Tài khoản chưa được xác nhận hoặc bị vô hiệu hóa. Vui lòng kiểm tra Email và xác nhận tài khoản trước khi đăng nhập!']);
         }
 
         // Đăng nhập user

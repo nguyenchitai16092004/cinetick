@@ -28,7 +28,7 @@
             {{-- Menu Items --}}
             @php
                 $menus = [
-                    ['route' => 'thong-ke.index', 'icon' => 'chart-pie', 'label' => 'Charts'],
+                    ['route' => 'thong-ke.index', 'icon' => 'chart-pie', 'label' => 'Thống kê'],
                     ['route' => 'hoa-don.index', 'icon' => 'money-bill', 'label' => 'Hóa đơn'],
                     ['route' => 'rap.index', 'icon' => 'video', 'label' => 'Quản lý Rạp'],
                     ['route' => 'phong-chieu.index', 'icon' => 'door-closed', 'label' => 'Quản lý Phòng'],

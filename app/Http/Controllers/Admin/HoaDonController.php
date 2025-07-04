@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\HoaDon;
 use App\Models\KhuyenMai;
 use App\Models\PhongChieu;
+use App\Models\TaiKhoan;
 use App\Models\GheNgoi;
 use App\Models\Phim;
 use App\Models\Rap;
@@ -18,46 +19,51 @@ use Exception;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Admin\AdminPayOSController;
 
-use function Termwind\parse;
 
 class HoaDonController extends Controller
 {
     public function index(Request $request)
     {
-        $query = HoaDon::query()->with('taiKhoan');
+        $query = DB::table('hoa_don')
+            ->join('tai_khoan', 'hoa_don.ID_TaiKhoan', '=', 'tai_khoan.ID_TaiKhoan')
+            ->join('thong_tin', 'tai_khoan.ID_ThongTin', '=', 'thong_tin.ID_ThongTin')
+            ->select('hoa_don.created_at', 'hoa_don.PTTT', 'hoa_don.TongTien', 'hoa_don.ID_HoaDon', 'thong_tin.*')
+            ->orderBy('hoa_don.created_at', 'desc');
 
         // Lọc theo ngày tạo
         if ($request->has('start_date') && $request->start_date) {
-            $query->whereDate('create_at', '>=', $request->start_date);
+            $query->whereDate('hoa_don.created_at', '>=', $request->start_date);
         }
 
         if ($request->has('end_date') && $request->end_date) {
-            $query->whereDate('create_at', '<=', $request->end_date);
+            $query->whereDate('hoa_don.created_at', '<=', $request->end_date);
         }
 
         // Lọc theo ID tài khoản
         if ($request->has('id_tai_khoan') && $request->id_tai_khoan) {
-            $query->where('ID_TaiKhoan', $request->id_tai_khoan);
+            $query->where('hoa_don.ID_TaiKhoan', $request->id_tai_khoan);
         }
 
         // Lọc theo phương thức thanh toán
         if ($request->has('pttt') && $request->pttt) {
-            $query->where('PTTT', 'like', '%' . $request->pttt . '%');
+            $query->where('hoa_don.PTTT', 'like', '%' . $request->pttt . '%');
         }
 
         // Lọc theo khoảng tổng tiền
         if ($request->has('min_amount') && $request->min_amount) {
-            $query->where('TongTien', '>=', $request->min_amount);
+            $query->where('hoa_don.TongTien', '>=', $request->min_amount);
         }
 
         if ($request->has('max_amount') && $request->max_amount) {
-            $query->where('TongTien', '<=', $request->max_amount);
+            $query->where('hoa_don.TongTien', '<=', $request->max_amount);
         }
 
-        $hoaDons = $query->orderBy('created_at', 'desc')->paginate(10);
+        // Sắp xếp lại
+        $hoaDons = $query->orderBy('hoa_don.created_at', 'desc')->paginate(10);
 
         return view('admin.pages.hoa_don.hoa-don', compact('hoaDons'));
     }
+
 
     /**
      * Hiển thị form tạo hóa đơn mới
@@ -65,7 +71,12 @@ class HoaDonController extends Controller
     public function create()
     {
         $raps = Rap::all();
-        return view('admin.pages.hoa_don.create-hoa-don',  compact('raps'));
+        $taiKhoan = TaiKhoan::join('thong_tin', 'thong_tin.ID_ThongTin', 'tai_khoan.ID_ThongTin')
+            ->where('tai_khoan.ID_TaiKhoan', session('user_id'))
+            ->join('rap', 'rap.ID_Rap', 'thong_tin.ID_Rap')
+            ->select('rap.*')
+            ->first();
+        return view('admin.pages.hoa_don.create-hoa-don',  compact('raps' , 'taiKhoan'));
     }
 
     /**
@@ -311,7 +322,7 @@ class HoaDonController extends Controller
         $hoaDon->ID_TaiKhoan = $request->ID_TaiKhoan;
         $hoaDon->save();
 
-        return redirect()->route('admin.hoadon.index')
+        return redirect()->route('hoa-don.index')
             ->with('success', 'Hóa đơn đã được cập nhật thành công!');
     }
 
@@ -333,11 +344,11 @@ class HoaDonController extends Controller
             $hoaDon->delete();
 
             DB::commit();
-            return redirect()->route('admin.hoadon.index')
+            return redirect()->route('hoa-don.index')
                 ->with('success', 'Hóa đơn và các vé liên quan đã được xóa thành công!');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->route('admin.hoadon.index')
+            return redirect()->route('hoa-don.index')
                 ->with('error', 'Không thể xóa hóa đơn: ' . $e->getMessage());
         }
     }
@@ -351,15 +362,24 @@ class HoaDonController extends Controller
 
         $hoaDons = $query->orderBy('create_at', 'desc')->get();
 
-        return redirect()->route('admin.hoadon.index')
+        return redirect()->route('hoa-don.index')
             ->with('success', 'Báo cáo đã được xuất thành công!');
     }
 
     public function filterMovieByDate(Request $request)
     {
         try {
-            $date = $request->date;
-            $ID_Rap = (int)$request->ID_Rap;
+            $taiKhoan = TaiKhoan::join('thong_tin', 'thong_tin.ID_ThongTin', 'tai_khoan.ID_ThongTin')
+                ->where('tai_khoan.ID_TaiKhoan', session('user_id'))
+                ->select('thong_tin.ID_Rap')
+                ->first();
+            if (!$taiKhoan->ID_Rap) {
+                $date = $request->date;
+                $ID_Rap = (int)$request->ID_Rap;
+            } else {
+                $date = $request->date ?? Carbon::now()->toDateString();
+                $ID_Rap = (int)$taiKhoan->ID_Rap;
+            }
 
             $phims = Phim::join('suat_chieu', 'phim.ID_Phim', '=', 'suat_chieu.ID_Phim')
                 ->where('ID_Rap', $ID_Rap)

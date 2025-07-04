@@ -321,7 +321,18 @@
         const seatLayoutInput = document.getElementById('seatLayoutInput');
         const clearAislesBtn = document.getElementById('clearAislesBtn');
         const seatCountSpan = document.getElementById('seatCount');
+        const taiKhoan = {!! json_encode($taiKhoan) !!};
 
+        document.addEventListener('DOMContentLoaded', function() {
+            if (taiKhoan && taiKhoan.ID_Rap) {
+                trangThaiDatVe.rap = {
+                    id: taiKhoan.ID_Rap,
+                    ten: taiKhoan.TenRap || '',
+                    diaChi: taiKhoan.DiaChi || ''
+                };
+                layDuLieuPhim();
+            }
+        });
         // Trạng thái ứng dụng
         let trangThaiDatVe = {
             buoc: 1,
@@ -342,7 +353,21 @@
 
         function layDuLieuPhim() {
             const ngayDaChon = document.getElementById("selectedDate").value;
-            if (!ngayDaChon) return;
+
+            let ID_Rap = null;
+
+            if (trangThaiDatVe.rap) {
+                ID_Rap = trangThaiDatVe.rap.id;
+            } else if (taiKhoan && taiKhoan.ID_Rap) {
+                ID_Rap = taiKhoan.ID_Rap;
+                trangThaiDatVe.rap = {
+                    id: taiKhoan.ID_Rap,
+                    ten: taiKhoan.TenRap || '',
+                    diaChi: taiKhoan.DiaChi || ''
+                };
+            }
+
+            if (!ngayDaChon && !ID_Rap) return;
 
             console.log("Gửi yêu cầu lọc phim cho ngày:", ngayDaChon);
 
@@ -357,7 +382,7 @@
                 method: 'POST',
                 data: {
                     date: ngayDaChon,
-                    ID_Rap: trangThaiDatVe.rap.id,
+                    ID_Rap: ID_Rap,
                 },
                 success: function(data) {
                     if (!Array.isArray(data)) {
@@ -391,6 +416,7 @@
                 }
             });
         }
+
 
 
         $('#applyPromo').click(function() {

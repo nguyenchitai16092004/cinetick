@@ -138,9 +138,9 @@
                                             </div>
 
                                             <div class="form-group">
-                                                <label for="DoHoa">Đồ họa <span class="text-danger">*</span></label>
-                                                <select name="DoHoa" id="DoHoa" class="form-control" required>
-                                                    <option value="" disabled selected hidden>-- Chọn đồ họa --
+                                                <label for="DoHoa">Đồ họa</label>
+                                                <select name="DoHoa" id="DoHoa" class="form-control" >
+                                                    <option value="">-- Chọn đồ họa --
                                                     </option>
                                                     <option value="2D"
                                                         {{ old('DoHoa', $phim->DoHoa) == '2D' ? 'selected' : '' }}>2D

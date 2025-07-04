@@ -504,7 +504,7 @@
                                             </option>
                                             <option value="0"
                                                 {{ old('TrangThai', $rap[0]->TrangThai ?? '1') == '0' ? 'selected' : '' }}>
-                                                Bảo trì
+                                                Không hoạt động
                                             </option>
                                         </select>
                                         <div class="status-badge" id="status-badge">
@@ -569,7 +569,7 @@
                 text.textContent = 'Hoạt động';
             } else {
                 badge.className = 'status-badge status-inactive';
-                text.textContent = 'Bảo trì';
+                text.textContent = 'Không hoạt động';
             }
         }
 

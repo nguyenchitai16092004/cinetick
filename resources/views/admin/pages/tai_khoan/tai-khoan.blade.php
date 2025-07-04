@@ -35,7 +35,7 @@
         .search-filter-card .form-control, .search-filter-card .form-select {
             border: 2px solid rgba(255, 255, 255, 0.3);
             background: rgba(255, 255, 255, 0.1);
-            color: white;
+            color: rgb(0, 0, 0);
         }
 
         .search-filter-card .form-control::placeholder {
@@ -71,12 +71,8 @@
             <div class="col-12">
                 <div class="card shadow rounded border-0">
                     <div class="card-header bg-purple d-flex justify-content-between align-items-center">
-                        <h3 class="card-title mb-0">👥 Quản lý tài khoản</h3>
+                        <h3 class="card-title mb-0"><i class="fas fa-users"></i> Quản lý tài khoản</h3>
                         <div class="d-flex gap-2">
-                            <a href="{{ route('tai-khoan.export', request()->query()) }}" 
-                               class="btn btn-success">
-                                <i class="fas fa-download"></i> Xuất danh sách
-                            </a>
                             <a href="{{ route('tai-khoan.create') }}" 
                                class="btn btn-purple">
                                 <i class="fas fa-plus"></i> Thêm tài khoản mới
@@ -128,16 +124,8 @@
                                 <div class="row">
                                     <div class="col-6">
                                         <select class="form-select" name="sort_by" onchange="this.form.submit()">
-                                            <option value="ID_TaiKhoan" {{ request('sort_by') == 'ID_TaiKhoan' ? 'selected' : '' }}>ID</option>
                                             <option value="TenDN" {{ request('sort_by') == 'TenDN' ? 'selected' : '' }}>Tên đăng nhập</option>
                                             <option value="HoTen" {{ request('sort_by') == 'HoTen' ? 'selected' : '' }}>Họ tên</option>
-                                            <option value="VaiTro" {{ request('sort_by', 'VaiTro') == 'VaiTro' ? 'selected' : '' }}>Vai trò</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-6">
-                                        <select class="form-select" name="sort_order" onchange="this.form.submit()">
-                                            <option value="asc" {{ request('sort_order') == 'asc' ? 'selected' : '' }}>Tăng dần</option>
-                                            <option value="desc" {{ request('sort_order', 'desc') == 'desc' ? 'selected' : '' }}>Giảm dần</option>
                                         </select>
                                     </div>
                                 </div>
@@ -158,7 +146,6 @@
                     <table class="table table-bordered table-hover align-middle text-center">
                         <thead class="table-light">
                             <tr>
-                                <th>ID</th>
                                 <th>Tên đăng nhập</th>
                                 <th>Họ và tên</th>
                                 <th>Email</th>
@@ -171,7 +158,6 @@
                         <tbody>
                             @forelse ($taiKhoans as $taiKhoan)
                                 <tr>
-                                    <td><strong>#{{ $taiKhoan->ID_TaiKhoan }}</strong></td>
                                     <td class="text-start">
                                         <div class="fw-bold text-primary">{{ $taiKhoan->TenDN }}</div>
                                     </td>
@@ -196,19 +182,19 @@
                                     </td>
                                     <td>
                                         <div class="btn-group" role="group">
-                                            <a href="{{ route('tai-khoan.edit', $taiKhoan->ID_TaiKhoan) }}"
+                                            {{-- <a href="{{ route('tai-khoan.edit', $taiKhoan->ID_TaiKhoan) }}"
                                                 class="btn btn-primary btn-sm" title="Chỉnh sửa">
                                                 <i class="fas fa-edit"></i>
-                                            </a>
+                                            </a> --}}
                                             <a href="{{ route('tai-khoan.status', $taiKhoan->ID_TaiKhoan) }}"
                                                 class="btn btn-warning btn-sm" title="Đổi trạng thái">
                                                 <i class="fas fa-sync-alt"></i>
                                             </a>
-                                            <a href="{{ route('tai-khoan.delete', $taiKhoan->ID_TaiKhoan) }}"
+                                            {{-- <a href="{{ route('tai-khoan.delete', $taiKhoan->ID_TaiKhoan) }}"
                                                 class="btn btn-danger btn-sm" title="Xóa"
                                                 onclick="return confirm('Bạn có chắc chắn muốn xóa tài khoản này?')">
                                                 <i class="fas fa-trash"></i>
-                                            </a>
+                                            </a> --}}
                                         </div>
                                     </td>
                                 </tr>

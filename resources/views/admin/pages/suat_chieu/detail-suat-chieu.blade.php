@@ -66,7 +66,9 @@
                                         <select name="ID_Rap" id="ID_Rap" class="form-control" required>
                                             <option value="">-- Chọn rạp --</option>
                                             @foreach ($raps as $rap)
-                                                <option value="{{ $rap->ID_Rap }}"{{ $suatChieu->ID_Rap == $rap->ID_Rap ? 'selected' : '' }}>{{ $rap->TenRap }} : {{ $rap->DiaChi }}</option>
+                                                <option
+                                                    value="{{ $rap->ID_Rap }}"{{ $suatChieu->ID_Rap == $rap->ID_Rap ? 'selected' : '' }}>
+                                                    {{ $rap->TenRap }} : {{ $rap->DiaChi }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -81,12 +83,11 @@
                                     </div>
                                 </div>
                             </div>
-                            <input type="hidden" name="ID_Rap" id="ID_Rap"
-                                value="{{ old('ID_Rap', $suatChieu->ID_Rap) }}">
-
                             <div class="form-group mb-3">
                                 <label for="GioChieu">Giờ chiếu <span class="text-danger">*</span></label>
-                                <input type="time" class="form-control @error('GioChieu') is-invalid @enderror" id="GioChieu" name="GioChieu" value="{{ old('GioChieu', $suatChieu->GioChieu) }}" required>
+                                <input type="time" class="form-control @error('GioChieu') is-invalid @enderror"
+                                    id="GioChieu" name="GioChieu" value="{{ old('GioChieu', $suatChieu->GioChieu) }}"
+                                    required>
                                 @error('GioChieu')
                                     <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
                                 @enderror
@@ -167,7 +168,7 @@
 
         function getMovie() {
             const selectedDate = document.getElementById("NgayChieu").value;
- 
+
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

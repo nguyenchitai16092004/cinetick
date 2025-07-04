@@ -184,7 +184,7 @@ class AdminPayOSController extends Controller
         $tenNganHang = null;
         if (!empty($paymentInfo['transactions'][0])) {
             $tran = $paymentInfo['transactions'][0];
-            $soTaiKhoan    = $tran['accountNumber'] ?? null;
+            $soTaiKhoan    = $tran['counterAccountNumber'] ?? null;
             $tenTaiKhoan   = $tran['counterAccountName'] ?? null;
             $tenNganHang   = $tran['counterAccountBankName'] ?? null;
             if (!$tenNganHang && !empty($tran['counterAccountBankId'])) {

@@ -66,25 +66,15 @@
                             <div class="card-body">
                                 <form method="GET" action="{{ route('hoa-don.index') }}">
                                     <div class="row g-3">
-                                        <div class="col-md-3">
+                                        <div class="col-md-6">
                                             <label for="start_date" class="form-label">Từ ngày:</label>
                                             <input type="date" id="start_date" name="start_date" class="form-control"
                                                 value="{{ request('start_date') }}">
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-6">
                                             <label for="end_date" class="form-label">Đến ngày:</label>
                                             <input type="date" id="end_date" name="end_date" class="form-control"
                                                 value="{{ request('end_date') }}">
-                                        </div>
-                                        <div class="col-md-3">
-                                            <label for="id_tai_khoan" class="form-label">ID Tài khoản:</label>
-                                            <input type="number" id="id_tai_khoan" name="id_tai_khoan" class="form-control"
-                                                placeholder="VD: 12" value="{{ request('id_tai_khoan') }}">
-                                        </div>
-                                        <div class="col-md-3">
-                                            <label for="pttt" class="form-label">PT Thanh toán:</label>
-                                            <input type="text" id="pttt" name="pttt" class="form-control"
-                                                placeholder="Tiền mặt, VNPay..." value="{{ request('pttt') }}">
                                         </div>
                                         <div class="col-md-12 d-flex gap-2 mt-3">
                                             <button type="submit" class="btn btn-purple">
@@ -116,8 +106,8 @@
                                     @forelse($hoaDons as $index => $hoaDon)
                                         <tr>
                                             <td>{{ $hoaDons->firstItem() + $index }}</td>
-                                            <td>{{ $hoaDon->taiKhoan->HoTen ?? 'Không có thông tin' }}</td>
-                                            <td>{{ \Carbon\Carbon::parse($hoaDon->NgayTao)->format('d/m/Y') }}</td>
+                                            <td>{{ $hoaDon->HoTen ?? 'Không có thông tin' }}</td>
+                                            <td>{{ \Carbon\Carbon::parse($hoaDon->created_at)->format('d/m/Y') }}</td>
                                             <td>{{ $hoaDon->PTTT }}</td>
                                             <td class="text-danger fw-bold">
                                                 {{ number_format($hoaDon->TongTien, 0, ',', '.') }} đ</td>
