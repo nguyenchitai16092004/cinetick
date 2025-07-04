@@ -7,7 +7,6 @@ use App\Http\Controllers\Admin\RapController;
 use App\Http\Controllers\Admin\AdminPhimController;
 use App\Http\Controllers\Admin\BinhLuanController;
 use App\Http\Controllers\Admin\KhuyenMaiController;
-use App\Http\Controllers\Admin\EmployeeTicketController;
 use App\Http\Controllers\Admin\PhongChieuController;
 use App\Http\Controllers\Admin\SuatChieuController;
 use App\Http\Controllers\Admin\TaiKhoanController;
@@ -29,7 +28,6 @@ use App\Http\Controllers\Apps\ThanhToanController;
 use App\Http\Controllers\Apps\RapChiTietController;
 use App\Http\Controllers\Apps\TinTucChiTietController;
 use App\Http\Controllers\Apps\LienHeChiTietController;
-use App\Events\GheDuocGiu;
 
 //==============================user=====================================//
 Route::get('/', [PhimController::class, 'Index'])->name('home');
@@ -141,7 +139,7 @@ Route::view('/that-bai', 'user.pages.that-bai')->name('thanh-toan-that-bai');
 //===============================Routes cho tất cả admin (Vai trò 1 và 2)=====================================//
 
 Route::get('/admin', [AutController::class, 'index']);
-Route::get('/admin/login', fn() => view('backend.login'));
+Route::get('/admin/login', fn() => view('admin.login'));
 Route::post('/dang-nhap-quan-ly', [AutController::class, 'dang_nhap'])->name('login_admin');
 Route::post('/admin/dang-xuat', [AutController::class, 'dang_xuat'])->name('logout_admin');
 Route::get('/admin/404', fn() => view('backend.pages.404'));
@@ -150,8 +148,6 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
     // Home - Tất cả admin đều truy cập được
     Route::get('/home', [HomeController::class, 'index'])->name('cap-nhat-thong-tin.index');
 
-    // Chức năng cơ bản cho tất cả admin
-    // Hóa đơn - Tất cả admin có thể xem và tạo
     Route::prefix('hoa-don')->name('hoa-don.')->group(function () {
         Route::get('/', [HoaDonController::class, 'index'])->name('index');
         Route::get('/create', [HoaDonController::class, 'create'])->name('create');
@@ -169,44 +165,10 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
         Route::get('/payos-cancel', [\App\Http\Controllers\Admin\AdminPayOSController::class, 'payosCancel'])->name('payos.cancel');
     });
 
-    // Vé xem phim - Tất cả admin có thể quản lý
-    Route::prefix('ve-xem-phim')->name('ve-xem-phim.')->group(function () {
-        Route::get('/{hoaDonId}', [VeXemPhimController::class, 'index'])->name('index');
-        Route::get('/{hoaDonId}/show/{veId}', [VeXemPhimController::class, 'show'])->name('show');
-        Route::patch('/{hoaDonId}/change-status/{veId}', [VeXemPhimController::class, 'changeStatus'])->name('change-status');
-    });
-
-    // Phim - Tất cả admin có thể xem
-    Route::prefix('phim')->name('phim.')->group(function () {
-        Route::get('/', [AdminPhimController::class, 'index'])->name('index');
-        Route::get('/show/{id}', [AdminPhimController::class, 'show'])->name('show');
-    });
-
-    // Suất chiếu - Tất cả admin có thể xem
-    Route::prefix('suat-chieu')->name('suat-chieu.')->group(function () {
-        Route::get('/', [SuatChieuController::class, 'index'])->name('index');
-        Route::get('/filter/date', [SuatChieuController::class, 'filterByDate'])->name('filter.date');
-        Route::get('/filter/phim', [SuatChieuController::class, 'filterByPhim'])->name('filter.phim');
-        Route::get('/filter/rap', [SuatChieuController::class, 'filterByRap'])->name('filter.rap');
-        Route::post('/loc-phim-theo-ngay', [SuatChieuController::class, 'filterMovieByDate'])->name('loc-phim-theo-ngay');
-        Route::post('/loc-phong', [SuatChieuController::class, 'filterPhong'])->name('loc-phong');
-    });
-
-    // Thống kê cơ bản - Tất cả admin có thể xem
-    Route::prefix('thong-ke')->name('thong-ke.')->group(function () {
-        Route::get('/', [ThongKeController::class, 'index'])->name('index');
-        Route::get('/export-excel', [ThongKeController::class, 'exportExcel'])->name('export');
-    });
-
-    // Rạp - Chỉ xem
-    Route::prefix('rap')->name('rap.')->group(function () {
-        Route::get('/', [RapController::class, 'index'])->name('index');
-    });
-
-    // Phòng chiếu - Chỉ xem
-    Route::prefix('phong-chieu')->name('phong-chieu.')->group(function () {
-        Route::get('/', [PhongChieuController::class, 'index'])->name('index');
-        Route::get('/show/{id}', [PhongChieuController::class, 'show'])->name('show');
+    // Tài khoản
+    Route::prefix('tai-khoan')->name('tai-khoan.')->group(function () { 
+        Route::get('/edit/{id}', [TaiKhoanController::class, 'edit'])->name('edit');
+        Route::put('/update/{id}', [TaiKhoanController::class, 'update'])->name('update');
     });
 });
 
@@ -224,9 +186,15 @@ Route::prefix('admin')->middleware(['admin', \App\Http\Middleware\RoleMiddleware
         Route::delete('/destroy/{id}', [BannerController::class, 'destroy'])->name('destroy');
         Route::post('/get-data-by-type', [BannerController::class, 'layDuLieuBangType'])->name('get-data-by-type');
     });
+    // Thống kê
+    Route::prefix('thong-ke')->name('thong-ke.')->group(function () {
+        Route::get('/', [ThongKeController::class, 'index'])->name('index');
+        Route::get('/export-excel', [ThongKeController::class, 'exportExcel'])->name('export');
+    });
 
     // Rap - Quản lý đầy đủ
     Route::prefix('rap')->name('rap.')->group(function () {
+        Route::get('/', [RapController::class, 'index'])->name('index');
         Route::get('/create', [RapController::class, 'create'])->name('create');
         Route::post('/store', [RapController::class, 'store'])->name('store');
         Route::get('/edit/{id}', [RapController::class, 'edit'])->name('edit');
@@ -236,6 +204,8 @@ Route::prefix('admin')->middleware(['admin', \App\Http\Middleware\RoleMiddleware
 
     // Phòng chiếu - Quản lý đầy đủ
     Route::prefix('phong-chieu')->name('phong-chieu.')->group(function () {
+        Route::get('/', [PhongChieuController::class, 'index'])->name('index');
+        Route::get('/show/{id}', [PhongChieuController::class, 'show'])->name('show');
         Route::get('/create', [PhongChieuController::class, 'create'])->name('create');
         Route::post('/store', [PhongChieuController::class, 'store'])->name('store');
         Route::put('/update/{id}', [PhongChieuController::class, 'update'])->name('update');
@@ -244,6 +214,8 @@ Route::prefix('admin')->middleware(['admin', \App\Http\Middleware\RoleMiddleware
 
     // Phim - Quản lý đầy đủ
     Route::prefix('phim')->name('phim.')->group(function () {
+        Route::get('/', [AdminPhimController::class, 'index'])->name('index');
+        Route::get('/show/{id}', [AdminPhimController::class, 'show'])->name('show');
         Route::get('/create', [AdminPhimController::class, 'create'])->name('create');
         Route::post('/store', [AdminPhimController::class, 'store'])->name('store');
         Route::put('/update/{id}', [AdminPhimController::class, 'update'])->name('update');
@@ -259,6 +231,12 @@ Route::prefix('admin')->middleware(['admin', \App\Http\Middleware\RoleMiddleware
         Route::put('/{id}', [SuatChieuController::class, 'update'])->name('update');
         Route::delete('/{id}', [SuatChieuController::class, 'destroy'])->name('destroy');
         Route::post('/check-conflict', [SuatChieuController::class, 'checkLoi'])->name('check-conflict');
+        Route::get('/', [SuatChieuController::class, 'index'])->name('index');
+        Route::get('/filter/date', [SuatChieuController::class, 'filterByDate'])->name('filter.date');
+        Route::get('/filter/phim', [SuatChieuController::class, 'filterByPhim'])->name('filter.phim');
+        Route::get('/filter/rap', [SuatChieuController::class, 'filterByRap'])->name('filter.rap');
+        Route::post('/loc-phim-theo-ngay', [SuatChieuController::class, 'filterMovieByDate'])->name('loc-phim-theo-ngay');
+        Route::post('/loc-phong', [SuatChieuController::class, 'filterPhong'])->name('loc-phong');
     });
 
     // Thể loại
@@ -286,11 +264,8 @@ Route::prefix('admin')->middleware(['admin', \App\Http\Middleware\RoleMiddleware
         Route::get('/', [TaiKhoanController::class, 'index'])->name('index');
         Route::get('/create', [TaiKhoanController::class, 'create'])->name('create');
         Route::post('/store', [TaiKhoanController::class, 'store'])->name('store');
-        Route::get('/edit/{id}', [TaiKhoanController::class, 'edit'])->name('edit');
-        Route::put('/update/{id}', [TaiKhoanController::class, 'update'])->name('update');
         Route::get('/delete/{id}', [TaiKhoanController::class, 'destroy'])->name('delete');
         Route::get('/change-status/{id}', [TaiKhoanController::class, 'changeStatus'])->name('status');
-        Route::get('/export', [TaiKhoanController::class, 'export'])->name('export');
     });
 
     // Hóa đơn - Chức năng nâng cao

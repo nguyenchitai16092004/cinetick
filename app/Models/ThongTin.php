@@ -20,12 +20,19 @@ class ThongTin extends Model
         'NgaySinh',
         'Email',
         'SDT',
+        'Luong',
+        'ID_Rap',
     ];
 
     // Quan hệ: Thông tin có nhiều tài khoản
     public function taiKhoans()
     {
         return $this->hasMany(TaiKhoan::class, 'ID_ThongTin', 'ID_ThongTin');
+    }
+
+    public function rap()
+    {
+        return $this->belongsTo(Rap::class, 'ID_Rap', 'ID_Rap');
     }
 
     public function getGioiTinhTextAttribute()

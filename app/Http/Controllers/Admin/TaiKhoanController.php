@@ -5,13 +5,18 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\TaiKhoan;
 use App\Models\ThongTin;
+use App\Models\Rap;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 
 class TaiKhoanController extends Controller
 {
+    /**
+     * Display a listing of accounts.
+     */
     public function index(Request $request)
     {
         $search = $request->input('search');
@@ -19,7 +24,8 @@ class TaiKhoanController extends Controller
         $sortOrder = $request->input('sort_order', 'desc');
 
         $query = TaiKhoan::join('thong_tin', 'tai_khoan.ID_ThongTin', '=', 'thong_tin.ID_ThongTin')
-            ->select('tai_khoan.*', 'thong_tin.HoTen', 'thong_tin.Email', 'thong_tin.SDT');
+            ->select('tai_khoan.*', 'thong_tin.HoTen', 'thong_tin.Email', 'thong_tin.SDT')
+            ->where('tai_khoan.VaiTro', '<', 2);
 
         // Tìm kiếm
         if ($search) {
@@ -45,7 +51,8 @@ class TaiKhoanController extends Controller
      */
     public function create()
     {
-        return view('admin.pages.tai_khoan.create-tai-khoan');
+        $raps = Rap::where('TrangThai', 1)->select('ID_Rap', 'TenRap')->get();
+        return view('admin.pages.tai_khoan.create-tai-khoan', compact('raps'));
     }
 
     /**
@@ -54,16 +61,33 @@ class TaiKhoanController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'ID_ThongTin' => 'required|numeric|unique:thong_tin,ID_ThongTin',
-            'HoTen' => 'required|string|max:100',
-            'GioiTinh' => 'required|boolean',
-            'NgaySinh' => 'required|date',
-            'Email' => 'required|email|max:100',
-            'SDT' => 'required|string|max:15',
             'TenDN' => 'required|string|max:50|unique:tai_khoan,TenDN',
             'MatKhau' => 'required|string|min:6|max:100',
-            'VaiTro' => 'required|integer|min:0|max:1',
-            'TrangThai' => 'required|boolean'
+            'HoTen' => 'required|string|max:100',
+            'GioiTinh' => 'required|boolean',
+            'NgaySinh' => 'required|date|before:today',
+            'Email' => 'required|email|max:100|unique:thong_tin,Email',
+            'SDT' => 'required|string|max:15|regex:/^[0-9]{10,11}$/',
+            'VaiTro' => 'required|integer|in:0,1',
+            'TrangThai' => 'required|boolean',
+            'ID_Rap' => 'required_if:VaiTro,1|exists:rap,ID_Rap',
+            'Luong' => 'required_if:VaiTro,1|numeric|min:1000000|max:1000000000',
+        ], [
+            'TenDN.required' => 'Tên đăng nhập là bắt buộc.',
+            'TenDN.unique' => 'Tên đăng nhập đã tồn tại.',
+            'MatKhau.required' => 'Mật khẩu là bắt buộc.',
+            'MatKhau.min' => 'Mật khẩu phải có ít nhất 6 ký tự.',
+            'HoTen.required' => 'Họ tên là bắt buộc.',
+            'NgaySinh.required' => 'Ngày sinh là bắt buộc.',
+            'NgaySinh.before' => 'Ngày sinh phải trước ngày hôm nay.',
+            'Email.required' => 'Email là bắt buộc.',
+            'Email.email' => 'Email không đúng định dạng.',
+            'Email.unique' => 'Email đã tồn tại.',
+            'SDT.required' => 'Số điện thoại là bắt buộc.',
+            'SDT.regex' => 'Số điện thoại không đúng định dạng.',
+            'ID_Rap.required_if' => 'Địa chỉ làm việc là bắt buộc đối với nhân viên.',
+            'Luong.required_if' => 'Lương là bắt buộc đối với nhân viên.',
+            'Luong.min' => 'Lương tối thiểu là 1.000.000 VND.',
         ]);
 
         if ($validator->fails()) {
@@ -72,28 +96,28 @@ class TaiKhoanController extends Controller
                 ->withInput();
         }
 
-        // Bắt đầu transaction để đảm bảo tính nhất quán dữ liệu
         DB::beginTransaction();
 
         try {
-            // Tạo thông tin người dùng
-            $thongTin = new ThongTin();
-            $thongTin->ID_ThongTin = $request->ID_ThongTin;
-            $thongTin->HoTen = $request->HoTen;
-            $thongTin->GioiTinh = $request->GioiTinh;
-            $thongTin->NgaySinh = $request->NgaySinh;
-            $thongTin->Email = $request->Email;
-            $thongTin->SDT = $request->SDT;
-            $thongTin->save();
+            // Tạo thông tin cá nhân
+            $thongTin = ThongTin::create([
+                'HoTen' => $request->HoTen,
+                'GioiTinh' => $request->GioiTinh,
+                'NgaySinh' => $request->NgaySinh,
+                'Email' => $request->Email,
+                'SDT' => $request->SDT,
+                'Luong' => $request->VaiTro == 1 ? $request->Luong : null,
+                'ID_Rap' => $request->VaiTro == 1 ? $request->ID_Rap : null,
+            ]);
 
             // Tạo tài khoản
-            $taiKhoan = new TaiKhoan();
-            $taiKhoan->TenDN = $request->TenDN;
-            $taiKhoan->MatKhau = Hash::make($request->MatKhau);
-            $taiKhoan->VaiTro = $request->VaiTro;
-            $taiKhoan->TrangThai = $request->TrangThai;
-            $taiKhoan->ID_ThongTin = $request->ID_ThongTin;
-            $taiKhoan->save();
+            TaiKhoan::create([
+                'TenDN' => $request->TenDN,
+                'MatKhau' => Hash::make($request->MatKhau),
+                'VaiTro' => $request->VaiTro,
+                'TrangThai' => $request->TrangThai,
+                'ID_ThongTin' => $thongTin->ID_ThongTin,
+            ]);
 
             DB::commit();
 
@@ -110,18 +134,37 @@ class TaiKhoanController extends Controller
     /**
      * Display the specified account.
      */
+    public function show($id)
+    {
+        $taiKhoan = TaiKhoan::with(['thongTin', 'thongTin.rap'])->findOrFail($id);
+
+        // Kiểm tra quyền truy cập
+        if (Auth::user()->VaiTro < 2 && Auth::user()->ID_TaiKhoan != $id) {
+            return redirect()->route('tai-khoan.index')
+                ->with('error', 'Bạn không có quyền xem thông tin tài khoản này.');
+        }
+
+        return view('admin.pages.tai_khoan.show-tai-khoan', compact('taiKhoan'));
+    }
 
     /**
      * Show the form for editing the specified account.
      */
     public function edit($id)
     {
-        $taiKhoan = TaiKhoan::join('thong_tin', 'tai_khoan.ID_ThongTin', '=', 'thong_tin.ID_ThongTin')
-            ->select('tai_khoan.*', 'thong_tin.*')
+        $taiKhoan = TaiKhoan::join('thong_tin', 'thong_tin.ID_ThongTin', 'tai_khoan.ID_ThongTin')
             ->where('tai_khoan.ID_TaiKhoan', $id)
-            ->firstOrFail();
+            ->select('tai_khoan.*', 'thong_tin.*')
+            ->first();
 
-        return view('admin.pages.tai_khoan.detail-tai-khoan', compact('taiKhoan'));
+        if (Auth::user()->VaiTro < 2 && Auth::user()->ID_TaiKhoan != $id) {
+            return redirect()->route('tai-khoan.index')
+                ->with('error', 'Bạn không có quyền chỉnh sửa thông tin tài khoản này.');
+        }
+
+        $raps = Rap::where('TrangThai', 1)->select('ID_Rap', 'TenRap')->get();
+
+        return view('admin.pages.tai_khoan.detail-tai-khoan', compact('taiKhoan', 'raps'));
     }
 
     /**
@@ -129,18 +172,41 @@ class TaiKhoanController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $taiKhoan = TaiKhoan::findOrFail($id);
+        $taiKhoan = TaiKhoan::with('thongTin')->findOrFail($id);
 
+        // Kiểm tra quyền truy cập - chỉ cho phép chỉnh sửa tài khoản của chính mình
+        if (Auth::user()->VaiTro < 2 && Auth::user()->ID_TaiKhoan != $id) {
+            return redirect()->route('tai-khoan.index')
+                ->with('error', 'Bạn không có quyền chỉnh sửa thông tin tài khoản này.');
+        }
+
+        // Validation - sửa lại email unique check
         $validator = Validator::make($request->all(), [
+            'TenDN' => 'required|string|max:100|unique:tai_khoan,TenDN,' . $id . ',ID_TaiKhoan',
+            'MatKhau' => 'nullable|string|min:6|max:100',
             'HoTen' => 'required|string|max:100',
             'GioiTinh' => 'required|boolean',
-            'NgaySinh' => 'required|date',
-            'Email' => 'required|email|max:100',
-            'SDT' => 'required|string|max:15',
-            'TenDN' => 'required|string|max:50|unique:tai_khoan,TenDN,' . $id . ',ID_TaiKhoan',
-            'MatKhau' => 'nullable|string|min:6|max:100',
-            'VaiTro' => 'required|integer|min:0|max:1',
-            'TrangThai' => 'required|boolean'
+            'NgaySinh' => 'required|date|before:today',
+            'Email' => 'required|email|max:100|unique:thong_tin,Email,' . $taiKhoan->ID_ThongTin . ',ID_ThongTin',
+            'SDT' => 'required|string|max:15|regex:/^[0-9]{10,11}$/',
+            'VaiTro' => 'required|integer|in:0,1,2',
+            'ID_Rap' => 'required_if:VaiTro,1|nullable|exists:rap,ID_Rap',
+            'Luong' => 'required_if:VaiTro,1|nullable|numeric|min:0|max:1000000000',
+        ], [
+            'TenDN.required' => 'Tên đăng nhập là bắt buộc.',
+            'TenDN.unique' => 'Tên đăng nhập đã tồn tại.',
+            'MatKhau.min' => 'Mật khẩu phải có ít nhất 6 ký tự.',
+            'HoTen.required' => 'Họ tên là bắt buộc.',
+            'NgaySinh.required' => 'Ngày sinh là bắt buộc.',
+            'NgaySinh.before' => 'Ngày sinh phải trước ngày hôm nay.',
+            'Email.required' => 'Email là bắt buộc.',
+            'Email.email' => 'Email không đúng định dạng.',
+            'Email.unique' => 'Email đã tồn tại.',
+            'SDT.required' => 'Số điện thoại là bắt buộc.',
+            'SDT.regex' => 'Số điện thoại không đúng định dạng.',
+            'ID_Rap.required_if' => 'Địa chỉ làm việc là bắt buộc đối với nhân viên.',
+            'Luong.required_if' => 'Lương là bắt buộc đối với nhân viên.',
+            'Luong.min' => 'Lương không được âm.',
         ]);
 
         if ($validator->fails()) {
@@ -152,23 +218,24 @@ class TaiKhoanController extends Controller
         DB::beginTransaction();
 
         try {
-            // Cập nhật thông tin người dùng
-            $thongTin = ThongTin::where('ID_ThongTin', $taiKhoan->ID_ThongTin)->firstOrFail();
-            $thongTin->HoTen = $request->HoTen;
-            $thongTin->GioiTinh = $request->GioiTinh;
-            $thongTin->NgaySinh = $request->NgaySinh;
-            $thongTin->Email = $request->Email;
-            $thongTin->SDT = $request->SDT;
-            $thongTin->save();
-
-            // Cập nhật tài khoản
+            // Cập nhật thông tin trong bảng tai_khoan
             $taiKhoan->TenDN = $request->TenDN;
-            if (!empty($request->MatKhau)) {
+
+            // Chỉ cập nhật mật khẩu nếu người dùng nhập mật khẩu mới
+            if ($request->filled('MatKhau')) {
                 $taiKhoan->MatKhau = Hash::make($request->MatKhau);
             }
-            $taiKhoan->VaiTro = $request->VaiTro;
-            $taiKhoan->TrangThai = $request->TrangThai;
+
             $taiKhoan->save();
+
+            // Cập nhật thông tin trong bảng thong_tin
+            $taiKhoan->thongTin->HoTen = $request->HoTen;
+            $taiKhoan->thongTin->GioiTinh = $request->GioiTinh;
+            $taiKhoan->thongTin->NgaySinh = $request->NgaySinh;
+            $taiKhoan->thongTin->Email = $request->Email;
+            $taiKhoan->thongTin->SDT = $request->SDT;
+
+            $taiKhoan->thongTin->save();
 
             DB::commit();
 
@@ -182,43 +249,48 @@ class TaiKhoanController extends Controller
         }
     }
 
-    /**
-     * Show confirmation before account deletion.
-     */
-    public function Delete($id)
-    {
-        $taiKhoan = TaiKhoan::join('thong_tin', 'tai_khoan.ID_ThongTin', '=', 'thong_tin.ID_ThongTin')
-            ->select('tai_khoan.ID_TaiKhoan', 'thong_tin.HoTen', 'tai_khoan.TenDN')
-            ->where('tai_khoan.ID_TaiKhoan', $id)
-            ->firstOrFail();
 
-        return view('admin.pages.tai-khoan.confirm-delete', compact('taiKhoan'));
-    }
+    // public function destroy($id)
+    // {
+    //     $taiKhoan = TaiKhoan::findOrFail($id);
 
-    /**
-     * Remove the specified account from storage.
-     */
-    public function destroy($id)
-    {
-        $taiKhoan = TaiKhoan::findOrFail($id);
-        $idCCCD = $taiKhoan->ID_ThongTin;
+    //     // Kiểm tra quyền xóa (chỉ admin)
+    //     if (Auth::user()->VaiTro < 2) {
+    //         return redirect()->route('tai-khoan.index')
+    //             ->with('error', 'Bạn không có quyền xóa tài khoản.');
+    //     }
 
-        DB::beginTransaction();
+    //     // Không cho phép xóa tài khoản admin
+    //     if ($taiKhoan->VaiTro == 2) {
+    //         return redirect()->route('tai-khoan.index')
+    //             ->with('error', 'Không thể xóa tài khoản quản trị viên.');
+    //     }
 
-        try {
-            // Xóa tài khoản sẽ tự động xóa thông tin người dùng do có constraint cascade
-            $taiKhoan->delete();
+    //     // Không cho phép xóa chính mình
+    //     if ($taiKhoan->ID_TaiKhoan == Auth::user()->ID_TaiKhoan) {
+    //         return redirect()->route('tai-khoan.index')
+    //             ->with('error', 'Không thể xóa tài khoản của chính mình.');
+    //     }
 
-            DB::commit();
+    //     DB::beginTransaction();
 
-            return redirect()->route('tai-khoan.index')
-                ->with('success', 'Tài khoản đã được xóa thành công.');
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return redirect()->back()
-                ->with('error', 'Đã xảy ra lỗi: ' . $e->getMessage());
-        }
-    }
+    //     try {
+    //         // Xóa thông tin cá nhân trước
+    //         $taiKhoan->thongTin->delete();
+
+    //         // Xóa tài khoản
+    //         $taiKhoan->delete();
+
+    //         DB::commit();
+
+    //         return redirect()->route('tai-khoan.index')
+    //             ->with('success', 'Tài khoản đã được xóa thành công.');
+    //     } catch (\Exception $e) {
+    //         DB::rollBack();
+    //         return redirect()->back()
+    //             ->with('error', 'Đã xảy ra lỗi: ' . $e->getMessage());
+    //     }
+    // }
 
     /**
      * Change account status (active/inactive).
@@ -226,10 +298,17 @@ class TaiKhoanController extends Controller
     public function changeStatus($id)
     {
         $taiKhoan = TaiKhoan::findOrFail($id);
-        $taiKhoan->TrangThai = !$taiKhoan->TrangThai;
-        $taiKhoan->save();
+        try {
+            $taiKhoan->TrangThai = !$taiKhoan->TrangThai;
+            $taiKhoan->save();
 
-        return redirect()->route('tai-khoan.index')
-            ->with('success', 'Trạng thái tài khoản đã được thay đổi thành công.');
+            $status = $taiKhoan->TrangThai ? 'kích hoạt' : 'vô hiệu hóa';
+
+            return redirect()->route('tai-khoan.index')
+                ->with('success', "Tài khoản đã được {$status} thành công.");
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Đã xảy ra lỗi: ' . $e->getMessage());
+        }
     }
 }

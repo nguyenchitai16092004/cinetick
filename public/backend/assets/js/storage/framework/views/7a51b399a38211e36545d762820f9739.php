@@ -1,0 +1,279 @@
+
+<?php $__env->startSection('title', 'Chi tiết Phim'); ?>
+
+<?php $__env->startSection('css'); ?>
+    <style>
+        .btn-primary {
+            background-color: rgb(111, 66, 193);
+            border-color: rgb(111, 66, 193);
+        }
+
+        .btn-primary:hover {
+            background-color: rgb(95, 56, 165);
+            border-color: rgb(95, 56, 165);
+        }
+
+        .card-header {
+            background-color: rgb(111, 66, 193);
+            color: white;
+        }
+
+        .card-title {
+            color: white;
+        }
+
+        label {
+            margin-top: 10px;
+        }
+
+        .form-control:focus {
+            border-color: rgb(111, 66, 193);
+            box-shadow: 0 0 0 0.2rem rgba(111, 66, 193, 0.25);
+        }
+    </style>
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('main'); ?>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+
+                    <div class="card-body">
+                        <div class="row">
+                            
+                            <div class="col-md-12">
+                                <form action="<?php echo e(route('phim.update', $phim->ID_Phim)); ?>" method="POST"
+                                    enctype="multipart/form-data">
+                                    <?php echo csrf_field(); ?>
+                                    <?php echo method_field('PUT'); ?>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <?php if($phim->HinhAnh): ?>
+                                                <div class="mb-2 d-flex justify-content-center" style="height: 100%;">
+                                                    <img src="<?php echo e(asset('storage/' . $phim->HinhAnh)); ?>"
+                                                        alt="<?php echo e($phim->TenPhim); ?>"
+                                                        style="width: auto; height: 500px; object-fit: cover;">
+                                                </div>
+                                            <?php else: ?>
+                                                <div class="mb-2"
+                                                    style="height: 100%; display: flex; align-items: center; justify-content: center; background: #f8f9fa;">
+                                                    <span>Không có ảnh</span>
+                                                </div>
+                                            <?php endif; ?>
+                                        </div>
+                                        
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="TenPhim">Tên phim <span class="text-danger">*</span></label>
+                                                <input type="text" name="TenPhim" id="TenPhim" class="form-control"
+                                                    value="<?php echo e(old('TenPhim', $phim->TenPhim)); ?>" required>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="ThoiLuong">Thời lượng (phút) <span
+                                                        class="text-danger">*</span></label>
+                                                <input type="number" name="ThoiLuong" id="ThoiLuong" class="form-control"
+                                                    value="<?php echo e(old('ThoiLuong', $phim->ThoiLuong)); ?>" required
+                                                    min="1">
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="NgayKhoiChieu">Ngày khởi chiếu <span
+                                                        class="text-danger">*</span></label>
+                                                <input type="date" name="NgayKhoiChieu" id="NgayKhoiChieu"
+                                                    class="form-control"
+                                                    value="<?php echo e(old('NgayKhoiChieu', $phim->NgayKhoiChieu)); ?>" required>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="NgayKetThuc">Ngày kết thúc</label>
+                                                <input type="date" name="NgayKetThuc" id="NgayKetThuc"
+                                                    class="form-control"
+                                                    value="<?php echo e(old('NgayKetThuc', $phim->NgayKetThuc)); ?>">
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="Trailer">Trailer URL</label>
+                                                <input type="url" name="Trailer" id="Trailer" class="form-control"
+                                                    value="<?php echo e(old('Trailer', $phim->Trailer)); ?>">
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="ID_TheLoaiPhim">Thể loại phim <span
+                                                        class="text-danger">*</span></label>
+                                                <select name="ID_TheLoaiPhim[]" id="ID_TheLoaiPhim" class="form-control"
+                                                    required multiple>
+                                                    <?php $__currentLoopData = $theLoais; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $theLoai): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                        <option value="<?php echo e($theLoai->ID_TheLoaiPhim); ?>"
+                                                            <?php echo e(collect(old('ID_TheLoaiPhim', $phim->theLoai->pluck('ID_TheLoaiPhim') ?? []))->contains($theLoai->ID_TheLoaiPhim) ? 'selected' : ''); ?>>
+                                                            <?php echo e($theLoai->TenTheLoai); ?>
+
+                                                        </option>
+                                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                    <option value="create_new">+ Thêm thể loại mới</option>
+                                                </select>
+                                            </div>
+
+                                        </div>
+
+                                        
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="NhaSanXuat">Nhà sản xuất <span
+                                                        class="text-danger">*</span></label>
+                                                <input type="text" name="NhaSanXuat" id="NhaSanXuat" class="form-control"
+                                                    value="<?php echo e(old('NhaSanXuat', $phim->NhaSanXuat)); ?>" required>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="DaoDien">Đạo diễn <span class="text-danger">*</span></label>
+                                                <input type="text" name="DaoDien" id="DaoDien" class="form-control"
+                                                    value="<?php echo e(old('DaoDien', $phim->DaoDien)); ?>" required>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="DienVien">Diễn viên <span class="text-danger">*</span></label>
+                                                <input type="text" name="DienVien" id="DienVien" class="form-control"
+                                                    value="<?php echo e(old('DienVien', $phim->DienVien)); ?>" required>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="DoHoa">Đồ họa <span class="text-danger">*</span></label>
+                                                <select name="DoHoa" id="DoHoa" class="form-control" required>
+                                                    <option value="" disabled selected hidden>-- Chọn đồ họa --
+                                                    </option>
+                                                    <option value="2D"
+                                                        <?php echo e(old('DoHoa', $phim->DoHoa) == '2D' ? 'selected' : ''); ?>>2D
+                                                    </option>
+                                                    <option value="3D"
+                                                        <?php echo e(old('DoHoa', $phim->DoHoa) == '3D' ? 'selected' : ''); ?>>3D
+                                                    </option>
+                                                </select>
+                                            </div>
+
+                                            <label for="QuocGia">Quốc gia <span class="text-danger">*</span></label>
+                                            <select name="QuocGia" id="QuocGia" class="form-control" required>
+                                                <option value="" disabled selected hidden>-- Chọn quốc gia --
+                                                </option>
+
+                                                <option value="Việt Nam"
+                                                    <?php echo e($phim->QuocGia == 'Việt Nam' ? 'selected' : ''); ?>>Việt Nam
+                                                </option>
+                                                <option value="Hoa Kỳ" <?php echo e($phim->QuocGia == 'Hoa Kỳ' ? 'selected' : ''); ?>>
+                                                    Hoa Kỳ</option>
+                                                <option value="Tây Ban Nha"
+                                                    <?php echo e($phim->QuocGia == 'Tây Ban Nha' ? 'selected' : ''); ?>>Tây Ban Nha
+                                                </option>
+                                                <option value="Pháp" <?php echo e($phim->QuocGia == 'Pháp' ? 'selected' : ''); ?>>
+                                                    Pháp</option>
+                                                <option value="Đức" <?php echo e($phim->QuocGia == 'Đức' ? 'selected' : ''); ?>>
+                                                    Đức</option>
+                                                <option value="Ý" <?php echo e($phim->QuocGia == 'Ý' ? 'selected' : ''); ?>>Ý
+                                                </option>
+                                                <option value="Nhật Bản"
+                                                    <?php echo e($phim->QuocGia == 'Nhật Bản' ? 'selected' : ''); ?>>Nhật Bản
+                                                </option>
+                                                <option value="Hàn Quốc"
+                                                    <?php echo e($phim->QuocGia == 'Hàn Quốc' ? 'selected' : ''); ?>>Hàn Quốc
+                                                </option>
+                                                <option value="Trung Quốc"
+                                                    <?php echo e($phim->QuocGia == 'Trung Quốc' ? 'selected' : ''); ?>>Trung Quốc
+                                                </option>
+                                                <option value="Nga" <?php echo e($phim->QuocGia == 'Nga' ? 'selected' : ''); ?>>
+                                                    Nga</option>
+                                                <option value="Mỹ" <?php echo e($phim->QuocGia == 'Mỹ' ? 'selected' : ''); ?>>
+                                                    Mỹ</option>
+                                                <option value="Thái Lan"
+                                                    <?php echo e($phim->QuocGia == 'Thái Lan' ? 'selected' : ''); ?>>
+                                                    Thái Lan</option>
+                                            </select>
+
+
+
+
+
+                                            <div class="form-group">
+                                                <label for="DoTuoi">Độ tuổi <span class="text-danger">*</span></label>
+                                                <select name="DoTuoi" id="DoTuoi" class="form-control" required>
+                                                    <option value="">-- Chọn độ tuổi --</option>
+                                                    <option value="P"
+                                                        <?php echo e(old('DoTuoi', $phim->DoTuoi) == 'P' ? 'selected' : ''); ?>>
+                                                        Loại P - Cho mọi lứa tuổi</option>
+                                                    <option value="K"
+                                                        <?php echo e(old('DoTuoi', $phim->DoTuoi) == 'K' ? 'selected' : ''); ?>>
+                                                        Loại K - Dưới 13 tuổi (cần giám hộ)</option>
+                                                    <option value="T13 (13+)"
+                                                        <?php echo e(old('DoTuoi', $phim->DoTuoi) == 'T13 (13+)' ? 'selected' : ''); ?>>
+                                                        Loại T13 (13+)</option>
+                                                    <option value="T16 (16+)"
+                                                        <?php echo e(old('DoTuoi', $phim->DoTuoi) == 'T16 (16+)' ? 'selected' : ''); ?>>
+                                                        Loại T16 (16+)</option>
+                                                    <option value="T18 (18+)"
+                                                        <?php echo e(old('DoTuoi', $phim->DoTuoi) == 'T18 (18+)' ? 'selected' : ''); ?>>
+                                                        Loại T18 (18+)</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="HinhAnh">Hình ảnh (để trống nếu không thay đổi)</label>
+                                                <div class="custom-file">
+                                                    <input type="file" class="custom-file-input" id="HinhAnh"
+                                                        name="HinhAnh" accept="image/*">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        
+                                        <div class="col-md-12 mt-3">
+                                            <div class="form-group">
+                                                <label for="MoTaPhim">Mô tả phim <span
+                                                        class="text-danger">*</span></label>
+                                                <textarea name="MoTaPhim" id="MoTaPhim" class="form-control" rows="5" required><?php echo e(old('MoTaPhim', $phim->MoTaPhim)); ?></textarea>
+                                            </div>
+
+                                            <div class="form-group text-right mt-2">
+                                                <a href="<?php echo e(url()->previous()); ?>" class="btn btn-secondary">
+                                                    <i class="fas fa-arrow-left"></i> Quay lại
+                                                </a>
+                                                <button type="submit" class="btn btn-primary">
+                                                    <i class="fas fa-save"></i> Cập nhật phim
+                                                </button>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                            </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('js'); ?>
+    <script>
+        document.getElementById('ID_TheLoaiPhim').addEventListener('change', function() {
+            if (this.value === 'create_new') {
+                window.location.href = "<?php echo e(route('the-loai.create')); ?>";
+            }
+        });
+        $(document).ready(function() {
+            // Hiển thị tên file khi chọn ảnh
+            $('.custom-file-input').on('change', function() {
+                let fileName = $(this).val().split('\\').pop();
+                $(this).next('.custom-file-label').addClass("selected").html(fileName);
+            });
+
+            // Thêm CKEDITOR cho phần mô tả phim
+            if (typeof CKEDITOR !== 'undefined') {
+                CKEDITOR.replace('MoTaPhim');
+            }
+        });
+    </script>
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('admin.layouts.master', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\xampp\htdocs\GitClone\cinetick\resources\views/admin/pages/phim/detail_phim.blade.php ENDPATH**/ ?>

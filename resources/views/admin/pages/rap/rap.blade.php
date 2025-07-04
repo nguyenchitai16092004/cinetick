@@ -3,9 +3,10 @@
 
 @section('main')
     <style>
-        tr td{
+        tr td {
             padding: 20px !important;
         }
+
         .btn-purple {
             background-color: #6f42c1;
             color: white;
@@ -55,35 +56,40 @@
                                 </thead>
                                 <tbody>
                                     @forelse ($raps as $rap)
+                                        @php
+                                            \Log::info('Dữ liệu $rap:', (array) $rap);
+                                        @endphp
                                         <tr>
                                             <td class="fw-bold text-start">{{ $rap->TenRap }}</td>
                                             <td>{{ $rap->Hotline }}</td>
-                                            <td class="text-start col-5">{{ \Illuminate\Support\Str::limit($rap->DiaChi, 200) }}</td>
+                                            <td class="text-start col-5">
+                                                {{ \Illuminate\Support\Str::limit($rap->DiaChi, 200) }}</td>
                                             <td>
-                                                @if($rap->TrangThai == 1)
+                                                @if ($rap->TrangThai == 1)
                                                     <span class="badge bg-success">Hoạt động</span>
                                                 @else
-                                                    <span class="badge bg-warning text-dark">Bảo trì</span>
+                                                    <span class="badge bg-warning text-dark">Không hoạt động</span>
                                                 @endif
                                             </td>
                                             <td>
-                                                <a href="{{ route('rap.edit', $rap->ID_Rap) }}" class="btn btn-warning btn-sm">
+                                                <a href="{{ route('rap.edit', $rap->ID_Rap) }}"
+                                                    class="btn btn-warning btn-sm">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
-                                                <button type="button" class="btn btn-danger btn-sm"
+                                                {{-- <button type="button" class="btn btn-danger btn-sm"
                                                     onclick="moModalXoa({{ $rap->ID_Rap }}, '{{ $rap->TenRap }}')">
                                                     <i class="fas fa-trash"></i>
                                                 </button>
 
-                                                <!-- Form xóa ẩn -->
                                                 <form id="form-xoa-{{ $rap->ID_Rap }}"
                                                     action="{{ route('rap.destroy', $rap->ID_Rap) }}" method="POST"
                                                     style="display: none;">
                                                     @csrf
                                                     @method('DELETE')
-                                                </form>
+                                                </form> --}}
                                             </td>
                                         </tr>
+                                  
                                     @empty
                                         <tr>
                                             <td colspan="5" class="text-center text-muted">Không có dữ liệu</td>
@@ -124,7 +130,7 @@
 
 @endsection
 
-@section('js')
+{{-- @section('js')
     <script>
         let idRapCanXoa = null;
         let timeoutXoa = null;
@@ -157,4 +163,4 @@
             }
         });
     </script>
-@endsection
+@endsection --}}

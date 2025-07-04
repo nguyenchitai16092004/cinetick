@@ -34,10 +34,6 @@
                 <div class="card shadow rounded">
                     <div class="card-header bg-purple d-flex justify-content-between align-items-center">
                         <h3 class="card-title mb-0">💬 Quản lý bình luận</h3>
-                        <a href="{{ route('binh-luan.export', request()->query()) }}" 
-                           class="btn btn-success">
-                            <i class="fas fa-file-excel"></i> Xuất Excel
-                        </a>
                     </div>
                     <div class="card-body">
                         {{-- Form lọc --}}
@@ -70,7 +66,7 @@
                         <form id="bulk-delete-form" method="POST" action="{{ route('binh-luan.destroy-multiple') }}">
                             @csrf
                             @method('DELETE')
-                            
+
                             <div class="mb-3 d-flex justify-content-between align-items-center">
                                 <div>
                                     <button type="button" class="btn btn-danger btn-sm" id="delete-selected" disabled>
@@ -83,7 +79,7 @@
                             </div>
 
                             {{-- Bảng dữ liệu --}}
-                            @if($binhLuans->count() > 0)
+                            @if ($binhLuans->count() > 0)
                                 <div class="table-responsive">
                                     <table class="table table-bordered table-hover align-middle text-center">
                                         <thead class="table-light">
@@ -100,11 +96,11 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach($binhLuans as $bl)
+                                            @foreach ($binhLuans as $bl)
                                                 <tr>
                                                     <td>
-                                                        <input type="checkbox" name="selected_comments[]" 
-                                                               value="{{ $bl->ID_BinhLuan }}" class="comment-checkbox">
+                                                        <input type="checkbox" name="selected_comments[]"
+                                                            value="{{ $bl->ID_BinhLuan }}" class="comment-checkbox">
                                                     </td>
                                                     <td>{{ $bl->ID_BinhLuan }}</td>
                                                     <td class="text-start">
@@ -114,7 +110,7 @@
                                                         <span class="badge bg-info">{{ $bl->TenDN }}</span>
                                                     </td>
                                                     <td>
-                                                        @if($bl->DiemDanhGia)
+                                                        @if ($bl->DiemDanhGia)
                                                             <span class="badge bg-warning text-dark">
                                                                 {{ $bl->DiemDanhGia }}/10
                                                             </span>
@@ -126,19 +122,15 @@
                                                         <small>{{ date('d/m/Y H:i', strtotime($bl->created_at)) }}</small>
                                                     </td>
                                                     <td>
-                                                        {{-- Xem chi tiết --}}
-                                                        <a href="{{ route('binh-luan.show', $bl->ID_BinhLuan) }}" 
-                                                           class="btn btn-sm btn-info" title="Xem chi tiết">
-                                                            <i class="fas fa-eye"></i>
-                                                        </a>
-
                                                         {{-- Xóa --}}
-                                                        <form method="POST" action="{{ route('binh-luan.destroy', $bl->ID_BinhLuan) }}" 
-                                                              class="d-inline" 
-                                                              onsubmit="return confirm('Xác nhận xóa bình luận này?')">
+                                                        <form method="POST"
+                                                            action="{{ route('binh-luan.destroy', $bl->ID_BinhLuan) }}"
+                                                            class="d-inline"
+                                                            onsubmit="return confirm('Xác nhận xóa bình luận này?')">
                                                             @csrf
                                                             @method('DELETE')
-                                                            <button type="submit" class="btn btn-sm btn-danger" title="Xóa">
+                                                            <button type="submit" class="btn btn-sm btn-danger"
+                                                                title="Xóa">
                                                                 <i class="fas fa-trash"></i>
                                                             </button>
                                                         </form>
@@ -196,7 +188,8 @@
             function updateSelectAllCheckbox() {
                 const checkedBoxes = document.querySelectorAll('.comment-checkbox:checked');
                 selectAllCheckbox.checked = checkedBoxes.length === commentCheckboxes.length;
-                selectAllCheckbox.indeterminate = checkedBoxes.length > 0 && checkedBoxes.length < commentCheckboxes.length;
+                selectAllCheckbox.indeterminate = checkedBoxes.length > 0 && checkedBoxes.length < commentCheckboxes
+                    .length;
             }
 
             // Xóa nhiều

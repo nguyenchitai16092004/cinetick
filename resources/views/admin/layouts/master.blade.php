@@ -16,6 +16,14 @@
 </head>
 
 <body>
+    <style>
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+        }
+    </style>
+
     <!-- Include Notification Component -->
     @include('admin.partials.notification')
 
@@ -30,8 +38,9 @@
         <!-- Content Wrapper -->
         <div class="content-wrapper">
             <!-- Fixed Header -->
-            @include('admin.partials.header')
-
+            <div class="no-print">
+                @include('admin.partials.header')
+            </div>
             <!-- Scrollable Main Content -->
             <main class="main-content-area">
                 @yield('main')

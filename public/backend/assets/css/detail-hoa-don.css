@@ -1,688 +1,496 @@
-/* Seat Layout CSS for Cinema Management System */
-
-.seat-container {
-    max-width: 100%;
+/* Trang chi tiết hóa đơn */
+.container-invoice-detail {
+    max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
-    background: #f8f9fa;
-    border-radius: 12px;
-    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.1);
+    background-color: #f8f9fa;
+    min-height: 100vh;
 }
 
-.cinema-screen {
-    background: linear-gradient(135deg, #333, #666);
+/* Header */
+.invoice-header {
+    background: linear-gradient(135deg, #E91E63, #FF6B9D);
     color: white;
-    text-align: center;
-    padding: 12px;
+    padding: 30px;
+    border-radius: 15px;
     margin-bottom: 30px;
-    border-radius: 20px;
-    font-weight: bold;
-    font-size: 14px;
-    letter-spacing: 2px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-    position: relative;
+    box-shadow: 0 10px 30px rgba(233, 30, 99, 0.3);
 }
 
-.cinema-screen::before {
-    content: '';
-    position: absolute;
-    bottom: -8px;
-    left: 10%;
-    right: 10%;
-    height: 3px;
-    background: linear-gradient(90deg, transparent, #333, transparent);
-    border-radius: 2px;
-}
-
-/* Container chính cho sơ đồ ghế - sử dụng grid layout trực tiếp */
-#seatLayout {
-    max-width: 100%;
-    margin: 0 auto;
-    padding: 20px;
-    background: #f8f9fa;
-    border-radius: 12px;
-    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-/* Deprecated - không sử dụng nữa */
-.seat-grid,
-.seat-grid-detail {
-    display: grid;
-    gap: 8px;
-    justify-content: center;
-    align-items: center;
-}
-
-.seat-row {
+.header-content {
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    gap: 8px;
-    width: 100%;
-    justify-content: center;
+    flex-wrap: wrap;
+    gap: 20px;
 }
 
-.row-label {
-    font-weight: bold;
-    font-size: 14px;
-    color: #495057;
-    width: 25px;
-    text-align: center;
-    background: #e9ecef;
-    border-radius: 6px;
-    padding: 8px 0;
-    border: 1px solid #dee2e6;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 35px;
+.page-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 0;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-.seats-in-row {
-    display: flex;
-    gap: 6px;
-    align-items: center;
+.invoice-id {
+    font-size: 1.2rem;
+    font-weight: 500;
 }
 
-.seat {
-    width: 35px;
-    height: 35px;
-    border: 2px solid #dee2e6;
+.invoice-code {
+    font-weight: 700;
+    background: rgba(255,255,255,0.2);
+    padding: 8px 16px;
     border-radius: 8px;
+    margin-left: 10px;
+}
+
+/* Main content */
+.invoice-content {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+/* Sections */
+.invoice-info-section,
+.movie-info-section,
+.tickets-section,
+.payment-summary {
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    margin-bottom: 25px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+    border: 1px solid #e9ecef;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #f1f3f4;
+}
+
+.section-header h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 0;
+}
+
+/* Invoice status */
+.invoice-status {
+    padding: 8px 16px;
+    border-radius: 25px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.invoice-status.success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.invoice-status.pending {
+    background: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeaa7;
+}
+
+/* Info grids */
+.invoice-info-grid,
+.movie-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.info-label {
+    font-size: 0.9rem;
+    color: #6c757d;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.info-value {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+/* Movie card */
+.movie-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 25px;
+    border-radius: 15px;
+    margin-bottom: 15px;
+}
+
+.movie-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.movie-card .info-label {
+    color: rgba(255,255,255,0.8);
+}
+
+.movie-card .info-value {
+    color: white;
+}
+
+/* Tickets */
+.tickets-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.ticket-item {
+    background: #f8f9fa;
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    padding: 20px;
+    transition: all 0.3s ease;
+}
+
+.ticket-item:hover {
+    border-color: #E91E63;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(233, 30, 99, 0.1);
+}
+
+.ticket-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 20px;
+    align-items: center;
+}
+
+.seat-info,
+.ticket-price {
     display: flex;
     align-items: center;
+    gap: 10px;
+}
+
+.seat-label,
+.price-label {
+    font-size: 0.9rem;
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.seat-name,
+.price-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #2c3e50;
+}
+
+.ticket-status {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.ticket-status.used {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.ticket-status.active {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+/* Payment summary */
+.payment-details {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.payment-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.payment-row:last-child {
+    border-bottom: none;
+}
+
+.payment-row.total {
+    background: #f8f9fa;
+    margin: 10px -25px -25px;
+    padding: 20px 25px;
+    border-radius: 0 0 15px 15px;
+    border-top: 2px solid #E91E63;
+}
+
+.payment-label {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #2c3e50;
+}
+
+.payment-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #2c3e50;
+}
+
+.payment-value.discount {
+    color: #28a745;
+}
+
+.payment-row.total .payment-label,
+.payment-row.total .payment-value {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #E91E63;
+}
+
+/* Sidebar */
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.qr-section,
+.contact-section {
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+    border: 1px solid #e9ecef;
+    text-align: center;
+}
+
+.qr-header h3,
+.contact-header h3 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 0 0 5px 0;
+}
+
+.qr-header p {
+    color: #6c757d;
+    font-size: 0.9rem;
+    margin: 0 0 20px 0;
+}
+
+.qr-code {
+    margin: 20px 0;
+    display: flex;
     justify-content: center;
-    font-size: 11px;
+}
+
+.qr-code img {
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.download-btn {
+    background: #E91E63;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 0.9rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    position: relative;
-    user-select: none;
-    background: #ffffff;
-    color: #495057;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-}
-
-.seat:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-/* Trạng thái ghế */
-.seat-normal {
-    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-    border-color: #adb5bd;
-    color: #495057;
-}
-
-.seat-normal:hover {
-    background: linear-gradient(135deg, #e9ecef, #dee2e6);
-    border-color: #6c757d;
-}
-
-.seat-vip {
-    background: linear-gradient(135deg, #fff3cd, #ffc107);
-    border-color: #ffb300;
-    color: #856404;
-}
-
-.seat-vip:hover {
-    background: linear-gradient(135deg, #ffc107, #ffb300);
-    border-color: #ff8f00;
-}
-
-.seat-disabled {
-    background: linear-gradient(135deg, #6c757d, #495057);
-    border-color: #343a40;
-    color: #fff;
-    cursor: not-allowed;
-    opacity: 0.6;
-}
-
-.seat-disabled:hover {
-    transform: none;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-}
-
-/* Ghế đã được chọn (cho trang đặt vé) */
-.seat-selected {
-    background: linear-gradient(135deg, #007bff, #0056b3) !important;
-    border-color: #004085 !important;
-    color: white !important;
-    transform: scale(1.1);
-    z-index: 10;
-}
-
-/* Ghế đã được đặt (cho trang chi tiết hóa đơn) */
-.seat-booked {
-    background: linear-gradient(135deg, #dc3545, #c82333) !important;
-    border-color: #bd2130 !important;
-    color: white !important;
-    position: relative;
-    cursor: default;
-}
-
-.seat-booked::after {
-    content: '✓';
-    position: absolute;
-    top: -3px;
-    right: -3px;
-    background: #28a745;
-    color: white;
-    border-radius: 50%;
-    width: 16px;
-    height: 16px;
-    font-size: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 2px solid white;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-.seat-booked:hover {
-    transform: none;
-}
-
-/* Legend */
-.seat-legend {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-    justify-content: center;
-    margin-top: 20px;
-    padding: 15px;
-    background: white;
-    border-radius: 10px;
-    border: 1px solid #e9ecef;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-}
-
-.legend-box::after {
-    color: red;
-    font-weight: bold;
-    font-size: 14px;
-    top: 50%;
-    left: 50%;
-}
-
-.legend-item {
     display: flex;
     align-items: center;
     gap: 8px;
-    font-size: 13px;
-    color: #495057;
-}
-
-.legend-box {
-    width: 20px;
-    height: 20px;
-    border-radius: 4px;
-    border: 1px solid #dee2e6;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.legend-normal {
-    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-    border-color: #adb5bd;
-}
-
-.legend-vip {
-    background: linear-gradient(135deg, #fff3cd, #ffc107);
-    border-color: #ffb300;
-}
-
-.legend-disabled {
-    position: relative;
-}
-
-.legend-disabled::after {
-    content: "✕";
-    position: absolute;
-    top: 0;
-    left: 0;
+    justify-content: center;
     width: 100%;
-    height: 100%;
+}
+
+.download-btn:hover {
+    background: #c2185b;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(233, 30, 99, 0.3);
+}
+
+/* Contact section */
+.contact-info {
+    margin: 20px 0;
+}
+
+.contact-info p {
+    color: #6c757d;
+    font-size: 0.9rem;
+    margin-bottom: 15px;
+}
+
+.contact-item {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.5em;
-    color: red;
+    gap: 10px;
+    margin-bottom: 10px;
+    color: #2c3e50;
+    font-weight: 500;
 }
 
-
-.legend-selected {
-    background: linear-gradient(135deg, #007bff, #0056b3);
-    border-color: #004085;
+.contact-item i {
+    color: #E91E63;
+    width: 16px;
 }
 
-.legend-booked {
-    background: linear-gradient(135deg, #dc3545, #c82333);
-    border-color: #bd2130;
-}
-
-/* Responsive design */
-@media (max-width: 768px) {
-    .seat-container {
-        padding: 15px;
-    }
-
-    .seat {
-        width: 30px;
-        height: 30px;
-        font-size: 10px;
-    }
-
-    .row-label {
-        width: 20px;
-        height: 30px;
-        font-size: 12px;
-        padding: 6px 0;
-    }
-
-    .seats-in-row {
-        gap: 4px;
-    }
-
-    .seat-row {
-        gap: 6px;
-    }
-
-    .cinema-screen {
-        font-size: 12px;
-        padding: 10px;
-        margin-bottom: 20px;
-    }
-
-    .seat-legend {
-        gap: 10px;
-        padding: 12px;
-    }
-
-    .legend-item {
-        font-size: 12px;
-    }
-
-    .legend-box {
-        width: 16px;
-        height: 16px;
-    }
-}
-
-@media (max-width: 576px) {
-    .seat {
-        width: 26px;
-        height: 26px;
-        font-size: 9px;
-    }
-
-    .row-label {
-        width: 18px;
-        height: 26px;
-        font-size: 11px;
-    }
-
-    .seats-in-row {
-        gap: 3px;
-    }
-
-    .seat-row {
-        gap: 4px;
-    }
-
-}
-
-/* Animation effects */
-@keyframes seatSelect {
-    0% {
-        transform: scale(1);
-    }
-
-    50% {
-        transform: scale(1.2);
-    }
-
-    100% {
-        transform: scale(1.1);
-    }
-}
-
-.seat-selected {
-    animation: seatSelect 0.3s ease-in-out;
-}
-
-@keyframes seatBooked {
-    0% {
-        transform: scale(1);
-    }
-
-    50% {
-        transform: scale(1.05);
-    }
-
-    100% {
-        transform: scale(1);
-    }
-}
-
-.seat-booked {
-    animation: seatBooked 0.5s ease-in-out;
-}
-
-/* Loading state */
-.seat-loading {
-    opacity: 0.5;
-    pointer-events: none;
-}
-
-.seat-loading::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 12px;
-    height: 12px;
-    margin: -6px 0 0 -6px;
-    border: 2px solid #f3f3f3;
-    border-top: 2px solid #007bff;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    0% {
-        transform: rotate(0deg);
-    }
-
-    100% {
-        transform: rotate(360deg);
-    }
-}
-
-/* Print styles */
-@media print {
-    .seat-container {
-        background: white;
-        box-shadow: none;
-    }
-
-    .seat {
-        border: 1px solid #000;
-        box-shadow: none;
-    }
-
-    .cinema-screen {
-        background: #333;
-        color: white;
-        box-shadow: none;
-    }
-
-    .seat-legend {
-        border: 1px solid #000;
-        box-shadow: none;
-    }
-
-    /* Hide buttons when printing */
-    .btn,
-    button {
-        display: none !important;
-    }
-
-    /* Optimize page layout for printing */
-    .container {
-        max-width: 100% !important;
-        margin: 0 !important;
-        padding: 0 !important;
-    }
-
-    .card {
-        border: 1px solid #000 !important;
-        box-shadow: none !important;
-        margin-bottom: 20px !important;
-    }
-}
-
-/* Ghế đã được đặt (cho trang chi tiết hóa đơn) */
-.seat-booked {
-    background: linear-gradient(135deg, #dc3545, #c82333) !important;
-    border-color: #bd2130 !important;
-    color: white !important;
-    position: relative;
-}
-
-.seat-booked::after {
-    content: '✓';
-    position: absolute;
-    top: -3px;
-    right: -3px;
+.contact-btn {
     background: #28a745;
     color: white;
-    border-radius: 50%;
-    width: 16px;
-    height: 16px;
-    font-size: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 2px solid white;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    text-decoration: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: inline-block;
+    width: 100%;
+    text-align: center;
 }
 
-/* Legend */
-.seat-legend {
+.contact-btn:hover {
+    background: #218838;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+    color: white;
+    text-decoration: none;
+}
+
+/* Action buttons */
+.action-buttons {
     display: flex;
-    flex-wrap: wrap;
     gap: 15px;
     justify-content: center;
-    margin-top: 20px;
-    padding: 15px;
-    background: white;
-    border-radius: 10px;
-    border: 1px solid #e9ecef;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    flex-wrap: wrap;
 }
 
-.legend-item {
-    display: flex;
+.btn {
+    padding: 15px 30px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
     align-items: center;
     gap: 8px;
-    font-size: 13px;
-    color: #495057;
 }
 
-.legend-box {
-    width: 20px;
-    height: 20px;
-    border-radius: 4px;
-    border: 1px solid #dee2e6;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+.btn-primary {
+    background: #E91E63;
+    color: white;
 }
 
-.legend-normal {
-    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-    border-color: #adb5bd;
+.btn-primary:hover {
+    background: #c2185b;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(233, 30, 99, 0.3);
+    color: white;
+    text-decoration: none;
 }
 
-.legend-vip {
-    background: linear-gradient(135deg, #fff3cd, #ffc107);
-    border-color: #ffb300;
+.btn-secondary {
+    background: #6c757d;
+    color: white;
 }
 
-.legend-selected {
-    background: linear-gradient(135deg, #007bff, #0056b3);
-    border-color: #004085;
+.btn-secondary:hover {
+    background: #5a6268;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(108, 117, 125, 0.3);
 }
 
-.legend-booked {
-    background: linear-gradient(135deg, #dc3545, #c82333);
-    border-color: #bd2130;
-}
-
-/* Responsive design */
+/* Responsive */
 @media (max-width: 768px) {
-    .seat-container {
+    .container-invoice-detail {
         padding: 15px;
     }
-
-    .seat {
-        width: 30px;
-        height: 30px;
-        font-size: 10px;
+    
+    .invoice-content {
+        grid-template-columns: 1fr;
     }
-
-    .row-label {
-        width: 20px;
-        font-size: 12px;
-        padding: 6px 0;
+    
+    .page-title {
+        font-size: 2rem;
     }
-
-    .seats-in-row {
-        gap: 4px;
+    
+    .header-content {
+        flex-direction: column;
+        text-align: center;
     }
-
-    .seat-row {
-        gap: 6px;
+    
+    .invoice-info-grid,
+    .movie-info-grid {
+        grid-template-columns: 1fr;
     }
-
-    .cinema-screen {
-        font-size: 12px;
-        padding: 10px;
-        margin-bottom: 20px;
+    
+    .ticket-info {
+        grid-template-columns: 1fr;
+        gap: 15px;
+        text-align: center;
     }
-
-    .col-aisle {
-        width: 15px;
-        height: 30px;
-    }
-
-    .seat-legend {
-        gap: 10px;
-        padding: 12px;
-    }
-
-    .legend-item {
-        font-size: 12px;
-    }
-
-    .legend-box {
-        width: 16px;
-        height: 16px;
-    }
-}
-
-@media (max-width: 576px) {
-    .seat {
-        width: 26px;
-        height: 26px;
-        font-size: 9px;
-    }
-
-    .row-label {
-        width: 18px;
-        font-size: 11px;
-    }
-
-    .seats-in-row {
-        gap: 3px;
-    }
-
-    .seat-row {
-        gap: 4px;
-    }
-
-    .col-aisle {
-        width: 12px;
-        height: 26px;
-    }
-}
-
-/* Animation effects */
-@keyframes seatSelect {
-    0% {
-        transform: scale(1);
-    }
-
-    50% {
-        transform: scale(1.2);
-    }
-
-    100% {
-        transform: scale(1.1);
-    }
-}
-
-.seat-selected {
-    animation: seatSelect 0.3s ease-in-out;
-}
-
-@keyframes seatBooked {
-    0% {
-        transform: scale(1);
-    }
-
-    50% {
-        transform: scale(1.1);
-    }
-
-    100% {
-        transform: scale(1);
-    }
-}
-
-.seat-booked {
-    animation: seatBooked 0.5s ease-in-out;
-}
-
-/* Loading state */
-.seat-loading {
-    opacity: 0.5;
-    pointer-events: none;
-}
-
-.seat-loading::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 12px;
-    height: 12px;
-    margin: -6px 0 0 -6px;
-    border: 2px solid #f3f3f3;
-    border-top: 2px solid #007bff;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    0% {
-        transform: rotate(0deg);
-    }
-
-    100% {
-        transform: rotate(360deg);
+    
+    .action-buttons {
+        flex-direction: column;
     }
 }
 
 /* Print styles */
 @media print {
-    .seat-container {
+    .container-invoice-detail {
         background: white;
         box-shadow: none;
     }
-
-    .seat {
-        border: 1px solid #000;
-        box-shadow: none;
+    
+    .invoice-header {
+        background: #E91E63 !important;
+        -webkit-print-color-adjust: exact;
     }
-
-    .cinema-screen {
-        background: #333;
-        color: white;
-        box-shadow: none;
+    
+    .sidebar {
+        display: none;
     }
-
-    .seat-legend {
-        border: 1px solid #000;
-        box-shadow: none;
+    
+    .action-buttons {
+        display: none;
+    }
+    
+    .invoice-content {
+        grid-template-columns: 1fr;
     }
 }

@@ -79,7 +79,7 @@ return [
     |
     */
 
-    'locale' => env('APP_LOCALE', 'en'),
+    'locale' => 'vi',
 
     'fallback_locale' => env('APP_FALLBACK_LOCALE', 'en'),
 
@@ -160,6 +160,6 @@ return [
      * Application Service Providers...
      */
         App\Providers\AppServiceProvider::class,
-        App\Providers\BroadcastServiceProvider::class, 
+        App\Providers\BroadcastServiceProvider::class,
     ],
 ];

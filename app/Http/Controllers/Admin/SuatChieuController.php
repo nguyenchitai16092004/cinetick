@@ -55,11 +55,22 @@ class SuatChieuController extends Controller
     public function destroy($id)
     {
         $suatChieu = SuatChieu::findOrFail($id);
+
+        $createdAt = $suatChieu->created_at;
+        $now = Carbon::now();
+        $timeDelete = $createdAt->copy()->addMinutes(5);
+
+        if ($timeDelete < ($now)) {
+            return redirect()->route('suat-chieu.index')
+                ->with('error', 'Chỉ có thể xóa suất chiếu đã tạo trước ít nhất 5 phút.');
+        }
+
         $suatChieu->delete();
 
         return redirect()->route('suat-chieu.index')
-            ->with('success', 'Xóa suất chiếu thành công');
+            ->with('success', 'Xóa suất chiếu thành công.');
     }
+
 
 
     public function filterByDate(Request $request)
@@ -204,7 +215,7 @@ class SuatChieuController extends Controller
             $phim = Phim::find($request->ID_Phim);
             $now = Carbon::now();
             if ($phim->NgayKetThuc < $now) {
-                return redirect()->back()->with('error', 'Cập nhật suất chiếu thành công');
+                return redirect()->back()->with('error', 'không thể tạo suất chiếu cho phim đã kết thúc');
             }
             foreach ($request->schedule as $date => $timesString) {
                 $times = array_filter(explode(',', $timesString));
@@ -354,7 +365,7 @@ class SuatChieuController extends Controller
         }
 
         // Cập nhật suất chiếu
-        $suatChieu->update($request->all());
+            $suatChieu->update($request->all());
 
         return redirect()->route('suat-chieu.index')->with('success', 'Cập nhật suất chiếu thành công');
     }

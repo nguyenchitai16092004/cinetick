@@ -37,7 +37,7 @@
             <div class="col-lg-12">
                 <div class="card shadow rounded h-100">
                     <div class="card-header bg-purple d-flex justify-content-between align-items-center">
-                        <h3 class="card-title mb-0">🎭 Quản lý phòng chiếu</h3>
+                        <h3 class="card-title mb-0"><i class="fas fa-masks-theater"></i> Quản lý phòng chiếu</h3>
                         <a href="{{ route('phong-chieu.create') }}" class="btn btn-purple">
                             <i class="fas fa-plus"></i> Thêm phòng chiếu mới
                         </a>
@@ -64,7 +64,7 @@
                                                 @if ($phong->TrangThai)
                                                     <span class="badge bg-success">Hoạt động</span>
                                                 @else
-                                                    <span class="badge bg-warning text-dark">Bảo trì</span>
+                                                    <span class="badge bg-warning text-dark">Không hoạt động</span>
                                                 @endif
                                             </td>
                                             <td>
@@ -72,10 +72,10 @@
                                                     class="btn btn-warning btn-sm">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
-                                                <button type="button" class="btn btn-danger btn-sm"
+                                                {{-- <button type="button" class="btn btn-danger btn-sm"
                                                     onclick="confirmDelete('{{ route('phong-chieu.destroy', $phong->ID_PhongChieu) }}')">
                                                     <i class="fas fa-trash"></i>
-                                                </button>
+                                                </button> --}}
                                             </td>
                                         </tr>
                                     @empty
