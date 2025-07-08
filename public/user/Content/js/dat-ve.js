@@ -373,12 +373,11 @@ async function holdSeat(ma_ghe) {
         window.selectedSeats = Array.from(myHeldSeats);
         updateBookingSummary();
 
+        // Chỉ dùng timer tổng
         if (data.hold_until) {
             const now = Math.floor(Date.now() / 1000);
             const remaining = data.hold_until - now;
             if (remaining > 0) startSeatHoldTimer(remaining);
-        } else if (!seatHoldTimerInterval) {
-            startSeatHoldTimer();
         }
         return true;
     } catch (err) {
@@ -386,7 +385,6 @@ async function holdSeat(ma_ghe) {
         return false;
     }
 }
-
 async function releaseSeat(ma_ghe) {
     if (!suatChieuId) return;
     await fetch("/dat-ve/bo-giu-ghe", {
@@ -499,26 +497,7 @@ function isBookingOrPaymentRoute() {
     return path.startsWith("/dat-ve") || path.startsWith("/thanh-toan");
 }
 
-function startHoldTimer(seatId, heldUntil) {
-    clearHoldTimer(seatId);
-    holdTimers[seatId] = setInterval(() => {
-        const now = Math.floor(Date.now() / 1000);
-        if (now >= heldUntil) {
-            clearHoldTimer(seatId);
-            releaseSeat(seatId);
-            if (window.location.pathname.includes("thanh-toan")) {
-                window.location.href = "/";
-            }
-        }
-    }, 1000);
-}
 
-function clearHoldTimer(seatId) {
-    if (holdTimers[seatId]) {
-        clearInterval(holdTimers[seatId]);
-        delete holdTimers[seatId];
-    }
-}
 
 // ==== CHECK LOGIC CHỌN GHẾ TRỐNG ====
 function isValidSeatSelectionAll(seatArray) {
@@ -650,7 +629,14 @@ document.addEventListener("DOMContentLoaded", function () {
     renderSeatLayout();
     window.selectedSeats = Array.from(myHeldSeats);
 
-    let maxHoldUntil = 0;
+    let maxHoldUntil = window.holdUntil || 0;
+
+    if (maxHoldUntil) {
+        const now = Math.floor(Date.now() / 1000);
+        const remaining = maxHoldUntil - now;
+        if (remaining > 0) startSeatHoldTimer(remaining);
+    }
+
     if (window.holdUntilMap && Object.keys(window.holdUntilMap).length) {
         Object.values(window.holdUntilMap).forEach((hold_until) => {
             if (hold_until && hold_until > maxHoldUntil)

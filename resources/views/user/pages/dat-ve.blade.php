@@ -31,10 +31,7 @@
                 <div class="step-label">Xác nhận</div>
             </div>
         </div>
-        <div id="seat-hold-timer">
-            <span>GHẾ GIỮ TRONG: </span>
-            <span id="seat-hold-timer-text"></span>
-        </div>
+      
         <!-- Main Content -->
         <div class="content">
             <!-- Left Panel - Seating -->
@@ -78,9 +75,11 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Right Panel - Movie Info & Summary -->
             <div class="right-panel">
+                <div id="seat-hold-timer" >
+                    <span>GHẾ GIỮ TRONG: </span>
+                    <span id="seat-hold-timer-text"></span>
+                </div>
                 <div class="movie-info">
                     <div class="movie-poster">
                         <div class="movie-poster-wrapper">
