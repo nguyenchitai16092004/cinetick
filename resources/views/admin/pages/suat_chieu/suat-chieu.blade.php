@@ -59,7 +59,7 @@
             <div class="col-lg-12">
                 <div class="card shadow rounded">
                     <div class="card-header bg-purple d-flex justify-content-between align-items-center">
-                        <h3 class="card-title mb-0">🎭 Danh sách suất chiếu</h3>
+                        <h3 class="card-title mb-0"><i class="fas fa-film"></i> Danh sách suất chiếu</h3>
                         <a href="{{ route('suat-chieu.create') }}" class="btn btn-purple">
                             <i class="fas fa-plus"></i> Thêm suất chiếu
                         </a>
@@ -169,7 +169,7 @@
                                             <td>
                                                 <div class="btn-group" role="group">
                                                     <a href="{{ route('suat-chieu.edit', $suatChieu->ID_SuatChieu) }}"
-                                                        class="btn btn-warning btn-sm" title="Chỉnh sửa">
+                                                        class="btn btn-warning btn-sm m-1" title="Chỉnh sửa" style="border-radius: 5px">
                                                         <i class="fas fa-edit"></i>
                                                     </a>
                                                     <form
@@ -179,7 +179,7 @@
                                                         class="d-inline">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" class="btn btn-danger btn-sm" title="Xóa">
+                                                        <button type="submit" class="btn btn-danger btn-sm m-1" title="Xóa">
                                                             <i class="fas fa-trash"></i>
                                                         </button>
                                                     </form>

@@ -16,7 +16,7 @@ class PhongChieuController extends Controller
 {
     public function index()
     {
-        $phongChieus = PhongChieu::orderBy('TrangThai','desc')->paginate(5);
+        $phongChieus = PhongChieu::orderBy('TrangThai', 'desc')->paginate(5);
         return view('admin.pages.phong_chieu.phong-chieu', compact('phongChieus'));
     }
 
@@ -33,7 +33,6 @@ class PhongChieuController extends Controller
         if ($soPhongChieu >= 5) {
             return redirect()->back()->with('error', 'Rạp này đã đạt tối đa 5 phòng chiếu.')->withInput();
         }
-
         $request->validate([
             'roomName' => [
                 'required',
@@ -52,6 +51,39 @@ class PhongChieuController extends Controller
             'rowAisles.*' => 'integer|min:1',
             'colAisles' => 'nullable|array',
             'colAisles.*' => 'integer|min:1',
+        ], [
+            'roomName.required' => 'Vui lòng nhập tên phòng chiếu.',
+            'roomName.string' => 'Tên phòng chiếu không hợp lệ.',
+            'roomName.max' => 'Tên phòng chiếu không được vượt quá 100 ký tự.',
+            'roomName.unique' => 'Tên phòng chiếu đã tồn tại trong rạp này.',
+
+            'ID_Rap.required' => 'Vui lòng chọn rạp.',
+            'ID_Rap.exists' => 'Rạp được chọn không tồn tại.',
+
+            'LoaiPhong.required' => 'Vui lòng chọn loại phòng.',
+            'LoaiPhong.integer' => 'Loại phòng không hợp lệ.',
+            'LoaiPhong.in' => 'Loại phòng không hợp lệ.',
+
+            'rowCount.required' => 'Vui lòng nhập số hàng ghế.',
+            'rowCount.integer' => 'Số hàng ghế phải là số nguyên.',
+            'rowCount.min' => 'Số hàng ghế tối thiểu là 5.',
+            'rowCount.max' => 'Số hàng ghế tối đa là 10.',
+
+            'colCount.required' => 'Vui lòng nhập số cột ghế.',
+            'colCount.integer' => 'Số cột ghế phải là số nguyên.',
+            'colCount.min' => 'Số cột ghế tối thiểu là 6.',
+            'colCount.max' => 'Số cột ghế tối đa là 10.',
+
+            'seatLayout.required' => 'Vui lòng nhập sơ đồ ghế.',
+            'seatLayout.json' => 'Sơ đồ ghế phải là chuỗi JSON hợp lệ.',
+
+            'rowAisles.array' => 'Dữ liệu khoảng cách lối đi giữa hàng không hợp lệ.',
+            'rowAisles.*.integer' => 'Các vị trí lối đi giữa hàng phải là số nguyên.',
+            'rowAisles.*.min' => 'Vị trí lối đi giữa hàng phải từ 1 trở lên.',
+
+            'colAisles.array' => 'Dữ liệu khoảng cách lối đi giữa cột không hợp lệ.',
+            'colAisles.*.integer' => 'Các vị trí lối đi giữa cột phải là số nguyên.',
+            'colAisles.*.min' => 'Vị trí lối đi giữa cột phải từ 1 trở lên.',
         ]);
 
 
@@ -180,6 +212,42 @@ class PhongChieuController extends Controller
             'colAisles' => 'nullable|array',
             'colAisles.*' => 'integer|min:1',
             'TrangThai' => 'required|int',
+        ], [
+            'roomName.required' => 'Vui lòng nhập tên phòng chiếu.',
+            'roomName.string' => 'Tên phòng chiếu không hợp lệ.',
+            'roomName.max' => 'Tên phòng chiếu không được vượt quá 100 ký tự.',
+            'roomName.unique' => 'Tên phòng chiếu đã tồn tại trong rạp này.',
+
+            'ID_Rap.required' => 'Vui lòng chọn rạp.',
+            'ID_Rap.exists' => 'Rạp được chọn không tồn tại.',
+
+            'LoaiPhong.required' => 'Vui lòng chọn loại phòng.',
+            'LoaiPhong.integer' => 'Loại phòng không hợp lệ.',
+            'LoaiPhong.in' => 'Loại phòng chỉ được chọn 0 (thường) hoặc 1 (VIP).',
+
+            'rowCount.required' => 'Vui lòng nhập số hàng ghế.',
+            'rowCount.integer' => 'Số hàng ghế phải là số nguyên.',
+            'rowCount.min' => 'Số hàng ghế tối thiểu là 5.',
+            'rowCount.max' => 'Số hàng ghế tối đa là 10.',
+
+            'colCount.required' => 'Vui lòng nhập số cột ghế.',
+            'colCount.integer' => 'Số cột ghế phải là số nguyên.',
+            'colCount.min' => 'Số cột ghế tối thiểu là 6.',
+            'colCount.max' => 'Số cột ghế tối đa là 10.',
+
+            'seatLayout.required' => 'Vui lòng nhập sơ đồ ghế.',
+            'seatLayout.json' => 'Sơ đồ ghế phải là chuỗi JSON hợp lệ.',
+
+            'rowAisles.array' => 'Dữ liệu lối đi giữa các hàng phải là một mảng.',
+            'rowAisles.*.integer' => 'Các vị trí lối đi giữa hàng phải là số nguyên.',
+            'rowAisles.*.min' => 'Vị trí lối đi giữa hàng phải lớn hơn hoặc bằng 1.',
+
+            'colAisles.array' => 'Dữ liệu lối đi giữa các cột phải là một mảng.',
+            'colAisles.*.integer' => 'Các vị trí lối đi giữa cột phải là số nguyên.',
+            'colAisles.*.min' => 'Vị trí lối đi giữa cột phải lớn hơn hoặc bằng 1.',
+
+            'TrangThai.required' => 'Vui lòng chọn trạng thái phòng.',
+            'TrangThai.int' => 'Trạng thái phòng không hợp lệ.',
         ]);
 
         try {

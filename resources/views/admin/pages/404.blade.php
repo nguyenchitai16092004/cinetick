@@ -1,5 +1,5 @@
 @extends('admin.layouts.master')
-@section('title', 'Hello Admin - 2TCINEMA')
+@section('title', 'Hello Admin - Cinetick')
 @section('main')
     <section class="h-full pb-16 overflow-y-auto">
         <div class="container flex flex-col items-center px-6 mx-auto">

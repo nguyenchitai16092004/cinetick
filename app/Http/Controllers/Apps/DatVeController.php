@@ -14,7 +14,6 @@ use Illuminate\Support\Facades\DB;
 use App\Events\GheDuocGiu;
 use Carbon\Carbon;
 use App\Models\GheDangGiu;
-use App\Models\HoaDon;
 use App\Models\Phim;
 
 

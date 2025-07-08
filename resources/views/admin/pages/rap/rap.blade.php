@@ -37,7 +37,7 @@
             <div class="col-lg-12">
                 <div class="card shadow rounded">
                     <div class="card-header bg-purple d-flex justify-content-between align-items-center">
-                        <h3 class="card-title mb-0">🏢 Danh sách rạp</h3>
+                        <h3 class="card-title mb-0"><i class="fas fa-building"></i> Danh sách rạp</h3>
                         <a href="{{ route('rap.create') }}" class="btn btn-purple">
                             <i class="fas fa-plus"></i> Thêm rạp mới
                         </a>
@@ -55,7 +55,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @forelse ($raps as $rap)
+                                    @forelse ($rapChieus as $rap)
                                         @php
                                             \Log::info('Dữ liệu $rap:', (array) $rap);
                                         @endphp
@@ -76,7 +76,7 @@
                                                     class="btn btn-warning btn-sm">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
-                                                {{-- <button type="button" class="btn btn-danger btn-sm"
+                                                <button type="button" class="btn btn-danger btn-sm"
                                                     onclick="moModalXoa({{ $rap->ID_Rap }}, '{{ $rap->TenRap }}')">
                                                     <i class="fas fa-trash"></i>
                                                 </button>
@@ -86,7 +86,7 @@
                                                     style="display: none;">
                                                     @csrf
                                                     @method('DELETE')
-                                                </form> --}}
+                                                </form>
                                             </td>
                                         </tr>
                                   
@@ -130,7 +130,7 @@
 
 @endsection
 
-{{-- @section('js')
+@section('js')
     <script>
         let idRapCanXoa = null;
         let timeoutXoa = null;
@@ -163,4 +163,4 @@
             }
         });
     </script>
-@endsection --}}
+@endsection

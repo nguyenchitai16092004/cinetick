@@ -29,6 +29,17 @@ class KhuyenMaiController extends Controller
                 'PhanTramGiam' => 'required|integer|min:1|max:100',
                 'GiamToiDa' => 'required|numeric|min:0',
                 'NgayKetThuc' => 'date|nullable',
+            ], [
+                'MaKhuyenMai.unique' => 'Mã khuyến mãi đã tồn tại.',
+                'MaKhuyenMai.max' => 'Mã khuyến mãi không được vượt quá 100 ký tự.',
+                'PhanTramGiam.required' => 'Vui lòng nhập phần trăm giảm.',
+                'PhanTramGiam.integer' => 'Phần trăm giảm phải là số nguyên.',
+                'PhanTramGiam.min' => 'Phần trăm giảm tối thiểu là 1%.',
+                'PhanTramGiam.max' => 'Phần trăm giảm tối đa là 100%.',
+                'GiamToiDa.required' => 'Vui lòng nhập giá trị giảm tối đa.',
+                'GiamToiDa.numeric' => 'Giảm tối đa phải là số.',
+                'GiamToiDa.min' => 'Giảm tối đa không được âm.',
+                'NgayKetThuc.date' => 'Ngày kết thúc không hợp lệ.',
             ]);
 
             $maKhuyenMai = $request->MaKhuyenMai;
@@ -63,11 +74,24 @@ class KhuyenMaiController extends Controller
     {
         try {
             $request->validate([
-                'MaKhuyenMai' => 'nullable|max:100',
+                'MaKhuyenMai' => 'nullable|max:100|unique:khuyen_mai,MaKhuyenMai,' . $id . ',ID_KhuyenMai',
                 'DieuKienToiThieu' => 'nullable|numeric|min:0',
                 'PhanTramGiam' => 'required|integer|min:1|max:100',
                 'GiamToiDa' => 'required|numeric|min:0',
                 'NgayKetThuc' => 'date|nullable',
+            ], [
+                'MaKhuyenMai.unique' => 'Mã khuyến mãi đã tồn tại.',
+                'MaKhuyenMai.max' => 'Mã khuyến mãi không được vượt quá 100 ký tự.',
+                'DieuKienToiThieu.numeric' => 'Điều kiện tối thiểu phải là số.',
+                'DieuKienToiThieu.min' => 'Điều kiện tối thiểu không được âm.',
+                'PhanTramGiam.required' => 'Vui lòng nhập phần trăm giảm.',
+                'PhanTramGiam.integer' => 'Phần trăm giảm phải là số nguyên.',
+                'PhanTramGiam.min' => 'Phần trăm giảm phải lớn hơn 0.',
+                'PhanTramGiam.max' => 'Phần trăm giảm tối đa là 100%.',
+                'GiamToiDa.required' => 'Vui lòng nhập giá trị giảm tối đa.',
+                'GiamToiDa.numeric' => 'Giảm tối đa phải là số.',
+                'GiamToiDa.min' => 'Giảm tối đa không được âm.',
+                'NgayKetThuc.date' => 'Ngày kết thúc không hợp lệ.',
             ]);
 
             $maKhuyenMai = $request->MaKhuyenMai;

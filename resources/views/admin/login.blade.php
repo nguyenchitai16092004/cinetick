@@ -9,7 +9,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('backend/assets/css/tailwind.output.css') }}" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css" />
-    <title>Login - Windmill Dashboard</title>
+    <link rel="icon"
+        href="{{ $thongTinTrangWeb->Icon ? asset('storage/' . $thongTinTrangWeb->Icon) : asset('images/no-image.jpg') }}"
+        type="image/png">
+
+    <title>Login - Cinetick</title>
 </head>
 
 <body>
@@ -18,9 +22,11 @@
             <div class="flex flex-col overflow-y-auto md:flex-row">
                 <div class="h-32 md:h-auto md:w-1/2">
                     <img aria-hidden="true" class="object-cover w-full h-full dark:hidden"
-                        src="{{ asset('backend/assets/img/login-office.jpeg') }}" alt="Office" />
+                        src="{{ $thongTinTrangWeb->Icon ? asset('storage/' . $thongTinTrangWeb->Icon) : asset('images/no-image.jpg') }}"
+                        alt="Office" />
                     <img aria-hidden="true" class="hidden object-cover w-full h-full dark:block"
-                        src="{{ asset('backend/assets/img/login-office-dark.jpeg') }}" alt="Office" />
+                        src="{{ $thongTinTrangWeb->Icon ? asset('storage/' . $thongTinTrangWeb->Icon) : asset('images/no-image.jpg') }}"
+                        alt="Office" />
                 </div>
                 <div class="flex items-center justify-center p-6 sm:p-12 md:w-1/2">
                     <div class="w-full">

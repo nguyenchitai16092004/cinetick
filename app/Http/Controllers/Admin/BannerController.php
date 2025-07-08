@@ -25,7 +25,31 @@ class BannerController extends Controller
             'HinhAnh' => 'required|image|mimes:jpg,png,jpeg|max:2048',
             'DuongDan' => 'required|string',
             'link' => 'required|string',
+        ], [
+            'TieuDeChinh.required' => 'Vui lòng nhập tiêu đề chính.',
+            'TieuDeChinh.string' => 'Tiêu đề chính phải là chuỗi ký tự.',
+            'TieuDeChinh.max' => 'Tiêu đề chính không được vượt quá 100 ký tự.',
+
+            'TieuDePhu.required' => 'Vui lòng nhập tiêu đề phụ.',
+            'TieuDePhu.string' => 'Tiêu đề phụ phải là chuỗi ký tự.',
+            'TieuDePhu.max' => 'Tiêu đề phụ không được vượt quá 100 ký tự.',
+
+            'MoTa.required' => 'Vui lòng nhập mô tả.',
+            'MoTa.string' => 'Mô tả phải là chuỗi ký tự.',
+            'MoTa.max' => 'Mô tả không được vượt quá 255 ký tự.',
+
+            'HinhAnh.required' => 'Vui lòng chọn hình ảnh.',
+            'HinhAnh.image' => 'Tệp tải lên phải là hình ảnh.',
+            'HinhAnh.mimes' => 'Hình ảnh chỉ chấp nhận định dạng jpg, jpeg hoặc png.',
+            'HinhAnh.max' => 'Kích thước hình ảnh không được vượt quá 2MB.',
+
+            'DuongDan.required' => 'Vui lòng nhập đường dẫn.',
+            'DuongDan.string' => 'Đường dẫn phải là chuỗi ký tự.',
+
+            'link.required' => 'Vui lòng nhập liên kết.',
+            'link.string' => 'Liên kết phải là chuỗi ký tự.',
         ]);
+
 
         $path = $request->file('HinhAnh')->store('banners', 'public');
 
@@ -98,7 +122,27 @@ class BannerController extends Controller
                 'HinhAnh' => 'nullable|image|mimes:jpg,png,jpeg|max:2048',
                 'DuongDan' => 'nullable|string',
                 'link' => 'nullable|string',
+            ], [
+                'TieuDeChinh.required' => 'Vui lòng nhập tiêu đề chính.',
+                'TieuDeChinh.string' => 'Tiêu đề chính phải là chuỗi ký tự.',
+                'TieuDeChinh.max' => 'Tiêu đề chính không được vượt quá 100 ký tự.',
+
+                'TieuDePhu.required' => 'Vui lòng nhập tiêu đề phụ.',
+                'TieuDePhu.string' => 'Tiêu đề phụ phải là chuỗi ký tự.',
+                'TieuDePhu.max' => 'Tiêu đề phụ không được vượt quá 100 ký tự.',
+
+                'MoTa.required' => 'Vui lòng nhập mô tả.',
+                'MoTa.string' => 'Mô tả phải là chuỗi ký tự.',
+                'MoTa.max' => 'Mô tả không được vượt quá 255 ký tự.',
+
+                'HinhAnh.image' => 'Tệp tải lên phải là hình ảnh.',
+                'HinhAnh.mimes' => 'Hình ảnh chỉ được chấp nhận định dạng jpg, png hoặc jpeg.',
+                'HinhAnh.max' => 'Kích thước hình ảnh không được vượt quá 2MB.',
+
+                'DuongDan.string' => 'Đường dẫn không hợp lệ.',
+                'link.string' => 'Liên kết không hợp lệ.',
             ]);
+
 
             $banner = DB::table('banners')->where('id', $id)->first();
             if (!$banner) {
@@ -108,7 +152,7 @@ class BannerController extends Controller
             $data = [
                 'TieuDeChinh' => $request->TieuDeChinh,
                 'TieuDePhu' => $request->TieuDePhu,
-                'MoTa' => $request->MoTa ,
+                'MoTa' => $request->MoTa,
                 'Link' => $request->DuongDan . $request->link,
                 'updated_at' => now(),
             ];

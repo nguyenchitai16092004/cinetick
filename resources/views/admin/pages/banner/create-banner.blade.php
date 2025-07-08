@@ -1,5 +1,5 @@
 @extends('admin.layouts.master')
-@section('title', 'Tạo Banner - 2TCINEMA')
+@section('title', 'Tạo Banner - Cinetick')
 
 @section('main')
     <section class="h-full overflow-y-auto px-6 py-8">

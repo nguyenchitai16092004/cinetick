@@ -33,7 +33,7 @@
             <div class="col-lg-12">
                 <div class="card shadow rounded">
                     <div class="card-header bg-purple d-flex justify-content-between align-items-center">
-                        <h3 class="card-title mb-0">🎫 Danh sách khuyến mãi</h3>
+                        <h3 class="card-title mb-0"><i class="fa-solid fa-tags"></i> Danh sách mã giảm giá</h3>
                         <a href="{{ route('khuyen-mai.create') }}" class="btn btn-purple">
                             <i class="fas fa-plus"></i> Thêm khuyến mãi mới
                         </a>
@@ -44,7 +44,7 @@
                                 <thead class="table-light">
                                     <tr>
                                         <th>ID</th>
-                                        <th>Mã khuyến mãi</th>
+                                        <th>Mã giảm giá</th>
                                         <th>Điều kiện tối thiểu</th>
                                         <th>Phần trăm giảm</th>
                                         <th>Giá trị tối đa</th>

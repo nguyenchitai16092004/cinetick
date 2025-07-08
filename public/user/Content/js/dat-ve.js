@@ -115,13 +115,13 @@ function showConfirmationModal(title, content, onConfirm, onCancel) {
 }
 
 // Thông báo đơn giản
-function showNotification(title, message, type = 'info') {
+function showNotification(title, type = 'info', message) {
     Swal.fire({
         title: title,
         text: message,
         icon: type,
         confirmButtonText: 'OK',
-        confirmButtonColor: '#f1c40f' // 🎨 Màu vàng cho nút OK
+        confirmButtonColor: '#f1c40f'//màu vàng
     });
 }
 
@@ -711,7 +711,8 @@ document.addEventListener("DOMContentLoaded", function () {
             const ageLabel = getAgeLabel(window.age);
             const confirmTitle = `Xác nhận mua vé cho người có độ tuổi phù hợp`;
             const confirmContent = `<div style="color:#4080FF;font-size:15px;margin-top:8px;font-style:italic;">
-                Tôi xác nhận mua vé phim này cho người có độ tuổi từ <b>${ageLabel}</b> và đồng ý cung cấp giấy tờ tuỳ thân để xác minh độ tuổi.</div>`;
+                Tôi xác nhận mua vé phim này cho người có độ tuổi từ <b>${ageLabel}</b> và đồng ý cung cấp giấy tờ tuỳ thân để xác minh độ tuổi. 
+                <p style ="color:red; margin-top:10px;">Lưu ý: Vé xem phim sẽ không được hoàn trả nếu bạn vi phạm giới hạn về độ tuổi của phim.</p></div>`;
 
             showConfirmationModal(confirmTitle, confirmContent, function () {
                 // Xác nhận

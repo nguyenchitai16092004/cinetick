@@ -24,11 +24,24 @@ class HoaDonController extends Controller
 {
     public function index(Request $request)
     {
-        $query = DB::table('hoa_don')
-            ->join('tai_khoan', 'hoa_don.ID_TaiKhoan', '=', 'tai_khoan.ID_TaiKhoan')
-            ->join('thong_tin', 'tai_khoan.ID_ThongTin', '=', 'thong_tin.ID_ThongTin')
-            ->select('hoa_don.created_at', 'hoa_don.PTTT', 'hoa_don.TongTien', 'hoa_don.ID_HoaDon', 'thong_tin.*')
-            ->orderBy('hoa_don.created_at', 'desc');
+        if (session('user_role') == '2') {
+            $query = DB::table('hoa_don')
+                ->join('tai_khoan', 'hoa_don.ID_TaiKhoan', '=', 'tai_khoan.ID_TaiKhoan')
+                ->join('thong_tin', 'tai_khoan.ID_ThongTin', '=', 'thong_tin.ID_ThongTin')
+                ->select('hoa_don.ID_HoaDon', 'hoa_don.created_at', 'hoa_don.PTTT', 'hoa_don.TongTien', 'hoa_don.ID_HoaDon', 'thong_tin.HoTen');
+        } else {
+            $ID_Rap = session('user_id') ? TaiKhoan::join('thong_tin', 'thong_tin.ID_ThongTin', 'tai_khoan.ID_ThongTin')
+                ->where('tai_khoan.ID_TaiKhoan', session('user_id'))
+                ->value('thong_tin.ID_Rap') : null;
+            $query = DB::table('hoa_don')
+                ->join('tai_khoan', 'hoa_don.ID_TaiKhoan', '=', 'tai_khoan.ID_TaiKhoan')
+                ->join('thong_tin', 'tai_khoan.ID_ThongTin', '=', 'thong_tin.ID_ThongTin')
+                ->join('ve_xem_phim', 'hoa_don.ID_HoaDon', '=', 've_xem_phim.ID_HoaDon')
+                ->join('suat_chieu', 've_xem_phim.ID_SuatChieu', '=', 'suat_chieu.ID_SuatChieu')
+                ->where('suat_chieu.ID_Rap', $ID_Rap)
+                ->select('hoa_don.ID_HoaDon', 'hoa_don.created_at', 'hoa_don.PTTT', 'hoa_don.TongTien', 'hoa_don.ID_HoaDon', 'thong_tin.HoTen');
+        }
+
 
         // Lọc theo ngày tạo
         if ($request->has('start_date') && $request->start_date) {
@@ -38,26 +51,6 @@ class HoaDonController extends Controller
         if ($request->has('end_date') && $request->end_date) {
             $query->whereDate('hoa_don.created_at', '<=', $request->end_date);
         }
-
-        // Lọc theo ID tài khoản
-        if ($request->has('id_tai_khoan') && $request->id_tai_khoan) {
-            $query->where('hoa_don.ID_TaiKhoan', $request->id_tai_khoan);
-        }
-
-        // Lọc theo phương thức thanh toán
-        if ($request->has('pttt') && $request->pttt) {
-            $query->where('hoa_don.PTTT', 'like', '%' . $request->pttt . '%');
-        }
-
-        // Lọc theo khoảng tổng tiền
-        if ($request->has('min_amount') && $request->min_amount) {
-            $query->where('hoa_don.TongTien', '>=', $request->min_amount);
-        }
-
-        if ($request->has('max_amount') && $request->max_amount) {
-            $query->where('hoa_don.TongTien', '<=', $request->max_amount);
-        }
-
         // Sắp xếp lại
         $hoaDons = $query->orderBy('hoa_don.created_at', 'desc')->paginate(10);
 
@@ -76,7 +69,7 @@ class HoaDonController extends Controller
             ->join('rap', 'rap.ID_Rap', 'thong_tin.ID_Rap')
             ->select('rap.*')
             ->first();
-        return view('admin.pages.hoa_don.create-hoa-don',  compact('raps' , 'taiKhoan'));
+        return view('admin.pages.hoa_don.create-hoa-don',  compact('raps', 'taiKhoan'));
     }
 
     /**
@@ -96,7 +89,45 @@ class HoaDonController extends Controller
                 'DanhSachGhe' => 'required|array|min:1',
                 'DiaChi' => 'required|string|max:255',
                 'TenPhim' => 'required|string|max:255',
+            ], [
+                'TongTien.required' => 'Vui lòng nhập tổng tiền.',
+                'TongTien.numeric' => 'Tổng tiền phải là số.',
+                'TongTien.min' => 'Tổng tiền không được âm.',
+
+                'SoTienGiam.numeric' => 'Số tiền giảm phải là số.',
+                'SoTienGiam.min' => 'Số tiền giảm không được âm.',
+
+                'PTTT.required' => 'Vui lòng chọn phương thức thanh toán.',
+                'PTTT.string' => 'Phương thức thanh toán không hợp lệ.',
+                'PTTT.max' => 'Phương thức thanh toán không được vượt quá 50 ký tự.',
+
+                'ID_SuatChieu.required' => 'Vui lòng chọn suất chiếu.',
+                'ID_SuatChieu.integer' => 'Suất chiếu không hợp lệ.',
+                'ID_SuatChieu.min' => 'Suất chiếu không hợp lệ.',
+
+                'SoLuongVe.required' => 'Vui lòng nhập số lượng vé.',
+                'SoLuongVe.integer' => 'Số lượng vé phải là số nguyên.',
+                'SoLuongVe.min' => 'Số lượng vé phải lớn hơn 0.',
+
+                'TrangThaiXacNhanHoaDon.required' => 'Vui lòng chọn trạng thái hóa đơn.',
+                'TrangThaiXacNhanHoaDon.in' => 'Trạng thái hóa đơn không hợp lệ.',
+
+                'TrangThaiXacNhanThanhToan.required' => 'Vui lòng chọn trạng thái thanh toán.',
+                'TrangThaiXacNhanThanhToan.in' => 'Trạng thái thanh toán không hợp lệ.',
+
+                'DanhSachGhe.required' => 'Vui lòng chọn ít nhất một ghế.',
+                'DanhSachGhe.array' => 'Danh sách ghế không hợp lệ.',
+                'DanhSachGhe.min' => 'Vui lòng chọn ít nhất một ghế.',
+
+                'DiaChi.required' => 'Vui lòng nhập địa chỉ.',
+                'DiaChi.string' => 'Địa chỉ không hợp lệ.',
+                'DiaChi.max' => 'Địa chỉ không được vượt quá 255 ký tự.',
+
+                'TenPhim.required' => 'Vui lòng nhập tên phim.',
+                'TenPhim.string' => 'Tên phim không hợp lệ.',
+                'TenPhim.max' => 'Tên phim không được vượt quá 255 ký tự.',
             ]);
+
 
             $idTaiKhoan = session('user_id');
             if (!$idTaiKhoan) {
@@ -331,7 +362,6 @@ class HoaDonController extends Controller
      */
     public function destroy($id)
     {
-        // Bắt đầu một transaction để đảm bảo tính toàn vẹn dữ liệu
         DB::beginTransaction();
 
         try {

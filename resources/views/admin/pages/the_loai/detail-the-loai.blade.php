@@ -6,7 +6,7 @@
         <div class="row justify-content-center">
             <div class="col-md-6">
                 <div class="card shadow-sm">
-                    <div class="card-header bg-primary text-white">
+                    <div class="card-header text-white" style="background-color: #6f42c1;">
                         <h4 class="mb-0"><i class="fas fa-film"></i> Thêm thể loại phim</h4>
                     </div>
                     <div class="card-body">

@@ -233,7 +233,7 @@
                                     <div class="mb-3 text-center">
                                         <i class="fas fa-money-bill-wave fa-3x text-success mb-2"></i>
                                         <div>
-                                            <input type="radio" name="paymentMethod" value="Tiền mặt"
+                                            <input type="radio" name="PTTT" value="Tiền mặt"
                                                 class="form-check-input me-2">
                                             <label>Tiền mặt</label>
                                         </div>
@@ -245,7 +245,7 @@
                                     <div class="mb-3 text-center">
                                         <i class="fas fa-credit-card fa-3x text-primary mb-2"></i>
                                         <div>
-                                            <input type="radio" name="paymentMethod" value="Chuyển khoản"
+                                            <input type="radio" name="PTTT" value="Chuyển khoản"
                                                 class="form-check-input me-2">
                                             <label>Thẻ</label>
                                         </div>
@@ -285,11 +285,10 @@
                                                 <div class="col-md-5">
                                                     <h6><i class="fas fa-wallet me-2"></i>Phương thức thanh toán</h6>
                                                     <div class="m-3" class="d-flex" style="display: flex">
-                                                        <input type="radio" id="payOS" name="paymentMethod"
-                                                            checked>
+                                                        <input type="radio" id="payOS" name="paymentMethod" value="payOS" checked >
                                                         <label for="payOS" class="d-flex w-100">
-                                                            <img src="/frontend/Content/img/payos.jpg" alt="PayOS"
-                                                                style="height: 24px;"> PayOS
+                                                            <img src="/user/Content/img/Casso-payOSLogo-1.svg"
+                                                                alt="PayOS" style="height: 24px;"> PayOS
                                                         </label>
                                                     </div>
                                                     <button class="btn btn-warning w-100 mt-3" id="btnModalConfirm">

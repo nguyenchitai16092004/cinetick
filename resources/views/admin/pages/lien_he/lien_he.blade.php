@@ -88,7 +88,7 @@
             <div class="col-lg-12">
                 <div class="card shadow rounded">
                     <div class="card-header bg-purple d-flex justify-content-between align-items-center">
-                        <h3 class="card-title mb-0">📞 Quản lý liên hệ khách hàng</h3>
+                        <h3 class="card-title mb-0"><i class="fas fa-phone-volume"></i> Quản lý liên hệ khách hàng</h3>
                     </div>
                     <div class="card-body p-0">
                         <div class="table-responsive">
@@ -207,15 +207,4 @@
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="{{ asset('backend/assets/js/lien-he.js') }}"></script>
-    @if (session('success'))
-        <script>
-            Swal.fire({
-                icon: 'success',
-                title: 'Thành công',
-                text: '{{ session('success') }}',
-                timer: 2000,
-                showConfirmButton: false
-            });
-        </script>
-    @endif
 @endsection

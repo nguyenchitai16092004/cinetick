@@ -41,28 +41,25 @@ document.addEventListener("DOMContentLoaded", function () {
         }, 300);
     }
 
-    var searchForm = document.querySelector(".header__search-form");
-    if (searchForm) {
-        searchForm.addEventListener("submit", function (e) {
-            var input = searchForm.querySelector(".header__search-input");
-            if (input && input.value.trim() === "") {
-                e.preventDefault();
-                // Ẩn loader nếu đang hiện
-                var loader = document.querySelector(".loader-overlay");
-                if (loader) loader.classList.add("hidden");
-                if (typeof $.sweetModal === "function") {
-                    $.sweetModal({
-                        content: "Vui lòng nhập từ khóa tìm kiếm!",
-                        icon: $.sweetModal.ICON_WARNING,
-                        theme: $.sweetModal.THEME_DARK,
-                    });
-                } else {
-                    alert("Vui lòng nhập từ khóa tìm kiếm!");
-                }
-                input.focus();
-            }
-        });
-    }
+    // var searchForm = document.querySelector(".header__search-form");
+    // if (searchForm) {
+    //     searchForm.addEventListener("submit", function (e) {
+    //         var input = searchForm.querySelector(".header__search-input");
+    //         if (input && input.value.trim() === "") {
+    //             e.preventDefault();
+    //             if (typeof $.sweetModal === "function") {
+    //                 $.sweetModal({
+    //                     content: "Vui lòng nhập từ khóa tìm kiếm!",
+    //                     icon: $.sweetModal.ICON_WARNING,
+    //                     theme: $.sweetModal.THEME_DARK,
+    //                 });
+    //             } else {
+    //                 alert("Vui lòng nhập từ khóa tìm kiếm!");
+    //             }
+    //             input.focus();
+    //         }
+    //     });
+    // }
 });
 // Hiện/ẩn menu mobile
 document.getElementById('menuToggle').onclick = function() {

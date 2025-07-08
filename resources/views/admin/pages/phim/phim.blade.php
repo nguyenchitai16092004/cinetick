@@ -33,7 +33,7 @@
             <div class="col-lg-12">
                 <div class="card shadow rounded">
                     <div class="card-header bg-purple d-flex justify-content-between align-items-center">
-                        <h3 class="card-title mb-0">🎬 Danh sách phim</h3>
+                        <h3 class="card-title mb-0"><i class="fas fa-film"></i> Danh sách phim</h3>
                         <a href="{{ route('phim.create') }}" class="btn btn-purple">
                             <i class="fas fa-plus"></i> Thêm phim mới
                         </a>

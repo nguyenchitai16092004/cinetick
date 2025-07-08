@@ -13,7 +13,7 @@
             <button class="header__search-toggle" id="searchToggle" aria-label="Tìm kiếm" type="button">
                 <i class="fa-solid fa-magnifying-glass"></i>
             </button>
-          
+
             <!-- Avatar user -->
             @if (session()->has('user_id'))
                 <a href="{{ route('user.info') }}" class="header__user-mobile" aria-label="Tài khoản">
@@ -21,8 +21,8 @@
                         style="width:32px;height:32px;">
                 </a>
             @endif
-              <!-- Nút menu hamburger -->
-              <button class="header__menu-toggle" id="menuToggle" aria-label="Mở menu">
+            <!-- Nút menu hamburger -->
+            <button class="header__menu-toggle" id="menuToggle" aria-label="Mở menu">
                 <i class="fa-solid fa-bars"></i>
             </button>
         </div>
@@ -31,7 +31,7 @@
                 <input type="text" name="keyword" placeholder="Tìm phim, rạp, thể loại phim..."
                     value="{{ request('keyword') ?? '' }}" autocomplete="off" class="header__search-input">
                 <button type="submit">
-                    <i  class="fa-solid fa-magnifying-glass"></i>
+                    <i class="fa-solid fa-magnifying-glass"></i>
                 </button>
             </form>
         </div>
@@ -120,7 +120,8 @@
         <nav>
             <ul>
                 <li>
-                    <form action="{{ route('tim-kiem') }}" method="GET" class="header__search-form header__search-form--mobile">
+                    <form action="{{ route('tim-kiem') }}" method="GET"
+                        class="header__search-form header__search-form--mobile">
                         <input type="text" name="keyword" placeholder="Tìm phim, rạp, thể loại phim..."
                             value="{{ request('keyword') ?? '' }}" autocomplete="off" class="header__search-input">
                         <button type="submit">
@@ -146,7 +147,8 @@
                         @foreach ($raps as $rap)
                             @if ($rap->TrangThai == 1)
                                 <li>
-                                    <a href="{{ route('rap.chiTiet', ['slug' => $rap->Slug]) }}">{{ $rap->TenRap }}</a>
+                                    <a
+                                        href="{{ route('rap.chiTiet', ['slug' => $rap->Slug]) }}">{{ $rap->TenRap }}</a>
                                 </li>
                             @endif
                         @endforeach
@@ -186,4 +188,17 @@
             },
         });
     }
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchForm = document.querySelector('.header__search-form');
+        const searchInput = searchForm.querySelector('.header__search-input');
+
+        searchForm.addEventListener('submit', function(e) {
+            const keyword = searchInput.value.trim();
+            if (!keyword) {
+                e.preventDefault(); // Ngăn submit form
+            }
+        });
+    });
 </script>

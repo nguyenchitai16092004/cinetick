@@ -4,7 +4,7 @@
 @section('main')
     <div class="container mt-4">
         <div class="card">
-            <div class="card-header bg-warning text-dark">
+            <div class="card-header text-white" style="background-color: #6f42c1;">
                 <h4><i class="fas fa-edit"></i> Chỉnh sửa khuyến mãi</h4>
             </div>
             <div class="card-body">
