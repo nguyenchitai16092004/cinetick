@@ -1,7 +1,6 @@
-@import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap");
+
 .booking-container {
-    width: 100%;
-    max-width: 1740px;
+    width: 1375px;
     background: rgba(255, 255, 255, 0.04);
     backdrop-filter: blur(10px);
     border-radius: 16px;
