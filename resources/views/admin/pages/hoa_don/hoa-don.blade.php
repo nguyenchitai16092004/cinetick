@@ -100,6 +100,7 @@
                                         <th>Ngày tạo</th>
                                         <th>PT Thanh toán</th>
                                         <th>Tổng tiền</th>
+                                        <th>Trạng thái hóa đơn</th>
                                         <th>Thao tác</th>
                                     </tr>
                                 </thead>
@@ -114,19 +115,38 @@
                                             <td class="text-danger fw-bold">
                                                 {{ number_format($hoaDon->TongTien, 0, ',', '.') }} đ</td>
                                             <td>
+                                                @if ($hoaDon->TrangThaiXacNhanHoaDon == 1)
+                                                    <span class="badge bg-success">Đã xác nhận</span>
+                                                @elseif($hoaDon->TrangThaiXacNhanHoaDon == 0)
+                                                    <span class="badge bg-danger">Hoàn tiền</span>
+                                                @else
+                                                    <span class="badge bg-secondary">Chưa xác định</span>
+                                                @endif
+                                            </td>
+                                            <td>
                                                 <div class="btn-group" role="group">
                                                     <a href="{{ route('hoa-don.show', $hoaDon->ID_HoaDon) }}"
-                                                        class="btn btn-warning btn-sm m-1" title="Chỉnh sửa" style="border-radius: 5px">
+                                                        class="btn btn-warning btn-sm m-1" title="Xem chi tiết"
+                                                        style="border-radius: 5px">
                                                         <i class="fas fa-eye"></i>
                                                     </a>
+                                                    @if ($hoaDon->TrangThaiXacNhanHoaDon != 0)
                                                     <form action="{{ route('hoa-don.destroy', $hoaDon->ID_HoaDon) }}"
                                                         method="POST" class="d-inline"
-                                                        onsubmit="return confirm('Bạn có chắc muốn xóa?')">
+                                                        onsubmit="return false;">
                                                         @csrf @method('DELETE')
-                                                        <button type="submit" class="btn btn-danger btn-sm m-1" title="Xóa">
-                                                            <i class="fas fa-trash"></i>
+                                                        <button type="button" class="btn btn-danger btn-sm m-1"
+                                                            title="Hoàn tiền"
+                                                            onclick="confirmHoanTien(this.form)">
+                                                            Hoàn tiền
                                                         </button>
                                                     </form>
+                                                    @else
+                                                        <button class="btn btn-secondary btn-sm m-1" disabled
+                                                            title="Đã hoàn tiền">
+                                                            Đã hoàn tiền
+                                                        </button>
+                                                    @endif
                                                 </div>
                                             </td>
                                         </tr>
@@ -152,4 +172,3 @@
         </div>
     </div>
 @endsection
-

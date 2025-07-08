@@ -121,7 +121,7 @@ class PhimController extends Controller
     {
         $phim = Phim::where('Slug', $slug)->firstOrFail();
         $now = now();
-        $gioHienPhim = $now->copy()->addMinutes(5);
+        $gioHienPhim = $now->copy()->subMinutes(5);
 
         $suatChieu = $phim->suatChieu()
             ->with('rap')
@@ -142,7 +142,7 @@ class PhimController extends Controller
 
         return view('user.pages.chi-tiet-phim', compact('phim', 'suatChieu'));
     }
-    
+
     public function ajaxPhimTheoRap(Request $request)
     {
 
@@ -202,6 +202,7 @@ class PhimController extends Controller
             ['ID_Phim', $id_phim],
             ['NgayChieu', $ngay]
         ])
+            ->where('created_at', '<=', now()->subMinutes(5)) 
             ->orderBy('GioChieu')
             ->get();
 
@@ -358,7 +359,7 @@ class PhimController extends Controller
         return view('user.pages.tim-kiem', [
             'phims' => $phims,
             'rapsSearch' => $rapsSearch,
-            'keyword' => $keyword, 
+            'keyword' => $keyword,
         ]);
     }
 }
