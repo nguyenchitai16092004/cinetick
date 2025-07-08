@@ -23,12 +23,12 @@ return new class extends Migration
             $table->decimal('Luong', 15, 2)->nullable();
 
             // Cột ID_Rap (nullable) và khóa ngoại
-            $table->unsignedBigInteger('ID_Rap')->nullable();
-            $table->foreign('ID_Rap')->references('ID_Rap')->on('rap')->onDelete('set null');
+            //$table->unsignedBigInteger('ID_Rap')->nullable();
+            //$table->foreign('ID_Rap')->references('ID_Rap')->on('rap')->onDelete('set null');
 
             $table->timestamps();
         });
-    }
+    } 
 
     /**
      * Reverse the migrations.

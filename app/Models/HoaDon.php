@@ -21,7 +21,6 @@ class HoaDon extends Model
         'Email',
         'TrangThaiXacNhanHoaDon',
         'TrangThaiXacNhanThanhToan',
-        'payment_link',
         'order_code',
         'SoLuongVe',
         'SoTaiKhoan',

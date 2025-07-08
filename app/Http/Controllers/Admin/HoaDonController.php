@@ -28,7 +28,14 @@ class HoaDonController extends Controller
             $query = DB::table('hoa_don')
                 ->join('tai_khoan', 'hoa_don.ID_TaiKhoan', '=', 'tai_khoan.ID_TaiKhoan')
                 ->join('thong_tin', 'tai_khoan.ID_ThongTin', '=', 'thong_tin.ID_ThongTin')
-                ->select('hoa_don.ID_HoaDon', 'hoa_don.created_at', 'hoa_don.PTTT', 'hoa_don.TongTien', 'hoa_don.ID_HoaDon', 'thong_tin.HoTen');
+                ->select(
+                'hoa_don.ID_HoaDon',
+                'hoa_don.created_at',
+                'hoa_don.PTTT',
+                'hoa_don.TongTien',
+                'hoa_don.TrangThaiXacNhanHoaDon', 
+                'thong_tin.HoTen'
+            );
         } else {
             $ID_Rap = session('user_id') ? TaiKhoan::join('thong_tin', 'thong_tin.ID_ThongTin', 'tai_khoan.ID_ThongTin')
                 ->where('tai_khoan.ID_TaiKhoan', session('user_id'))
@@ -39,7 +46,14 @@ class HoaDonController extends Controller
                 ->join('ve_xem_phim', 'hoa_don.ID_HoaDon', '=', 've_xem_phim.ID_HoaDon')
                 ->join('suat_chieu', 've_xem_phim.ID_SuatChieu', '=', 'suat_chieu.ID_SuatChieu')
                 ->where('suat_chieu.ID_Rap', $ID_Rap)
-                ->select('hoa_don.ID_HoaDon', 'hoa_don.created_at', 'hoa_don.PTTT', 'hoa_don.TongTien', 'hoa_don.ID_HoaDon', 'thong_tin.HoTen');
+                ->select(
+                'hoa_don.ID_HoaDon',
+                'hoa_don.created_at',
+                'hoa_don.PTTT',
+                'hoa_don.TongTien',
+                'hoa_don.TrangThaiXacNhanHoaDon', 
+                'thong_tin.HoTen'
+            );
         }
 
 
@@ -367,19 +381,19 @@ class HoaDonController extends Controller
         try {
             $hoaDon = HoaDon::findOrFail($id);
 
-            // Xóa tất cả các vé xem phim liên quan
-            VeXemPhim::where('ID_HoaDon', $id)->delete();
+            $hoaDon->TrangThaiXacNhanHoaDon = 0; //hòa tiền
+            $hoaDon->save();
 
-            // Xóa hóa đơn
-            $hoaDon->delete();
+            
+            VeXemPhim::where('ID_HoaDon', $id)->update(['TrangThai' => 2]); // hoàn tiền
 
             DB::commit();
             return redirect()->route('hoa-don.index')
-                ->with('success', 'Hóa đơn và các vé liên quan đã được xóa thành công!');
+                ->with('success', 'Hóa đơn này đã được chuyển về trạng thái hòan tiền!');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->route('hoa-don.index')
-                ->with('error', 'Không thể xóa hóa đơn: ' . $e->getMessage());
+                ->with('error', 'Không thể cập nhật trạng thái hóa đơn: ' . $e->getMessage());
         }
     }
 

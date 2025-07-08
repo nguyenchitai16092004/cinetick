@@ -323,6 +323,22 @@
         }
     }
 
+    function confirmHoanTien(form) {
+        showWarning(
+            'Bạn có chắc chắn muốn hoàn tiền cho hóa đơn này? Hành động này không thể hoàn tác!',
+            'Xác nhận hoàn tiền',
+            0 // 0: không tự động tắt
+        );
+        
+        const btn = document.querySelector('.notification-overlay.show .btn-ok');
+        if (btn) {
+            btn.onclick = function() {
+                closeNotification();
+                form.submit();
+            };
+        }
+    }
+
     function closeNotification() {
         const overlay = document.getElementById('notificationOverlay');
         overlay.classList.remove('show');
