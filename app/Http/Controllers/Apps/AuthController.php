@@ -263,8 +263,9 @@ class AuthController extends Controller
     {
         $userId = session('user_id');
         if (!$userId) {
-            return redirect()->route('login.form');
+            return response()->json(['message' => 'Bạn chưa đăng nhập.'], 401);
         }
+
         $taiKhoan = TaiKhoan::find($userId);
         $thongTin = $taiKhoan->thongTin ?? null;
 
@@ -274,14 +275,28 @@ class AuthController extends Controller
             'GioiTinh' => 'required|in:1,0',
         ]);
 
-        // Chỉ cập nhật các trường cho phép
         $thongTin->HoTen = $request->HoTen;
         $thongTin->SDT = $request->SDT;
         $thongTin->GioiTinh = $request->GioiTinh;
         $thongTin->save();
 
-        return back()->with('success', 'Cập nhật thông tin thành công!');
+        session([
+            'user_fullname' => $request->HoTen,
+            'user_phone' => $request->SDT,
+            'user_sex' => $request->GioiTinh,
+        ]);
+
+        if ($request->ajax()) {
+            return response()->json([
+                'message' => 'Cập nhật thông tin thành công!',
+                'HoTen' => $request->HoTen
+            ]);
+        }
+
+        return redirect()->route('user.info')->with('success', 'Cập nhật thông tin thành công!');
     }
+
+
     public function dsHoaDonNguoiDung()
     {
         $userId = session('user_id');

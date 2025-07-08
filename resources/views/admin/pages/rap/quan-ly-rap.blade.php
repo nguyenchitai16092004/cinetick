@@ -263,9 +263,7 @@
         }
 
         .btn-primary {
-            background: var(--purple-gradient);
             color: white;
-            box-shadow: 0 4px 12px rgba(111, 66, 193, 0.3);
         }
 
         .btn-primary:hover {

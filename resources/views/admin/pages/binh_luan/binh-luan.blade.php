@@ -33,7 +33,7 @@
             <div class="col-lg-12">
                 <div class="card shadow rounded">
                     <div class="card-header bg-purple d-flex justify-content-between align-items-center">
-                        <h3 class="card-title mb-0">💬 Quản lý bình luận</h3>
+                        <h3 class="card-title mb-0"><i class="fas fa-comments"></i> Quản lý bình luận</h3>
                     </div>
                     <div class="card-body">
                         {{-- Form lọc --}}

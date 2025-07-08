@@ -4,7 +4,7 @@
 @section('main')
     <div class="container mt-4">
         <div class="card">
-            <div class="card-header bg-primary text-white">
+            <div class="card-header text-white" style="background-color: #6f42c1;">
                 <h4><i class="fas fa-plus"></i> Thêm khuyến mãi</h4>
             </div>
             <div class="card-body">
@@ -37,7 +37,7 @@
                         <input type="date" name="NgayKetThuc" id="NgayKetThuc" class="form-control" required>
                     </div>
 
-                    <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Lưu</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Lưu</button>
                     <a href="{{ route('khuyen-mai.index') }}" class="btn btn-secondary">Quay lại</a>
                 </form>
             </div>

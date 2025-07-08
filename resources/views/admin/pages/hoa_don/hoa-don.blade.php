@@ -54,7 +54,7 @@
             <div class="col-lg-12">
                 <div class="card shadow rounded">
                     <div class="card-header bg-purple d-flex justify-content-between align-items-center">
-                        <h3 class="card-title mb-0">🧾 Danh sách Hóa Đơn</h3>
+                        <h3 class="card-title mb-0"><i class="fas fa-list-check"></i> Danh sách Hóa Đơn</h3>
                         <a href="{{ route('hoa-don.create') }}" class="btn btn-purple">
                             <i class="fas fa-plus"></i> Thêm hóa đơn
                         </a>
@@ -95,6 +95,7 @@
                                 <thead>
                                     <tr>
                                         <th>#</th>
+                                        <th>Mã hóa đơn</th>
                                         <th>Khách hàng</th>
                                         <th>Ngày tạo</th>
                                         <th>PT Thanh toán</th>
@@ -106,6 +107,7 @@
                                     @forelse($hoaDons as $index => $hoaDon)
                                         <tr>
                                             <td>{{ $hoaDons->firstItem() + $index }}</td>
+                                            <td>{{ $hoaDon->ID_HoaDon }}</td>
                                             <td>{{ $hoaDon->HoTen ?? 'Không có thông tin' }}</td>
                                             <td>{{ \Carbon\Carbon::parse($hoaDon->created_at)->format('d/m/Y') }}</td>
                                             <td>{{ $hoaDon->PTTT }}</td>
@@ -114,14 +116,14 @@
                                             <td>
                                                 <div class="btn-group" role="group">
                                                     <a href="{{ route('hoa-don.show', $hoaDon->ID_HoaDon) }}"
-                                                        class="btn btn-warning btn-sm" title="Chỉnh sửa">
+                                                        class="btn btn-warning btn-sm m-1" title="Chỉnh sửa" style="border-radius: 5px">
                                                         <i class="fas fa-eye"></i>
                                                     </a>
                                                     <form action="{{ route('hoa-don.destroy', $hoaDon->ID_HoaDon) }}"
                                                         method="POST" class="d-inline"
                                                         onsubmit="return confirm('Bạn có chắc muốn xóa?')">
                                                         @csrf @method('DELETE')
-                                                        <button type="submit" class="btn btn-danger btn-sm" title="Xóa">
+                                                        <button type="submit" class="btn btn-danger btn-sm m-1" title="Xóa">
                                                             <i class="fas fa-trash"></i>
                                                         </button>
                                                     </form>

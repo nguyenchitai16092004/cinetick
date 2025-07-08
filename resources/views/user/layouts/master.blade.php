@@ -21,7 +21,6 @@
 
     <!-- External CSS -->
     <link href="Content/Stylebf25.css" rel="stylesheet" />
-    <link href="Content/css/main.css" rel="stylesheet" />
 
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -215,14 +214,10 @@
             }
         }
     </style>
+
 </head>
 
 <body>
-    <!-- Loader -->
-    <div class="loader-overlay">
-        <div class="loader"></div>
-    </div>
-
     <!-- Header -->
     @include('user.partials.header')
 
@@ -241,7 +236,8 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetmodal@2.0.0-beta.2/dist/min/jquery.sweet-modal.min.js"></script>
     <script src="{{ asset('user/Content/js/booking-release-global.js') }}"></script>
-    <script src="Content/js/main.js"></script>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
 
     <!-- Notification System JavaScript -->
     <script>

@@ -292,12 +292,6 @@
             getRatingUrl: "{{ route('ajax.get-rating') }}",
             csrf: "{{ csrf_token() }}"
         });
-        window.addEventListener('DOMContentLoaded', function() {
-            document.querySelector('.loader-overlay').classList.add('hidden');
-        });
-        window.addEventListener('pageshow', function() {
-            document.querySelector('.loader-overlay').classList.add('hidden');
-        });
     </script>
 
 @stop

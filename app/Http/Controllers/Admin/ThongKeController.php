@@ -15,20 +15,15 @@ class ThongKeController extends Controller
 {
     public function index(Request $request)
     {
-        // Lấy năm hiện tại hoặc năm được chọn
         $selectedYear = $request->get('year', Carbon::now()->year);
-        
-        // Lấy tất cả các phim
+
         $phims = Phim::orderBy('TenPhim')->get();
-        
-        // Thống kê tổng doanh thu theo từng phim theo tháng
+
         $doanhThuTheoPhim = $this->getDoanhThuTheoPhim($selectedYear);
-        
-        // Thống kê số vé bán được theo suất chiếu theo tháng
+
         $soVeTheoSuatChieu = $this->getSoVeTheoSuatChieu($selectedYear);
         
-        // Chuẩn bị dữ liệu cho biểu đồ
-        $chartData = $this->prepareChartData($doanhThuTheoPhim, $soVeTheoSuatChieu);
+        $chartData = $this->dataChart($doanhThuTheoPhim);
         
         return view('admin.pages.thong_ke.thong-ke-doanh-thu', compact(
             'phims',
@@ -99,27 +94,13 @@ class ThongKeController extends Controller
             ->groupBy(['TenPhim', 'thang']);
     }
     
-    private function prepareChartData($doanhThuTheoPhim, $soVeTheoSuatChieu)
+    private function dataChart($doanhThuTheoPhim)
     {
         $months = range(1, 12);
-        $monthNames = [
-            1 => 'Tháng 1', 2 => 'Tháng 2', 3 => 'Tháng 3', 4 => 'Tháng 4',
-            5 => 'Tháng 5', 6 => 'Tháng 6', 7 => 'Tháng 7', 8 => 'Tháng 8',
-            9 => 'Tháng 9', 10 => 'Tháng 10', 11 => 'Tháng 11', 12 => 'Tháng 12'
-        ];
+        $monthNames = [1 => 'Tháng 1', 2 => 'Tháng 2', 3 => 'Tháng 3', 4 => 'Tháng 4', 5 => 'Tháng 5', 6 => 'Tháng 6', 7 => 'Tháng 7', 8 => 'Tháng 8', 9 => 'Tháng 9', 10 => 'Tháng 10', 11 => 'Tháng 11', 12 => 'Tháng 12'];
         
-        // Dữ liệu doanh thu theo phim
         $revenueData = [];
-        $colors = [
-            'rgba(255, 99, 132, 0.8)',
-            'rgba(54, 162, 235, 0.8)',
-            'rgba(255, 205, 86, 0.8)',
-            'rgba(75, 192, 192, 0.8)',
-            'rgba(153, 102, 255, 0.8)',
-            'rgba(255, 159, 64, 0.8)',
-            'rgba(199, 199, 199, 0.8)',
-            'rgba(83, 102, 255, 0.8)',
-        ];
+        $colors = ['rgba(255, 99, 132, 0.8)','rgba(54, 162, 235, 0.8)','rgba(255, 205, 86, 0.8)','rgba(75, 192, 192, 0.8)','rgba(153, 102, 255, 0.8)','rgba(255, 159, 64, 0.8)','rgba(199, 199, 199, 0.8)','rgba(83, 102, 255, 0.8)',];
         
         $colorIndex = 0;
         foreach ($doanhThuTheoPhim as $phimId => $data) {
@@ -193,7 +174,6 @@ class ThongKeController extends Controller
             ->header('Content-Length', strlen($csvContent));
     }
     
-    // API để lấy dữ liệu AJAX
     public function getDataByMonth(Request $request)
     {
         $year = $request->get('year', Carbon::now()->year);

@@ -16,6 +16,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Validation\ValidationException;
 use App\Http\Controllers\Controller;
 use App\Models\KhuyenMai;
+use App\Models\KhuyenMaiDaSuDung;
 use Carbon\Carbon;
 
 class ThanhToanController extends Controller
@@ -270,6 +271,14 @@ class ThanhToanController extends Controller
             ->where('NgayKetThuc', '>=', $now)
             ->first();
 
+        if(KhuyenMaiDaSuDung::where('ID_KhuyenMai', $km->ID_KhuyenMai)
+            ->where('ID_TaiKhoan', session('user_id'))
+            ->exists()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Mã khuyến mãi đã được sử dụng trước đó!'
+            ]);
+        }
         if (!$km) {
             return response()->json([
                 'status' => false,
@@ -303,12 +312,15 @@ class ThanhToanController extends Controller
             'tong_tien_sau_giam' => $tongTienSauGiam
         ]);
 
+        // Lưu thông tin mã khuyến mãi vào session để sử dụng sau này
+        session(['ma_khuyen_mai' => $km->ID_KhuyenMai]);
+
         return response()->json([
             'status' => true,
             'phan_tram_giam' => $phanTram,
             'so_tien_giam' => $soTienGiam,
             'tong_tien_sau_giam' => $tongTienSauGiam,
-            'message' => "Đã áp dụng mã giảm $phanTram%"
+            'message' => "Đã áp dụng mã giảm $phanTram% tối đa $km->GiamToiDa đ"
         ]);
     }
 }

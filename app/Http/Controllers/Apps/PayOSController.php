@@ -4,10 +4,10 @@ namespace App\Http\Controllers\Apps;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\KhuyenMaiDaSuDung;
 use PayOS\PayOS;
 use App\Models\HoaDon;
 use App\Models\VeXemPhim;
-use TJGazel\Toastr\Facades\Toastr;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Apps\ThanhToanController;
 use App\Models\SuatChieu;
@@ -120,6 +120,7 @@ class PayOSController extends Controller
         switch ($paymentInfo['status']) {
             case 'PAID':
                 $this->updatePaymentSuccess($orderCode);
+                // Lưu mã hóa đơn vào session để sử dụng sau này
                 return response()->json([
                     'message' => 'Thanh toán thành công',
                     'data' => $paymentInfo
@@ -147,6 +148,7 @@ class PayOSController extends Controller
         if ($orderCode) {
             $paymentInfo = $this->getPaymentLinkInformation($orderCode);
             if ($paymentInfo && $paymentInfo['status'] === 'PAID') {
+                $this->addMaKhuyenMai();
                 $this->updatePaymentSuccess($orderCode);
             }
             return redirect()->route('checkout_status')
@@ -214,9 +216,9 @@ class PayOSController extends Controller
                 'PTTT'        => 'Chuyển khoản',
                 'ID_TaiKhoan' => session('user_id'),
                 'order_code'  => $orderCode,
-                'SoTaiKhoan'  => $soTaiKhoan,         
-                'TenTaiKhoan' => $tenTaiKhoan,        
-                'TenNganHang' => $tenNganHang,        
+                'SoTaiKhoan'  => $soTaiKhoan,
+                'TenTaiKhoan' => $tenTaiKhoan,
+                'TenNganHang' => $tenNganHang,
                 'TrangThaiXacNhanHoaDon'     => 1,
                 'TrangThaiXacNhanThanhToan'  => 1,
                 'SoLuongVe'   => count($orderData['selectedSeats']),
@@ -294,5 +296,24 @@ class PayOSController extends Controller
         VeXemPhim::where('ID_HoaDon', $hoaDon->ID_HoaDon)->update([
             'TrangThai' => 2 // Đã hủy
         ]);
+    }
+    public function addMaKhuyenMai()
+    {
+        $ma = session('ma_khuyen_mai');
+        $id = session('user_id');
+        if (!$ma || !$id) {
+            return;
+        }
+        KhuyenMaiDaSuDung::create([
+            'ID_TaiKhoan' => $id,
+            'ID_KhuyenMai' => $ma
+        ]);
+        // Xóa mã khuyến mãi khỏi session
+        session()->forget('ma_khuyen_mai');
+        // Xóa mã khuyến mãi khỏi cache nếu có
+        if (cache()->has('ma_khuyen_mai_' . $id)) {
+            cache()->forget('ma_khuyen_mai_' . $id);
+        }
+        return;
     }
 }

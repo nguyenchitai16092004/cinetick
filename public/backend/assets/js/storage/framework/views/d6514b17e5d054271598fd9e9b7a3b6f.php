@@ -1,5 +1,5 @@
 
-<?php $__env->startSection('title', 'Hello Admin - 2TCINEMA'); ?>
+<?php $__env->startSection('title', 'Hello Admin - Cinetick'); ?>
 <?php $__env->startSection('main'); ?>
     <section class="h-full overflow-y-auto">
         <div class="container px-6 mx-auto grid">

@@ -29,7 +29,7 @@ class TheLoaiPhimController extends Controller
         $slug =  Str::slug($request->TenTheLoai);
 
         if (TheLoaiPhim::where('Slug', $slug)->exists()) {
-            return back()->with('error', 'Thể loại này đã có rồi làm lại đi ');
+            return back()->with('error', 'Thể loại này đã có rồi ');
         }
 
         TheLoaiPhim::create([
@@ -54,8 +54,10 @@ class TheLoaiPhimController extends Controller
 
         $slug =  Str::slug($request->TenTheLoai);
 
-        if (TheLoaiPhim::where('Slug', $slug)->exists()) {
-            return back()->with('error', 'Thể loại này đã có rồi làm lại đi ');
+        if (TheLoaiPhim::where('Slug', $slug)
+        ->where('ID_TheLoaiPhim', '!=', $id)
+        ->exists()) {
+            return back()->with('error', 'Thể loại này đã có rồi');
         }
 
         $theloai = TheLoaiPhim::findOrFail($id);

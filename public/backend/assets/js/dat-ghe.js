@@ -904,7 +904,7 @@ function khoiTaoSuKien() {
     const nutTiepTheo4 = document.getElementById('btnNext4');
     if (nutTiepTheo4) {
         nutTiepTheo4.addEventListener('click', () => {
-            const selectedMethod = document.querySelector('input[name="paymentMethod"]:checked');
+            const selectedMethod = document.querySelector('input[name="PTTT"]:checked');
 
             if (!selectedMethod) {
                 if (typeof showGlobalNotification === 'function') {

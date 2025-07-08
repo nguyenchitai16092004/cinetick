@@ -155,7 +155,7 @@
                         <span class="info-value" id="modal-showtime">--:-- --/--/----</span>
                     </div>
                 </div>
-                <div class="qr-code" id="modal-qr"></div>
+                <div class="qr-code" id="modal-qr" style="display:none;"></div>
                 <div style="margin-top: 20px">
                     <div class="info-row">
                         <span class="info-label">Mã vé</span>
@@ -434,42 +434,27 @@
                 GioiTinh: $("input[name='GioiTinh']:checked", "#updateInfoFormModal").val(),
                 _token: $('meta[name="csrf-token"]').attr('content')
             };
+
             $.ajax({
                 url: "{{ route('user.updateInfo.post') }}",
                 type: "POST",
                 data: data,
                 success: function(res) {
                     closeUpdateInfoModal();
-                    $.sweetModal({
-                        content: "Cập nhật thông tin thành công!",
-                        title: "Thông báo",
-                        icon: $.sweetModal.ICON_SUCCESS,
-                        theme: $.sweetModal.THEME_DARK,
-                        buttons: {
-                            'OK': {
-                                classes: 'redB'
-                            }
-                        }
-                    });
-                    // Cập nhật lại trên giao diện nếu cần
-                    // location.reload(); // hoặc tự cập nhật các field hiển thị
+
+                    showNotification('success', 'Thành công!', 'Cập nhật thông tin thành công!');
+                    $('.profile-name').text(data.HoTen);
+                    setTimeout(() => {
+                        location.reload();
+                    }, 3000);
                 },
                 error: function(xhr) {
                     let msg = xhr.responseJSON?.message || "Có lỗi xảy ra!";
-                    $.sweetModal({
-                        content: msg,
-                        title: "Lỗi",
-                        icon: $.sweetModal.ICON_WARNING,
-                        theme: $.sweetModal.THEME_DARK,
-                        buttons: {
-                            'OK': {
-                                classes: 'redB'
-                            }
-                        }
-                    });
+                    showNotification('error', 'Lỗi!', msg);
                 }
             });
         }
+
 
         function togglePassword(inputId, btn) {
             var input = document.getElementById(inputId);

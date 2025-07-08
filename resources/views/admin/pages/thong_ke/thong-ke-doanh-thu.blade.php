@@ -40,7 +40,7 @@
     
     .month-tab .nav-link {
         border-radius: 20px;
-        margin-right: 10px;
+        margin-right: 8px;
         font-weight: 500;
     }
     
@@ -62,7 +62,7 @@
 @section('main')
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>📊 Thống kê doanh thu theo tháng</h2>
+        <h2><i class="fas fa-chart-simple"></i> Thống kê doanh thu theo tháng</h2>
         <button class="btn btn-success" onclick="exportData()">
             <i class="fas fa-download"></i> Xuất Excel
         </button>
@@ -72,7 +72,7 @@
     <div class="year-selector">
         <div class="row align-items-center">
             <div class="col-md-3">
-                <label for="year-select" class="form-label fw-bold">📅 Chọn năm:</label>
+                <label for="year-select" class="form-label fw-bold"><i class="fas fa-calendar-days"></i> Chọn năm:</label>
                 <select id="year-select" class="form-select" onchange="changeYear()">
                     @for($i = 2020; $i <= date('Y') + 1; $i++)
                         <option value="{{ $i }}" {{ $i == $selectedYear ? 'selected' : '' }}>
@@ -98,13 +98,13 @@
 
     {{-- Biểu đồ doanh thu theo phim --}}
     <div class="chart-container">
-        <h4 class="mb-4">💰 Doanh thu theo từng phim trong năm {{ $selectedYear }}</h4>
+        <h4 class="mb-4"><i class="fas fa-sack-dollar"></i> Doanh thu theo từng phim trong năm {{ $selectedYear }}</h4>
         <canvas id="revenueChart" height="100"></canvas>
     </div>
 
     {{-- Tab theo tháng --}}
     <div class="table-responsive">
-        <h4 class="mb-4">🎟️ Chi tiết số vé bán theo suất chiếu</h4>
+        <h4 class="mb-4"><i class="fas fa-ticket"></i> Chi tiết số vé bán theo suất chiếu</h4>
         
         {{-- Tab navigation --}}
         <ul class="nav nav-pills month-tab" id="monthTabs" role="tablist">
@@ -129,7 +129,7 @@
                      id="month-{{ $month }}" 
                      role="tabpanel">
                      
-                    <h5 class="mb-3">📋 Chi tiết tháng {{ $month }}/{{ $selectedYear }}</h5>
+                    <h5 class="mb-3">Chi tiết tháng {{ $month }}/{{ $selectedYear }}</h5>
                     
                     @if($soVeTheoSuatChieu->isNotEmpty())
                         @foreach($soVeTheoSuatChieu as $tenPhim => $thangData)
@@ -188,7 +188,7 @@
 
     {{-- Bảng tổng kết theo phim --}}
     <div class="table-responsive">
-        <h4 class="mb-4">📈 Tổng kết doanh thu theo phim năm {{ $selectedYear }}</h4>
+        <h4 class="mb-4">Tổng kết doanh thu theo phim năm {{ $selectedYear }}</h4>
         <table class="table table-striped table-hover">
             <thead class="table-dark">
                 <tr>
@@ -245,7 +245,7 @@
     // Biểu đồ doanh thu
     const revenueCtx = document.getElementById('revenueChart').getContext('2d');
     new Chart(revenueCtx, {
-        type: 'line',
+        type: 'bar',
         data: {
             labels: chartData.labels,
             datasets: chartData.revenueData
@@ -277,7 +277,7 @@
                     display: true,
                     title: {
                         display: true,
-                        text: 'Doanh thu (VNĐ)'
+                        text: 'Doanh thu (đ)'
                     },
                     ticks: {
                         callback: function(value) {

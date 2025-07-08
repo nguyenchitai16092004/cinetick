@@ -139,7 +139,7 @@
         <!-- DataTales Example -->
         <div class="card shadow rounded border-0">
             <div class="card-header bg-purple">
-                <h6 class="m-0 font-weight-bold text-white">📋 Danh sách tài khoản</h6>
+                <h6 class="m-0 font-weight-bold text-white"> Danh sách tài khoản</h6>
             </div>
             <div class="card-body">
                 <div class="table-responsive">

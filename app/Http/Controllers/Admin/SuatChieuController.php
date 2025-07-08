@@ -24,7 +24,9 @@ class SuatChieuController extends Controller
     public function create()
     {
         $raps = Rap::all();
-        $phims = Phim::all();
+
+        $phims = Phim::where('NgayKetThuc', '>', Carbon::now())->get();
+
         return view('admin.pages.suat_chieu.create-suat-chieu', compact('raps', 'phims'));
     }
 
@@ -38,19 +40,28 @@ class SuatChieuController extends Controller
     public function edit($id)
     {
         $suatChieu = SuatChieu::findOrFail($id);
-        // Chỉ lấy những phim có TrangThai = 1
+
+        // Kiểm tra thời gian tạo có quá 5 phút chưa
+        $now = Carbon::now();
+        $created = $suatChieu->created_at;
+
+        if ($created->diffInMinutes($now) > 5) {
+            return redirect()->back()->with('error', 'Bạn chỉ được chỉnh sửa suất chiếu trong vòng 5 phút sau khi tạo.');
+        }
+
+        // Chỉ lấy những phim có NgayKetThuc >= hôm nay hoặc chưa có ngày kết thúc
         $phims = Phim::where(function ($query) {
             $query->whereDate('NgayKetThuc', '>=', now())
                 ->orWhereNull('NgayKetThuc');
-        })
-            ->get();
-
+        })->get();
 
         $phongChieus = PhongChieu::join('rap', 'phong_chieu.ID_Rap', '=', 'rap.ID_Rap')
             ->select('phong_chieu.TenPhongChieu', 'phong_chieu.ID_PhongChieu', 'rap.DiaChi', 'rap.TenRap', 'phong_chieu.ID_Rap')
             ->get();
+
         return view('admin.pages.suat_chieu.detail-suat-chieu', compact('suatChieu', 'phims', 'phongChieus'));
     }
+
 
     public function destroy($id)
     {
@@ -365,7 +376,7 @@ class SuatChieuController extends Controller
         }
 
         // Cập nhật suất chiếu
-            $suatChieu->update($request->all());
+        $suatChieu->update($request->all());
 
         return redirect()->route('suat-chieu.index')->with('success', 'Cập nhật suất chiếu thành công');
     }

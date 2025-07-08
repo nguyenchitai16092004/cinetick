@@ -1,7 +1,7 @@
 <aside class="z-20 hidden w-64 overflow-y-auto bg-white dark:bg-gray-800 md:block flex-shrink-0">
     <div class="py-4 text-gray-500 dark:text-gray-400">
         <a class="ml-6 text-lg font-bold text-gray-800 dark:text-gray-200" href="/">
-            2TCinema
+            Cinetick
         </a>
 
         <ul class="mt-6 space-y-1">
@@ -39,6 +39,7 @@
                     ['route' => 'tai-khoan.index', 'icon' => 'users', 'label' => 'Quản lý tài khoản'],
                     ['route' => 'tin_tuc.index', 'icon' => 'newspaper', 'label' => 'Quản lý tin tức'],
                     ['route' => 'binh-luan.index', 'icon' => 'comments', 'label' => 'Quản lý bình luận'],
+                    ['route' => 'lien-he.index', 'icon' => 'headset', 'label' => 'Quản lý liên hệ'],
                 ];
             @endphp
 
@@ -59,13 +60,6 @@
             @endforeach
 
             {{-- Đăng xuất --}}
-            <li class="relative px-6 py-3">
-                <a class="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
-                    href="{{ route('lien-he.index') }}">
-                    <i class="fas fa-headset"></i>
-                    <span class="ml-4">Quản lý liên hệ</span>
-                </a>
-            </li>
             <li class="relative px-6 py-3">
                 <form action="{{ route('logout_admin') }}" method="post">
                     @csrf

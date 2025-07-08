@@ -6,17 +6,33 @@ use App\Http\Controllers\Controller;
 use App\Models\ThongTinTrangWeb;
 use Illuminate\Http\Request;
 use App\Models\Banner;
+use App\Models\TaiKhoan;
+use App\Models\HoaDon;
+use App\Models\VeXemPhim;
+use App\Models\Phim;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 
 class HomeController extends Controller
 {
     public function index()
     {
+        $tongTaiKhoan = TaiKhoan::where('VaiTro', 0)->count();
+        $tongDoanhThu = HoaDon::whereYear('created_at', Carbon::now()->year)->sum('TongTien');
+        $tongVeBan = VeXemPhim::whereYear('created_at', Carbon::now()->year)->count();
+        $tongPhim = Phim::count();
         $thongTin = ThongTinTrangWeb::first();
         $banners = Banner::all();
-        return view('admin.pages.home', compact('thongTin' , 'banners'));
-    }
 
+        return view('admin.pages.home', compact(
+            'tongTaiKhoan',
+            'tongDoanhThu',
+            'tongVeBan',
+            'tongPhim',
+            'thongTin',
+            'banners'
+        ));
+    }
     public function update(Request $request)
     {
         $request->validate([
@@ -38,7 +54,7 @@ class HomeController extends Controller
             $thongTin = ThongTinTrangWeb::create([]);
         }
 
-        $data = $request->only(['TenDonVi','TenWebsite','Zalo','Hotline', 'Facebook', 'Instagram', 'Youtube', 'Email', 'DiaChi']);
+        $data = $request->only(['TenDonVi', 'TenWebsite', 'Zalo', 'Hotline', 'Facebook', 'Instagram', 'Youtube', 'Email', 'DiaChi']);
 
         if ($request->hasFile('Logo')) {
             if ($thongTin->Logo) {
