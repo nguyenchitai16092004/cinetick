@@ -5,59 +5,61 @@
         </a>
 
         <ul class="mt-6 space-y-1">
-            {{-- Dashboard --}}
-            <li class="relative px-6 py-3">
-                @if (request()->is('admin.home'))
-                    <span class="absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-tr-lg rounded-br-lg"
-                        aria-hidden="true"></span>
-                @endif
-                <a href="/admin/home"
-                    class="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 
-                        {{ request()->is('admin/home') ? 'text-gray-800 dark:text-gray-100' : 'text-gray-500 dark:text-gray-400' }} 
-                        hover:text-gray-800 dark:hover:text-gray-200">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <path
-                            d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6">
-                        </path>
-                    </svg>
-                    <span class="ml-4">Dashboard</span>
-                </a>
-            </li>
-
-            {{-- Menu Items --}}
-            @php
-                $menus = [
-                    ['route' => 'thong-ke.index', 'icon' => 'chart-pie', 'label' => 'Thống kê'],
-                    ['route' => 'hoa-don.index', 'icon' => 'money-bill', 'label' => 'Hóa đơn'],
-                    ['route' => 'rap.index', 'icon' => 'video', 'label' => 'Quản lý Rạp'],
-                    ['route' => 'phong-chieu.index', 'icon' => 'door-closed', 'label' => 'Quản lý Phòng'],
-                    ['route' => 'phim.index', 'icon' => 'film', 'label' => 'Quản lý Phim'],
-                    ['route' => 'suat-chieu.index', 'icon' => 'calendar-alt', 'label' => 'Quản lý suất chiếu'],
-                    ['route' => 'the-loai.index', 'icon' => 'plus', 'label' => 'Quản lý thể loại phim'],
-                    ['route' => 'khuyen-mai.index', 'icon' => 'tags', 'label' => 'Quản lý Mã giảm giá'],
-                    ['route' => 'tai-khoan.index', 'icon' => 'users', 'label' => 'Quản lý tài khoản'],
-                    ['route' => 'tin_tuc.index', 'icon' => 'newspaper', 'label' => 'Quản lý tin tức'],
-                    ['route' => 'binh-luan.index', 'icon' => 'comments', 'label' => 'Quản lý bình luận'],
-                    ['route' => 'lien-he.index', 'icon' => 'headset', 'label' => 'Quản lý liên hệ'],
-                ];
-            @endphp
-
-            @foreach ($menus as $menu)
+            @if (session('user_role') == 2)
+                {{-- Dashboard --}}
                 <li class="relative px-6 py-3">
-                    @if (request()->routeIs($menu['route']))
+                    @if (request()->is('admin.home'))
                         <span class="absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-tr-lg rounded-br-lg"
                             aria-hidden="true"></span>
                     @endif
-                    <a href="{{ route($menu['route']) }}"
+                    <a href="/admin/home"
                         class="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 
-                            {{ request()->routeIs($menu['route']) ? 'text-gray-800 dark:text-gray-100' : 'text-gray-500 dark:text-gray-400' }}
-                            hover:text-gray-800 dark:hover:text-gray-200">
-                        <i class="fas fa-{{ $menu['icon'] }} w-5 h-5"></i>
-                        <span class="ml-4">{{ $menu['label'] }}</span>
+                        {{ request()->is('admin/home') ? 'text-gray-800 dark:text-gray-100' : 'text-gray-500 dark:text-gray-400' }} 
+                        hover:text-gray-800 dark:hover:text-gray-200">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6">
+                            </path>
+                        </svg>
+                        <span class="ml-4">Dashboard</span>
                     </a>
                 </li>
-            @endforeach
+
+                {{-- Menu Items --}}
+                @php
+                    $menus = [
+                        ['route' => 'thong-ke.index', 'icon' => 'chart-pie', 'label' => 'Thống kê'],
+                        ['route' => 'hoa-don.index', 'icon' => 'money-bill', 'label' => 'Hóa đơn'],
+                        ['route' => 'rap.index', 'icon' => 'video', 'label' => 'Quản lý Rạp'],
+                        ['route' => 'phong-chieu.index', 'icon' => 'door-closed', 'label' => 'Quản lý Phòng'],
+                        ['route' => 'phim.index', 'icon' => 'film', 'label' => 'Quản lý Phim'],
+                        ['route' => 'suat-chieu.index', 'icon' => 'calendar-alt', 'label' => 'Quản lý suất chiếu'],
+                        ['route' => 'the-loai.index', 'icon' => 'plus', 'label' => 'Quản lý thể loại phim'],
+                        ['route' => 'khuyen-mai.index', 'icon' => 'tags', 'label' => 'Quản lý Mã giảm giá'],
+                        ['route' => 'tai-khoan.index', 'icon' => 'users', 'label' => 'Quản lý tài khoản'],
+                        ['route' => 'tin_tuc.index', 'icon' => 'newspaper', 'label' => 'Quản lý tin tức'],
+                        ['route' => 'binh-luan.index', 'icon' => 'comments', 'label' => 'Quản lý đánh giá'],
+                        ['route' => 'lien-he.index', 'icon' => 'headset', 'label' => 'Quản lý liên hệ'],
+                    ];
+                @endphp
+
+                @foreach ($menus as $menu)
+                    <li class="relative px-6 py-3">
+                        @if (request()->routeIs($menu['route']))
+                            <span class="absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-tr-lg rounded-br-lg"
+                                aria-hidden="true"></span>
+                        @endif
+                        <a href="{{ route($menu['route']) }}"
+                            class="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 
+                            {{ request()->routeIs($menu['route']) ? 'text-gray-800 dark:text-gray-100' : 'text-gray-500 dark:text-gray-400' }}
+                            hover:text-gray-800 dark:hover:text-gray-200">
+                            <i class="fas fa-{{ $menu['icon'] }} w-5 h-5"></i>
+                            <span class="ml-4">{{ $menu['label'] }}</span>
+                        </a>
+                    </li>
+                @endforeach
+            @endif
 
             {{-- Đăng xuất --}}
             <li class="relative px-6 py-3">

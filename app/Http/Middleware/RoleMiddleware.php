@@ -35,7 +35,7 @@ class RoleMiddleware
             
             case 2: // Admin cấp cao
                 if ($userRole != 2) {
-                    return redirect('/admin/home')->with('error', 'Chỉ admin cấp cao mới có quyền truy cập!');
+                    return redirect('/admin/hoa-don')->with('error', 'Chỉ admin cấp cao mới có quyền truy cập!');
                 }
                 break;
             
