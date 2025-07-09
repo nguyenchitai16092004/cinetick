@@ -37,12 +37,15 @@
                             required>
                     </div>
 
+                    @php
+                        $maxDate = \Carbon\Carbon::now()->subYears(18)->format('Y-m-d');
+                    @endphp
+
                     <div class="form-group">
                         <label for="NgaySinh">Ngày sinh <span class="text-danger">*</span></label>
                         <input type="date" class="form-control" id="NgaySinh" name="NgaySinh"
-                            value="{{ old('NgaySinh') }}" required>
+                            value="{{ old('NgaySinh') }}" max="{{ $maxDate }}" required>
                     </div>
-
                     <div class="form-group">
                         <label for="Email">Email <span class="text-danger">*</span></label>
                         <input type="email" class="form-control" id="Email" name="Email" value="{{ old('Email') }}"
@@ -73,7 +76,8 @@
                     <div class="form-group">
                         <label for="Luong">Lương <span class="text-danger">*</span></label>
                         <input type="number" class="form-control" id="Luong" name="Luong"
-                            value="{{ old('Luong', $taiKhoan->thongTin->Luong ?? '') }}" required min="1" max="1000000000" step="100000">
+                            value="{{ old('Luong', $taiKhoan->thongTin->Luong ?? '') }}" required min="1000000"
+                            max="1000000000">
                     </div>
                     <div class="form-group">
                         <label for="TrangThai">Trạng thái <span class="text-danger">*</span></label>

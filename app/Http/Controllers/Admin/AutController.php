@@ -45,7 +45,7 @@ class AutController extends Controller
 
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
-            
+
             // Kiểm tra vai trò
             if ($user->VaiTro == 1 || $user->VaiTro == 2) {
                 if (!$user->TrangThai) {
@@ -69,10 +69,12 @@ class AutController extends Controller
                     'user_sex' => $user->thongTin->GioiTinh ?? 'Chưa cập nhật',
                     'is_logged_in' => true
                 ]);
-
-                // Redirect theo vai trò
                 $message = $this->getWelcomeMessage($user->VaiTro);
-                return redirect()->route('cap-nhat-thong-tin.index')->with('success', $message);
+                if (session('user_role') == 1) {
+                    return redirect()->route('hoa-don.index')->with('success', $message);
+                } else {
+                    return redirect()->route('cap-nhat-thong-tin.index')->with('success', $message);
+                }
             } else {
                 Auth::logout();
                 return redirect()->back()->with('error', 'Bạn không có quyền truy cập vào trang quản trị!');
@@ -139,7 +141,7 @@ class AutController extends Controller
         }
 
         $userRole = session('user_role');
-        
+
         // Vai trò 2 (Admin cấp cao) có thể truy cập tất cả
         if ($userRole == 2) {
             return true;

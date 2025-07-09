@@ -40,7 +40,7 @@ class ThongKeController extends Controller
             ->join('ve_xem_phim as vxp', 'hd.ID_HoaDon', '=', 'vxp.ID_HoaDon')
             ->join('suat_chieu as sc', 'vxp.ID_SuatChieu', '=', 'sc.ID_SuatChieu')
             ->join('phim as p', 'sc.ID_Phim', '=', 'p.ID_Phim')
-            ->where('hd.TrangThaiXacNhanThanhToan', 1)
+            ->where('hd.TrangThaiXacNhanHoaDon', 1)
             ->whereYear('hd.created_at', $year)
             ->select(
                 'p.ID_Phim',
@@ -64,7 +64,7 @@ class ThongKeController extends Controller
             ->join('phim as p', 'sc.ID_Phim', '=', 'p.ID_Phim')
             ->join('phong_chieu as pc', 'sc.ID_PhongChieu', '=', 'pc.ID_PhongChieu')
             ->join('rap as r', 'sc.ID_Rap', '=', 'r.ID_Rap')
-            ->where('hd.TrangThaiXacNhanThanhToan', 1)
+            ->where('hd.TrangThaiXacNhanHoaDon', 1)
             ->whereYear('hd.created_at', $year)
             ->select(
                 'sc.ID_SuatChieu',
@@ -185,7 +185,7 @@ class ThongKeController extends Controller
             ->join('phim as p', 'sc.ID_Phim', '=', 'p.ID_Phim')
             ->join('phong_chieu as pc', 'sc.ID_PhongChieu', '=', 'pc.ID_PhongChieu')
             ->join('rap as r', 'sc.ID_Rap', '=', 'r.ID_Rap')
-            ->where('hd.TrangThaiXacNhanThanhToan', 1)
+            ->where('hd.TrangThaiXacNhanHoaDon', 1)
             ->whereYear('hd.created_at', $year)
             ->whereMonth('hd.created_at', $month)
             ->select(
