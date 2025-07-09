@@ -155,7 +155,7 @@
                         <span class="info-value" id="modal-showtime">--:-- --/--/----</span>
                     </div>
                 </div>
-                <div class="qr-code" id="modal-qr" style="display:none;"></div>
+                <div class="qr-code" id="modal-qr" ></div>
                 <div style="margin-top: 20px">
                     <div class="info-row">
                         <span class="info-label">Mã vé</span>

@@ -209,7 +209,6 @@
     border: 1px solid #ff8c00;
 }
 
-/* Movie Info Panel */
 .movie-info {
     background-color: rgba(173, 170, 170, 0.174);
     border-radius: 4px;
@@ -217,6 +216,9 @@
     padding: 15px;
     margin-bottom: 15px;
     height: 100%;
+}
+.swal2-html-container{
+    line-height: 30px;
 }
 
 .movie-poster {
