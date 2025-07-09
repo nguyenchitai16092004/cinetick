@@ -32,7 +32,8 @@
             color: white;
         }
 
-        .search-filter-card .form-control, .search-filter-card .form-select {
+        .search-filter-card .form-control,
+        .search-filter-card .form-select {
             border: 2px solid rgba(255, 255, 255, 0.3);
             background: rgba(255, 255, 255, 0.1);
             color: rgb(0, 0, 0);
@@ -42,7 +43,8 @@
             color: rgba(255, 255, 255, 0.7);
         }
 
-        .search-filter-card .form-control:focus, .search-filter-card .form-select:focus {
+        .search-filter-card .form-control:focus,
+        .search-filter-card .form-select:focus {
             border-color: rgba(255, 255, 255, 0.6);
             box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.25);
             background: rgba(255, 255, 255, 0.2);
@@ -73,8 +75,7 @@
                     <div class="card-header bg-purple d-flex justify-content-between align-items-center">
                         <h3 class="card-title mb-0"><i class="fas fa-users"></i> Quản lý tài khoản</h3>
                         <div class="d-flex gap-2">
-                            <a href="{{ route('tai-khoan.create') }}" 
-                               class="btn btn-purple">
+                            <a href="{{ route('tai-khoan.create') }}" class="btn btn-purple">
                                 <i class="fas fa-plus"></i> Thêm tài khoản mới
                             </a>
                         </div>
@@ -112,9 +113,9 @@
                                     <span class="input-group-text">
                                         <i class="fas fa-search"></i>
                                     </span>
-                                    <input type="text" class="form-control" name="search" 
-                                           placeholder="Tìm kiếm theo tên, email, số điện thoại..." 
-                                           value="{{ request('search') }}">
+                                    <input type="text" class="form-control" name="search"
+                                        placeholder="Tìm kiếm theo tên, email, số điện thoại..."
+                                        value="{{ request('search') }}">
                                     <button class="btn btn-light" type="submit">
                                         <i class="fas fa-search"></i> Tìm kiếm
                                     </button>
@@ -124,8 +125,10 @@
                                 <div class="row">
                                     <div class="col-6">
                                         <select class="form-select" name="sort_by" onchange="this.form.submit()">
-                                            <option value="TenDN" {{ request('sort_by') == 'TenDN' ? 'selected' : '' }}>Tên đăng nhập</option>
-                                            <option value="HoTen" {{ request('sort_by') == 'HoTen' ? 'selected' : '' }}>Họ tên</option>
+                                            <option value="TenDN" {{ request('sort_by') == 'TenDN' ? 'selected' : '' }}>Tên
+                                                đăng nhập</option>
+                                            <option value="HoTen" {{ request('sort_by') == 'HoTen' ? 'selected' : '' }}>Họ
+                                                tên</option>
                                         </select>
                                     </div>
                                 </div>
@@ -188,8 +191,10 @@
                                             </a> --}}
                                             <a href="{{ route('tai-khoan.status', $taiKhoan->ID_TaiKhoan) }}"
                                                 class="btn btn-warning btn-sm" title="Đổi trạng thái">
-                                                <i class="fas fa-sync-alt"></i>
+                                                <i
+                                                    class="fas {{ $taiKhoan->TrangThai == 1 ? 'fa-lock' : 'fa-lock-open' }}"></i>
                                             </a>
+
                                             {{-- <a href="{{ route('tai-khoan.delete', $taiKhoan->ID_TaiKhoan) }}"
                                                 class="btn btn-danger btn-sm" title="Xóa"
                                                 onclick="return confirm('Bạn có chắc chắn muốn xóa tài khoản này?')">
