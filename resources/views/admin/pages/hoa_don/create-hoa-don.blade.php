@@ -97,9 +97,9 @@
                     </div>
 
                     <div class="btn-group-custom">
-                        <button type="button" class="btn-custom btn-secondary-custom" id="btnBack2">
+                        {{-- <button type="button" class="btn-custom btn-secondary-custom" id="btnBack2">
                             <i class="fas fa-arrow-left me-1"></i> Quay Lại
-                        </button>
+                        </button> --}}
                         <button type="button" class="btn-custom btn-primary-custom" id="btnNext2" disabled>
                             Tiếp Theo <i class="fas fa-arrow-right ms-1"></i>
                         </button>
