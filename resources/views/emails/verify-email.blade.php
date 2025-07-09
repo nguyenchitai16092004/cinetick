@@ -51,7 +51,7 @@
         .verify-btn {
             display: inline-block;
             background: linear-gradient(135deg, #e74c3c, #ffbe76);
-            color: #fff;
+            color: #fff !important;
             padding: 12px 30px;
             text-decoration: none;
             font-weight: bold;

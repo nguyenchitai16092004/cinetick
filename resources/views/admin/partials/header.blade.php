@@ -76,7 +76,7 @@
             <li class="relative">
                 <a href="{{ route('tai-khoan.edit', Auth::user()->ID_TaiKhoan) }}">
                     <i class="fas fa-user"></i>
-                </a>
+                </a><span style="color: #000; font-weight: 600" class="ml-2">{{ session('user_fullname') }}</span>
 
                 <template x-if="isProfileMenuOpen">
                     <ul x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100"

@@ -1,4 +1,5 @@
-window.onpageshow = function (event) {
+// reaload cập nhật thông tin ghế khi quay lại trang
+window.onpageshow = function ( event ) {
     if (
         (event.persisted ||
             (window.performance &&
@@ -29,7 +30,7 @@ window.addEventListener("storage", function (e) {
 const bookingData = window.bookingData || {};
 const suatChieuId = bookingData.suatChieuId || window.suatChieuId || null;
 
-// Initialize Echo only if available
+//Khởi tạo pusher 
 if (typeof Echo !== 'undefined') {
     window.Echo = new Echo({
         broadcaster: "pusher",
@@ -49,21 +50,18 @@ let myHeldSeats = new Set((window.myHeldSeats || []).map(String));
 
 console.log(myHeldSeats);
 
-// Enhanced notification function with fallbacks
 function showBookingNotification(title, message, type = 'info') {
-    // First try the new notification system
     if (typeof showNotification === 'function') {
         const typeMap = {
-            'info': 'info',
-            'warning': 'warning',
-            'error': 'error',
-            'success': 'success'
+            info: "Thông báo",
+            warning: "Thông báo",
+            error: "Thông báo",
+            success: "Thông báo",
         };
         showNotification(typeMap[type] || 'info', title, message);
         return;
     }
 
-    // Fallback to SweetModal if available
     if (typeof $ !== 'undefined' && $.sweetModal) {
         try {
             const iconMap = {
@@ -89,19 +87,17 @@ function showBookingNotification(title, message, type = 'info') {
             alert(title + ': ' + message);
         }
     } else {
-        // Final fallback to alert
         alert(title + ': ' + message);
     }
 }
 
-// Enhanced SweetModal confirmation with fallbacks
 function showConfirmationModal(title, content, onConfirm, onCancel) {
     Swal.fire({
         title: title,
         html: content,
         icon: 'question',
         showCancelButton: true,
-        confirmButtonColor: '#f1c40f', // 🎨 Màu vàng
+        confirmButtonColor: '#f1c40f', 
         cancelButtonColor: '#aaa',
         confirmButtonText: 'Xác nhận',
         cancelButtonText: 'Hủy bỏ'
@@ -114,18 +110,16 @@ function showConfirmationModal(title, content, onConfirm, onCancel) {
     });
 }
 
-// Thông báo đơn giản
 function showNotification(title, type = 'info', message) {
     Swal.fire({
         title: title,
         text: message,
         icon: type,
         confirmButtonText: 'OK',
-        confirmButtonColor: '#f1c40f'//màu vàng
+        confirmButtonColor: '#f1c40f'
     });
 }
 
-// Gắn vào window để gọi ở bất kỳ đâu
 window.showConfirmationModal = showConfirmationModal;
 window.showNotification = showNotification;
 
@@ -174,7 +168,8 @@ function renderSeatLayout() {
         seatContainer.appendChild(rowLabel);
 
         // Render từng ghế trong hàng
-        for (let j = 0; j < colCount; j++) {
+        for ( let j = 0; j < colCount; j++ ) {
+            //chèn lối đi dọc
             if (colAisles.includes(j)) {
                 const aisle = document.createElement("div");
                 aisle.className = "aisle aisle-col";
@@ -199,7 +194,7 @@ function renderSeatLayout() {
 
             // Xác định trạng thái ghế
             if (myHeldSeats && myHeldSeats.has(String(seatData.ID_Ghe))) {
-                // Ghế do chính user đang giữ
+                // Ghế do người dùng đang giữ
                 seat.textContent = seatData.TenGhe;
                 seat.classList.add("held", "selected");
                 seat.setAttribute("title", "Bạn đang giữ ghế này");
@@ -249,7 +244,7 @@ function renderSeatLayout() {
             seatContainer.appendChild(seat);
         }
 
-        // Thêm aisle giữa các hàng (nếu có)
+        // chèn lối đi ngang
         if (rowAisles.includes(i + 1)) {
             const aisleRow = document.createElement("div");
             aisleRow.className = "aisle aisle-row";
@@ -281,7 +276,7 @@ function renderSeatLayout() {
         }, 300);
     }
 }
-
+//chọn ghế click ghế
 function bindSeatClickEvents() {
     document.querySelectorAll(".seat").forEach((seatEl) => {
         seatEl.onclick = null;
