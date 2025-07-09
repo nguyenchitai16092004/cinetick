@@ -149,14 +149,22 @@ class BannerController extends Controller
                 abort(404);
             }
 
-            $data = [
-                'TieuDeChinh' => $request->TieuDeChinh,
-                'TieuDePhu' => $request->TieuDePhu,
-                'MoTa' => $request->MoTa,
-                'Link' => $request->DuongDan . $request->link,
-                'updated_at' => now(),
-            ];
-
+            if (!$request->DuongDan || !$request->link) {
+                $data = [
+                    'TieuDeChinh' => $request->TieuDeChinh,
+                    'TieuDePhu' => $request->TieuDePhu,
+                    'MoTa' => $request->MoTa,
+                    'updated_at' => now(),
+                ];
+            } else {
+                $data = [
+                    'TieuDeChinh' => $request->TieuDeChinh,
+                    'TieuDePhu' => $request->TieuDePhu,
+                    'MoTa' => $request->MoTa,
+                    'Link' => $request->DuongDan . $request->link,
+                    'updated_at' => now(),
+                ];
+            }
             if ($request->hasFile('HinhAnh')) {
                 if ($banner->HinhAnh && Storage::disk('public')->exists($banner->HinhAnh)) {
                     Storage::disk('public')->delete($banner->HinhAnh);

@@ -71,8 +71,9 @@
                             {{-- Rạp --}}
                             <div class="mb-3">
                                 <label class="form-label">Rạp chiếu</label>
-                                <select class="form-select form-select-sm" name="ID_Rap" required>
-                                    <option value="" disabled>Chọn rạp</option>
+                                <input type="hidden" name="ID_Rap" value="{{ $phongChieu->ID_Rap }}">
+                                <select class="form-select form-select-sm" disabled>
+                                    <option value="">Chọn rạp</option>
                                     @foreach ($raps as $rap)
                                         <option value="{{ $rap->ID_Rap }}"
                                             {{ $phongChieu->ID_Rap == $rap->ID_Rap ? 'selected' : '' }}>
@@ -80,6 +81,7 @@
                                         </option>
                                     @endforeach
                                 </select>
+
                                 @error('ID_Rap')
                                     <div class="text-danger small">{{ $message }}</div>
                                 @enderror
@@ -90,8 +92,10 @@
                                 <label class="form-label">Loại phòng</label>
                                 <select class="form-select form-select-sm" name="LoaiPhong" required>
                                     <option value="" disabled>Chọn loại phòng</option>
-                                    <option value="0" {{ $phongChieu->LoaiPhong == 0 ? 'selected' : '' }}>Phòng thường</option>
-                                    <option value="1" {{ $phongChieu->LoaiPhong == 1 ? 'selected' : '' }}>Phòng VIP</option>
+                                    <option value="0" {{ $phongChieu->LoaiPhong == 0 ? 'selected' : '' }}>Phòng thường
+                                    </option>
+                                    <option value="1" {{ $phongChieu->LoaiPhong == 1 ? 'selected' : '' }}>Phòng VIP
+                                    </option>
                                 </select>
                                 @error('LoaiPhong')
                                     <div class="text-danger small">{{ $message }}</div>
@@ -102,8 +106,10 @@
                             <div class="mb-3">
                                 <label class="form-label">Trạng thái</label>
                                 <select class="form-select form-select-sm" name="TrangThai" required>
-                                    <option value="1" {{ $phongChieu->TrangThai == 1 ? 'selected' : '' }}>Hoạt động</option>
-                                    <option value="0" {{ $phongChieu->TrangThai == 0 ? 'selected' : '' }}>Không hoạt động</option>
+                                    <option value="1" {{ $phongChieu->TrangThai == 1 ? 'selected' : '' }}>Hoạt động
+                                    </option>
+                                    <option value="0" {{ $phongChieu->TrangThai == 0 ? 'selected' : '' }}>Không hoạt
+                                        động</option>
                                 </select>
                                 @error('TrangThai')
                                     <div class="text-danger small">{{ $message }}</div>
@@ -179,9 +185,9 @@
 
                             {{-- Nút xóa lối đi --}}
                             <div class="mb-3">
-                                <button type="button" id="clearAislesBtn" onclick="clearAisles()" 
+                                <button type="button" id="clearAislesBtn" onclick="clearAisles()"
                                     class="btn btn-outline-warning btn-sm"
-                                    style="display: {{ (json_decode($phongChieu->HangLoiDi ?: '[]')) ? 'inline-block' : 'none' }};">
+                                    style="display: {{ json_decode($phongChieu->HangLoiDi ?: '[]') ? 'inline-block' : 'none' }};">
                                     <i class="bi bi-eraser me-1"></i> Xóa lối đi
                                 </button>
                             </div>
@@ -234,7 +240,7 @@
         colAisles = colAisles || [];
         seatCount = seatCount || 0;
         let isDetailView = true; // Đặt true cho trang detail
-        
+
         console.log('Detail view initialized with:', {
             seats: seats,
             rowAisles: rowAisles,
