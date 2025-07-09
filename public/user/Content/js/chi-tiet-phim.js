@@ -123,13 +123,7 @@ window.addEventListener("scroll", () => {
     }
 });
 
-/**
- * Chức năng đánh giá phim:
- * - Kiểm tra điều kiện đánh giá (đăng nhập, mua vé, xem xong phim, ...)
- * - Hiển thị thông báo phù hợp bằng tiếng Việt
- * - Cho phép chọn điểm bằng sao hoặc nhập số thập phân (0-10)
- * - Gửi đánh giá lên server và cập nhật điểm trung bình/số lượt đánh giá
- */
+
 window.initRatingModal = function (options) {
     let yourRating = 0;
 
@@ -145,33 +139,7 @@ window.initRatingModal = function (options) {
             });
     }
 
-    // Load điểm đánh giá trung bình và lượt đánh giá
-    function loadRating() {
-        fetch(`${options.getRatingUrl}?id_phim=${options.idPhim}`)
-            .then((res) => res.json())
-            .then((data) => {
-                // Cập nhật bên ngoài info
-                let avg = parseFloat( data.avg );
-                
-                var avgInfo = document.getElementById("avgRatingInfo");
-                var countInfo = document.getElementById( "countRatingInfo" );
-                document.querySelector(".avgRatingInfo").textContent = data.avg;
-                
-                    if (avgInfo)
-                        avgInfo.textContent =
-                            avg % 1 === 0 ? avg.toString() : avg.toFixed(1);
-                            if (avgInfo) avgInfo.textContent = data.avg;
 
-                // Cập nhật trong popup modal
-                var countInfo = document.getElementById("countRatingInfo");
-                var avgModal = document.getElementById("avgRatingModal");
-                var countModal = document.getElementById( "countRatingModal" );
-                if (countInfo) countInfo.textContent = data.count;
-                if (avgModal) avgModal.textContent = data.avg;
-                if (countModal) countModal.textContent = data.count;
-            });
-    }
-    loadRating();
 
     // Khi mở popup đánh giá, kiểm tra quyền đánh giá và hiển thị thông báo phù hợp
     document
@@ -285,7 +253,6 @@ window.initRatingModal = function (options) {
                 msg.style.color = res.success ? "green" : "red";
                 msg.textContent = res.message || "";
                 if (res.success) {
-                    loadRating();
                     setTimeout(closeRatingModal, 1200);
                 }
             });
@@ -296,7 +263,6 @@ window.initRatingModal = function (options) {
         if (e.target === this) closeRatingModal();
     };
 
-    loadRating();
 };
 
 // Sự kiện DOMContentLoaded để đảm bảo các nút đóng popup hoạt động

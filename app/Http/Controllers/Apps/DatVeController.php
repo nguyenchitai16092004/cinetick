@@ -43,18 +43,23 @@ class DatVeController extends Controller
                 ->where('GioChieu', $gio)
                 ->firstOrFail();
 
-            // ===== 5. Kiểm tra ẩn suất chiếu trước 15 phút =====
+            // ===== 5 Kiểm tra thời gian suất chiếu =====
             $gioChieu = strlen($suatChieu->GioChieu) === 5 ? $suatChieu->GioChieu . ':00' : $suatChieu->GioChieu;
             $suatDateTime = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $suatChieu->NgayChieu . ' ' . $gioChieu);
             $now = now();
-            // Nếu đã vào khoảng 15 phút trước giờ chiếu thì không cho đặt vé online
+
+            // 1. Nếu đã vào khoảng 15 phút trước giờ chiếu thì không cho đặt vé online
             if ($now->greaterThanOrEqualTo($suatDateTime->subMinutes(15))) {
-                return view('user.pages.dat-ve', [
-                    'showPopup' => true,
-                    'popupMessage' => 'Vé online dành cho suất chiếu này đã hết!'
-                ]);
+                abort(404, 'Suất chiếu này đã hết hạn đặt vé online!');
             }
-            // ===== Kết thúc kiểm tra ẩn suất chiếu =====
+
+            // 2. Nếu suất chiếu đã kết thúc (giờ chiếu + thời lượng phim < hiện tại) thì cũng abort 404
+            $thoiLuongPhim = $suatChieu->phim->ThoiLuong ?? 0;
+            $endTime = $suatDateTime->copy()->addMinutes($thoiLuongPhim + 15); // +15 để tránh truy cập khi phim vừa kết thúc
+            if ($now->greaterThanOrEqualTo($endTime)) {
+                abort(404, 'Suất chiếu này đã kết thúc!');
+            }
+            // ===== Kết thúc kiểm tra thời gian =====
 
             // 6. Lấy thông tin phòng chiếu và rạp
             $phongChieu = PhongChieu::with('rap')->findOrFail($suatChieu->ID_PhongChieu);

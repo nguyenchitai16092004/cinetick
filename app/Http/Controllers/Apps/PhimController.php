@@ -121,16 +121,18 @@ class PhimController extends Controller
     {
         $phim = Phim::where('Slug', $slug)->firstOrFail();
         $now = now();
-        $gioHienPhim = $now->copy()->subMinutes(5);
 
+        // Lấy tất cả suất chiếu còn hiệu lực (chưa kết thúc)
         $suatChieu = $phim->suatChieu()
-            ->with('rap')
-            ->where('created_at', '<=', $gioHienPhim)
+            ->with('rap', 'phim')
             ->get()
             ->filter(function ($suat) use ($now) {
                 $gioChieu = strlen($suat->GioChieu) === 5 ? $suat->GioChieu . ':00' : $suat->GioChieu;
-                $suatDateTime = Carbon::createFromFormat('Y-m-d H:i:s', $suat->NgayChieu . ' ' . $gioChieu);
-                return $suatDateTime->greaterThan($now->copy()->addMinutes(15));
+                $startTime = Carbon::createFromFormat('Y-m-d H:i:s', $suat->NgayChieu . ' ' . $gioChieu);
+                $endTime = $startTime->copy()->addMinutes($suat->phim->ThoiLuong ?? 0);
+
+                // Chỉ lấy suất chiếu chưa kết thúc (endTime > now)
+                return $endTime->greaterThan($now);
             })
             ->sortBy([
                 ['NgayChieu', 'asc'],
@@ -139,6 +141,9 @@ class PhimController extends Controller
             ->groupBy(function ($item) {
                 return $item->NgayChieu . '|' . $item->rap->DiaChi;
             });
+            
+        $phim->avg_rating = round($phim->binhLuan()->avg('DiemDanhGia'), 1) ?: '0.0';
+        $phim->count_rating = $phim->binhLuan()->whereNotNull('DiemDanhGia')->count();
 
         return view('user.pages.chi-tiet-phim', compact('phim', 'suatChieu'));
     }
