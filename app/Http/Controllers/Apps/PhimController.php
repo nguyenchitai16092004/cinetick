@@ -202,14 +202,24 @@ class PhimController extends Controller
         $id_rap = $request->input('id_rap');
         $id_phim = $request->input('id_phim');
         $ngay = $request->input('ngay');
+        $now = now();
+
         $suatChieu = SuatChieu::where([
             ['ID_Rap', $id_rap],
             ['ID_Phim', $id_phim],
             ['NgayChieu', $ngay]
         ])
-            ->where('created_at', '<=', now()->subMinutes(5)) 
             ->orderBy('GioChieu')
-            ->get();
+            ->get()
+            ->filter(function ($suat) use ($now) {
+                $gioChieu = strlen($suat->GioChieu) === 5 ? $suat->GioChieu . ':00' : $suat->GioChieu;
+                $startTime = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $suat->NgayChieu . ' ' . $gioChieu);
+                $endTime = $startTime->copy()->addMinutes($suat->phim->ThoiLuong ?? 0);
+
+                // Chỉ lấy suất chiếu chưa vào 15 phút trước giờ chiếu và chưa kết thúc
+                return $startTime->subMinutes(15)->greaterThan($now) && $endTime->greaterThan($now);
+            })
+            ->values();
 
         return response()->json($suatChieu, 200);
     }
@@ -331,7 +341,6 @@ class PhimController extends Controller
 
         $keyword = trim($request->input('keyword', '')); // Dùng cho hiển thị
         $phims = collect();
-        $raps = collect();
 
         if ($keyword !== '') {
             $keywordLower = mb_strtolower($keyword); // Dùng cho so sánh chữ thường

@@ -96,7 +96,7 @@
                                     <tr>
                                         <th>#</th>
                                         <th>Mã hóa đơn</th>
-                                        <th>Khách hàng</th>
+                                        <th>Người tạo</th>
                                         <th>Ngày tạo</th>
                                         <th>PT Thanh toán</th>
                                         <th>Tổng tiền</th>
