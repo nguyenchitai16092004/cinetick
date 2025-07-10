@@ -83,7 +83,7 @@
 
 .films-list {
     display: grid;
-    grid-template-columns: repeat(4, 1fr); /* Chỉ 4 phim 1 hàng */
+    grid-template-columns: repeat(4, 1fr); 
     gap: 28px 18px;
     padding: 24px 0 12px 0;
     justify-items: center;

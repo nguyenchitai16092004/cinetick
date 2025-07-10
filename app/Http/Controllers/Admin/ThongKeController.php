@@ -128,50 +128,49 @@ class ThongKeController extends Controller
             'months' => $months
         ];
     }
-    
+
     public function exportExcel(Request $request)
     {
         $selectedYear = $request->get('year', Carbon::now()->year);
-        
-        // Lấy dữ liệu
+
         $doanhThuTheoPhim = $this->getDoanhThuTheoPhim($selectedYear);
-        $soVeTheoSuatChieu = $this->getSoVeTheoSuatChieu($selectedYear);
-        
-        // Tạo tên file
+
         $filename = "thong_ke_doanh_thu_theo_thang_{$selectedYear}_" . date('YmdHis') . ".csv";
-        
-        // Tạo CSV content
-        $csvContent = "Bao cao thong ke doanh thu theo thang nam {$selectedYear}\n\n";
-        
-        // Header cho bảng tổng kết
-        $csvContent .= "Ten Phim,";
+
+        $csvContent = "Báo cáo thống kê doanh thu theo tháng năm {$selectedYear}\n\n";
+
+        // Dòng tiêu đề
+        $csvContent .= "Tên Phim,";
         for ($i = 1; $i <= 12; $i++) {
-            $csvContent .= "Thang {$i},";
+            $csvContent .= "Tháng {$i},";
         }
-        $csvContent .= "Tong Doanh Thu,Tong Ve Ban\n";
-        
+        $csvContent .= "Tổng Doanh Thu,Tổng Vé Bán\n";
+
         // Dữ liệu từng phim
         foreach ($doanhThuTheoPhim as $phimId => $thangData) {
             $tenPhim = $thangData->first()->TenPhim;
             $tongDoanhThu = $thangData->sum('tong_doanh_thu');
             $tongVeBan = $thangData->sum('so_ve_ban');
-            
+
             $csvContent .= "\"{$tenPhim}\",";
-            
+
             for ($month = 1; $month <= 12; $month++) {
                 $monthData = $thangData->where('thang', $month)->first();
                 $doanhThuThang = $monthData ? $monthData->tong_doanh_thu : 0;
                 $csvContent .= "{$doanhThuThang},";
             }
-            
+
             $csvContent .= "{$tongDoanhThu},{$tongVeBan}\n";
         }
-        
+
+        // Thêm BOM UTF-8 để Excel nhận diện encoding đúng
+        $csvWithBom = "\xEF\xBB\xBF" . $csvContent;
+
         // Trả về file CSV
-        return response($csvContent)
+        return response($csvWithBom)
             ->header('Content-Type', 'text/csv; charset=UTF-8')
             ->header('Content-Disposition', "attachment; filename=\"{$filename}\"")
-            ->header('Content-Length', strlen($csvContent));
+            ->header('Content-Length', strlen($csvWithBom));
     }
     
     public function getDataByMonth(Request $request)

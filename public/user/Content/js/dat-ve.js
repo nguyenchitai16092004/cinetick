@@ -1,10 +1,10 @@
 // reaload cập nhật thông tin ghế khi quay lại trang
-window.onpageshow = function ( event ) {
+window.onpageshow = function (event) {
     if (
         (event.persisted ||
             (window.performance &&
                 performance.getEntriesByType("navigation")[0]?.type ===
-                "back_forward")) &&
+                    "back_forward")) &&
         !sessionStorage.getItem("reloadedAfterBack")
     ) {
         sessionStorage.setItem("reloadedAfterBack", "1");
@@ -22,7 +22,7 @@ window.addEventListener("storage", function (e) {
             renderSeatLayout();
             updateBookingSummary();
         } catch (error) {
-            console.error('Error parsing myHeldSeats from storage:', error);
+            console.error("Error parsing myHeldSeats from storage:", error);
         }
     }
 });
@@ -30,8 +30,8 @@ window.addEventListener("storage", function (e) {
 const bookingData = window.bookingData || {};
 const suatChieuId = bookingData.suatChieuId || window.suatChieuId || null;
 
-//Khởi tạo pusher 
-if (typeof Echo !== 'undefined') {
+//Khởi tạo pusher
+if (typeof Echo !== "undefined") {
     window.Echo = new Echo({
         broadcaster: "pusher",
         key: "f544d2c03f1c3b9a7b80",
@@ -50,25 +50,25 @@ let myHeldSeats = new Set((window.myHeldSeats || []).map(String));
 
 console.log(myHeldSeats);
 
-function showBookingNotification(title, message, type = 'info') {
-    if (typeof showNotification === 'function') {
+function showBookingNotification(title, message, type = "info") {
+    if (typeof showNotification === "function") {
         const typeMap = {
             info: "Thông báo",
             warning: "Thông báo",
             error: "Thông báo",
             success: "Thông báo",
         };
-        showNotification(typeMap[type] || 'info', title, message);
+        showNotification(typeMap[type] || "info", title, message);
         return;
     }
 
-    if (typeof $ !== 'undefined' && $.sweetModal) {
+    if (typeof $ !== "undefined" && $.sweetModal) {
         try {
             const iconMap = {
-                'info': $.sweetModal.ICON_INFO,
-                'warning': $.sweetModal.ICON_WARNING,
-                'error': $.sweetModal.ICON_ERROR,
-                'success': $.sweetModal.ICON_SUCCESS
+                info: $.sweetModal.ICON_INFO,
+                warning: $.sweetModal.ICON_WARNING,
+                error: $.sweetModal.ICON_ERROR,
+                success: $.sweetModal.ICON_SUCCESS,
             };
 
             $.sweetModal({
@@ -77,17 +77,17 @@ function showBookingNotification(title, message, type = 'info') {
                 icon: iconMap[type] || $.sweetModal.ICON_INFO,
                 theme: $.sweetModal.THEME_DARK,
                 buttons: {
-                    'OK': {
-                        classes: 'redB'
-                    }
-                }
+                    OK: {
+                        classes: "redB",
+                    },
+                },
             });
         } catch (error) {
-            console.error('SweetModal error:', error);
-            alert(title + ': ' + message);
+            console.error("SweetModal error:", error);
+            alert(title + ": " + message);
         }
     } else {
-        alert(title + ': ' + message);
+        alert(title + ": " + message);
     }
 }
 
@@ -95,12 +95,12 @@ function showConfirmationModal(title, content, onConfirm, onCancel) {
     Swal.fire({
         title: title,
         html: content,
-        icon: 'question',
+        icon: "question",
         showCancelButton: true,
-        confirmButtonColor: '#f1c40f', 
-        cancelButtonColor: '#aaa',
-        confirmButtonText: 'Xác nhận',
-        cancelButtonText: 'Hủy bỏ'
+        confirmButtonColor: "#f1c40f",
+        cancelButtonColor: "#aaa",
+        confirmButtonText: "Xác nhận",
+        cancelButtonText: "Hủy bỏ",
     }).then((result) => {
         if (result.isConfirmed) {
             if (onConfirm) onConfirm();
@@ -110,13 +110,13 @@ function showConfirmationModal(title, content, onConfirm, onCancel) {
     });
 }
 
-function showNotification(title, type = 'info', message) {
+function showNotification(title, type = "info", message) {
     Swal.fire({
         title: title,
         text: message,
         icon: type,
-        confirmButtonText: 'OK',
-        confirmButtonColor: '#f1c40f'
+        confirmButtonText: "OK",
+        confirmButtonColor: "#f1c40f",
     });
 }
 
@@ -168,7 +168,7 @@ function renderSeatLayout() {
         seatContainer.appendChild(rowLabel);
 
         // Render từng ghế trong hàng
-        for ( let j = 0; j < colCount; j++ ) {
+        for (let j = 0; j < colCount; j++) {
             //chèn lối đi dọc
             if (colAisles.includes(j)) {
                 const aisle = document.createElement("div");
@@ -256,13 +256,16 @@ function renderSeatLayout() {
     }
     bindSeatClickEvents();
     // Kiểm tra nếu tất cả ghế đã đặt
-    let totalSeats = 0, bookedSeatsCount = 0;
+    let totalSeats = 0,
+        bookedSeatsCount = 0;
     for (let i = 0; i < seats.length; i++) {
         for (let j = 0; j < seats[i].length; j++) {
             const seat = seats[i][j];
-            if (seat && seat.TrangThaiGhe !== 0) { // Không tính ghế bảo trì
+            if (seat && seat.TrangThaiGhe !== 0) {
+                // Không tính ghế bảo trì
                 totalSeats++;
-                if (seat.IsBooked || seat.TrangThaiGhe === 3) bookedSeatsCount++;
+                if (seat.IsBooked || seat.TrangThaiGhe === 3)
+                    bookedSeatsCount++;
             }
         }
     }
@@ -424,9 +427,13 @@ if (window.Echo && suatChieuId) {
                 if (e.type === "hold") {
                     if (
                         e.user_id !== currentUserId &&
-                        !window.bookingData.heldSeatsByOthers.includes(String(e.ma_ghe))
+                        !window.bookingData.heldSeatsByOthers.includes(
+                            String(e.ma_ghe)
+                        )
                     ) {
-                        window.bookingData.heldSeatsByOthers.push(String(e.ma_ghe));
+                        window.bookingData.heldSeatsByOthers.push(
+                            String(e.ma_ghe)
+                        );
                     }
                 } else if (e.type === "release" || e.type === "booked") {
                     // XÓA KHỎI heldSeatsByOthers
@@ -441,11 +448,14 @@ if (window.Echo && suatChieuId) {
                         JSON.stringify(Array.from(myHeldSeats))
                     );
                 }
-                console.log("heldSeatsByOthers:", window.bookingData.heldSeatsByOthers);
+                console.log(
+                    "heldSeatsByOthers:",
+                    window.bookingData.heldSeatsByOthers
+                );
                 renderSeatLayout();
             });
     } catch (error) {
-        console.error('Echo initialization error:', error);
+        console.error("Echo initialization error:", error);
     }
 }
 
@@ -491,8 +501,6 @@ function isBookingOrPaymentRoute() {
     const path = window.location.pathname;
     return path.startsWith("/dat-ve") || path.startsWith("/thanh-toan");
 }
-
-
 
 // ==== CHECK LOGIC CHỌN GHẾ TRỐNG ====
 function isValidSeatSelectionAll(seatArray) {
@@ -674,7 +682,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 showBookingNotification(
                     "Thông báo",
                     check.reason ||
-                    "Việc chọn vị trí ghế của bạn không được để trống 1 ghế ở bên trái, giữa hoặc bên phải trên cùng hàng ghế mà bạn vừa chọn.",
+                        "Việc chọn vị trí ghế của bạn không được để trống 1 ghế ở bên trái, giữa hoặc bên phải trên cùng hàng ghế mà bạn vừa chọn.",
                     "warning"
                 );
                 return;
@@ -695,11 +703,15 @@ document.addEventListener("DOMContentLoaded", function () {
                 Tôi xác nhận mua vé phim này cho người có độ tuổi từ <b>${ageLabel}</b> và đồng ý cung cấp giấy tờ tuỳ thân để xác minh độ tuổi. 
                 <p style ="color:red; margin-top:10px;">Lưu ý: Vé xem phim sẽ không được hoàn trả nếu bạn vi phạm giới hạn về độ tuổi của phim.</p></div>`;
 
-            showConfirmationModal(confirmTitle, confirmContent, function () {
-                // Xác nhận
-                document.getElementById("selectedSeatsInput").value = selectedSeatsArr.join(",");
-                document.getElementById("form-chuyen-thanh-toan").submit();
-            },
+            showConfirmationModal(
+                confirmTitle,
+                confirmContent,
+                function () {
+                    // Xác nhận
+                    document.getElementById("selectedSeatsInput").value =
+                        selectedSeatsArr.join(",");
+                    document.getElementById("form-chuyen-thanh-toan").submit();
+                },
                 function () {
                     // Từ chối - không làm gì
                 }

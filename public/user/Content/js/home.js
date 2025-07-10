@@ -1,4 +1,3 @@
-// ==================== ĐẶT VÉ: QUẢN LÝ DROPDOWN & TÓM TẮT ====================
 
 document.addEventListener("DOMContentLoaded", function () {
     // Lấy các phần tử cần thiết cho đặt vé
@@ -903,4 +902,3 @@ document.addEventListener("DOMContentLoaded", function () {
     document.head.appendChild(style);
 });
 
-// ==================== END OF FILE ====================
