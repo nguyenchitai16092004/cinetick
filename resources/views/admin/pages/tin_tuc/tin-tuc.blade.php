@@ -99,10 +99,14 @@
                                     <label class="form-label" for="loai_bai_viet">Lọc theo loại bài viết:</label>
                                     <select name="loai_bai_viet" id="loai_bai_viet" class="form-select">
                                         <option value="">Tất cả</option>
-                                        <option value="1" {{ request('loai_bai_viet') == 1 ? 'selected' : '' }}>Khuyến mãi</option>
-                                        <option value="2" {{ request('loai_bai_viet') == 2 ? 'selected' : '' }}>Giới thiệu</option>
-                                        <option value="3" {{ request('loai_bai_viet') == 3 ? 'selected' : '' }}>Chính sách</option>
-                                        <option value="4" {{ request('loai_bai_viet') == 4 ? 'selected' : '' }}>Phim</option>
+                                        <option value="1" {{ request('loai_bai_viet') == 1 ? 'selected' : '' }}>Khuyến
+                                            mãi</option>
+                                        <option value="2" {{ request('loai_bai_viet') == 2 ? 'selected' : '' }}>Giới
+                                            thiệu</option>
+                                        <option value="3" {{ request('loai_bai_viet') == 3 ? 'selected' : '' }}>Chính
+                                            sách</option>
+                                        <option value="4" {{ request('loai_bai_viet') == 4 ? 'selected' : '' }}>Phim
+                                        </option>
                                     </select>
                                 </div>
                                 <div class="col-md-2">
@@ -140,41 +144,44 @@
                                                 @switch($tin->LoaiBaiViet)
                                                     @case(1)
                                                         <span class="badge bg-warning text-dark">Khuyến mãi</span>
-                                                        @break
+                                                    @break
+
                                                     @case(2)
                                                         <span class="badge bg-info">Giới thiệu</span>
-                                                        @break
+                                                    @break
+
                                                     @case(3)
                                                         <span class="badge bg-secondary">Chính sách</span>
-                                                        @break
+                                                    @break
+
                                                     @default
                                                         <span class="badge bg-primary">Phim</span>
                                                 @endswitch
                                             </td>
                                             <td>
                                                 @if ($tin->AnhDaiDien)
-                                                    <img src="{{ asset('storage/' . $tin->AnhDaiDien) }}"
-                                                        width="80" class="img-thumbnail" alt="Ảnh đại diện">
+                                                    <img src="{{ asset('storage/' . $tin->AnhDaiDien) }}" width="80"
+                                                        class="img-thumbnail" alt="Ảnh đại diện">
                                                 @else
-                                                    <img src="{{ asset('images/no-image.jpg') }}"
-                                                        width="80" class="img-thumbnail" alt="Không có ảnh">
+                                                    <img src="{{ asset('images/no-image.jpg') }}" width="80"
+                                                        class="img-thumbnail" alt="Không có ảnh">
                                                 @endif
                                             </td>
                                             <td>{{ $tin->TenDN }}</td>
                                             <td>
-                                                @if($tin->TrangThai == 1)
+                                                @if ($tin->TrangThai == 1)
                                                     <span class="badge bg-success">Đã xuất bản</span>
                                                 @else
                                                     <span class="badge bg-warning text-dark">Chờ xuất bản</span>
                                                 @endif
                                             </td>
                                             <td>
-                                                <a href="{{ route('tin_tuc.edit', $tin->ID_TinTuc) }}" 
-                                                   class="btn btn-warning btn-sm">
+                                                <a href="{{ route('tin_tuc.edit', $tin->ID_TinTuc) }}"
+                                                    class="btn btn-warning btn-sm">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
-                                                <form action="{{ route('tin_tuc.destroy', $tin->ID_TinTuc) }}" method="POST"
-                                                    class="d-inline"
+                                                <form action="{{ route('tin_tuc.destroy', $tin->ID_TinTuc) }}"
+                                                    method="POST" class="d-inline"
                                                     onsubmit="return confirm('Bạn có chắc chắn muốn xóa tin tức này?')">
                                                     @csrf
                                                     @method('DELETE')
@@ -184,21 +191,22 @@
                                                 </form>
                                             </td>
                                         </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="6" class="text-center text-muted">Không có dữ liệu</td>
-                                        </tr>
-                                    @endforelse
-                                </tbody>
-                            </table>
-                        </div>
+                                        @empty
+                                            <tr>
+                                                <td colspan="6" class="text-center text-muted">Không có dữ liệu</td>
+                                            </tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
+                            </div>
 
-                        <div class="mt-3 d-flex justify-content-center">
-                            {{ $tinTucs->appends(request()->query())->links('pagination::bootstrap-4') }}
+                            {{-- Phân trang --}}
+                            <div class="mt-3 d-flex justify-content-center">
+                                {{ $tinTucs->appends(request()->all())->links() }}
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-@endsection
+    @endsection

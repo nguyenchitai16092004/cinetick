@@ -25,7 +25,7 @@ class HoaDonSeeder extends Seeder
                 'TrangThaiXacNhanThanhToan' => 1,
                 'order_code' => '208227037',
                 'SoTaiKhoan' => '0394378614',
-                'TenTaiKhoan' => 'VND-TGTT-PHAM HUYNH DANG KHOA',
+                'TenTaiKhoan' => 'đD-TGTT-PHAM HUYNH DANG KHOA',
                 'TenNganHang' => 'Techcombank',
                 'created_at' => '2025-06-20 15:41:48',
                 'updated_at' => '2025-06-20 15:41:48',

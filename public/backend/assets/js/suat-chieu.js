@@ -402,7 +402,6 @@ function taoSuatChieuTuDong() {
             ngayDangChon.times.push(gioChieu);
         }
 
-        // Tăng thời gian theo thời lượng phim + 30 phút nghỉ
         phutChieu += thoiLuongPhim + 30;
     }
 

@@ -60,9 +60,9 @@
                                             <td>
                                                 <span class="badge bg-primary">{{ $km->MaKhuyenMai }}</span>
                                             </td>
-                                            <td>{{ number_format($km->DieuKienToiThieu, 0, ',', '.') }} VNĐ</td>
+                                            <td>{{ number_format($km->DieuKienToiThieu, 0, ',', '.') }} đ</td>
                                             <td>{{ $km->PhanTramGiam }}%</td>
-                                            <td>{{ number_format($km->GiamToiDa, 0, ',', '.') }} VNĐ</td>
+                                            <td>{{ number_format($km->GiamToiDa, 0, ',', '.') }} đ</td>
                                             <td>{{ \Carbon\Carbon::parse($km->NgayKetThuc)->format('d/m/Y') }}</td>
                                             <td>
                                                 @php
