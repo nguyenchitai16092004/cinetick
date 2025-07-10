@@ -417,7 +417,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (totalPriceElement) {
             totalPriceElement.textContent =
-                totalPrice.toLocaleString("vi-VN") + " VNĐ";
+                totalPrice.toLocaleString("vi-VN") + " đ";
         }
 
         // Update continue button state

@@ -87,7 +87,7 @@ class TaiKhoanController extends Controller
             'SDT.regex' => 'Số điện thoại không đúng định dạng.',
             'ID_Rap.required_if' => 'Địa chỉ làm việc là bắt buộc đối với nhân viên.',
             'Luong.required_if' => 'Lương là bắt buộc đối với nhân viên.',
-            'Luong.min' => 'Lương tối thiểu là 1.000.000 VND.',
+            'Luong.min' => 'Lương tối thiểu là 1.000.000 đD.',
         ]);
 
         if ($validator->fails()) {

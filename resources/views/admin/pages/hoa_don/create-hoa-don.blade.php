@@ -115,8 +115,6 @@
                             <div class="left-panel">
                                 <div class="booking-note-pro" style="display: flex; align-items: center; gap: 10px;">
                                     <div class="booking-note-icon-tooltip" style="position: relative;">
-                                        <i class="fa-solid fa-circle-info"
-                                            style="font-size: 1.5rem; color: #1976d2; cursor: pointer;"></i>
                                         <div class="booking-note-tooltip">
                                             <div><b>Số ghế:</b> <span id="tongSoGhe">-- ghế/phòng</span></div>
                                             <div><b>Tối đa:</b> 8 ghế/lần đặt</div>
@@ -126,8 +124,6 @@
                                 </div>
                                 <div class="screen-wrapper"
                                     style="display: flex; flex-direction: column; align-items: center;">
-                                    <img src="{{ asset('frontend/Content/img/img-screen.png') }}" alt="Screen"
-                                        class="screen-image">
                                     <div class="screen-text">Màn hình</div>
                                 </div>
                                 <div id="seatLayout" class="seat-container">
@@ -165,7 +161,7 @@
                                 <hr>
                                 <div class="d-flex justify-content-between">
                                     <strong>Tổng tiền:</strong>
-                                    <strong class="text-success" id="totalPrice">0 VNĐ</strong>
+                                    <strong class="text-success" id="totalPrice">0 đ</strong>
                                 </div>
                             </div>
                             <div class="btn-group-custom">

@@ -331,7 +331,7 @@ function capNhatTomTatBuoc2() {
             <p><strong>Độ tuổi:</strong> ${trangThaiDatVe.phim.doTuoi}</p>
             <p><strong>Thời lượng:</strong> ${trangThaiDatVe.phim.thoiLuong}</p>
             <p><strong>Suất chiếu:</strong> ${trangThaiDatVe.suatChieu}</p>
-            <p><strong>Giá vé:</strong> ${trangThaiDatVe.phim.giaVe.toLocaleString()} VNĐ</p>
+            <p><strong>Giá vé:</strong> ${trangThaiDatVe.phim.giaVe.toLocaleString()} đ</p>
         </div>
     `;
 }
@@ -405,17 +405,17 @@ function capNhatTomTatGhe() {
         });
 
         trangThaiDatVe.gheNgoi.forEach(ghe => {
-            htmlTomTat += `<p>Ghế ${ghe.tenGhe || ghe.id} (${ghe.loai}): ${ghe.gia.toLocaleString()} VNĐ</p>`;
+            htmlTomTat += `<p>Ghế ${ghe.tenGhe || ghe.id} (${ghe.loai}): ${ghe.gia.toLocaleString()} đ</p>`;
             tongTien += ghe.gia;
         });
 
         htmlTomTat += '</div>';
         divTomTat.innerHTML = htmlTomTat;
-        divTongTien.textContent = tongTien.toLocaleString() + ' VNĐ';
+        divTongTien.textContent = tongTien.toLocaleString() + ' đ';
         trangThaiDatVe.tongTien = tongTien;
     } else {
         divTomTat.innerHTML = '<p class="text-muted">Chưa chọn ghế</p>';
-        divTongTien.textContent = '0 VNĐ';
+        divTongTien.textContent = '0 đ';
         trangThaiDatVe.tongTien = 0;
     }
 }
@@ -456,12 +456,12 @@ function capNhatTomTatCuoiCung() {
             </div>
             <div class="row">
                 <div class="col-6"><strong>Số tiền giảm:</strong></div>
-                <div class="col-6">${trangThaiDatVe.giamGia.toLocaleString('vi-VN')}VNĐ</div>
+                <div class="col-6">${trangThaiDatVe.giamGia.toLocaleString('vi-VN')}đ</div>
             </div>
             <hr>
             <div class="row">
                 <div class="col-6"><strong>Tổng tiền:</strong></div>
-                <div class="col-6 text-success"><strong>${trangThaiDatVe.tongTien.toLocaleString()} VNĐ</strong></div>
+                <div class="col-6 text-success"><strong>${trangThaiDatVe.tongTien.toLocaleString()} đ</strong></div>
             </div>
         </div>
     `;
@@ -480,12 +480,12 @@ function capNhatTomTatThanhToan() {
             </div>
             <div class="d-flex justify-content-between mb-2">
                 <span>Tổng tiền:</span>
-                <span>${trangThaiDatVe.tongTien.toLocaleString()} VNĐ</span>
+                <span>${trangThaiDatVe.tongTien.toLocaleString()} đ</span>
             </div>
             <hr>
             <div class="d-flex justify-content-between">
                 <strong>Thanh toán:</strong>
-                <strong class="text-success">${trangThaiDatVe.tongTien.toLocaleString()} VNĐ</strong>
+                <strong class="text-success">${trangThaiDatVe.tongTien.toLocaleString()} đ</strong>
             </div>
         </div>
     `;

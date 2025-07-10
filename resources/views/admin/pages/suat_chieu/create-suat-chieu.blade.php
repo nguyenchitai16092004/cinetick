@@ -133,7 +133,7 @@
 
                                 <div class="col-md-6">
                                     <div class="form-group mb-3">
-                                        <label for="GiaVe">Giá vé (VNĐ) <span class="text-danger">*</span></label>
+                                        <label for="GiaVe">Giá vé (đ) <span class="text-danger">*</span></label>
                                         <input type="number" class="form-control" id="GiaVe" name="GiaVe"
                                             value="45000" min="0" step="1000" required>
                                     </div>

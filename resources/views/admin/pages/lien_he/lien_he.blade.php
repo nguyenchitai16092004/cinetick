@@ -196,8 +196,9 @@
                             </table>
                         </div>
 
+                        {{-- Phân trang --}}
                         <div class="mt-3 d-flex justify-content-center">
-                            {{ $contacts->links('pagination::bootstrap-4') }}
+                            {{ $contacts->appends(request()->all())->links() }}
                         </div>
                     </div>
                 </div>
