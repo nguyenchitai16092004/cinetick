@@ -122,7 +122,7 @@ class PhimController extends Controller
         $phim = Phim::where('Slug', $slug)->firstOrFail();
         $now = now();
 
-        // Lấy tất cả suất chiếu còn hiệu lực (chưa kết thúc)
+        // Lấy tất cả suất chiếu còn hiệu lực (chưa kết thúc và chưa vào 15 phút trước giờ chiếu)
         $suatChieu = $phim->suatChieu()
             ->with('rap', 'phim')
             ->get()
@@ -131,8 +131,8 @@ class PhimController extends Controller
                 $startTime = Carbon::createFromFormat('Y-m-d H:i:s', $suat->NgayChieu . ' ' . $gioChieu);
                 $endTime = $startTime->copy()->addMinutes($suat->phim->ThoiLuong ?? 0);
 
-                // Chỉ lấy suất chiếu chưa kết thúc (endTime > now)
-                return $endTime->greaterThan($now);
+                // Ẩn suất chiếu nếu đã vào 15 phút trước giờ chiếu hoặc đã kết thúc
+                return $startTime->subMinutes(15)->greaterThan($now) && $endTime->greaterThan($now);
             })
             ->sortBy([
                 ['NgayChieu', 'asc'],
@@ -141,7 +141,7 @@ class PhimController extends Controller
             ->groupBy(function ($item) {
                 return $item->NgayChieu . '|' . $item->rap->DiaChi;
             });
-            
+
         $phim->avg_rating = round($phim->binhLuan()->avg('DiemDanhGia'), 1) ?: '0.0';
         $phim->count_rating = $phim->binhLuan()->whereNotNull('DiemDanhGia')->count();
 
