@@ -74,7 +74,7 @@ class AdminPayOSController extends Controller
                 'buyerName'   => session('user_fullname') ?? '',
                 'buyerEmail'  => session('user_email') ?? '',
                 'items'       => $items,
-                'expiredAt'   => now()->addMinutes(15)->timestamp,
+                'expiredAt'   => now()->addMinutes(6)->timestamp,
             ]);
             // Lưu orderData vào session theo orderCodeNum để lấy lại khi callback/return
             session(['payos_order_' . $orderCodeNum => $orderData]);
