@@ -36,7 +36,7 @@
                     </div>
                     <div class="form-group mb-3">
                         <label for="SoLuong">Số lượng phiếu giảm</label>
-                        <input type="number" name="SoLuong" class="form-control" required min="0" step="100"
+                        <input type="number" name="SoLuong" class="form-control" required min="0"
                             max="1000000000">
                     </div>
                     <div class="form-group mb-3">
