@@ -281,7 +281,8 @@
                                                 <div class="col-md-5">
                                                     <h6><i class="fas fa-wallet me-2"></i>Phương thức thanh toán</h6>
                                                     <div class="m-3" class="d-flex" style="display: flex">
-                                                        <input type="radio" id="payOS" name="paymentMethod" value="payOS" checked >
+                                                        <input type="radio" id="payOS" name="paymentMethod"
+                                                            value="payOS" checked>
                                                         <label for="payOS" class="d-flex w-100">
                                                             <img src="/user/Content/img/Casso-payOSLogo-1.svg"
                                                                 alt="PayOS" style="height: 24px;"> PayOS
@@ -428,12 +429,12 @@
                 type: "POST",
                 data: {
                     _token: "{{ csrf_token() }}",
-                    MaKhuyenMai: code
+                    MaKhuyenMai: code,
+                    TongTien : trangThaiDatVe.tongTien
                 },
                 success: function(res) {
                     if (res.success) {
-                        $('#promoMessage').removeClass('text-danger').addClass('text-success').text(res
-                            .message);
+                        $('#promoMessage').removeClass('text-danger').addClass('text-success').text(res.message);
                         const phanTramGiam = res.khuyenMai.PhanTramGiam;
                         const giamToiDa = res.khuyenMai.GiamToiDa;
                         const dieuKienToiThieu = res.khuyenMai.DieuKienToiThieu;
@@ -444,10 +445,10 @@
 
                         if (trangThaiDatVe.tongTien >= dieuKienToiThieu) {
                             trangThaiDatVe.giamGia = khuyenMai;
-                            trangThaiDatVe.tongTien -= khuyenMai;
                         } else {
                             trangThaiDatVe.giamGia = 0;
                         }
+                        
                         capNhatTomTatCuoiCung();
                     } else {
                         $('#promoMessage').removeClass('text-success').addClass('text-danger').text(res
@@ -513,34 +514,42 @@
         }
 
         document.getElementById('btnModalConfirm').addEventListener('click', function() {
-            // Thu thập dữ liệu từ trang (hoặc từ biến toàn cục)
+            // Kiểm tra cơ bản
+            if (!trangThaiDatVe.ID_SuatChieu || !trangThaiDatVe.gheNgoi.length) {
+                alert('Vui lòng chọn suất chiếu và ghế!');
+                return;
+            }
+
             const data = {
-                _token: "{{ csrf_token() }}", // Bắt buộc trong Laravel
+                _token: "{{ csrf_token() }}",
                 ID_SuatChieu: trangThaiDatVe.ID_SuatChieu,
                 selectedSeats: trangThaiDatVe.gheNgoi.map(ghe => ghe.tenGhe).join(','),
                 seatDetails: JSON.stringify(trangThaiDatVe.chiTietGhe || []),
                 paymentMethod: 'PAYOS',
                 so_tien_giam: trangThaiDatVe.giamGia || 0,
-                tong_tien: trangThaiDatVe.tongTien,
+                tong_tien: (trangThaiDatVe.tongTien || 0) - (trangThaiDatVe.giamGia || 0),
                 ma_khuyen_mai: trangThaiDatVe.khuyenMai || ''
             };
 
-            // Gửi AJAX đến controller
             $.ajax({
                 url: "{{ route('hoa-don.payment') }}",
                 method: "POST",
                 data: data,
                 success: function(res) {
                     if (res.checkoutUrl) {
-                        // Chuyển hướng tới link thanh toán PayOS
                         window.location.href = res.checkoutUrl;
                     } else {
                         alert("Tạo liên kết thanh toán không thành công.");
                         console.log(res);
                     }
+                },
+                error: function(xhr, status, error) {
+                    alert("Đã xảy ra lỗi: " + error);
+                    console.error(xhr.responseText);
                 }
             });
         });
+
 
 
         // Hàm cập nhật thông tin ghế trong tooltip

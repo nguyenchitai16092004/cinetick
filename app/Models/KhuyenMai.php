@@ -18,6 +18,8 @@ class KhuyenMai extends Model
         'DieuKienToiThieu',
         'PhanTramGiam',
         'GiamToiDa',
+        'SoLuong',
+        'TongTienDaGiam',
         'NgayKetThuc',
     ];
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Apps;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\KhuyenMaiDaSuDung;
+use App\Models\KhuyenMai;
 use PayOS\PayOS;
 use App\Models\HoaDon;
 use App\Models\VeXemPhim;
@@ -148,7 +149,6 @@ class PayOSController extends Controller
         if ($orderCode) {
             $paymentInfo = $this->getPaymentLinkInformation($orderCode);
             if ($paymentInfo && $paymentInfo['status'] === 'PAID') {
-                $this->addMaKhuyenMai();
                 $this->updatePaymentSuccess($orderCode);
             }
             return redirect()->route('checkout_status')
@@ -169,7 +169,6 @@ class PayOSController extends Controller
             session(['maHoaDon' => $hoaDon->ID_HoaDon]);
             return;
         }
-
         // Lấy lại orderData từ session
         $orderData = session('payos_order_' . $orderCode, null);
         if (!$orderData) {
@@ -251,6 +250,7 @@ class PayOSController extends Controller
             // Xóa orderData khỏi session
             session()->forget('payos_order_' . $orderCode);
             session(['maHoaDon' => $maHoaDon]);
+            $this->addMaKhuyenMai();
 
             // Gửi email
             $sendEmail = new ThanhToanController();
@@ -301,19 +301,32 @@ class PayOSController extends Controller
     {
         $ma = session('ma_khuyen_mai');
         $id = session('user_id');
+        $soTienGiam = session('so_tien_giam');
+
         if (!$ma || !$id) {
             return;
         }
+
         KhuyenMaiDaSuDung::create([
             'ID_TaiKhoan' => $id,
             'ID_KhuyenMai' => $ma
         ]);
-        // Xóa mã khuyến mãi khỏi session
+
+        $km = KhuyenMai::where('MaKhuyenMai', $ma)->first();
+        if ($km) {
+            $km->TongTienDaGiam += $soTienGiam ?? 0;
+            $km->SoLuong -= 1;
+            $km->save();
+        }
+
         session()->forget('ma_khuyen_mai');
-        // Xóa mã khuyến mãi khỏi cache nếu có
+        session()->forget('so_tien_giam');
+
+        // Xóa cache nếu có
         if (cache()->has('ma_khuyen_mai_' . $id)) {
             cache()->forget('ma_khuyen_mai_' . $id);
         }
+
         return;
     }
 }

@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use PayOS\PayOS;
 use App\Models\HoaDon;
 use App\Models\VeXemPhim;
-use TJGazel\Toastr\Facades\Toastr;
+use App\Models\KhuyenMai;
 use Illuminate\Support\Facades\Log;
 use App\Models\SuatChieu;
 use Illuminate\Support\Facades\DB;
@@ -249,6 +249,26 @@ class AdminPayOSController extends Controller
             // Xóa orderData khỏi session
             session()->forget('payos_order_' . $orderCode);
             session(['maHoaDon' => $maHoaDon]);
+
+            // Lấy mã khuyến mãi và số tiền giảm từ session
+            $idKhuyenMai = session('ma_khuyen_mai');
+            $soTienGiam = session('so_tien_giam') ?? 0;
+
+            // Nếu có mã khuyến mãi thì cập nhật vào bảng KhuyenMai
+            if ($idKhuyenMai) {
+                $km = KhuyenMai::find($idKhuyenMai);
+                if ($km) {
+                    $km->TongTienDaGiam += $soTienGiam;
+                    $km->SoLuong -= 1;
+                    $km->save();
+
+                    Log::info("Đã cập nhật khuyến mãi ID: $idKhuyenMai, giảm $soTienGiam đ");
+                }
+            }
+
+            // Xóa dữ liệu khuyến mãi khỏi session
+            session()->forget('ma_khuyen_mai');
+            session()->forget('so_tien_giam');
 
             // Gửi email
             $sendEmail = new ThanhToanController();
