@@ -13,7 +13,7 @@
         href="{{ $thongTinTrangWeb->Icon ? asset('storage/' . $thongTinTrangWeb->Icon) : asset('images/no-image.jpg') }}"
         type="image/png">
 
-    <title>Login - Cinetick</title>
+    <title>Đăng nhập - Cinetick</title>
 </head>
 
 <body>
@@ -31,7 +31,7 @@
                 <div class="flex items-center justify-center p-6 sm:p-12 md:w-1/2">
                     <div class="w-full">
                         <h1 class="mb-4 text-xl font-semibold text-gray-700 dark:text-gray-200">
-                            Login
+                            Đăng nhập quản trị viên/Nhân viên
                         </h1>
                         <form method="POST" action="{{ route('login_admin') }}">
                             @csrf
@@ -39,13 +39,13 @@
                                 <span class="text-gray-700 dark:text-gray-400">Tên đăng nhập</span>
                                 <input name="TenDN" required
                                     class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
-                                    placeholder="nguyenvana" />
+                                    placeholder="Tên đăng nhập" />
                             </label>
                             <label class="block mt-4 text-sm">
                                 <span class="text-gray-700 dark:text-gray-400">Mật khẩu</span>
                                 <input name="MatKhau" required type="password"
                                     class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
-                                    placeholder="***************" />
+                                    placeholder="Mật khẩu" />
                             </label>
                             @if (session('error'))
                                 <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4" role="alert">
