@@ -17,7 +17,7 @@ return new class extends Migration
             $table->integer('PhanTramGiam');
             $table->integer('SoLuong')->default(1000000000);
             $table->integer('TongTienDaGiam')->default(0);
-            $table->boolean('TrangThai');
+            $table->boolean('TrangThai')->default(1);
             $table->timestamps();
         });
     }   
