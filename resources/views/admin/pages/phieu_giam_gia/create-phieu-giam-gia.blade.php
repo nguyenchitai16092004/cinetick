@@ -21,7 +21,8 @@
                     </div>
                     <div class="form-group mb-3">
                         <label for="DieuKienToiThieu">Điều kiện tối thiểu (đ)</label>
-                        <input type="number" name="DieuKienToiThieu" class="form-control" required min="0" step="1000" max="1000000000">
+                        <input type="number" name="DieuKienToiThieu" class="form-control" required min="0"
+                            step="1000" max="1000000000">
                     </div>
 
                     <div class="form-group mb-3">
@@ -30,7 +31,13 @@
                     </div>
                     <div class="form-group mb-3">
                         <label for="GiamToiDa">Giảm tối đa (đ)</label>
-                        <input type="number" name="GiamToiDa" class="form-control" required min="0" step="1000" max="1000000000">
+                        <input type="number" name="GiamToiDa" class="form-control" required min="0" step="1000"
+                            max="1000000000">
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="SoLuong">Số lượng phiếu giảm</label>
+                        <input type="number" name="SoLuong" class="form-control" required min="0" step="100"
+                            max="1000000000">
                     </div>
                     <div class="form-group mb-3">
                         <label for="NgayKetThuc">Ngày hết hạn</label>

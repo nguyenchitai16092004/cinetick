@@ -432,6 +432,10 @@ function capNhatTomTatCuoiCung() {
         day: 'numeric'
     });
 
+    const tongTien = trangThaiDatVe.tongTien || 0;
+    const giamGia = trangThaiDatVe.giamGia || 0;
+    const tongTienSauGiam = tongTien - giamGia;
+
     divTomTat.innerHTML = `
         <div class="final-summary">
             <div class="row">
@@ -456,16 +460,17 @@ function capNhatTomTatCuoiCung() {
             </div>
             <div class="row">
                 <div class="col-6"><strong>Số tiền giảm:</strong></div>
-                <div class="col-6">${trangThaiDatVe.giamGia.toLocaleString('vi-VN')}đ</div>
+                <div class="col-6">${giamGia.toLocaleString('vi-VN')} đ</div>
             </div>
             <hr>
             <div class="row">
                 <div class="col-6"><strong>Tổng tiền:</strong></div>
-                <div class="col-6 text-success"><strong>${trangThaiDatVe.tongTien.toLocaleString()} đ</strong></div>
+                <div class="col-6 text-success"><strong>${tongTienSauGiam.toLocaleString('vi-VN')} đ</strong></div>
             </div>
         </div>
     `;
 }
+    
 
 // Cập nhật tóm tắt thanh toán cho bước 5
 function capNhatTomTatThanhToan() {

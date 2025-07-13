@@ -28,6 +28,7 @@ class KhuyenMaiController extends Controller
                 'DieuKienToiThieu' => 'nullable|numeric|min:0',
                 'PhanTramGiam' => 'required|integer|min:1|max:100',
                 'GiamToiDa' => 'required|numeric|min:0',
+                'SoLuong' => 'required|numeric|min:0',
                 'NgayKetThuc' => 'date|nullable',
             ], [
                 'MaKhuyenMai.unique' => 'Mã khuyến mãi đã tồn tại.',
@@ -36,6 +37,7 @@ class KhuyenMaiController extends Controller
                 'PhanTramGiam.integer' => 'Phần trăm giảm phải là số nguyên.',
                 'PhanTramGiam.min' => 'Phần trăm giảm tối thiểu là 1%.',
                 'PhanTramGiam.max' => 'Phần trăm giảm tối đa là 100%.',
+                'SoLuong.min' => 'Không được số âm',
                 'GiamToiDa.required' => 'Vui lòng nhập giá trị giảm tối đa.',
                 'GiamToiDa.numeric' => 'Giảm tối đa phải là số.',
                 'GiamToiDa.min' => 'Giảm tối đa không được âm.',
@@ -54,6 +56,7 @@ class KhuyenMaiController extends Controller
                 'DieuKienToiThieu' => $request->DieuKienToiThieu,
                 'PhanTramGiam' => $request->PhanTramGiam,
                 'GiamToiDa' => $request->GiamToiDa,
+                'SoLuong' => $request->SoLuong,
                 'NgayKetThuc' => $request->NgayKetThuc,
             ]);
 
@@ -78,6 +81,7 @@ class KhuyenMaiController extends Controller
                 'DieuKienToiThieu' => 'nullable|numeric|min:0',
                 'PhanTramGiam' => 'required|integer|min:1|max:100',
                 'GiamToiDa' => 'required|numeric|min:0',
+                'SoLuong' => 'required|numeric|min:0',
                 'NgayKetThuc' => 'date|nullable',
             ], [
                 'MaKhuyenMai.unique' => 'Mã khuyến mãi đã tồn tại.',
@@ -88,6 +92,7 @@ class KhuyenMaiController extends Controller
                 'PhanTramGiam.integer' => 'Phần trăm giảm phải là số nguyên.',
                 'PhanTramGiam.min' => 'Phần trăm giảm phải lớn hơn 0.',
                 'PhanTramGiam.max' => 'Phần trăm giảm tối đa là 100%.',
+                'SoLuong.min' => 'Không được số âm',
                 'GiamToiDa.required' => 'Vui lòng nhập giá trị giảm tối đa.',
                 'GiamToiDa.numeric' => 'Giảm tối đa phải là số.',
                 'GiamToiDa.min' => 'Giảm tối đa không được âm.',
@@ -107,6 +112,7 @@ class KhuyenMaiController extends Controller
                 'DieuKienToiThieu' => $request->DieuKienToiThieu,
                 'PhanTramGiam' => $request->PhanTramGiam,
                 'GiamToiDa' => $request->GiamToiDa,
+                'SoLuong' => $request->SoLuong,
                 'NgayKetThuc' => $request->NgayKetThuc,
             ]);
 
@@ -116,9 +122,13 @@ class KhuyenMaiController extends Controller
         }
     }
 
-    public function destroy($id)
+    public function toggleStatus($id)
     {
-        KhuyenMai::findOrFail($id)->delete();
-        return redirect()->route('khuyen-mai.index')->with('success', 'Xoá thành công!');
+        $km = KhuyenMai::findOrFail($id);
+        $km->TrangThai = $km->TrangThai == 1 ? 0 : 1;
+        $km->save();
+
+        $message = $km->TrangThai == 1 ? 'Khôi phục khuyến mãi thành công!' : 'Đã ngưng áp dụng khuyến mãi!';
+        return redirect()->route('khuyen-mai.index')->with('success', $message);
     }
 }

@@ -256,7 +256,7 @@ Route::prefix('admin')->middleware(['admin', \App\Http\Middleware\RoleMiddleware
         Route::post('/store', [KhuyenMaiController::class, 'store'])->name('store');
         Route::get('/edit/{id}', [KhuyenMaiController::class, 'edit'])->name('edit');
         Route::put('/update/{id}', [KhuyenMaiController::class, 'update'])->name('update');
-        Route::get('/delete/{id}', [KhuyenMaiController::class, 'destroy'])->name('delete');
+        Route::delete('/delete/{id}', [KhuyenMaiController::class, 'toggleStatus'])->name('delete');
     });
 
     // Tài khoản
@@ -268,7 +268,7 @@ Route::prefix('admin')->middleware(['admin', \App\Http\Middleware\RoleMiddleware
         Route::get('/change-status/{id}', [TaiKhoanController::class, 'changeStatus'])->name('status');
     });
 
-    // Hóa đơn - Chức năng nâng cao
+    // Hóa đơn
     Route::prefix('hoa-don')->name('hoa-don.')->group(function () {
         Route::get('/edit/{id}', [HoaDonController::class, 'edit'])->name('edit');
         Route::put('/update/{id}', [HoaDonController::class, 'update'])->name('update');
@@ -276,7 +276,7 @@ Route::prefix('admin')->middleware(['admin', \App\Http\Middleware\RoleMiddleware
         Route::get('/export-report', [HoaDonController::class, 'exportReport'])->name('export-report');
     });
 
-    // Vé xem phim - Chức năng nâng cao
+    // Vé xem phim
     Route::prefix('ve-xem-phim')->name('ve-xem-phim.')->group(function () {
         Route::get('/{hoaDonId}/create', [VeXemPhimController::class, 'create'])->name('create');
         Route::post('/{hoaDonId}/store', [VeXemPhimController::class, 'store'])->name('store');

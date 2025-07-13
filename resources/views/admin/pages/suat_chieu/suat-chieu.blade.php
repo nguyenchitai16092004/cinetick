@@ -169,17 +169,15 @@
                                             <td>
                                                 <div class="btn-group" role="group">
                                                     <a href="{{ route('suat-chieu.edit', $suatChieu->ID_SuatChieu) }}"
-                                                        class="btn btn-warning btn-sm m-1" title="Chỉnh sửa" style="border-radius: 5px">
+                                                        class="btn btn-warning btn-sm m-1" title="Chỉnh sửa"
+                                                        style="border-radius: 5px">
                                                         <i class="fas fa-edit"></i>
                                                     </a>
-                                                    <form
-                                                        action="{{ route('suat-chieu.destroy', $suatChieu->ID_SuatChieu) }}"
-                                                        method="POST"
-                                                        onsubmit="return confirm('Bạn có chắc muốn xóa suất chiếu này?');"
-                                                        class="d-inline">
+                                                    <form action="{{ route('suat-chieu.destroy', $suatChieu->ID_SuatChieu) }}" method="POST" onsubmit="return confirm('Bạn có chắc muốn xóa suất chiếu này?');" class="d-inline">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" class="btn btn-danger btn-sm m-1" title="Xóa">
+                                                        <button type="submit" class="btn btn-danger btn-sm m-1"
+                                                            title="Xóa">
                                                             <i class="fas fa-trash"></i>
                                                         </button>
                                                     </form>

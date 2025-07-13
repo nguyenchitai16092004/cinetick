@@ -261,6 +261,7 @@ class ThanhToanController extends Controller
 
         return view('user.pages.kiem-tra-thanh-toan', $viewData)->with('status', $status);
     }
+
     public function kiemTraKhuyenMai(Request $request)
     {
         $ma = trim($request->input('ma_khuyen_mai'));
@@ -271,14 +272,6 @@ class ThanhToanController extends Controller
             ->where('NgayKetThuc', '>=', $now)
             ->first();
 
-        if(KhuyenMaiDaSuDung::where('ID_KhuyenMai', $km->ID_KhuyenMai)
-            ->where('ID_TaiKhoan', session('user_id'))
-            ->exists()) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Mã khuyến mãi đã được sử dụng trước đó!'
-            ]);
-        }
         if (!$km) {
             return response()->json([
                 'status' => false,
@@ -286,7 +279,30 @@ class ThanhToanController extends Controller
             ]);
         }
 
-        // Kiểm tra điều kiện tối thiểu
+        if (KhuyenMaiDaSuDung::where('ID_KhuyenMai', $km->ID_KhuyenMai)
+            ->where('ID_TaiKhoan', session('user_id'))
+            ->exists()
+        ) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Mã khuyến mãi đã được sử dụng trước đó!'
+            ]);
+        }
+
+        if ($km->SoLuong <= 0) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Mã khuyến mãi này đã hết lượt sử dụng!'
+            ]);
+        }
+
+        if ($km->TrangThai != 1) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Mã khuyến mãi này không còn hoạt động!'
+            ]);
+        }
+
         if ($tongTien < $km->DieuKienToiThieu) {
             return response()->json([
                 'status' => false,
@@ -294,6 +310,7 @@ class ThanhToanController extends Controller
             ]);
         }
 
+        // ✅ Tính giảm giá
         $phanTram = $km->PhanTramGiam;
         $soTienGiam = floor($tongTien * $phanTram / 100);
 
@@ -304,6 +321,7 @@ class ThanhToanController extends Controller
 
         $tongTienSauGiam = $tongTien - $soTienGiam;
 
+        // Ghi log
         Log::info('Áp dụng mã khuyến mãi', [
             'tong_tien' => $tongTien,
             'ma_khuyen_mai' => $ma,
@@ -312,15 +330,18 @@ class ThanhToanController extends Controller
             'tong_tien_sau_giam' => $tongTienSauGiam
         ]);
 
-        // Lưu thông tin mã khuyến mãi vào session để sử dụng sau này
-        session(['ma_khuyen_mai' => $km->ID_KhuyenMai]);
+        // Lưu session để dùng sau (ở bước thanh toán)
+        session([
+            'ma_khuyen_mai' => $km->ID_KhuyenMai,
+            'so_tien_giam' => $soTienGiam
+        ]);
 
         return response()->json([
             'status' => true,
             'phan_tram_giam' => $phanTram,
             'so_tien_giam' => $soTienGiam,
             'tong_tien_sau_giam' => $tongTienSauGiam,
-            'message' => "Đã áp dụng mã giảm $phanTram% tối đa $km->GiamToiDa đ"
+            'message' => "Đã áp dụng mã giảm $phanTram% tối đa " . number_format($km->GiamToiDa, 0, ',', '.') . " đ"
         ]);
     }
 }

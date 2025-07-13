@@ -43,72 +43,83 @@
                             <table class="table table-bordered table-hover align-middle text-center">
                                 <thead class="table-light">
                                     <tr>
-                                        <th>ID</th>
                                         <th>Mã giảm giá</th>
                                         <th>Điều kiện tối thiểu</th>
                                         <th>Phần trăm giảm</th>
-                                        <th>Giá trị tối đa</th>
+                                        <th>Tối đa</th>
                                         <th>Ngày kết thúc</th>
+                                        <th>Số tiền đã giảm</th>
+                                        <th>Số lượng</th>
                                         <th>Trạng thái</th>
-                                        <th>Thao tác</th>
+                                        <th>Tình trạng</th>
+                                        <th>Hành động</th>
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @php
+                                        use Carbon\Carbon;
+                                    @endphp
+
                                     @forelse ($dsKhuyenMai as $km)
                                         <tr>
-                                            <td>{{ $km->ID_KhuyenMai }}</td>
-                                            <td>
-                                                <span class="badge bg-primary">{{ $km->MaKhuyenMai }}</span>
-                                            </td>
+                                            <td><span class="badge bg-primary">{{ $km->MaKhuyenMai }}</span></td>
                                             <td>{{ number_format($km->DieuKienToiThieu, 0, ',', '.') }} đ</td>
                                             <td>{{ $km->PhanTramGiam }}%</td>
                                             <td>{{ number_format($km->GiamToiDa, 0, ',', '.') }} đ</td>
-                                            <td>{{ \Carbon\Carbon::parse($km->NgayKetThuc)->format('d/m/Y') }}</td>
+                                            <td>{{ Carbon::parse($km->NgayKetThuc)->format('d/m/Y') }}</td>
+                                            <td>{{ number_format($km->TongTienDaGiam, 0, ',', '.') }} đ</td>
+                                            <td>{{ $km->SoLuong }}</td>
+
+                                            {{-- Trạng thái --}}
                                             <td>
-                                                @php
-                                                    $today = \Carbon\Carbon::now()->format('Y-m-d');
-                                                    $ngayKetThuc = \Carbon\Carbon::parse($km->NgayKetThuc)->format('Y-m-d');
-
-                                                    if ($ngayKetThuc >= $today) {
-                                                        $trangThaiText = 'Có hiệu lực';
-                                                        $bgColor = '#28a745'; // Xanh
-                                                    } else {
-                                                        $trangThaiText = 'Hết hạn';
-                                                        $bgColor = '#dc3545'; // Đỏ
-                                                    }
-                                                @endphp
-
-                                                <span
-                                                    style="width:80%; display: inline-block; padding: 4px 8px; border-radius: 5px; color: #fff; background-color: {{ $bgColor }};">
-                                                    {{ $trangThaiText }}
-                                                </span>
+                                                @if ($km->TrangThai == 1)
+                                                    <span class="badge bg-success">Đang áp dụng</span>
+                                                @else
+                                                    <span class="badge bg-secondary">Đã ngưng</span>
+                                                @endif
                                             </td>
+
+                                            {{-- Tình trạng --}}
+                                            <td>
+                                                @if ($km->SoLuong == 0)
+                                                    <span class="badge bg-danger">Đã hết</span>
+                                                @elseif (Carbon::parse($km->NgayKetThuc)->lt(Carbon::now()))
+                                                    <span class="badge bg-warning">Hết thời gian sử dụng</span>
+                                                @else
+                                                    <span class="badge bg-success">Còn hiệu lực</span>
+                                                @endif
+                                            </td>
+
+                                            {{-- Hành động --}}
                                             <td>
                                                 <a href="{{ route('khuyen-mai.edit', $km->ID_KhuyenMai) }}"
                                                     class="btn btn-info btn-sm">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
-                                                <form action="{{ route('khuyen-mai.delete', $km->ID_KhuyenMai) }}" method="POST"
-                                                    class="d-inline"
-                                                    onsubmit="return confirm('Bạn có chắc chắn muốn xóa khuyến mãi này?')">
+                                                <form action="{{ route('khuyen-mai.delete', $km->ID_KhuyenMai) }}"
+                                                    method="POST" class="d-inline">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger btn-sm">
-                                                        <i class="fas fa-trash"></i>
+                                                    <button type="submit" class="btn btn-danger btn-sm"
+                                                        title="Đổi trạng thái">
+                                                        <i
+                                                            class="fas {{ $km->TrangThai == 1 ? 'fa-lock' : 'fa-lock-open' }}"></i>
                                                     </button>
                                                 </form>
+
                                             </td>
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="8" class="text-center text-muted">Không có dữ liệu</td>
+                                            <td colspan="12" class="text-center text-muted">Không có dữ liệu</td>
                                         </tr>
                                     @endforelse
                                 </tbody>
                             </table>
                         </div>
 
-                        @if(method_exists($dsKhuyenMai, 'links'))
+                        {{-- Phân trang --}}
+                        @if (method_exists($dsKhuyenMai, 'links'))
                             <div class="mt-3 d-flex justify-content-center">
                                 {{ $dsKhuyenMai->links() }}
                             </div>
@@ -118,5 +129,4 @@
             </div>
         </div>
     </div>
-
 @endsection

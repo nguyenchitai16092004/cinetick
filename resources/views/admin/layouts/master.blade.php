@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <link rel="stylesheet" href="{{ asset('backend/assets/css/layout.css') }}" />
     <link rel="icon" href="{{ $thongTinTrangWeb->Icon ? asset('storage/' . $thongTinTrangWeb->Icon) : asset('images/no-image.jpg') }}" type="image/png">
+    <title>@yield('title', 'Trang quản trị')</title>
     @yield('css')
 </head>
 

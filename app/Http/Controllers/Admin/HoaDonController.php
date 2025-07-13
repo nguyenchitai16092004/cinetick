@@ -29,13 +29,13 @@ class HoaDonController extends Controller
                 ->join('tai_khoan', 'hoa_don.ID_TaiKhoan', '=', 'tai_khoan.ID_TaiKhoan')
                 ->join('thong_tin', 'tai_khoan.ID_ThongTin', '=', 'thong_tin.ID_ThongTin')
                 ->select(
-                'hoa_don.ID_HoaDon',
-                'hoa_don.created_at',
-                'hoa_don.PTTT',
-                'hoa_don.TongTien',
-                'hoa_don.TrangThaiXacNhanHoaDon', 
-                'thong_tin.HoTen'
-            );
+                    'hoa_don.ID_HoaDon',
+                    'hoa_don.created_at',
+                    'hoa_don.PTTT',
+                    'hoa_don.TongTien',
+                    'hoa_don.TrangThaiXacNhanHoaDon',
+                    'thong_tin.HoTen'
+                );
         } else {
             $ID_Rap = session('user_id') ? TaiKhoan::join('thong_tin', 'thong_tin.ID_ThongTin', 'tai_khoan.ID_ThongTin')
                 ->where('tai_khoan.ID_TaiKhoan', session('user_id'))
@@ -47,13 +47,13 @@ class HoaDonController extends Controller
                 ->join('suat_chieu', 've_xem_phim.ID_SuatChieu', '=', 'suat_chieu.ID_SuatChieu')
                 ->where('suat_chieu.ID_Rap', $ID_Rap)
                 ->select(
-                'hoa_don.ID_HoaDon',
-                'hoa_don.created_at',
-                'hoa_don.PTTT',
-                'hoa_don.TongTien',
-                'hoa_don.TrangThaiXacNhanHoaDon', 
-                'thong_tin.HoTen'
-            );
+                    'hoa_don.ID_HoaDon',
+                    'hoa_don.created_at',
+                    'hoa_don.PTTT',
+                    'hoa_don.TongTien',
+                    'hoa_don.TrangThaiXacNhanHoaDon',
+                    'thong_tin.HoTen'
+                );
         }
 
 
@@ -158,9 +158,10 @@ class HoaDonController extends Controller
                 $exists = HoaDon::where('ID_HoaDon', $maHoaDon)->exists();
             } while ($exists);
 
+
             $hoaDon = new HoaDon();
             $hoaDon->ID_HoaDon = $maHoaDon;
-            $hoaDon->TongTien = $request->TongTien;
+            $hoaDon->TongTien = $request->TongTien - $request->SoTienGiam;
             $hoaDon->SoTienGiam = $request->SoTienGiam ?? 0;
             $hoaDon->PTTT = $request->PTTT;
             $hoaDon->ID_TaiKhoan = $idTaiKhoan;
@@ -190,6 +191,26 @@ class HoaDonController extends Controller
                     ->delete();
             }
             DB::commit();
+
+            // Lấy mã khuyến mãi và số tiền giảm từ session
+            $idKhuyenMai = session('ma_khuyen_mai');
+            $soTienGiam = session('so_tien_giam') ?? 0;
+
+            // Nếu có mã khuyến mãi thì cập nhật vào bảng KhuyenMai
+            if ($idKhuyenMai) {
+                $km = KhuyenMai::find($idKhuyenMai);
+                if ($km) {
+                    $km->TongTienDaGiam += $soTienGiam;
+                    $km->SoLuong -= 1;
+                    $km->save();
+
+                    Log::info("Đã cập nhật khuyến mãi ID: $idKhuyenMai, giảm $soTienGiam đ");
+                }
+            }
+
+            // Xóa dữ liệu khuyến mãi khỏi session
+            session()->forget('ma_khuyen_mai');
+            session()->forget('so_tien_giam');
 
             return response()->json([
                 'success' => true,
@@ -384,7 +405,7 @@ class HoaDonController extends Controller
             $hoaDon->TrangThaiXacNhanHoaDon = 0; //hòa tiền
             $hoaDon->save();
 
-            
+
             VeXemPhim::where('ID_HoaDon', $id)->update(['TrangThai' => 2]); // hoàn tiền
 
             DB::commit();
@@ -580,18 +601,48 @@ class HoaDonController extends Controller
 
         if (!$khuyenMai) {
             return response()->json([
-                'success' => false,
+                'success' => true,
                 'message' => 'Mã khuyến mãi không tồn tại.',
+                'khuyenMai' => 0
             ]);
         }
 
-        // Kiểm tra hạn sử dụng bằng cột NgayKetThuc
-        if (strtotime($khuyenMai->NgayKetThuc) < strtotime(date('Y-m-d'))) {
+        if ($khuyenMai->TrangThai != 1) {
             return response()->json([
-                'success' => false,
-                'message' => 'Mã khuyến mãi đã hết hạn.',
+                'success' => true,
+                'message' => 'Mã khuyến mãi không còn hiệu lực.',
+                'khuyenMai' => 0
             ]);
         }
+
+        if (strtotime($khuyenMai->NgayKetThuc) < strtotime(date('Y-m-d'))) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Mã khuyến mãi đã hết hạn.',
+                'khuyenMai' => 0
+            ]);
+        }
+
+        if ($khuyenMai->SoLuong <= 0) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Mã khuyến mãi đã hết lượt sử dụng.',
+                'khuyenMai' => 0
+            ]);
+        }
+
+        $soTienGiam = ($request->TongTien * $khuyenMai->PhanTramGiam) / 100;
+
+        // Nếu có giới hạn giảm tối đa
+        if ($khuyenMai->GiamToiDa > 0 && $soTienGiam > $khuyenMai->GiamToiDa) {
+            $soTienGiam = $khuyenMai->GiamToiDa;
+        }
+
+        // Lưu vào session
+        session([
+            'ma_khuyen_mai' => $khuyenMai->ID_KhuyenMai,
+            'so_tien_giam' => $soTienGiam,
+        ]);
 
         return response()->json([
             'success' => true,
@@ -599,6 +650,8 @@ class HoaDonController extends Controller
             'khuyenMai' => $khuyenMai
         ]);
     }
+
+
 
     public function payment(Request $request)
     {
