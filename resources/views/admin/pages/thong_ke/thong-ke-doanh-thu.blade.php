@@ -86,7 +86,7 @@
                     <div class="d-flex justify-content-end">
                         <div class="stats-card me-3" style="min-width: 200px;">
                             <div class="stats-number">
-                                {{ number_format($doanhThuTheoPhim->sum(function ($phim) {return $phim->sum('tong_doanh_thu');})) }}đ
+                                {{ number_format($tongDoanhThu, 0, ',', '.') }}đ    
                             </div>
                             <div>Tổng doanh thu năm {{ $selectedYear }}</div>
                         </div>

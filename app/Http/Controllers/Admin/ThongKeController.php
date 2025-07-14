@@ -19,21 +19,24 @@ class ThongKeController extends Controller
 
         $phims = Phim::orderBy('TenPhim')->get();
 
+        $tongDoanhThu = HoaDon::whereYear('created_at', $selectedYear)->where('TrangThaiXacNhanHoaDon', 1)->sum('TongTien');
+
         $doanhThuTheoPhim = $this->getDoanhThuTheoPhim($selectedYear);
 
         $soVeTheoSuatChieu = $this->getSoVeTheoSuatChieu($selectedYear);
-        
+
         $chartData = $this->dataChart($doanhThuTheoPhim);
-        
+
         return view('admin.pages.thong_ke.thong-ke-doanh-thu', compact(
             'phims',
             'selectedYear',
+            'tongDoanhThu',
             'doanhThuTheoPhim',
             'soVeTheoSuatChieu',
             'chartData'
         ));
     }
-    
+
     private function getDoanhThuTheoPhim($year)
     {
         return DB::table('hoa_don as hd')
@@ -55,7 +58,7 @@ class ThongKeController extends Controller
             ->get()
             ->groupBy('ID_Phim');
     }
-    
+
     private function getSoVeTheoSuatChieu($year)
     {
         return DB::table('hoa_don as hd')
@@ -93,24 +96,24 @@ class ThongKeController extends Controller
             ->get()
             ->groupBy(['TenPhim', 'thang']);
     }
-    
+
     private function dataChart($doanhThuTheoPhim)
     {
         $months = range(1, 12);
         $monthNames = [1 => 'Tháng 1', 2 => 'Tháng 2', 3 => 'Tháng 3', 4 => 'Tháng 4', 5 => 'Tháng 5', 6 => 'Tháng 6', 7 => 'Tháng 7', 8 => 'Tháng 8', 9 => 'Tháng 9', 10 => 'Tháng 10', 11 => 'Tháng 11', 12 => 'Tháng 12'];
-        
+
         $revenueData = [];
-        $colors = ['rgba(255, 99, 132, 0.8)','rgba(54, 162, 235, 0.8)','rgba(255, 205, 86, 0.8)','rgba(75, 192, 192, 0.8)','rgba(153, 102, 255, 0.8)','rgba(255, 159, 64, 0.8)','rgba(199, 199, 199, 0.8)','rgba(83, 102, 255, 0.8)',];
-        
+        $colors = ['rgba(255, 99, 132, 0.8)', 'rgba(54, 162, 235, 0.8)', 'rgba(255, 205, 86, 0.8)', 'rgba(75, 192, 192, 0.8)', 'rgba(153, 102, 255, 0.8)', 'rgba(255, 159, 64, 0.8)', 'rgba(199, 199, 199, 0.8)', 'rgba(83, 102, 255, 0.8)',];
+
         $colorIndex = 0;
         foreach ($doanhThuTheoPhim as $phimId => $data) {
             $phimName = $data->first()->TenPhim;
             $monthlyRevenue = array_fill(0, 12, 0);
-            
+
             foreach ($data as $item) {
                 $monthlyRevenue[$item->thang - 1] = (float) $item->tong_doanh_thu;
             }
-            
+
             $revenueData[] = [
                 'label' => $phimName,
                 'data' => $monthlyRevenue,
@@ -121,7 +124,7 @@ class ThongKeController extends Controller
             ];
             $colorIndex++;
         }
-        
+
         return [
             'labels' => array_values($monthNames),
             'revenueData' => $revenueData,
@@ -172,12 +175,12 @@ class ThongKeController extends Controller
             ->header('Content-Disposition', "attachment; filename=\"{$filename}\"")
             ->header('Content-Length', strlen($csvWithBom));
     }
-    
+
     public function getDataByMonth(Request $request)
     {
         $year = $request->get('year', Carbon::now()->year);
         $month = $request->get('month', Carbon::now()->month);
-        
+
         $data = DB::table('hoa_don as hd')
             ->join('ve_xem_phim as vxp', 'hd.ID_HoaDon', '=', 'vxp.ID_HoaDon')
             ->join('suat_chieu as sc', 'vxp.ID_SuatChieu', '=', 'sc.ID_SuatChieu')
@@ -201,34 +204,34 @@ class ThongKeController extends Controller
             ->orderBy('sc.NgayChieu')
             ->orderBy('sc.GioChieu')
             ->get();
-            
+
         return response()->json($data);
     }
-    
+
     // So sánh dữ liệu giữa các năm
     public function compareYears(Request $request)
     {
         $years = $request->get('years', [Carbon::now()->year]);
         $compareData = [];
-        
+
         foreach ($years as $year) {
             $yearData = $this->getDoanhThuTheoPhim($year);
             $compareData[$year] = [
-                'total_revenue' => $yearData->sum(function($phim) { 
-                    return $phim->sum('tong_doanh_thu'); 
+                'total_revenue' => $yearData->sum(function ($phim) {
+                    return $phim->sum('tong_doanh_thu');
                 }),
-                'total_tickets' => $yearData->sum(function($phim) { 
-                    return $phim->sum('so_ve_ban'); 
+                'total_tickets' => $yearData->sum(function ($phim) {
+                    return $phim->sum('so_ve_ban');
                 }),
                 'movies_count' => $yearData->count(),
                 'monthly_data' => []
             ];
-            
+
             // Dữ liệu theo tháng
             for ($month = 1; $month <= 12; $month++) {
                 $monthRevenue = 0;
                 $monthTickets = 0;
-                
+
                 foreach ($yearData as $phimData) {
                     $monthData = $phimData->where('thang', $month)->first();
                     if ($monthData) {
@@ -236,14 +239,14 @@ class ThongKeController extends Controller
                         $monthTickets += $monthData->so_ve_ban;
                     }
                 }
-                
+
                 $compareData[$year]['monthly_data'][$month] = [
                     'revenue' => $monthRevenue,
                     'tickets' => $monthTickets
                 ];
             }
         }
-        
+
         return response()->json($compareData);
     }
 }
