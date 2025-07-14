@@ -67,7 +67,8 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 
 # Hướng Dẫn Khởi Chạy Dự Án
 
-Dự án được chạy trên **XAMPP** với phiên bản PHP **8.2.12**.  
+Dự án được chạy trên **XAMPP** với phiên bản PHP **8.2.12**.
+Mô trường phát triển **Laravel** với phiên bản **12.12.0**.
 
 ## Các bước thực hiện
 
@@ -91,8 +92,8 @@ Dự án được chạy trên **XAMPP** với phiên bản PHP **8.2.12**.
     php artisan key:generate
     ```
 
-5. **Cấu hình múi giờ** cho dự án:  
-   Thêm dòng sau vào file `.env` để đặt múi giờ về Việt Nam:
+5. Cấu hình múi giờ cho dự án. Thêm dòng sau vào file `.env` để đặt múi giờ về Việt Nam:
+   
     ```env
     APP_TIMEZONE=Asia/Ho_Chi_Minh
     ```
@@ -100,10 +101,24 @@ Dự án được chạy trên **XAMPP** với phiên bản PHP **8.2.12**.
     ```bash
     php artisan storage:link
     ```
-7. Xuất file excel phải dùng các lệnh sau :
+
+7. Xuất file excel phải dùng các lệnh sau:
+    ```bash
     composer require phpoffice/phpspreadsheet
+    ```
 
+8. Chạy migration:
+    ```bash
+    php artisan migrate
+    ```
+
+9. Chạy seeder:
+    ```bash
+    php artisan db:seed
+    ```
+9. Chạy dự án:
+    ```bash
+    php artisan server
+    ```
 ---
-
-Bây giờ bạn có thể chạy dự án trên XAMPP với cấu hình PHP 8.2.12.
 

@@ -21,5 +21,6 @@ class KhuyenMai extends Model
         'SoLuong',
         'TongTienDaGiam',
         'NgayKetThuc',
+        'TrangThai',
     ];
 }
