@@ -18,8 +18,8 @@ class HomeController extends Controller
     public function index()
     {
         $tongTaiKhoan = TaiKhoan::where('VaiTro', 0)->count();
-        $tongDoanhThu = HoaDon::whereYear('created_at', Carbon::now()->year)->sum('TongTien');
-        $tongVeBan = VeXemPhim::whereYear('created_at', Carbon::now()->year)->count();
+        $tongDoanhThu = HoaDon::whereYear('created_at', Carbon::now()->year)->where('TrangThaiXacNhanHoaDon', 1)->sum('TongTien');
+        $tongVeBan = round(VeXemPhim::whereYear('created_at', Carbon::now()->year)->count(), -3);
         $tongPhim = Phim::count();
         $thongTin = ThongTinTrangWeb::first();
         $banners = Banner::all();
