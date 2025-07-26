@@ -77,7 +77,7 @@ Mô trường phát triển **Laravel** với phiên bản **12.12.0**.
     composer install
     ```
 
-2. Tạo file cấu hình `.env` từ file mẫu:
+2. Tạo file cấu hình `.env` từ file mẫu (Lưu ý: điền đầy đủ `key` từ gợi ý ở file .env vừa tạo):
     ```bash
     cp .env.example .env
     ```
